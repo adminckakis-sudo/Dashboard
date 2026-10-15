@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekapitulasi Presensi Bulanan - UPT Crew KA Kisaran</title>
+    <!-- Pastikan file CSS dipanggil agar tampilan rapi -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ================= TOP UTILITY BAR (DENGAN NAVIGASI ASLI) ================= -->
+    <header class="top-header" role="banner">
+        <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 8px;">
+            
+            <!-- KELOMPOK KIRI: Tombol Toggle Sidebar dan Nama Brand -->
+            <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+                <!-- Tombol Toggle Sidebar -->
+                <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka/Tutup Menu">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+
+            <!-- KELOMPOK KANAN: Navigasi Atas yang Lama (TIDAK DIHILANGKAN) -->
+            <nav class="main-nav-links" aria-label="Navigasi Utama">
+                <a href="dashboard-cuti.html" class="nav-item">Dashboard</a>
+                <a href="rekap-bulanan.html" class="nav-item">Rekap Bulanan</a>
+                <a href="sisa-cuti.html" class="nav-item">Monitoring Sisa Cuti</a>
+                <a href="cetak-pdf.html" class="nav-item active">Laporan</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= WRAPPER UTAMA (SIDEBAR & KONTEN) ================= -->
+    <div class="app-layout-wrapper">
+        
+        <!-- SIDEBAR (DISET TERTUTUP/COLLAPSED DARI AWAL) -->
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
+            <div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                
+                <nav style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="../index.html" class="sidebar-item" title="Homepage">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>
+                    
+                    <a href="dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        <span class="sidebar-text">Dashboard Cuti</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- KONTEN UTAMA DI KANAN -->
+        <main class="app-main-content">
+            
+            <div class="dashboard-content">
+                <h1>Halaman Cetak PDF</h1>
+                <p>Isi dari rekapitulasi bulanan yang akan dicetak ada di bagian ini.</p>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Script JavaScript untuk Toggle Sidebar -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('app-sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+    <script src="../js/main.js"></script>
+</body>
+</html>
