@@ -1,0 +1,1418 @@
+/* ==========================================================================
+   DASHBOARD REKAPITULASI UPT CREW KA KELAS C KISARAN
+   Design System: Minimalist KAI Corporate Operations Dashboard
+   ========================================================================== */
+
+/* 1. RESET & CUSTOM PROPERTIES */
+:root {
+    /* Brand Identity (PT Kereta Api Indonesia) */
+    --kai-blue: #1c2a5f;
+    --kai-blue-dark: #121d42;
+    --kai-blue-light: #283a7c;
+    --kai-blue-soft: #edf1fa;
+    --kai-orange: #f06400;
+    --kai-orange-hover: #d95700;
+    --kai-orange-soft: #fff3eb;
+
+    /* Neutrals & Surfaces */
+    --bg-page: #f8fafc;
+    --surface-card: #ffffff;
+    --surface-subtle: #f1f5f9;
+    --border-color: #e2e8f0;
+    --border-subtle: #edf2f7;
+
+    /* Typography Colors (High Contrast WCAG AA Compliant) */
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+    --text-white: #ffffff;
+
+    /* Operational Status Semantic Colors */
+    --status-hadir: #16a34a;
+    --status-hadir-bg: #dcfce7;
+    --status-cuti: #0284c7;
+    --status-cuti-bg: #e0f2fe;
+    --status-sakit: #d97706;
+    --status-sakit-bg: #fef3c7;
+    --status-penting: #6366f1;
+    --status-penting-bg: #eef2ff;
+    --status-tms: #ea580c;
+    --status-tms-bg: #ffedd5;
+    --status-mangkir: #dc2626;
+    --status-mangkir-bg: #fee2e2;
+
+    /* Elevation & Radii */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow-subtle: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+    --shadow-card: 0 4px 12px -2px rgba(28, 42, 95, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-hover: 0 10px 24px -4px rgba(28, 42, 95, 0.10), 0 4px 8px -2px rgba(0, 0, 0, 0.04);
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-page);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Accessibility helper */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+:focus-visible {
+    outline: 2px solid var(--kai-orange);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   SETTINGAN HEADER HOMEPAGE
+   ========================================================================== */
+.kai-banner-homepage {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    box-sizing: border-box;
+    background-color: var(--kai-blue);
+    background-image: url('../assets/images/bg-header.png');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    color: var(--text-white);
+    padding: 100px 24px;
+    border-bottom: 4px solid var(--kai-orange);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+/* ==========================================================================
+   2. TOP UTILITY HEADER (BRANDING, NAVIGASI & REAL-TIME CLOCK)
+   ========================================================================== */
+.top-header {
+    background-color: var(--kai-blue-dark);
+    color: var(--text-white);
+    border-bottom: 2px solid var(--kai-orange);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.top-header-inner {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-left: 8px;
+}
+
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.brand-affiliation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+}
+
+.brand-tag {
+    background-color: var(--kai-orange);
+    color: var(--text-white);
+    padding: 2px 7px;
+    font-weight: 800;
+    font-size: 0.72rem;
+    border-radius: var(--radius-sm);
+    letter-spacing: 1px;
+}
+
+.brand-text {
+    font-weight: 600;
+    font-size: 0.8rem;
+    opacity: 0.95;
+    color: var(--text-white);
+}
+
+.main-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto; /* Memastikan menu berada di tepi kanan */
+}
+
+.nav-item {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-item:hover {
+    color: var(--text-white);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.active {
+    color: var(--text-white);
+    background: rgba(240, 100, 0, 0.2);
+    border-color: rgba(240, 100, 0, 0.45);
+}
+
+.time-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #cbd5e1;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8rem;
+}
+
+.live-status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+    animation: pulseStatus 2s infinite ease-in-out;
+}
+
+@keyframes pulseStatus {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.9); }
+}
+
+.time-separator {
+    color: #64748b;
+}
+
+.time-clock {
+    font-weight: 700;
+    color: var(--text-white);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* ==========================================================================
+   GLOBAL SEARCH HEADER & DROPDOWN STYLING
+   ========================================================================== */
+.global-search-container {
+    position: relative;
+    width: 250px;
+    max-width: 100%;
+}
+
+.global-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.global-search-wrapper svg {
+    position: absolute;
+    left: 10px;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.global-search-wrapper input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-white);
+    padding: 5px 12px 5px 30px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.global-search-wrapper input::placeholder {
+    color: #94a3b8;
+}
+
+.global-search-wrapper input:focus {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: var(--kai-orange);
+    outline: none;
+}
+
+.global-search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 320px;
+    max-width: 90vw;
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.search-dropdown-item {
+    padding: 9px 13px;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-subtle);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.search-dropdown-item:hover {
+    background-color: var(--kai-blue-soft);
+}
+
+.search-dropdown-item .item-name {
+    font-weight: 600;
+    color: var(--kai-blue);
+}
+
+.search-dropdown-item .item-meta {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+}
+
+/* ==========================================================================
+   3. EXECUTIVE HERO BANNER
+   ========================================================================== */
+.kai-banner {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    box-sizing: border-box;
+    background-color: var(--kai-blue);
+    background-image: url('../assets/images/bg-header.png');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+    color: var(--text-white);
+    padding: 38px 24px;
+    border-bottom: 4px solid var(--kai-orange);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, rgba(18, 29, 66, 0.94) 0%, rgba(28, 42, 95, 0.86) 55%, rgba(28, 42, 95, 0.72) 100%);
+    z-index: 1;
+}
+
+.banner-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.banner-badge {
+    display: inline-block;
+    background-color: rgba(240, 100, 0, 0.18);
+    color: #ff9d54;
+    border: 1px solid rgba(240, 100, 0, 0.4);
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.banner-title {
+    font-size: 1.95rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    color: var(--text-white);
+}
+
+.banner-subtitle {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    font-weight: 400;
+    max-width: 820px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   4. DASHBOARD CONTENT CONTAINER & SECTION HEADERS
+   ========================================================================== */
+.dashboard-content {
+    max-width: 100%;
+    width: 100%;
+    margin: 28px auto 48px auto;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.breadcrumb-bar {
+    margin-bottom: -12px;
+}
+
+.breadcrumb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--kai-blue);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: color 0.15s ease;
+}
+
+.breadcrumb-link:hover {
+    color: var(--kai-orange);
+}
+
+.dashboard-section {
+    width: 100%;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: var(--kai-blue);
+    letter-spacing: -0.2px;
+}
+
+.section-desc {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+/* ==========================================================================
+   5. KPI UTAMA (TOTAL ASP STATISTIK)
+   ========================================================================== */
+.kpi-utama-card {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.kpi-utama-card:hover {
+    transform: none;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--shadow-hover);
+    border-color: rgba(28, 42, 95, 0.25);
+}
+
+.kpi-utama-main {
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.kpi-brand-icon {
+    width: 56px;
+    height: 56px;
+    background-color: var(--kai-blue-soft);
+    color: var(--kai-blue);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(28, 42, 95, 0.1);
+}
+
+.kpi-badge-label {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--kai-orange);
+    display: block;
+    margin-bottom: 3px;
+}
+
+.kpi-main-heading {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.kpi-number-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.kpi-main-val {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--kai-blue);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-unit {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.kpi-utama-footer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: var(--surface-subtle);
+    padding: 16px 28px;
+    gap: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.kpi-sub-metric {
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-metric-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.sub-metric-val {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--kai-blue-light);
+    font-variant-numeric: tabular-nums;
+}
+
+.kpi-action-bar {
+    padding: 11px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--kai-blue);
+    background: #ffffff;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.kpi-utama-card:hover .kpi-action-bar {
+    color: var(--kai-orange);
+    background-color: var(--kai-orange-soft);
+}
+
+.action-arrow {
+    transition: transform 0.2s ease;
+}
+
+.kpi-utama-card:hover .action-arrow {
+    transform: translateX(4px);
+}
+
+/* ==========================================================================
+   6. WIDGET GRID (LAPORAN HARIAN)
+   ========================================================================== */
+.widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.widget-card {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-subtle);
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    min-height: 154px;
+    position: relative;
+}
+
+.widget-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+
+.widget-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.widget-icon-wrapper {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.widget-status-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.widget-body {
+    flex-grow: 1;
+}
+
+.widget-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.widget-val-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.widget-val {
+    font-size: 1.85rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.widget-unit {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.widget-footer-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-color);
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.widget-card:hover .widget-footer-action {
+    color: var(--kai-blue);
+}
+
+/* Specific Card Themes */
+.widget-hadir { border-top: 3px solid var(--status-hadir); }
+.widget-hadir .widget-icon-wrapper, .widget-hadir .widget-status-tag { background-color: var(--status-hadir-bg); color: var(--status-hadir); }
+.widget-hadir .widget-val { color: var(--status-hadir); }
+
+.widget-cuti { border-top: 3px solid var(--status-cuti); }
+.widget-cuti .widget-icon-wrapper, .widget-cuti .widget-status-tag { background-color: var(--status-cuti-bg); color: var(--status-cuti); }
+.widget-cuti .widget-val { color: var(--status-cuti); }
+
+.widget-sakit { border-top: 3px solid var(--status-sakit); }
+.widget-sakit .widget-icon-wrapper, .widget-sakit .widget-status-tag { background-color: var(--status-sakit-bg); color: var(--status-sakit); }
+.widget-sakit .widget-val { color: var(--status-sakit); }
+
+.widget-penting { border-top: 3px solid var(--status-penting); }
+.widget-penting .widget-icon-wrapper, .widget-penting .widget-status-tag { background-color: var(--status-penting-bg); color: var(--status-penting); }
+.widget-penting .widget-val { color: var(--status-penting); }
+
+.widget-tms { border-top: 3px solid var(--status-tms); }
+.widget-tms .widget-icon-wrapper, .widget-tms .widget-status-tag { background-color: var(--status-tms-bg); color: var(--status-tms); }
+.widget-tms .widget-val { color: var(--status-tms); }
+
+.widget-mangkir { border-top: 3px solid var(--status-mangkir); }
+.widget-mangkir .widget-icon-wrapper, .widget-mangkir .widget-status-tag { background-color: var(--status-mangkir-bg); color: var(--status-mangkir); }
+.widget-mangkir .widget-val { color: var(--status-mangkir); }
+
+/* ==========================================================================
+   7. REKAPITULASI LAPORAN BULANAN
+   ========================================================================== */
+.section-bulanan-card {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    padding: 26px 28px;
+}
+
+.bulan-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.toolbar-left, .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.select-wrapper {
+    position: relative;
+    min-width: 170px;
+}
+
+.select-wrapper select {
+    width: 100%;
+    appearance: none;
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 9px 36px 9px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.select-wrapper select:focus {
+    border-color: var(--kai-blue);
+}
+
+/* BUTTON COMPONENT */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: var(--kai-blue);
+    color: var(--text-white);
+}
+
+.btn-primary:hover {
+    background-color: var(--kai-blue-dark);
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--surface-subtle);
+    color: var(--text-primary);
+    border-color: #cbd5e1;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+}
+
+/* SUMMARY METRICS GRID (BULANAN) */
+.bulan-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.summary-card {
+    background-color: var(--surface-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-label {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.summary-val {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--kai-blue);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.summary-card.card-hadir .summary-val { color: var(--status-hadir); }
+.summary-card.card-cuti .summary-val { color: var(--status-cuti); }
+.summary-card.card-sakit .summary-val { color: var(--status-sakit); }
+.summary-card.card-tms .summary-val { color: var(--status-tms); }
+.summary-card.card-mangkir .summary-val { color: var(--status-mangkir); }
+
+/* TABLE SEARCH BAR */
+.table-search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 320px;
+    max-width: 100%;
+}
+
+.search-input-wrapper svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background-color: var(--surface-card);
+    font-size: 0.86rem;
+    color: var(--text-primary);
+}
+
+.search-input-wrapper input:focus {
+    border-color: var(--kai-blue);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(28, 42, 95, 0.12);
+}
+
+.table-count-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* DATA TABLE STYLING */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.data-table thead {
+    background-color: var(--kai-blue);
+    color: var(--text-white);
+    position: sticky;
+    top: 0;
+}
+
+.data-table th {
+    padding: 11px 14px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.data-table th:last-child {
+    border-right: none;
+}
+
+.data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    border-right: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+}
+
+.data-table td:last-child {
+    border-right: none;
+}
+
+.data-table tbody tr:hover {
+    background-color: rgba(28, 42, 95, 0.03);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #fafbfc;
+}
+
+.cell-center {
+    text-align: center;
+}
+
+.col-hadir { color: #4ade80; }
+.col-tms { color: #fdba74; }
+.col-mangkir { color: #fca5a5; }
+
+.val-nonzero-hadir { font-weight: 700; color: var(--status-hadir); }
+.val-nonzero-tms { font-weight: 700; color: var(--status-tms); }
+.val-nonzero-mangkir { font-weight: 700; color: var(--status-mangkir); }
+
+/* ==========================================================================
+   8. MODAL DETAIL POP-UP
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 24px;
+    animation: fadeInModalOverlay 0.2s ease;
+}
+
+@keyframes fadeInModalOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: var(--surface-card);
+    width: 100%;
+    max-width: 1100px;
+    height: 88vh;
+    max-height: 88vh;
+    border-radius: var(--radius-md);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideInModal 0.2s ease-out;
+}
+
+@keyframes slideInModal {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+    background-color: var(--kai-blue);
+    color: var(--text-white);
+    padding: 18px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-subtitle {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ff9d54;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.modal-title {
+    font-size: 1.18rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: var(--text-white);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    opacity: 0.8;
+    transition: opacity 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    opacity: 1;
+}
+
+.modal-search-wrapper {
+    padding: 12px 26px;
+    background-color: var(--surface-subtle);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.modal-search-wrapper input {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    font-size: 0.86rem;
+    background-color: var(--surface-card);
+    color: var(--text-primary);
+}
+
+.modal-search-wrapper input:focus {
+    border-color: var(--kai-blue);
+    outline: none;
+}
+
+.modal-body {
+    padding: 20px 26px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.modal-data-table {
+    border: 1px solid var(--border-color);
+    width: 100%;
+}
+
+.modal-footer {
+    padding: 12px 26px;
+    background-color: var(--surface-subtle);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-count-info {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   STATISTIK TREN CUTI TAHUNAN & SVG LINE CHART
+   ========================================================================== */
+.tren-cuti-card {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.tren-stats-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.stat-box {
+    background-color: var(--surface-subtle);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-box-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-box-val-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.stat-box-val {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--kai-blue);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.stat-box-val.highlight-peak {
+    color: var(--status-cuti);
+    font-size: 1.25rem;
+}
+
+.stat-box-unit {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.line-chart-container {
+    width: 100%;
+    height: 280px;
+    position: relative;
+    margin-top: 6px;
+}
+
+#tren-line-chart {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.chart-grid-line {
+    stroke: var(--border-subtle);
+    stroke-dasharray: 4 4;
+    stroke-width: 1;
+}
+
+.chart-area {
+    fill: rgba(2, 132, 199, 0.08);
+}
+
+.chart-line {
+    fill: none;
+    stroke: var(--status-cuti);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.chart-dot {
+    fill: var(--surface-card);
+    stroke: var(--status-cuti);
+    stroke-width: 2.5;
+    transition: r 0.2s ease, fill 0.2s ease;
+}
+
+.chart-dot:hover {
+    r: 6;
+    fill: var(--status-cuti);
+    cursor: pointer;
+}
+
+.chart-text-month {
+    font-size: 11px;
+    fill: var(--text-muted);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-anchor: middle;
+}
+
+.chart-text-value {
+    font-size: 11px;
+    fill: var(--kai-blue);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE BREAKPOINTS (TABLET & MOBILE)
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .widgets-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bulan-summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .global-search-container {
+        width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 0 16px;
+        margin-top: 20px;
+        gap: 24px;
+    }
+
+.top-header-inner {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+    .header-left-group, .header-right-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .main-nav-links {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 2px;
+    }
+
+    .global-search-container {
+        width: 100%;
+    }
+
+    .global-search-dropdown {
+        width: 100%;
+    }
+
+    .time-container {
+        font-size: 0.74rem;
+    }
+
+    .kai-banner {
+        padding: 24px 16px;
+        min-height: 160px;
+    }
+
+    .banner-title {
+        font-size: 1.4rem;
+    }
+
+    .banner-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .kpi-utama-main {
+        padding: 18px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .kpi-utama-footer {
+        grid-template-columns: 1fr;
+        padding: 16px 20px;
+        gap: 10px;
+    }
+
+    .widgets-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .tren-stats-summary-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .bulan-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left, .toolbar-right {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .select-wrapper, .btn, .search-input-wrapper {
+        width: 100% ;
+    }
+
+    .bulan-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section-bulanan-card {
+        padding: 18px 16px;
+    }
+
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal-content {
+        height: 94vh;
+        max-height: 94vh;
+    }
+}
+
+/* ==========================================================================
+   10   . Fitur Pencarian
+   ========================================================================== */
+   #section-pencarian-bawah {
+    margin-top: 45px ;
+   }
+
+/* ==========================================================================
+   Settingan Side Bar
+   ========================================================================== */
+/* --- PERBAIKAN TAMPILAN SIDEBAR & MENU --- */
+.app-sidebar {
+    width: 260px;
+    background-color: var(--kai-blue-dark);
+    color: #fff;
+    padding: 24px 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Saat Sidebar Tertutup (Hilang Total) */
+.app-sidebar.collapsed {
+    width: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-right: none !important;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Memastikan teks dan elemen di dalam sidebar ikut tersembunyi dengan mulus saat tertutup */
+.app-sidebar.collapsed * {
+    display: none !important;
+}
+
+/* Styling Menu Item agar Bersih dan Tanpa Garis Bawah */
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    color: #cbd5e1 !important;
+    text-decoration: none !important; /* Menghilangkan garis bawah */
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.86rem;
+    transition: background 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+}
+
+.sidebar-item:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.08);
+    text-decoration: none !important;
+}
+
+.sidebar-item.active {
+    color: #ffffff !important;
+    background: rgba(240, 100, 0, 0.25);
+    border: 1px solid rgba(240, 100, 0, 0.45);
+    text-decoration: none !important;
+}
+
+.app-layout-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 45px);
+    overflow-x: hidden;
+}
+
+.app-main-content {
+    flex-grow: 1;
+    overflow-x: hidden;
+    width: 100%;
+}
