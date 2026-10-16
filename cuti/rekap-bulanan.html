@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekapitulasi Bulanan</title>
+    <title>Rekapitulasi Bulanan - UPT Crew KA Kisaran</title>
     <link rel="stylesheet" href="../css/style.css">
     <!-- Google Fonts Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,8 +15,6 @@
     <!-- ================= TOP UTILITY BAR ================= -->
     <header class="top-header" role="banner">
         <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding-left: 8px;">
-            
-            <!-- KELOMPOK KIRI: Tombol Toggle Sidebar dan Nama Brand -->
             <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
                 <!-- Tombol Toggle Sidebar -->
                 <button id="btn-toggle-menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka/Tutup Menu">
@@ -29,12 +27,14 @@
                 <div class="brand-affiliation">
                     <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
                 </div> 
+            </div>
+        </div>
     </header>
 
     <!-- ================= WRAPPER UTAMA (SIDEBAR & KONTEN) ================= -->
     <div class="app-layout-wrapper">
         
-        <!-- SIDEBAR (DISET TERTUTUP/COLLAPSED DARI AWAL) -->
+        <!-- SIDEBAR -->
         <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
             <div>
                 <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
@@ -45,15 +45,15 @@
                         <span class="sidebar-text">Homepage</span>
                     </a>
                     
-                    <a href="dashboard-cuti.html" class="sidebar-item active" title="Dashboard Cuti">
+                    <a href="./dashboard-cuti.html" class="sidebar-item active" title="Dashboard Cuti">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                         <span class="sidebar-text">Dashboard Cuti</span>
                     </a>
 
-                    <!-- Sub-Navigasi (Indensasi Masuk Kebawah Dashboard Cuti & Tanpa Ikon) -->
+                    <!-- Sub-Navigasi -->
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
                         </a>
-                        <a href="./rekap-bulanan.html" class="sidebar-sub-item active" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
+                        <a href="./rekap-bulanan.html" class="sidebar-sub-item active" style="color: var(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Rekap Bulanan</span>
                         </a>
                         <a href="./sisa-cuti.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
@@ -62,151 +62,156 @@
                         <a href="./cetak-pdf.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Cetak PDF</span>
                         </a>
+                    </div>
+                </nav>
             </div>
         </aside>
 
         <!-- KONTEN UTAMA DI KANAN -->
         <main class="app-main-content">
+            <div class="dashboard-content" id="main-content">
+                <section class="dashboard-section section-bulanan-card" aria-labelledby="heading-bulanan">
+                    <div class="section-header">
+                        <div>
+                            <h1 id="heading-bulanan" class="section-title">Rekapitulasi Presensi Bulanan</h1>
+                        </div>
+                    </div>
 
-    <!-- ================= KONTEN UTAMA REKAPITULASI BULANAN ================= -->
-        <section class="dashboard-section section-bulanan-card" aria-labelledby="heading-bulanan">
-            <div class="section-header">
-                <div>
-                    <h1 id="heading-bulanan" class="section-title">Rekapitulasi Presensi Bulanan</h1>
-                </div>
+                    <!-- Kontrol Pilih Bulan & Aksi -->
+                    <div class="bulan-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <div class="toolbar-left" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <label for="select-pilih-bulan" class="sr-only">Pilih Bulan</label>
+                            <div class="select-wrapper">
+                                <select id="select-pilih-bulan" aria-label="Pilih Bulan Rekapitulasi">
+                                    <option value="0">Januari</option>
+                                    <option value="1">Februari</option>
+                                    <option value="2">Maret</option>
+                                    <option value="3">April</option>
+                                    <option value="4">Mei</option>
+                                    <option value="5">Juni</option>
+                                    <option value="6">Juli</option>
+                                    <option value="7">Agustus</option>
+                                    <option value="8">September</option>
+                                    <option value="9">Oktober</option>
+                                    <option value="10">November</option>
+                                    <option value="11">Desember</option>
+                                </select>
+                            </div>
+                            <button id="btn-tampilkan-bulan" class="btn btn-primary" type="button">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                </svg>
+                                <span>Tampilkan Data</span>
+                            </button>
+                        </div>
+
+                        <div class="toolbar-right">
+                            <a id="btn-ekspor-pdf" href="./cetak-pdf.html" class="btn btn-secondary" role="button">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" x2="8" y1="13" y2="13"/>
+                                    <line x1="16" x2="8" y1="17" y2="17"/>
+                                    <polyline points="10 9 9 9 8 9"/>
+                                </svg>
+                                <span>Unduh PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Area Hasil Rekapitulasi Bulanan -->
+                    <div id="hasil-rekap-bulanan" class="hasil-rekap-container">
+                        
+                        <!-- 1. Ringkasan Kartu Statistik Bulanan -->
+                        <div class="bulan-summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                            <div class="summary-card stat-box">
+                                <span class="summary-label stat-box-label">Total Personel</span>
+                                <div class="summary-val-row stat-box-val-row">
+                                    <span class="summary-val stat-box-val" id="sum-total-pegawai">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-card card-hadir stat-box">
+                                <span class="summary-label stat-box-label">Tingkat Kehadiran</span>
+                                <div class="summary-val-row stat-box-val-row">
+                                    <span class="summary-val stat-box-val" id="sum-rata-hadir">0%</span>
+                                </div>
+                            </div>
+                            <div class="summary-card card-cuti stat-box">
+                                <span class="summary-label stat-box-label">Akumulasi Cuti (CT)</span>
+                                <div class="summary-val-row stat-box-val-row">
+                                    <span class="summary-val stat-box-val" id="sum-total-cuti">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-card card-sakit stat-box">
+                                <span class="summary-label stat-box-label">Akumulasi Sakit (CSK)</span>
+                                <div class="summary-val-row stat-box-val-row">
+                                    <span class="summary-val stat-box-val" id="sum-total-sakit">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-card card-tms stat-box">
+                                <span class="summary-label stat-box-label">Akumulasi TMS</span>
+                                <div class="summary-val-row stat-box-val-row">
+                                    <span class="summary-val stat-box-val" id="sum-total-tms">0</span>
+                                </div>
+                            </div>
+                            <div class="summary-card card-mangkir stat-box">
+                                <span class="summary-label stat-box-label">Akumulasi Mangkir</span>
+                                <div class="summary-val-row stat-box-val-row">
+                                    <span class="summary-val stat-box-val" id="sum-total-mangkir">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Filter Pencarian Tabel -->
+                        <div class="table-search-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+                            <div class="search-input-wrapper global-search-wrapper" style="width: 320px; max-width: 100%;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="11" cy="11" r="8"/>
+                                    <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                                </svg>
+                                <input type="text" id="input-cari-bulan" placeholder="Cari nama atau NIPP pegawai..." aria-label="Cari nama atau NIPP dalam tabel bulanan" style="padding: 9px 12px 9px 34px; font-size: 0.85rem; width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            </div>
+                            <div class="table-count-label" id="label-jumlah-rekap" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">Menampilkan data rekapitulasi</div>
+                        </div>
+
+                        <!-- 3. Tabel Rekapitulasi Per Personel -->
+                        <div class="table-responsive-wrapper" style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <table class="data-table" id="tabel-rekap-bulanan" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="cell-center">No</th>
+                                        <th scope="col">Nama Pegawai</th>
+                                        <th scope="col" class="cell-center">NIPP</th>
+                                        <th scope="col">Jabatan</th>
+                                        <th scope="col" class="cell-center col-hadir">Hadir</th>
+                                        <th scope="col" class="cell-center">Cuti (CT)</th>
+                                        <th scope="col" class="cell-center">Sakit (CSK)</th>
+                                        <th scope="col" class="cell-center">Cuti Penting</th>
+                                        <th scope="col" class="cell-center col-tms">TMS</th>
+                                        <th scope="col" class="cell-center col-mangkir">Mangkir</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-rekap-bulanan-body">
+                                    <!-- Data diisi otomatis lewat JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </section>
             </div>
+        </main>
 
-            <!-- Kontrol Pilih Bulan & Aksi -->
-            <div class="bulan-toolbar">
-                <div class="toolbar-left">
-                    <label for="select-pilih-bulan" class="sr-only">Pilih Bulan</label>
-                    <div class="select-wrapper">
-                        <select id="select-pilih-bulan" aria-label="Pilih Bulan Rekapitulasi">
-                            <option value="0">Januari</option>
-                            <option value="1">Februari</option>
-                            <option value="2">Maret</option>
-                            <option value="3">April</option>
-                            <option value="4">Mei</option>
-                            <option value="5">Juni</option>
-                            <option value="6">Juli</option>
-                            <option value="7">Agustus</option>
-                            <option value="8">September</option>
-                            <option value="9">Oktober</option>
-                            <option value="10">November</option>
-                            <option value="11">Desember</option>
-                        </select>
-                    </div>
-                    <button id="btn-tampilkan-bulan" class="btn btn-primary" type="button">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" x2="16.65" y1="21" y2="16.65"/>
-                        </svg>
-                        <span>Tampilkan Data</span>
-                    </button>
-                </div>
+    </div>
 
-                <div class="toolbar-right">
-                 <a id="btn-ekspor-pdf" href="#" class="btn btn-secondary" role="button">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" x2="8" y1="13" y2="13"/>
-                    <line x1="16" x2="8" y1="17" y2="17"/>
-                    <polyline points="10 9 9 9 8 9"/>
-                </svg>
-                <span>Unduh PDF</span>
-            </a>
-                </div>
-            </div>
-
-            <!-- Area Hasil Rekapitulasi Bulanan -->
-            <div id="hasil-rekap-bulanan" class="hasil-rekap-container">
-                
-                <!-- 1. Ringkasan Kartu Statistik Bulanan -->
-                <div class="bulan-summary-grid">
-                    <div class="summary-card">
-                        <span class="summary-label">Total Personel</span>
-                        <div class="summary-val-row">
-                            <span class="summary-val" id="sum-total-pegawai">0</span>
-                        </div>
-                    </div>
-                    <div class="summary-card card-hadir">
-                        <span class="summary-label">Tingkat Kehadiran</span>
-                        <div class="summary-val-row">
-                            <span class="summary-val" id="sum-rata-hadir">0%</span>
-                        </div>
-                    </div>
-                    <div class="summary-card card-cuti">
-                        <span class="summary-label">Akumulasi Cuti (CT)</span>
-                        <div class="summary-val-row">
-                            <span class="summary-val" id="sum-total-cuti">0</span>
-                        </div>
-                    </div>
-                    <div class="summary-card card-sakit">
-                        <span class="summary-label">Akumulasi Sakit (CSK)</span>
-                        <div class="summary-val-row">
-                            <span class="summary-val" id="sum-total-sakit">0</span>
-                        </div>
-                    </div>
-                    <div class="summary-card card-tms">
-                        <span class="summary-label">Akumulasi TMS</span>
-                        <div class="summary-val-row">
-                            <span class="summary-val" id="sum-total-tms">0</span>
-                        </div>
-                    </div>
-                    <div class="summary-card card-mangkir">
-                        <span class="summary-label">Akumulasi Mangkir</span>
-                        <div class="summary-val-row">
-                            <span class="summary-val" id="sum-total-mangkir">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. Filter Pencarian Tabel -->
-                <div class="table-search-bar">
-                    <div class="search-input-wrapper">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" x2="16.65" y1="21" y2="16.65"/>
-                        </svg>
-                        <input type="text" id="input-cari-bulan" placeholder="Cari nama atau NIPP pegawai..." aria-label="Cari nama atau NIPP dalam tabel bulanan">
-                    </div>
-                    <div class="table-count-label" id="label-jumlah-rekap">Menampilkan data rekapitulasi</div>
-                </div>
-
-                <!-- 3. Tabel Rekapitulasi Per Personel -->
-                <div class="table-responsive-wrapper">
-                    <table class="data-table" id="tabel-rekap-bulanan">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="cell-center">No</th>
-                                <th scope="col">Nama Pegawai</th>
-                                <th scope="col" class="cell-center">NIPP</th>
-                                <th scope="col">Jabatan</th>
-                                <th scope="col" class="cell-center col-hadir">Hadir</th>
-                                <th scope="col" class="cell-center">Cuti (CT)</th>
-                                <th scope="col" class="cell-center">Sakit (CSK)</th>
-                                <th scope="col" class="cell-center">Cuti Penting</th>
-                                <th scope="col" class="cell-center col-tms">TMS</th>
-                                <th scope="col" class="cell-center col-mangkir">Mangkir</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabel-rekap-bulanan-body">
-                            <!-- Injeksi data melalui JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-        </section>
-    </main>
-
+    <!-- Script JavaScript Toggle Sidebar & Data -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const btnToggle = document.getElementById("btn-toggle-menu");
             const sidebar = document.getElementById("app-sidebar");
             
-            if(btnToggle && sidebar) {
+            if (btnToggle && sidebar) {
                 btnToggle.addEventListener("click", function() {
                     sidebar.classList.toggle("collapsed");
                 });
@@ -215,8 +220,4 @@
     </script>
     <script src="../js/main.js"></script>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 622c88739f29410caf22d25197a208601b71ddf3
