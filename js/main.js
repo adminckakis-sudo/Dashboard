@@ -1057,3 +1057,94 @@ window.addEventListener('DOMContentLoaded', () => {
         muatDataSisaCuti();
     }
 });
+
+// ==========================================================================
+// 10. INTEGRASI KHUSUS HALAMAN CETAK PDF (CETAK-PDF.HTML)
+// ==========================================================================
+async function muatDataCetakPDF(bulanIdx) {
+    const tbodyCetak = document.getElementById('tabel-cetak-body');
+    if (!tbodyCetak) return;
+
+    const targetGid = GID_BULAN[bulanIdx] || "641851831";
+    const SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${targetGid}`;
+
+    try {
+        const response = await fetch(SHEET_CSV_URL);
+        const dataText = await response.text();
+        const barisData = dataText.split('\n');
+
+        let dataCetakList = [];
+        let processedNipps = new Set();
+
+        barisData.forEach(baris => {
+            const kolom = baris.split(',').map(k => k.trim());
+            if (kolom.length >= 4) {
+                const nama = kolom[1] || '';
+                const potensiNipp = kolom[2];
+                const jabatan = kolom[3] ? kolom[3].toUpperCase() : '';
+
+                if (potensiNipp && !isNaN(potensiNipp) && potensiNipp.length >= 4 && !processedNipps.has(potensiNipp)) {
+                    processedNipps.add(potensiNipp);
+
+                    let cuti = 0, sakit = 0, penting = 0, tms = 0, mangkir = 0, hadir = 0;
+
+                    for (let i = 4; i <= 34; i++) {
+                        if (kolom[i]) {
+                            const val = kolom[i].toUpperCase();
+                            if (val === 'CT') cuti++;
+                            else if (val === 'CSK') sakit++;
+                            else if (val === 'ITMB' || val === 'SPKA' || val === 'CP') penting++;
+                            else if (val === 'TMS') tms++;
+                            else if (val === 'M') mangkir++;
+                            else if (val === 'H' || val === 'V' || val === 'OK') hadir++;
+                        }
+                    }
+
+                    if (hadir === 0) {
+                        hadir = Math.max(0, 30 - (cuti + sakit + penting + tms + mangkir));
+                    }
+
+                    dataCetakList.push({
+                        nama,
+                        nipp: potensiNipp,
+                        jabatan,
+                        hadir,
+                        cuti,
+                        sakit,
+                        penting,
+                        tms,
+                        mangkir
+                    });
+                }
+            }
+        });
+
+        tbodyCetak.innerHTML = '';
+
+        if (dataCetakList.length === 0) {
+            tbodyCetak.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 20px;">Tidak ada data ditemukan untuk bulan ini.</td></tr>`;
+            return;
+        }
+
+        dataCetakList.forEach((pegawai, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="text-align: center;">${index + 1}</td>
+                <td><strong>${pegawai.nama}</strong></td>
+                <td style="text-align: center;">${pegawai.nipp}</td>
+                <td>${pegawai.jabatan}</td>
+                <td style="text-align: center;">${pegawai.hadir}</td>
+                <td style="text-align: center;">${pegawai.cuti}</td>
+                <td style="text-align: center;">${pegawai.sakit}</td>
+                <td style="text-align: center;">${pegawai.penting}</td>
+                <td style="text-align: center;">${pegawai.tms}</td>
+                <td style="text-align: center;">${pegawai.mangkir}</td>
+            `;
+            tbodyCetak.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error("Gagal memuat data untuk halaman cetak:", error);
+        tbodyCetak.innerHTML = `<tr><td colspan="10" style="text-align: center; color: red; padding: 20px;">Gagal mengambil data dari Google Sheets. Silakan coba lagi.</td></tr>`;
+    }
+}
