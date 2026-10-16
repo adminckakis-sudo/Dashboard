@@ -400,7 +400,9 @@ if (btnEksporPdf) {
 }
 
 
+// ==========================================================================
 // 5. MODAL POP-UP DETAIL (HARIAN & REKAM JEJAK)
+// ==========================================================================
 let currentModalData = [];
 
 function renderModalRows(dataList) {
@@ -432,47 +434,48 @@ function renderModalRows(dataList) {
     }
 }
 
-function setupModalTrigger(selectorId, judulModal, dataList) {
-    const card = document.querySelector(`a[href="#${selectorId}"]`);
+function bukaModalPopUp(judulModal, dataList) {
     const modal = document.getElementById('modal-detail');
     const modalTitle = document.getElementById('modal-title');
     const searchInput = document.getElementById('modal-search-input');
+    const modalSearchWrapper = document.querySelector('.modal-search-wrapper');
 
-    if (card && modal) {
-        card.addEventListener('click', function(e) {
+    if (!modal) return;
+
+    currentModalData = dataList || [];
+    if (modalTitle) modalTitle.textContent = judulModal;
+    if (searchInput) searchInput.value = '';
+
+    const modalTableHead = document.querySelector('.modal-data-table thead');
+    if (modalTableHead) {
+        modalTableHead.innerHTML = `
+            <tr>
+                <th scope="col" class="cell-center">No</th>
+                <th scope="col">Nama</th>
+                <th scope="col" class="cell-center">NIPP</th>
+                <th scope="col">Jabatan</th>
+                <th scope="col">Keterangan</th>
+            </tr>
+        `;
+    }
+
+    if (modalSearchWrapper) modalSearchWrapper.style.display = 'block';
+
+    renderModalRows(currentModalData);
+    modal.style.display = 'flex';
+
+    setTimeout(() => {
+        if (searchInput) searchInput.focus();
+    }, 100);
+}
+
+function setupModalTrigger(targetId, judulModal, dataList) {
+    const card = document.getElementById(targetId) || document.querySelector(`a[href="#${targetId}"]`);
+    if (card) {
+        card.onclick = function(e) {
             e.preventDefault();
-            currentModalData = dataList || [];
-            if (modalTitle) modalTitle.textContent = judulModal;
-
-            if (searchInput) {
-                searchInput.value = '';
-            }
-
-            const modalTableHead = document.querySelector('.modal-data-table thead');
-            if (modalTableHead) {
-                modalTableHead.innerHTML = `
-                    <tr>
-                        <th scope="col" class="cell-center">No</th>
-                        <th scope="col">Nama</th>
-                        <th scope="col" class="cell-center">NIPP</th>
-                        <th scope="col">Jabatan</th>
-                        <th scope="col">Keterangan</th>
-                    </tr>
-                `;
-            }
-
-            const modalSearchWrapper = document.querySelector('.modal-search-wrapper');
-            if (modalSearchWrapper) {
-                modalSearchWrapper.style.display = 'block';
-            }
-
-            renderModalRows(currentModalData);
-            modal.style.display = 'flex';
-
-            setTimeout(() => {
-                if (searchInput) searchInput.focus();
-            }, 100);
-        });
+            bukaModalPopUp(judulModal, dataList);
+        };
     }
 }
 
@@ -481,39 +484,39 @@ function closeModal() {
     if (modal) modal.style.display = 'none';
 }
 
-const closeBtn = document.getElementById('modal-close');
-if (closeBtn) closeBtn.addEventListener('click', closeModal);
+document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.getElementById('modal-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
 
-const closeActionBtn = document.getElementById('modal-close-action');
-if (closeActionBtn) closeActionBtn.addEventListener('click', closeModal);
+    const closeActionBtn = document.getElementById('modal-close-action');
+    if (closeActionBtn) closeActionBtn.addEventListener('click', closeModal);
 
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('modal-detail');
-    if (event.target === modal) {
-        closeModal();
-    }
-});
-
-window.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeModal();
-    }
-});
-
-const modalSearchInput = document.getElementById('modal-search-input');
-if (modalSearchInput) {
-    modalSearchInput.addEventListener('input', function(e) {
-        const q = e.target.value.toLowerCase().trim();
-        const filtered = currentModalData.filter(p =>
-            p.nama.toLowerCase().includes(q) ||
-            p.nipp.toLowerCase().includes(q) ||
-            p.jabatan.toLowerCase().includes(q)
-        );
-        renderModalRows(filtered);
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('modal-detail');
+        if (event.target === modal) {
+            closeModal();
+        }
     });
-}
 
+    window.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
 
+    const modalSearchInput = document.getElementById('modal-search-input');
+    if (modalSearchInput) {
+        modalSearchInput.addEventListener('input', function(e) {
+            const q = e.target.value.toLowerCase().trim();
+            const filtered = currentModalData.filter(p =>
+                p.nama.toLowerCase().includes(q) ||
+                p.nipp.toLowerCase().includes(q) ||
+                p.jabatan.toLowerCase().includes(q)
+            );
+            renderModalRows(filtered);
+        });
+    }
+});
 // 6. FITUR PENCARIAN GLOBAL & REKAM JEJAK 1 TAHUN PENUH
 async function ambilDataSeluruhTahun(targetNipp) {
     let rekamJejakTahun = {
@@ -1199,4 +1202,5 @@ function renderTrenCutiChart(dataBulan) {
         `).join('')}
     `;
 }
+
 
