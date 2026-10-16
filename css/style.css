@@ -1544,3 +1544,72 @@ body {
     margin: 12mm;
 }
 }       
+
+/* ==========================================================================
+   PERBAIKAN TAMPILAN MOBILE (HP)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. Perbaikan Top Header di Mobile */
+    .top-header {
+        height: auto !important; /* Biarkan tinggi menyesuaikan konten */
+        padding: 8px 12px !important;
+    }
+
+    .top-header-inner {
+        padding: 0 !important;
+    }
+
+    .header-left-group {
+        gap: 8px !important;
+        width: 100%;
+        flex-wrap: nowrap !important; /* Mencegah elemen turun berantakan */
+    }
+
+    .brand-text {
+        font-size: 0.68rem !important; /* Kecilkan teks brand di HP */
+        line-height: 1.2;
+        white-space: normal !important;
+    }
+
+    /* 2. Perbaikan Layout Wrapper & Content */
+    .app-layout-wrapper {
+        margin-top: 50px !important;
+    }
+
+    /* 3. Perbaikan Banner Header Utama */
+    .kai-banner-homepage, .kai-banner {
+        padding: 40px 16px !important; /* Kurangi padding atas-bawah yang terlalu tebal */
+        min-height: auto !important;
+    }
+
+    .banner-badge {
+        font-size: 0.65rem !important;
+        padding: 3px 8px !important;
+    }
+
+    .banner-title {
+        font-size: 1.25rem !important; /* Ukuran teks judul yang pas untuk HP */
+        line-height: 1.3 !important;
+    }
+
+    .banner-subtitle {
+        font-size: 0.8rem !important;
+    }
+
+    #greeting-text {
+        font-size: 0.95rem !important;
+    }
+
+    /* 4. Sidebar Melayang Penuh di Mobile saat Ditempuh */
+    .app-sidebar {
+        top: 50px !important;
+        height: calc(100vh - 50px) !important;
+        width: 240px !important;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .app-main-content {
+        margin-left: 0 !important; /* Konten penuh di HP */
+        width: 100% !important;
+    }
+}
