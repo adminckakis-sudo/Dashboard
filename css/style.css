@@ -798,135 +798,6 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 .widget-mangkir .widget-val { color: var(--status-mangkir); }
 
 /* ==========================================================================
-   6. STATISTIK TREN CUTI TAHUNAN & SVG DIAGRAM
-   ========================================================================== */
-.tren-cuti-card {
-    background-color: var(--surface-card);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-card);
-    padding: 24px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Grid Ringkasan 3 Kotak */
-.tren-stats-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.stat-box {
-    background-color: var(--surface-subtle);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-box-label {
-    font-size: 0.76rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stat-box-val-row {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.stat-box-val {
-    font-size: 1.55rem;
-    font-weight: 800;
-    color: var(--kai-blue);
-    line-height: 1;
-}
-
-.stat-box-val.highlight-peak {
-    color: var(--status-cuti);
-    font-size: 1.25rem;
-}
-
-.stat-box-unit {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.line-chart-container {
-    width: 100%;
-    height: 280px;
-    position: relative;
-    margin-top: 10px;
-}
-
-#tren-line-chart {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-}
-
-/* Garis Grid Latar Belakang */
-.chart-grid-line {
-    stroke: #e2e8f0;
-    stroke-dasharray: 4 4;
-    stroke-width: 1;
-}
-
-/* Area di Bawah Garis (Gradien Biru Transparan) */
-.chart-area {
-    fill: rgba(2, 132, 199, 0.12) !important;
-    stroke: none !important;
-}
-
-/* Garis Utama Tren Cuti */
-.chart-line {
-    fill: none !important;
-    stroke: var(--status-cuti, #0284c7) !important;
-    stroke-width: 3.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-/* Titik-Titik Data (Dot) */
-.chart-dot {
-    fill: #ffffff !important;
-    stroke: var(--status-cuti, #0284c7) !important;
-    stroke-width: 2.5;
-    transition: r 0.2s ease, fill 0.2s ease;
-}
-
-.chart-dot:hover {
-    r: 6;
-    fill: var(--status-cuti, #0284c7) !important;
-    cursor: pointer;
-}
-
-/* Teks Bulan dan Nilai di Atas Titik */
-.chart-text-month {
-    font-size: 11px;
-    fill: #64748b;
-    font-weight: 600;
-    text-anchor: middle;
-}
-
-.chart-text-value {
-    font-size: 12px;
-    fill: #1c2a5f;
-    font-weight: 700;
-    text-anchor: middle;
-}
-
-/* ==========================================================================
    7. REKAPITULASI LAPORAN BULANAN & BUTTONS
    ========================================================================== */
 .section-bulanan-card {
@@ -1240,18 +1111,201 @@ body:has(.app-sidebar.collapsed) .app-main-content {
         border-radius: 4px;
     }
 
-    /* 5. Grid Widget & Ringkasan Tren di HP */
+    /* 5. Grid Widget & Statistik di HP */
     .widgets-grid {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
     }
 
-    .tren-stats-summary-grid {
-        grid-template-columns: 1fr !important;
+    .bulan-summary-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+/* ==========================================================================
+   STYLING UTAMA DIAGRAM GARIS SVG TREN CUTI (MENCEGAH HITAM PEKAT)
+   ========================================================================== */
+.line-chart-container {
+    width: 100%;
+    height: 280px;
+    position: relative;
+    margin-top: 10px;
+}
+
+#tren-line-chart {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Garis Grid Latar Belakang */
+.chart-grid-line {
+    stroke: #e2e8f0;
+    stroke-dasharray: 4 4;
+    stroke-width: 1;
+}
+
+/* Area di Bawah Garis (Gradien Biru Transparan) */
+.chart-area {
+    fill: rgba(2, 132, 199, 0.12) !important; /* Biru soft khas KAI */
+    stroke: none !important;
+}
+
+/* Garis Utama Tren Cuti */
+.chart-line {
+    fill: none !important; /* Mencegah warna hitam menutup garis */
+    stroke: var(--status-cuti, #0284c7) !important;
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Titik-Titik Data (Dot) */
+.chart-dot {
+    fill: #ffffff !important;
+    stroke: var(--status-cuti, #0284c7) !important;
+    stroke-width: 2.5;
+    transition: r 0.2s ease, fill 0.2s ease;
+}
+
+.chart-dot:hover {
+    r: 6;
+    fill: var(--status-cuti, #0284c7) !important;
+    cursor: pointer;
+}
+
+/* Teks Bulan dan Nilai di Atas Titik */
+.chart-text-month {
+    font-size: 11px;
+    fill: #64748b;
+    font-weight: 600;
+    text-anchor: middle;
+}
+
+.chart-text-value {
+    font-size: 12px;
+    fill: #1c2a5f;
+    font-weight: 700;
+    text-anchor: middle;
+}
+
+/* Styling Grid Ringkasan 3 Kotak */
+.tren-stats-summary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    padding-bottom: 18px !important;
+    border-bottom: 1px solid var(--border-subtle) !important;
+}
+
+.stat-box {
+    background-color: var(--surface-subtle) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-sm) !important;
+    padding: 14px 18px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.stat-box-label {
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 4px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.stat-box-val-row {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 6px !important;
+}
+
+.stat-box-val {
+    font-size: 1.55rem !important;
+    font-weight: 800 !important;
+    color: var(--kai-blue) !important;
+    line-height: 1 !important;
+}
+
+.stat-box-val.highlight-peak {
+    color: var(--status-cuti) !important;
+    font-size: 1.25rem !important;
+}
+
+.stat-box-unit {
+    font-size: 0.8rem !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+}
+/* ==========================================================================
+   PERBAIKAN TAMPILAN TABEL RESPONSIVE MOBILE (HP)
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+
+    /* 1. Pembungkus Tabel Agar Bisa Digeser Horizontal Secara Halus */
+    .table-responsive-wrapper {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        margin-top: 12px;
+        background-color: var(--surface-card);
+    }
+
+    /* 2. Ukuran Teks & Batas Lebar Minimum Tabel */
+    .data-table {
+        width: 100% !important;
+        min-width: 600px !important; /* Mencegah kolom berjejalan tajam */
+        border-collapse: collapse !important;
+        font-size: 0.78rem !important;
+    }
+
+    /* 3. Padding Sel & Perataan Teks */
+    .data-table th, 
+    .data-table td {
+        padding: 8px 10px !important;
+        white-space: nowrap; /* Mencegah teks tertekuk jadi banyak baris */
+    }
+
+    .data-table th {
+        background-color: var(--kai-blue-soft) !important;
+        color: var(--kai-blue) !important;
+        font-weight: 700 !important;
+        font-size: 0.75rem !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* 4. Scrollbar Tipis Khas Mobile */
+    .table-responsive-wrapper::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .table-responsive-wrapper::-webkit-scrollbar-thumb {
+        background: var(--kai-orange);
+        border-radius: 4px;
+    }
+
+    /* 5. Toolbar Filter & Search Tabel di HP (Vertikal Rapi) */
+    .table-search-bar, 
+    .bulan-toolbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
         gap: 10px !important;
     }
 
-    .bulan-summary-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+    .search-input-wrapper, 
+    .search-input-wrapper input,
+    .toolbar-left,
+    .toolbar-right {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .table-count-label {
+        font-size: 0.76rem !important;
+        text-align: left !important;
     }
 }
