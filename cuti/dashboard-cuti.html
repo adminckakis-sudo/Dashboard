@@ -45,17 +45,21 @@
                     <a href="../index.html" class="sidebar-item" title="Homepage">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         <span class="sidebar-text">Homepage</span>
-                    </a>
-                    
+                    </a>                                  
                     <a href="./dashboard-cuti.html" class="sidebar-item active" title="Dashboard Cuti">
+                    <a href="dashboard-cuti.html" class="sidebar-item active" title="Dashboard Cuti">                        
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                         <span class="sidebar-text">Dashboard Cuti</span>
                     </a>
 
                     <!-- Sub-Navigasi (Indensasi Masuk Kebawah Dashboard Cuti & Tanpa Ikon) -->
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+
+                        
                         <a href="./dashboard-cuti.html" class="sidebar-sub-item active" style="color: var(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Ikhtisar Dashboard</span>
+
+                            
                         </a>
                         <a href="./rekap-bulanan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Rekap Bulanan</span>
@@ -66,14 +70,21 @@
                         <a href="./cetak-pdf.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Cetak PDF</span>
                         </a>
+
+                        
                     </div>
                 </nav>
+
+                
+
             </div>
         </aside>
 
         <!-- KONTEN UTAMA DI KANAN -->
         <main class="app-main-content">
 
+
+            
             <!-- ================= EXECUTIVE HERO BANNER ================= -->
             <section class="kai-banner" aria-label="Identitas Dashboard">
                 <div class="banner-overlay"></div>
@@ -303,6 +314,238 @@
                 </section>
 
 <!-- ================= SECTION: STATISTIK TREN CUTI TAHUNAN (1 TAHUN) ================= -->
+=======
+    <!-- ================= EXECUTIVE HERO BANNER ================= -->
+    <section class="kai-banner" aria-label="Identitas Dashboard">
+        <div class="banner-overlay"></div>
+        <div class="banner-container">
+            <div class="banner-badge">UPT CREW KA KELAS C KISARAN</div>
+            <h1 class="banner-title">DASHBOARD MONITORING &amp; REKAPITULASI</h1>
+            <p class="banner-subtitle">Sistem Pemantauan Presensi Harian, Rekapitulasi Kehadiran, dan Cuti Awak Sarana Perkeretaapian UPT Crew KA Kelas C Kisaran</p>
+        </div>
+    </section>
+
+    <!-- ================= KONTEN UTAMA DASHBOARD ================= -->
+    <main class="dashboard-content" id="main-content">
+
+        <!-- ================= SECTION 1: STATISTIK PERSONEL ASP ================= -->
+        <section class="dashboard-section" id="section-asp" aria-labelledby="heading-asp">
+            <div class="section-header">
+                <div>
+                    <h2 id="heading-asp" class="section-title">Statistik Personel</h2>
+                </div>
+            </div>
+
+            <a href="#tabel-crew" class="kpi-utama-card" aria-label="Lihat rincian seluruh personel Awak Sarana Perkeretaapian">
+                <div class="kpi-utama-main">
+                    <div class="kpi-brand-icon" aria-hidden="true">
+                        <!-- SVG Lokomotif / Kereta Minimalis -->
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="3" width="16" height="16" rx="2"/>
+                            <path d="M4 11h16"/>
+                            <path d="M12 3v8"/>
+                            <path d="m8 19-2 3"/>
+                            <path d="m16 19 2 3"/>
+                            <circle cx="8" cy="15" r="1"/>
+                            <circle cx="16" cy="15" r="1"/>
+                        </svg>
+                    </div>
+                    <div class="kpi-main-info">
+                        <h3 class="kpi-main-heading">Total ASP UPT Crew KA Kelas C Kisaran</h3>
+                        <div class="kpi-number-row">
+                            <span class="kpi-main-val" id="val-asp">0</span>
+                            <span class="kpi-unit">Pegawai</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-utama-footer">
+                    <div class="kpi-sub-metric">
+                        <span class="sub-metric-label">Masinis Madya</span>
+                        <span class="sub-metric-val" id="val-madya">0</span>
+                    </div>
+                    <div class="kpi-sub-metric">
+                        <span class="sub-metric-label">Masinis Muda</span>
+                        <span class="sub-metric-val" id="val-muda">0</span>
+                    </div>
+                    <div class="kpi-sub-metric">
+                        <span class="sub-metric-label">Masinis Pertama</span>
+                        <span class="sub-metric-val" id="val-pertama">0</span>
+                    </div>
+                </div>
+
+                <div class="kpi-action-bar">
+                    <span>Lihat daftar seluruh personel</span>
+                    <span class="action-arrow" aria-hidden="true">&rarr;</span>
+                </div>
+            </a>
+        </section>
+
+        <!-- ================= SECTION 2: LAPORAN KEHADIRAN HARIAN ================= -->
+        <section class="dashboard-section" id="section-laporan-harian" aria-labelledby="heading-harian">
+            <div class="section-header">
+                <div>
+                    <h2 id="heading-harian" class="section-title">Laporan Presensi Hari Ini</h2>
+                </div>
+            </div>
+
+            <!-- Grid 6 Kartu Status Presensi Harian -->
+            <div class="widgets-grid">
+
+                <!-- 1. Hadir -->
+                <a href="#tabel-hadir" class="widget-card widget-hadir" aria-label="Lihat rincian pegawai hadir hari ini">
+                    <div class="widget-top">
+                        <div class="widget-icon-wrapper" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 6 9 17l-5-5"/>
+                            </svg>
+                        </div>
+                        <span class="widget-status-tag">Hadir</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">ASP Hadir Hari Ini</span>
+                        <div class="widget-val-row">
+                            <span class="widget-val" id="val-hadir">0</span>
+                            <span class="widget-unit">Pegawai</span>
+                        </div>
+                    </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+
+                <!-- 2. Cuti Tahunan -->
+                <a href="#tabel-cuti" class="widget-card widget-cuti" aria-label="Lihat rincian pegawai cuti tahunan">
+                    <div class="widget-top">
+                        <div class="widget-icon-wrapper" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                <line x1="16" x2="16" y1="2" y2="6"/>
+                                <line x1="8" x2="8" y1="2" y2="6"/>
+                                <line x1="3" x2="21" y1="10" y2="10"/>
+                            </svg>
+                        </div>
+                        <span class="widget-status-tag">Cuti</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">Cuti Tahunan (CT)</span>
+                        <div class="widget-val-row">
+                            <span class="widget-val" id="val-cuti">0</span>
+                            <span class="widget-unit">Pegawai</span>
+                        </div>
+                    </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+
+                <!-- 3. Sakit -->
+                <a href="#tabel-sakit" class="widget-card widget-sakit" aria-label="Lihat rincian pegawai sakit hari ini">
+                    <div class="widget-top">
+                        <div class="widget-icon-wrapper" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" x2="12" y1="8" y2="16"/>
+                                <line x1="8" x2="16" y1="12" y2="12"/>
+                            </svg>
+                        </div>
+                        <span class="widget-status-tag">Sakit</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">Cuti Sakit (CSK)</span>
+                        <div class="widget-val-row">
+                            <span class="widget-val" id="val-sakit">0</span>
+                            <span class="widget-unit">Pegawai</span>
+                        </div>
+                    </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+
+                <!-- 4. Cuti Penting -->
+                <a href="#tabel-itmb" class="widget-card widget-penting" aria-label="Lihat rincian pegawai cuti penting hari ini">
+                    <div class="widget-top">
+                        <div class="widget-icon-wrapper" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" x2="8" y1="13" y2="13"/>
+                                <line x1="16" x2="8" y1="17" y2="17"/>
+                            </svg>
+                        </div>
+                        <span class="widget-status-tag">Izin / CP</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">Cuti Penting (ITMB/CP)</span>
+                        <div class="widget-val-row">
+                            <span class="widget-val" id="val-itmb">0</span>
+                            <span class="widget-unit">Pegawai</span>
+                        </div>
+                    </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+
+                <!-- 5. TMS -->
+                <a href="#tabel-tms" class="widget-card widget-tms" aria-label="Lihat rincian pegawai tidak memenuhi syarat hari ini">
+                    <div class="widget-top">
+                        <div class="widget-icon-wrapper" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/>
+                            </svg>
+                        </div>
+                        <span class="widget-status-tag">TMS</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">Tidak Memenuhi Syarat (TMS)</span>
+                        <div class="widget-val-row">
+                            <span class="widget-val" id="val-tms">0</span>
+                            <span class="widget-unit">Pegawai</span>
+                        </div>
+                    </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+
+                <!-- 6. Mangkir -->
+                <a href="#tabel-mangkir" class="widget-card widget-mangkir" aria-label="Lihat rincian pegawai mangkir hari ini">
+                    <div class="widget-top">
+                        <div class="widget-icon-wrapper" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                                <line x1="12" x2="12" y1="9" y2="13"/>
+                                <line x1="12" x2="12.01" y1="17" y2="17"/>
+                            </svg>
+                        </div>
+                        <span class="widget-status-tag">Mangkir</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">Mangkir / Tanpa Keterangan</span>
+                        <div class="widget-val-row">
+                            <span class="widget-val" id="val-mangkir">0</span>
+                            <span class="widget-unit">Pegawai</span>
+                        </div>
+                    </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <!-- ================= SECTION: STATISTIK TREN CUTI TAHUNAN (1 TAHUN) ================= -->
+>>>>>>> 622c88739f29410caf22d25197a208601b71ddf3
         <section class="dashboard-section" id="section-tren-cuti" aria-labelledby="heading-tren-cuti">
             <div class="section-header">
                 <div>
@@ -311,7 +554,6 @@
             </div>
 
             <div class="tren-cuti-card">
-                <!-- GRID 3 KOTAK RINGKASAN HARUS DIBUNGKUS DENGAN tren-stats-summary-grid -->
                 <div class="tren-stats-summary-grid">
                     <div class="stat-box">
                         <span class="stat-box-label">Total Cuti Setahun</span>
@@ -320,7 +562,6 @@
                             <span class="stat-box-unit">Hari</span>
                         </div>
                     </div>
-
                     <div class="stat-box">
                         <span class="stat-box-label">Rata-rata / Bulan</span>
                         <div class="stat-box-val-row">
@@ -328,6 +569,8 @@
                             <span class="stat-box-unit">Hari / Bulan</span>
                         </div>
                     </div>
+
+
 
                     <div class="stat-box">
                         <span class="stat-box-label">Bulan Puncak Cuti</span>
@@ -345,6 +588,9 @@
                 </div>
             </div>
         </section>
+
+
+        
 
                 <!-- ================= SECTION GRID: LAPORAN BULANAN & MONITORING SISA CUTI ================= -->
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;" class="dashboard-grid-dual">
@@ -440,6 +686,98 @@
         </main>
 
     </div>
+=======
+<!-- ================= SECTION GRID: LAPORAN BULANAN & MONITORING SISA CUTI ================= -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;" class="dashboard-grid-dual">
+            
+            <!-- 1. Rekapitulasi Presensi Bulanan -->
+            <section class="dashboard-section" id="section-laporan-bulanan" aria-labelledby="heading-bulanan" style="margin-bottom: 0;">
+                <div class="section-header">
+                    <div>
+                        <h2 id="heading-bulanan" class="section-title">Rekapitulasi Bulanan</h2>
+                     </div>
+                </div>
+
+                <a href="rekap-bulanan.html" class="kpi-utama-card" aria-label="Buka halaman Rekapitulasi Presensi Bulanan" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="kpi-utama-main">
+                        <div class="kpi-brand-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                <line x1="16" x2="16" y1="2" y2="6"/>
+                                <line x1="8" x2="8" y1="2" y2="6"/>
+                                <line x1="3" x2="21" y1="10" y2="10"/>
+                                <line x1="7" x2="17" y1="14" y2="14"/>
+                                <line x1="7" x2="13" y1="18" y2="18"/>
+                            </svg>
+                        </div>
+                        <div class="kpi-main-info" style="flex-grow: 1;">
+                            <span class="kpi-badge-label">Laporan Bulanan</span>
+                            <h3 class="kpi-main-heading">Rekapitulasi Presensi</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-action-bar">
+                        <span>Buka halaman</span>
+                        <span class="action-arrow" aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+            </section>
+
+            <!-- 2. Monitoring Sisa Cuti Tahunan -->
+            <section class="dashboard-section" id="section-sisa-cuti" aria-labelledby="heading-sisa-cuti" style="margin-bottom: 0;">
+                <div class="section-header">
+                    <div>
+                        <h2 id="heading-sisa-cuti" class="section-title">Monitoring Sisa Cuti</h2>
+                    </div>
+                </div>
+
+                <a href="sisa-cuti.html" class="kpi-utama-card" aria-label="Buka halaman Monitoring Sisa Cuti" style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="kpi-utama-main">
+                        <div class="kpi-brand-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                                <path d="M9 14h6"/>
+                                <path d="M9 10h6"/>
+                            </svg>
+                        </div>
+                        <span class="kpi-main-info" style="flex-grow: 1;">
+                            <span class="kpi-badge-label">Database Pegawai</span>
+                            <h3 class="kpi-main-heading">Sisa Cuti Tahunan</h3>
+                        </span>
+                    </div>
+                    <div class="kpi-action-bar">
+                        <span>Buka halaman</span>
+                        <span class="action-arrow" aria-hidden="true">&rarr;</span>
+                    </div>
+                </a>
+            </section>
+
+        </div>
+
+        <!-- ================= SECTION 5: PENCARIAN PENGGAWAI / NIPP (MENU BAWAH) ================= -->
+        <section class="dashboard-section section-bulanan-card" id="section-pencarian-bawah" aria-labelledby="heading-pencarian-bawah">
+            <div class="section-header">
+                <div>
+                    <h2 id="heading-pencarian-bawah" class="section-title">Pencarian Rekam Jejak Pegawai</h2>
+                    <p class="section-desc">Cari nama atau NIPP pegawai untuk melihat rincian rekam jejak kehadiran 1 tahun penuh</p>
+                </div>
+            </div>
+
+            <div class="global-search-container" style="width: 100%;">
+                <div class="global-search-wrapper" style="max-width: 100%;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+                    </svg>
+                    <input type="text" id="global-search-input" placeholder="Ketik Nama atau NIPP Pegawai di sini..." aria-label="Cari NIPP atau Nama Pegawai" style="padding: 12px 16px 12px 42px; font-size: 0.95rem; background: var(--surface-subtle); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                </div>
+                <!-- Kotak Hasil Pencarian Instan (Dropdown) -->
+                <div id="global-search-results" class="global-search-dropdown" style="width: 100%; max-width: 100%; top: calc(100% + 4px);"></div>
+            </div>
+        </section>
+
+    </main>
+>>>>>>> 622c88739f29410caf22d25197a208601b71ddf3
 
     <!-- ================= MODAL DETAIL POP-UP ================= -->
     <div id="modal-detail" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -492,4 +830,7 @@
     </script>
     <script src="../js/main.js"></script>
 </body>
+
 </html>
+=======
+
