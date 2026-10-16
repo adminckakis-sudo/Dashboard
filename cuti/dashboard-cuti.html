@@ -29,16 +29,6 @@
                 <div class="brand-affiliation">
                     <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
                 </div> 
-            </div>
-
-            <!-- KELOMPOK KANAN: Navigasi Atas -->
-            <nav class="main-nav-links" aria-label="Navigasi Utama" >
-                <a href="dashboard-cuti.html" class="nav-item active" aria-current="page">Dashboard</a>
-                <a href="rekap-bulanan.html" class="nav-item">Rekap Bulanan</a>
-                <a href="sisa-cuti.html" class="nav-item">Monitoring Sisa Cuti</a>
-                <a href="cetak-pdf.html" class="nav-item">Laporan</a>
-            </nav>
-        </div>
     </header>
 
     <!-- ================= WRAPPER UTAMA (SIDEBAR & KONTEN) ================= -->
@@ -59,7 +49,19 @@
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                         <span class="sidebar-text">Dashboard Cuti</span>
                     </a>
-                </nav>
+
+                    <!-- Sub-Navigasi (Indensasi Masuk Kebawah Dashboard Cuti & Tanpa Ikon) -->
+                    <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        </a>
+                        <a href="./rekap-bulanan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Rekap Bulanan</span>
+                        </a>
+                        <a href="./sisa-cuti.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Monitoring Sisa Cuti</span>
+                        </a>
+                        <a href="./cetak-pdf.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Cetak PDF</span>
+                        </a>
             </div>
         </aside>
 
