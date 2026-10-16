@@ -1309,3 +1309,59 @@ body:has(.app-sidebar.collapsed) .app-main-content {
         text-align: left !important;
     }
 }
+
+/* ==========================================================================
+   WARNA & AKSEN KARTU RINGKASAN REKAPITULASI BULANAN
+   ========================================================================== */
+
+.bulan-summary-grid .summary-card {
+    position: relative;
+    border-top: 3px solid var(--kai-blue); /* Default aksen atas */
+    background-color: var(--surface-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bulan-summary-grid .summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+}
+
+/* 1. Aksentasi Kartu Kehadiran (Hijau) */
+.bulan-summary-grid .card-hadir {
+    border-top-color: var(--status-hadir) !important;
+}
+.bulan-summary-grid .card-hadir .summary-val {
+    color: var(--status-hadir) !important;
+}
+
+/* 2. Aksentasi Kartu Cuti Tahunan (Biru) */
+.bulan-summary-grid .card-cuti {
+    border-top-color: var(--status-cuti) !important;
+}
+.bulan-summary-grid .card-cuti .summary-val {
+    color: var(--status-cuti) !important;
+}
+
+/* 3. Aksentasi Kartu Sakit (Kuning / Oranye Soft) */
+.bulan-summary-grid .card-sakit {
+    border-top-color: var(--status-sakit) !important;
+}
+.bulan-summary-grid .card-sakit .summary-val {
+    color: var(--status-sakit) !important;
+}
+
+/* 4. Aksentasi Kartu TMS (Oranye Pekat) */
+.bulan-summary-grid .card-tms {
+    border-top-color: var(--status-tms) !important;
+}
+.bulan-summary-grid .card-tms .summary-val {
+    color: var(--status-tms) !important;
+}
+
+/* 5. Aksentasi Kartu Mangkir (Merah) */
+.bulan-summary-grid .card-mangkir {
+    border-top-color: var(--status-mangkir) !important;
+}
+.bulan-summary-grid .card-mangkir .summary-val {
+    color: var(--status-mangkir) !important;
+}
