@@ -60,7 +60,7 @@
 html, body {
     overflow-x: hidden;
     overflow-y: auto;
-    height: auto !important;
+    height: auto  ;
     min-height: 100vh;
     background-color: var(--bg-page);
     color: var(--text-primary);
@@ -262,13 +262,13 @@ html, body {
 /* Saat Sidebar Tertutup (Collapsed) */
 .app-sidebar.collapsed {
     transform: translateX(-100%);
-    width: 260px !important;
+    width: 260px  ;
 }
 
 .app-sidebar.collapsed + .app-main-content,
 body:has(.app-sidebar.collapsed) .app-main-content {
-    margin-left: 0 !important;
-    width: 100% !important;
+    margin-left: 0  ;
+    width: 100%  ;
 }
 
 /* Styling Menu Item Sidebar */
@@ -277,8 +277,8 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     align-items: center;
     gap: 12px;
     padding: 11px 14px;
-    color: #cbd5e1 !important;
-    text-decoration: none !important;
+    color: #cbd5e1  ;
+    text-decoration: none  ;
     border-radius: var(--radius-sm);
     font-weight: 600;
     font-size: 0.86rem;
@@ -287,19 +287,19 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 }
 
 .sidebar-item:hover {
-    color: #ffffff !important;
+    color: #ffffff  ;
     background-color: rgba(255, 255, 255, 0.08);
 }
 
 .sidebar-item.active {
-    color: #ffffff !important;
+    color: #ffffff  ;
     background: rgba(240, 100, 0, 0.25);
     border: 1px solid rgba(240, 100, 0, 0.45);
 }
 
 .sidebar-sub-item {
-    color: #cbd5e1 !important;
-    text-decoration: none !important;
+    color: #cbd5e1  ;
+    text-decoration: none  ;
     padding: 6px 10px;
     font-size: 0.8rem;
     font-weight: 500;
@@ -308,13 +308,13 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 }
 
 .sidebar-sub-item:hover {
-    color: #ffffff !important;
+    color: #ffffff  ;
     background-color: rgba(255, 255, 255, 0.08);
 }
 
 .sidebar-sub-item.active {
-    color: var(--kai-orange) !important;
-    font-weight: 700 !important;
+    color: var(--kai-orange)  ;
+    font-weight: 700  ;
 }
 
 /* ==========================================================================
@@ -890,7 +890,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     margin: 0 auto;
     border: 1px solid #cbd5e1;
     width: 100%;
-    overflow-x: auto !important; 
+    overflow-x: auto  ; 
     -webkit-overflow-scrolling: touch; 
 }
 
@@ -931,8 +931,8 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 }        
 
 .print-table th {        
-    background-color: #f1f5f9 !important;
-    color: #000 !important;
+    background-color: #f1f5f9  ;
+    color: #000  ;
     font-weight: 700;
     text-align: center;
 }
@@ -959,26 +959,26 @@ body:has(.app-sidebar.collapsed) .app-main-content {
    ========================================================================== */
 @media print {
     body {
-        background: #ffffff !important;
-        color: #000000 !important;
+        background: #ffffff  ;
+        color: #000000  ;
     }
 
     .no-print, .top-header, .app-sidebar, .print-filter-card {
-        display: none !important;
+        display: none  ;
     }
 
     .app-main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-        padding: 0 !important;
+        margin-left: 0  ;
+        width: 100%  ;
+        padding: 0  ;
     }
 
     .paper-preview {
-        box-shadow: none !important;
-        border: none !important;
-        padding: 0 !important;
-        width: 100% !important;
-        max-width: 100% !important;
+        box-shadow: none  ;
+        border: none  ;
+        padding: 0  ;
+        width: 100%  ;
+        max-width: 100%  ;
     }
 
     @page {
@@ -993,113 +993,113 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 @media screen and (max-width: 768px) {
     /* 1. Pengaturan Body & Pembungkus Penuh 100% */
     html, body {
-        width: 100% !important;
-        max-width: 100vw !important;
-        overflow-x: hidden !important;
+        width: 100%  ;
+        max-width: 100vw  ;
+        overflow-x: hidden  ;
     }
 
     .top-header {
-        height: auto !important;
-        padding: 8px 12px !important;
+        height: auto  ;
+        padding: 8px 12px  ;
     }
 
     .top-header-inner {
-        padding: 0 !important;
+        padding: 0  ;
     }
 
     .header-left-group {
-        gap: 8px !important;
+        gap: 8px  ;
         width: 100%;
-        flex-wrap: nowrap !important;
+        flex-wrap: nowrap  ;
     }
 
     .brand-text {
-        font-size: 0.68rem !important;
+        font-size: 0.68rem  ;
         line-height: 1.2;
-        white-space: normal !important;
+        white-space: normal  ;
     }
 
     .app-layout-wrapper {
-        margin-top: 50px !important;
-        width: 100% !important;
+        margin-top: 50px  ;
+        width: 100%  ;
     }
 
     .app-sidebar {
-        top: 50px !important;
-        height: calc(100vh - 50px) !important;
-        width: 240px !important;
+        top: 50px  ;
+        height: calc(100vh - 50px)  ;
+        width: 240px  ;
         box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     }
 
     .app-main-content {
-        margin-left: 0 !important;
-        width: 100% !important;
-        padding: 0 !important;
+        margin-left: 0  ;
+        width: 100%  ;
+        padding: 0  ;
     }
 
     .dashboard-content {
-        width: 100% !important;
-        margin: 16px 0 32px 0 !important;
-        padding: 0 12px !important;
-        gap: 20px !important;
+        width: 100%  ;
+        margin: 16px 0 32px 0  ;
+        padding: 0 12px  ;
+        gap: 20px  ;
     }
 
     /* 2. Banner Utama di HP */
     .kai-banner-homepage, .kai-banner {
-        padding: 30px 16px !important;
-        min-height: auto !important;
+        padding: 30px 16px  ;
+        min-height: auto  ;
     }
 
     .banner-title {
-        font-size: 1.25rem !important;
-        line-height: 1.3 !important;
+        font-size: 1.25rem  ;
+        line-height: 1.3  ;
     }
 
     .banner-subtitle {
-        font-size: 0.8rem !important;
+        font-size: 0.8rem  ;
     }
 
     /* 3. Perbaikan Kartu Filter Cetak di HP */
     .print-filter-card {
-        padding: 16px 14px !important;
-        width: 100% !important;
+        padding: 16px 14px  ;
+        width: 100%  ;
     }
 
     .filter-header-wrapper {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 12px !important;
+        flex-direction: column  ;
+        align-items: stretch  ;
+        gap: 12px  ;
     }
 
     .btn-cetak-mobile {
-        width: 100% !important;
-        justify-content: center !important;
-        white-space: normal !important;
-        padding: 11px 14px !important;
-        font-size: 0.85rem !important;
+        width: 100%  ;
+        justify-content: center  ;
+        white-space: normal  ;
+        padding: 11px 14px  ;
+        font-size: 0.85rem  ;
     }
 
     .filter-form-group {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        width: 100% !important;
-        gap: 10px !important;
+        flex-direction: column  ;
+        align-items: stretch  ;
+        width: 100%  ;
+        gap: 10px  ;
     }
 
     .filter-form-group .select-wrapper,
     .filter-form-group select,
     .btn-terapkan-mobile {
-        width: 100% !important;
-        min-width: 100% !important;
-        justify-content: center !important;
+        width: 100%  ;
+        min-width: 100%  ;
+        justify-content: center  ;
     }
 
     /* 4. Kertas Preview A4 Memenuhi Layar HP & Bebas Digeser */
     .paper-preview {
-        padding: 16px 12px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        overflow-x: auto !important;
+        padding: 16px 12px  ;
+        width: 100%  ;
+        box-sizing: border-box  ;
+        overflow-x: auto  ;
     }
 
     .paper-preview::-webkit-scrollbar {
@@ -1113,12 +1113,12 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
     /* 5. Grid Widget & Statistik di HP */
     .widgets-grid {
-        grid-template-columns: 1fr !important;
-        gap: 12px !important;
+        grid-template-columns: 1fr  ;
+        gap: 12px  ;
     }
 
     .bulan-summary-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(2, 1fr)  ;
     }
 }
 /* ==========================================================================
@@ -1146,14 +1146,14 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
 /* Area di Bawah Garis (Gradien Biru Transparan) */
 .chart-area {
-    fill: rgba(2, 132, 199, 0.12) !important; /* Biru soft khas KAI */
-    stroke: none !important;
+    fill: rgba(2, 132, 199, 0.12)  ; /* Biru soft khas KAI */
+    stroke: none  ;
 }
 
 /* Garis Utama Tren Cuti */
 .chart-line {
-    fill: none !important; /* Mencegah warna hitam menutup garis */
-    stroke: var(--status-cuti, #0284c7) !important;
+    fill: none  ; /* Mencegah warna hitam menutup garis */
+    stroke: var(--status-cuti, #0284c7)  ;
     stroke-width: 3.5;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -1161,15 +1161,15 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
 /* Titik-Titik Data (Dot) */
 .chart-dot {
-    fill: #ffffff !important;
-    stroke: var(--status-cuti, #0284c7) !important;
+    fill: #ffffff  ;
+    stroke: var(--status-cuti, #0284c7)  ;
     stroke-width: 2.5;
     transition: r 0.2s ease, fill 0.2s ease;
 }
 
 .chart-dot:hover {
     r: 6;
-    fill: var(--status-cuti, #0284c7) !important;
+    fill: var(--status-cuti, #0284c7)  ;
     cursor: pointer;
 }
 
@@ -1190,53 +1190,53 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
 /* Styling Grid Ringkasan 3 Kotak */
 .tren-stats-summary-grid {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 16px !important;
-    padding-bottom: 18px !important;
-    border-bottom: 1px solid var(--border-subtle) !important;
+    display: grid  ;
+    grid-template-columns: repeat(3, 1fr)  ;
+    gap: 16px  ;
+    padding-bottom: 18px  ;
+    border-bottom: 1px solid var(--border-subtle)  ;
 }
 
 .stat-box {
-    background-color: var(--surface-subtle) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-sm) !important;
-    padding: 14px 18px !important;
-    display: flex !important;
-    flex-direction: column !important;
+    background-color: var(--surface-subtle)  ;
+    border: 1px solid var(--border-color)  ;
+    border-radius: var(--radius-sm)  ;
+    padding: 14px 18px  ;
+    display: flex  ;
+    flex-direction: column  ;
 }
 
 .stat-box-label {
-    font-size: 0.76rem !important;
-    font-weight: 600 !important;
-    color: var(--text-muted) !important;
-    margin-bottom: 4px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.5px !important;
+    font-size: 0.76rem  ;
+    font-weight: 600  ;
+    color: var(--text-muted)  ;
+    margin-bottom: 4px  ;
+    text-transform: uppercase  ;
+    letter-spacing: 0.5px  ;
 }
 
 .stat-box-val-row {
-    display: flex !important;
-    align-items: baseline !important;
-    gap: 6px !important;
+    display: flex  ;
+    align-items: baseline  ;
+    gap: 6px  ;
 }
 
 .stat-box-val {
-    font-size: 1.55rem !important;
-    font-weight: 800 !important;
-    color: var(--kai-blue) !important;
-    line-height: 1 !important;
+    font-size: 1.55rem  ;
+    font-weight: 800  ;
+    color: var(--kai-blue)  ;
+    line-height: 1  ;
 }
 
 .stat-box-val.highlight-peak {
-    color: var(--status-cuti) !important;
-    font-size: 1.25rem !important;
+    color: var(--status-cuti)  ;
+    font-size: 1.25rem  ;
 }
 
 .stat-box-unit {
-    font-size: 0.8rem !important;
-    color: var(--text-secondary) !important;
-    font-weight: 500 !important;
+    font-size: 0.8rem  ;
+    color: var(--text-secondary)  ;
+    font-weight: 500  ;
 }
 /* ==========================================================================
    PERBAIKAN TAMPILAN TABEL RESPONSIVE MOBILE (HP)
@@ -1244,36 +1244,50 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 @media screen and (max-width: 768px) {
 
     /* 1. Pembungkus Tabel Agar Bisa Digeser Horizontal Secara Halus */
-    .table-responsive-wrapper {
-        width: 100% !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-sm);
-        margin-top: 12px;
-        background-color: var(--surface-card);
-    }
-
+.table-responsive-wrapper {
+    width: 100%  ;
+    overflow-x: auto  ;
+    overflow-y: auto  ; /* Memaksa scrollbar vertikal dalam tabel mati */
+    max-height: none  ;    /* Menghapus batasan tinggi tabel */
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-top: 12px;
+    background-color: var(--surface-card);
+}
     /* 2. Ukuran Teks & Batas Lebar Minimum Tabel */
-    .data-table {
-        width: 100% !important;
-        min-width: 600px !important; /* Mencegah kolom berjejalan tajam */
-        border-collapse: collapse !important;
-        font-size: 0.78rem !important;
+.table-responsive-wrapper {
+    width: 100%  ;
+    overflow-x: auto  ;
+    overflow-y: visible  ;
+    max-height: none  ;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-top: 12px;
+    background-color: var(--surface-card);
+}
+.data-table {
+    width: 100%  ;
+    min-width: 600px  ;
+    border-collapse: collapse  ;
+    font-size: 0.78rem  ;
+    max-height: none  ;
+    overflow: visible  ;
     }
 
     /* 3. Padding Sel & Perataan Teks */
     .data-table th, 
     .data-table td {
-        padding: 8px 10px !important;
+        padding: 8px 10px  ;
         white-space: nowrap; /* Mencegah teks tertekuk jadi banyak baris */
     }
 
     .data-table th {
-        background-color: var(--kai-blue-soft) !important;
-        color: var(--kai-blue) !important;
-        font-weight: 700 !important;
-        font-size: 0.75rem !important;
+        background-color: var(--kai-blue-soft)  ;
+        color: var(--kai-blue)  ;
+        font-weight: 700  ;
+        font-size: 0.75rem  ;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -1291,22 +1305,22 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     /* 5. Toolbar Filter & Search Tabel di HP (Vertikal Rapi) */
     .table-search-bar, 
     .bulan-toolbar {
-        flex-direction: column !important;
-        align-items: stretch !important;
-        gap: 10px !important;
+        flex-direction: column  ;
+        align-items: stretch  ;
+        gap: 10px  ;
     }
 
     .search-input-wrapper, 
     .search-input-wrapper input,
     .toolbar-left,
     .toolbar-right {
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100%  ;
+        max-width: 100%  ;
     }
 
     .table-count-label {
-        font-size: 0.76rem !important;
-        text-align: left !important;
+        font-size: 0.76rem  ;
+        text-align: left  ;
     }
 }
 
@@ -1328,40 +1342,339 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
 /* 1. Aksentasi Kartu Kehadiran (Hijau) */
 .bulan-summary-grid .card-hadir {
-    border-top-color: var(--status-hadir) !important;
+    border-top-color: var(--status-hadir)  ;
 }
 .bulan-summary-grid .card-hadir .summary-val {
-    color: var(--status-hadir) !important;
+    color: var(--status-hadir)  ;
 }
 
 /* 2. Aksentasi Kartu Cuti Tahunan (Biru) */
 .bulan-summary-grid .card-cuti {
-    border-top-color: var(--status-cuti) !important;
+    border-top-color: var(--status-cuti)  ;
 }
 .bulan-summary-grid .card-cuti .summary-val {
-    color: var(--status-cuti) !important;
+    color: var(--status-cuti)  ;
 }
 
 /* 3. Aksentasi Kartu Sakit (Kuning / Oranye Soft) */
 .bulan-summary-grid .card-sakit {
-    border-top-color: var(--status-sakit) !important;
+    border-top-color: var(--status-sakit)  ;
 }
 .bulan-summary-grid .card-sakit .summary-val {
-    color: var(--status-sakit) !important;
+    color: var(--status-sakit)  ;
 }
 
 /* 4. Aksentasi Kartu TMS (Oranye Pekat) */
 .bulan-summary-grid .card-tms {
-    border-top-color: var(--status-tms) !important;
+    border-top-color: var(--status-tms)  ;
 }
 .bulan-summary-grid .card-tms .summary-val {
-    color: var(--status-tms) !important;
+    color: var(--status-tms)  ;
 }
 
 /* 5. Aksentasi Kartu Mangkir (Merah) */
 .bulan-summary-grid .card-mangkir {
-    border-top-color: var(--status-mangkir) !important;
+    border-top-color: var(--status-mangkir)  ;
 }
 .bulan-summary-grid .card-mangkir .summary-val {
-    color: var(--status-mangkir) !important;
+    color: var(--status-mangkir)  ;
+}
+
+/* ==========================================================================
+   STYLING MODAL POP-UP FULL WIDTH & PEWARNAAN TABEL
+   ========================================================================== */
+
+/* 1. Layar Gelap Melayang (Overlay) */
+.modal-overlay {
+    position: fixed  ;
+    top: 0  ;
+    left: 0  ;
+    width: 100vw  ;
+    height: 100vh  ;
+    background-color: rgba(15, 23, 42, 0.75)  ;
+    backdrop-filter: blur(5px);
+    z-index: 99999  ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* 2. Kontainer Modal Pop-up (Diperlebar Maksimal) */
+.modal-content {
+    background-color: var(--surface-card, #ffffff);
+    width: 95%  ;
+    max-width: 1200px  ;
+    height: 88vh  ;
+    border-radius: var(--radius-md, 10px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.96); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* 3. Header Modal (Warna KAI Blue Dark) */
+.modal-header {
+    padding: 18px 24px;
+    background-color: var(--kai-blue-dark, #121d42);
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid var(--kai-orange, #f06400);
+    flex-shrink: 0;
+}
+
+.modal-subtitle {
+    font-size: 0.72rem;
+    color: var(--kai-orange, #f06400);
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.modal-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: 2px;
+    color: #ffffff;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    font-size: 1.8rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    color: #ffffff;
+}
+
+/* 4. Area Pencarian Dalam Modal */
+.modal-search-wrapper {
+    padding: 14px 24px;
+    background-color: var(--surface-subtle, #f1f5f9);
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    flex-shrink: 0;
+}
+
+.modal-search-wrapper input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-sm, 6px);
+    font-size: 0.9rem;
+    background-color: #ffffff;
+}
+
+.modal-search-wrapper input:focus {
+    outline: none;
+    border-color: var(--kai-orange, #f06400);
+    box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15);
+}
+
+/* 5. Area Body Modal */
+.modal-body {
+    padding: 20px 24px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* 6. Struktur & Pewarnaan Kontras Tabel */
+.modal-data-table {
+    width: 100%  ;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.88rem;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-sm, 6px);
+    overflow: hidden;
+}
+
+/* Header Kolom Sticky */
+.modal-data-table th {
+    position: sticky;
+    top: 0;
+    background-color: #121d42  ; /* Warna Biru Gelap KAI */
+    color: #ffffff  ;             /* Teks Putih Kontras */
+    font-weight: 700;
+    padding: 12px 16px  ;
+    border-bottom: 3px solid #f06400  ; /* Aksen Garis Oranye KAI */
+    text-align: left;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.modal-data-table th.cell-center {
+    text-align: center;
+}
+
+/* Baris Selang-Seling (Zebra Striping) */
+.modal-data-table tbody tr:nth-child(odd) {
+    background-color: #ffffff  ;
+}
+
+.modal-data-table tbody tr:nth-child(even) {
+    background-color: #f1f5f9  ; /* Abu-abu Soft Pembeda Baris */
+}
+
+/* Efek Sorot (Hover) */
+.modal-data-table tbody tr:hover {
+    background-color: #e2e8f0  ; /* Warna Highlight saat Kursor Melintas */
+    cursor: pointer;
+}
+
+.modal-data-table td {
+    padding: 12px 16px  ;
+    border-bottom: 1px solid #cbd5e1  ;
+    color: #0f172a  ;
+}
+
+.modal-data-table td.cell-center {
+    text-align: center;
+}
+
+/* 7. Footer Modal */
+.modal-footer {
+    padding: 14px 24px;
+    background-color: var(--surface-subtle, #f1f5f9);
+    border-top: 1px solid var(--border-color, #e2e8f0);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-count-info {
+    font-size: 0.85rem;
+    color: var(--text-muted, #64748b);
+    font-weight: 600;
+}
+
+/* 8. Responsif Layar HP/Mobile */
+@media screen and (max-width: 768px) {
+    .modal-overlay {
+        padding: 8px  ;
+    }
+
+    .modal-content {
+        width: 100%  ;
+        height: 94vh  ;
+    }
+
+    .modal-body {
+        padding: 10px  ;
+    }
+
+    .modal-data-table {
+        min-width: 580px  ;
+    }
+}
+
+/* ==========================================================================
+   STYLING TABEL KONSISTEN (REKAP BULANAN & MODAL)
+   ========================================================================== */
+
+/* Wrapper Pembungkus Tabel */
+.table-responsive-wrapper {
+    overflow-x: auto;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-sm, 6px);
+    max-height: 70vh; /* Memungkinkan scroll vertikal jika data panjang */
+}
+
+/* Struktur Utama Tabel Data */
+.data-table {
+    width: 100%  ;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.88rem;
+    background-color: #ffffff;
+}
+
+/* Header Kolom Tabel (Sticky & Biru KAI) */
+.data-table th {
+    position: sticky;
+    top: 0;
+    background-color: #121d42  ; /* Warna Biru Gelap KAI */
+    color: #ffffff  ;             /* Teks Putih Kontras */
+    font-weight: 700;
+    padding: 12px 16px  ;
+    border-bottom: 3px solid #f06400  ; /* Aksen Garis Oranye KAI */
+    text-align: left;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.data-table th.cell-center {
+    text-align: center;
+}
+
+/* Pewarnaan Baris Selang-Seling (Zebra Striping) */
+.data-table tbody tr:nth-child(odd) {
+    background-color: #ffffff  ;
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f8fafc  ; /* Abu-abu Soft Pembeda Baris */
+}
+
+/* Efek Sorotan saat Kursor Diarahkan (Hover) */
+.data-table tbody tr:hover {
+    background-color: #f1f5f9  ; /* Highlight Abu Terang */
+    cursor: pointer;
+}
+
+/* Sel Data */
+.data-table td {
+    padding: 12px 16px  ;
+    border-bottom: 1px solid #e2e8f0  ;
+    color: #1e293b  ;
+}
+
+.data-table td.cell-center {
+    text-align: center;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none  ;
+}
+
+/* ==========================================================================
+   GRADASI & PEMBEDA WARNA PER KOLOM (VERTIKAL)
+   ========================================================================== */
+
+/* 1. Header Tabel */
+/* Reset warna latar belakang baris agar tidak menutupi gradasi kolom */
+.data-table tbody tr,
+.modal-data-table tbody tr {
+    background-color: transparent  ;
+}
+
+/* 2. KOLOM GANJIL (Kolom 1, 3, 5, dst) -> Putih Bersih */
+.data-table tbody td:nth-child(odd),
+.modal-data-table tbody td:nth-child(odd) {
+    background-color: #ebeaea   ;
+}
+
+/* 3. KOLOM GENAP (Kolom 2, 4, 6, dst) -> Abu-abu Soft / Gradasi Kolom */
+.data-table tbody td:nth-child(even),
+.modal-data-table tbody td:nth-child(even) {
+    background-color: #ffffff; /* Warna kontras pembeda kolom vertikal */
+}
+
+/* 4. Sorotan saat Kursor Mengambang di Atas Baris */
+.data-table tbody tr:hover td,
+.modal-data-table tbody tr:hover td {
+    background-color: #ffe4d2  ; /* Highlight oranye soft saat baris ditunjuk */
 }
