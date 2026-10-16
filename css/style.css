@@ -1446,12 +1446,15 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 .paper-preview {
     background: #ffffff;
     color: #000000;
-    padding: 40px;
+    padding: 30px;
     border-radius: var(--radius-sm);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     max-width: 1000px;
     margin: 0 auto;
     border: 1px solid #cbd5e1;
+    width: 100%;
+    overflow-x: auto !important; 
+    -webkit-overflow-scrolling: touch; 
 }
 
 .doc-header {
@@ -1478,6 +1481,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
 .print-table {
     width: 100%;
+    min-width: 750px;
     border-collapse: collapse;
     font-size: 0.78rem;
     margin-top: 16px;
@@ -1548,7 +1552,31 @@ body {
 /* ==========================================================================
    PERBAIKAN TAMPILAN MOBILE (HP)
    ========================================================================== */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
+    /* Pastikan main content & dashboard content mengizinkan penyesuaian lebar */
+    .app-main-content, 
+    .dashboard-content {
+        overflow-x: visible !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    /* Penyesuaian Kertas A4 di Layar HP */
+    .paper-preview {
+        padding: 16px 12px !important;
+        overflow-x: auto !important; /* Memastikan scroll aktif di HP */
+    }
+
+    /* Indikator visual sederhana bahwa tabel dapat digeser */
+    .paper-preview::-webkit-scrollbar {
+        height: 5px;
+    }
+    
+    .paper-preview::-webkit-scrollbar-thumb {
+        background: var(--kai-orange);
+        border-radius: 4px;
+    }
+}
     /* 1. Perbaikan Top Header di Mobile */
     .top-header {
         height: auto !important; /* Biarkan tinggi menyesuaikan konten */
@@ -1612,4 +1640,3 @@ body {
         margin-left: 0 !important; /* Konten penuh di HP */
         width: 100% !important;
     }
-}
