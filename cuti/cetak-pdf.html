@@ -169,56 +169,52 @@
             </div>
         </aside>
 
-        <!-- KONTEN UTAMA -->
-        <main class="app-main-content">
-            <div class="dashboard-content">
-                
-                <!-- FILTER & PANEL AKSI (NO PRINT) -->
-                <div class="print-filter-card no-print">
-                    <div class="section-header" style="margin-bottom: 12px;">
-                        <div>
-                            <h2 class="section-title">Cetak Dokumen Rekapitulasi</h2>
-                            <p class="section-desc">Pilih filter periode laporan sebelum mencetak atau mengunduh PDF</p>
-                        </div>
-                        <button onclick="window.print()" class="btn btn-primary">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-                            Cetak Dokumen / Simpan PDF
-                        </button>
-                    </div>
-
-                    <!-- FORM FILTER PERIODE DENGAN VALUE 0-11 & TAHUN -->
-                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <div class="select-wrapper">
-                            <select id="filter-bulan">
-                                <option value="0">Januari</option>
-                                <option value="1">Februari</option>
-                                <option value="2">Maret</option>
-                                <option value="3">April</option>
-                                <option value="4">Mei</option>
-                                <option value="5">Juni</option>
-                                <option value="6">Juli</option>
-                                <option value="7">Agustus</option>
-                                <option value="8">September</option>
-                                <option value="9">Oktober</option>
-                                <option value="10">November</option>
-                                <option value="11">Desember</option>
-                            </select>
-                        </div>
-
-                        <div class="select-wrapper">
-                            <select id="filter-tahun">
-                                <option value="2026" selected>2026</option>
-                                <option value="2025">2025</option>
-                            </select>
-                        </div>
-
-                        <!-- TOMBOL SIMPAN / TERAPKAN FILTER -->
-                        <button id="btn-simpan-filter" onclick="prosesFilterBulan()" class="btn btn-secondary" style="background-color: var(--kai-orange); color: #fff; border: none; cursor: pointer;">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            Terapkan / Simpan
-                        </button>
-                    </div>
+<!-- KONTEN UTAMA -->
+<main class="app-main-content">
+    <div class="dashboard-content">
+        
+        <!-- FILTER & PANEL AKSI (NO PRINT) -->
+        <div class="print-filter-card no-print">
+            
+            <!-- BARIS BARIS ATAS: Judul & Tombol Cetak PDF -->
+            <div class="filter-header-wrapper" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+                <div class="filter-title-group">
+                    <h2 class="section-title">Cetak Dokumen Rekapitulasi</h2>
+                    <p class="section-desc">Pilih filter periode laporan sebelum mencetak atau mengunduh PDF</p>
                 </div>
+                
+                <button onclick="window.print()" class="btn btn-primary btn-cetak-mobile">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    Cetak Dokumen / Simpan PDF
+                </button>
+            </div>
+
+            <!-- BARIS Bawah: Form Filter Periode (Bulan, Tahun, Tombol Terapkan) -->
+            <div class="filter-form-group" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <div class="select-wrapper">
+                    <select id="filter-bulan">
+                        <option value="0">Januari</option>
+                        <option value="1">Februari</option>
+                        <option value="2">Maret</option>
+                        <option value="3">April</option>
+                        <option value="4">Mei</option>
+                        <option value="5">Juni</option>
+                        <option value="6">Juli</option>
+                        <option value="7">Agustus</option>
+                        <option value="8">September</option>
+                        <option value="9">Oktober</option>
+                        <option value="10">November</option>
+                        <option value="11">Desember</option>
+                    </select>
+                </div>
+
+                <button id="btn-simpan-filter" onclick="prosesFilterBulan()" class="btn btn-secondary btn-terapkan-mobile" style="background-color: var(--kai-orange); color: #fff; border: none; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Terapkan / Simpan
+                </button>
+            </div>
+
+        </div> <!-- Penutup print-filter-card -->
 
                 <!-- PRATINJAU DOKUMEN CETAK (A4) -->
                 <div class="paper-preview">
