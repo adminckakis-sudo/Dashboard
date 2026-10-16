@@ -93,7 +93,7 @@ html, body {
     background-color: var(--kai-blue-dark);
     color: var(--text-white);
     border-bottom: 2px solid var(--kai-orange);
-    position: fixed; /* DIUBAH DARI STICKY KE FIXED AGAR LAYOUT wrapper TIDAK TERGANGGU */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -242,7 +242,6 @@ html, body {
     display: flex;
     flex-direction: column;
     
-    /* Gunakan Fixed Agar Pasti Mengikuti Scroll Layar */
     position: fixed;
     top: 45px;
     left: 0;
@@ -252,21 +251,20 @@ html, body {
     z-index: 99;
 }
 
-/* Penyesuaian Area Konten Kanan Agar Tidak Tertutup Sidebar */
+/* Penyesuaian Area Konten Kanan */
 .app-main-content {
     flex-grow: 1;
-    margin-left: 260px; /* Jarak sebesar lebar sidebar */
+    margin-left: 260px;
     width: calc(100% - 260px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Saat Sidebar Tertutup (Collapsed) */
 .app-sidebar.collapsed {
-    transform: translateX(-100%); /* Geser ke luar layar secara mulus */
+    transform: translateX(-100%);
     width: 260px !important;
 }
 
-/* Geser Konten Utama ke Kiri Penuh Saat Sidebar Tertutup */
 .app-sidebar.collapsed + .app-main-content,
 body:has(.app-sidebar.collapsed) .app-main-content {
     margin-left: 0 !important;
@@ -318,6 +316,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     color: var(--kai-orange) !important;
     font-weight: 700 !important;
 }
+
 /* ==========================================================================
    GLOBAL SEARCH HEADER & DROPDOWN STYLING
    ========================================================================== */
@@ -543,7 +542,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 }
 
 /* ==========================================================================
-   5. KPI UTAMA (TOTAL ASP STATISTIK)
+   5. KPI UTAMA & WIDGETS
    ========================================================================== */
 .kpi-utama-card {
     background-color: var(--surface-card);
@@ -674,9 +673,6 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     transform: translateX(4px);
 }
 
-/* ==========================================================================
-   6. WIDGET GRID (LAPORAN HARIAN)
-   ========================================================================== */
 .widgets-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -777,7 +773,6 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     color: var(--kai-blue);
 }
 
-/* Specific Card Themes */
 .widget-hadir { border-top: 3px solid var(--status-hadir); }
 .widget-hadir .widget-icon-wrapper, .widget-hadir .widget-status-tag { background-color: var(--status-hadir-bg); color: var(--status-hadir); }
 .widget-hadir .widget-val { color: var(--status-hadir); }
@@ -803,7 +798,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 .widget-mangkir .widget-val { color: var(--status-mangkir); }
 
 /* ==========================================================================
-   7. REKAPITULASI LAPORAN BULANAN
+   7. REKAPITULASI LAPORAN BULANAN & BUTTONS
    ========================================================================== */
 .section-bulanan-card {
     background-color: var(--surface-card);
@@ -811,24 +806,6 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-card);
     padding: 26px 28px;
-}
-
-.bulan-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.toolbar-left, .toolbar-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
 }
 
 .select-wrapper {
@@ -892,557 +869,17 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     border-color: #cbd5e1;
 }
 
-.btn-sm {
-    padding: 6px 14px;
-    font-size: 0.8rem;
-}
-
-.bulan-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.summary-card {
-    background-color: var(--surface-subtle);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-}
-
-.summary-label {
-    font-size: 0.74rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 6px;
-}
-
-.summary-val {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--kai-blue);
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-}
-
-.summary-card.card-hadir .summary-val { color: var(--status-hadir); }
-.summary-card.card-cuti .summary-val { color: var(--status-cuti); }
-.summary-card.card-sakit .summary-val { color: var(--status-sakit); }
-.summary-card.card-tms .summary-val { color: var(--status-tms); }
-.summary-card.card-mangkir .summary-val { color: var(--status-mangkir); }
-
-.table-search-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-}
-
-.search-input-wrapper {
-    position: relative;
-    width: 320px;
-    max-width: 100%;
-}
-
-.search-input-wrapper svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    pointer-events: none;
-}
-
-.search-input-wrapper input {
-    width: 100%;
-    padding: 8px 12px 8px 36px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
-    background-color: var(--surface-card);
-    font-size: 0.86rem;
-    color: var(--text-primary);
-}
-
-.search-input-wrapper input:focus {
-    border-color: var(--kai-blue);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(28, 42, 95, 0.12);
-}
-
-.table-count-label {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.table-responsive-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.86rem;
-    text-align: left;
-    white-space: nowrap;
-}
-
-.data-table thead {
-    background-color: var(--kai-blue);
-    color: var(--text-white);
-    position: sticky;
-    top: 0;
-}
-
-.data-table th {
-    padding: 11px 14px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 0.3px;
-    border-right: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.data-table th:last-child {
-    border-right: none;
-}
-
-.data-table td {
-    padding: 11px 14px;
-    border-bottom: 1px solid var(--border-subtle);
-    border-right: 1px solid var(--border-subtle);
-    color: var(--text-secondary);
-}
-
-.data-table td:last-child {
-    border-right: none;
-}
-
-.data-table tbody tr:hover {
-    background-color: rgba(28, 42, 95, 0.03);
-}
-
-.data-table tbody tr:nth-child(even) {
-    background-color: #fafbfc;
-}
-
-.cell-center {
-    text-align: center;
-}
-
-.col-hadir { color: #4ade80; }
-.col-tms { color: #fdba74; }
-.col-mangkir { color: #fca5a5; }
-
-.val-nonzero-hadir { font-weight: 700; color: var(--status-hadir); }
-.val-nonzero-tms { font-weight: 700; color: var(--status-tms); }
-.val-nonzero-mangkir { font-weight: 700; color: var(--status-mangkir); }
-
 /* ==========================================================================
-   8. MODAL DETAIL POP-UP
+   8. HALAMAN CETAK PDF & PAPER PREVIEW
    ========================================================================== */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 24px;
-    animation: fadeInModalOverlay 0.2s ease;
-}
-
-@keyframes fadeInModalOverlay {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.modal-content {
-    background-color: var(--surface-card);
-    width: 100%;
-    max-width: 1100px;
-    height: 88vh;
-    max-height: 88vh;
-    border-radius: var(--radius-md);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: slideInModal 0.2s ease-out;
-}
-
-@keyframes slideInModal {
-    from { opacity: 0; transform: translateY(16px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.modal-header {
-    background-color: var(--kai-blue);
-    color: var(--text-white);
-    padding: 18px 26px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.modal-subtitle {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #ff9d54;
-    display: block;
-    margin-bottom: 2px;
-}
-
-.modal-title {
-    font-size: 1.18rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-.modal-close-btn {
-    background: none;
-    border: none;
-    color: var(--text-white);
-    font-size: 1.8rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 4px;
-    opacity: 0.8;
-    transition: opacity 0.15s ease;
-}
-
-.modal-close-btn:hover {
-    opacity: 1;
-}
-
-.modal-search-wrapper {
-    padding: 12px 26px;
-    background-color: var(--surface-subtle);
-    border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0;
-}
-
-.modal-search-wrapper input {
-    width: 100%;
-    padding: 9px 14px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
-    font-size: 0.86rem;
-    background-color: var(--surface-card);
-    color: var(--text-primary);
-}
-
-.modal-search-wrapper input:focus {
-    border-color: var(--kai-blue);
-    outline: none;
-}
-
-.modal-body {
-    padding: 20px 26px;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.modal-data-table {
-    border: 1px solid var(--border-color);
-    width: 100%;
-}
-
-.modal-footer {
-    padding: 12px 26px;
-    background-color: var(--surface-subtle);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-}
-
-.modal-count-info {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-/* ==========================================================================
-   STATISTIK TREN CUTI TAHUNAN & SVG LINE CHART
-   ========================================================================== */
-.tren-cuti-card {
-    background-color: var(--surface-card);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-card);
-    padding: 24px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.tren-stats-summary-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.stat-box {
-    background-color: var(--surface-subtle);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-box-label {
-    font-size: 0.76rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.stat-box-val-row {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-}
-
-.stat-box-val {
-    font-size: 1.55rem;
-    font-weight: 800;
-    color: var(--kai-blue);
-    font-variant-numeric: tabular-nums;
-    line-height: 1;
-}
-
-.stat-box-val.highlight-peak {
-    color: var(--status-cuti);
-    font-size: 1.25rem;
-}
-
-.stat-box-unit {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.line-chart-container {
-    width: 100%;
-    height: 280px;
-    position: relative;
-    margin-top: 6px;
-}
-
-#tren-line-chart {
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-}
-
-.chart-grid-line {
-    stroke: var(--border-subtle);
-    stroke-dasharray: 4 4;
-    stroke-width: 1;
-}
-
-.chart-area {
-    fill: rgba(2, 132, 199, 0.08);
-}
-
-.chart-line {
-    fill: none;
-    stroke: var(--status-cuti);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.chart-dot {
-    fill: var(--surface-card);
-    stroke: var(--status-cuti);
-    stroke-width: 2.5;
-    transition: r 0.2s ease, fill 0.2s ease;
-}
-
-.chart-dot:hover {
-    r: 6;
-    fill: var(--status-cuti);
-    cursor: pointer;
-}
-
-.chart-text-month {
-    font-size: 11px;
-    fill: var(--text-muted);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-    text-anchor: middle;
-}
-
-.chart-text-value {
-    font-size: 11px;
-    fill: var(--kai-blue);
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 700;
-    text-anchor: middle;
-}
-
-/* ==========================================================================
-   9. RESPONSIVE BREAKPOINTS
-   ========================================================================== */
-@media (max-width: 1024px) {
-    .widgets-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .bulan-summary-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .global-search-container {
-        width: 200px;
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-content {
-        padding: 0 16px;
-        margin-top: 20px;
-        gap: 24px;
-    }
-
-    .top-header-inner {
-        max-width: 100%;
-        margin: 0 auto;
-        padding: 10px 24px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .header-left-group, .header-right-group {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .main-nav-links {
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 2px;
-    }
-
-    .global-search-container {
-        width: 100%;
-    }
-
-    .global-search-dropdown {
-        width: 100%;
-    }
-
-    .time-container {
-        font-size: 0.74rem;
-    }
-
-    .kai-banner {
-        padding: 24px 16px;
-        min-height: 160px;
-    }
-
-    .banner-title {
-        font-size: 1.4rem;
-    }
-
-    .banner-subtitle {
-        font-size: 0.85rem;
-    }
-
-    .kpi-utama-main {
-        padding: 18px 20px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 14px;
-    }
-
-    .kpi-utama-footer {
-        grid-template-columns: 1fr;
-        padding: 16px 20px;
-        gap: 10px;
-    }
-
-    .widgets-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .tren-stats-summary-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .bulan-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .toolbar-left, .toolbar-right {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .select-wrapper, .btn, .search-input-wrapper {
-        width: 100% ;
-    }
-
-    .bulan-summary-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .section-bulanan-card {
-        padding: 18px 16px;
-    }
-
-    .modal-overlay {
-        padding: 12px;
-    }
-
-    .modal-content {
-        height: 94vh;
-        max-height: 94vh;
-    }
-}
-
-#section-pencarian-bawah {
-    margin-top: 45px;
-}
-
-/* ==========================================================================
-   CETAK PDF
-   ========================================================================== */
- .print-filter-card {
+.print-filter-card {
     background-color: var(--surface-card);
     border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     padding: 20px 24px;
     margin-bottom: 24px;
 }
-            
+
 .paper-preview {
     background: #ffffff;
     color: #000000;
@@ -1502,7 +939,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 
 .doc-signatures {
     display: flex;
-    justify-content: flex-end; /* Menggeser seluruh area tanda tangan ke kanan */
+    justify-content: flex-end;
     margin-top: 40px;
     padding: 0 30px;
     font-size: 0.82rem;
@@ -1518,68 +955,51 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 }
 
 /* ==========================================================================
-   KHUSUS UNTUK CETAK
+   9. MEDIA PRINT (SAAT DITANGKAP DENGAN TANDA CETAK)
    ========================================================================== */
 @media print {
-body {
-    background: #ffffff !important;
-    color: #000000 !important;
-}
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
 
-.no-print, .top-header, .app-sidebar, .print-filter-card {
-    display: none !important;
-}
-.app-main-content {
-    margin-left: 0 !important;
-    width: 100% !important;
-    padding: 0 !important;
-}
+    .no-print, .top-header, .app-sidebar, .print-filter-card {
+        display: none !important;
+    }
 
-.paper-preview {
-    box-shadow: none !important;
-    border: none !important;
-    padding: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-}
+    .app-main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
 
-@page {
-    size: A4 landscape;
-    margin: 12mm;
-}
+    .paper-preview {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 12mm;
+    }
 }       
 
 /* ==========================================================================
-   PERBAIKAN TAMPILAN MOBILE (HP)
+   10. PERBAIKAN RESPONSIVE MOBILE TERTATA (HP)
    ========================================================================== */
 @media screen and (max-width: 768px) {
-    /* Pastikan main content & dashboard content mengizinkan penyesuaian lebar */
-    .app-main-content, 
-    .dashboard-content {
-        overflow-x: visible !important;
-        padding-left: 12px !important;
-        padding-right: 12px !important;
+    /* 1. Pengaturan Body & Pembungkus Penuh 100% */
+    html, body {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
     }
 
-    /* Penyesuaian Kertas A4 di Layar HP */
-    .paper-preview {
-        padding: 16px 12px !important;
-        overflow-x: auto !important; /* Memastikan scroll aktif di HP */
-    }
-
-    /* Indikator visual sederhana bahwa tabel dapat digeser */
-    .paper-preview::-webkit-scrollbar {
-        height: 5px;
-    }
-    
-    .paper-preview::-webkit-scrollbar-thumb {
-        background: var(--kai-orange);
-        border-radius: 4px;
-    }
-}
-    /* 1. Perbaikan Top Header di Mobile */
     .top-header {
-        height: auto !important; /* Biarkan tinggi menyesuaikan konten */
+        height: auto !important;
         padding: 8px 12px !important;
     }
 
@@ -1590,45 +1010,20 @@ body {
     .header-left-group {
         gap: 8px !important;
         width: 100%;
-        flex-wrap: nowrap !important; /* Mencegah elemen turun berantakan */
+        flex-wrap: nowrap !important;
     }
 
     .brand-text {
-        font-size: 0.68rem !important; /* Kecilkan teks brand di HP */
+        font-size: 0.68rem !important;
         line-height: 1.2;
         white-space: normal !important;
     }
 
-    /* 2. Perbaikan Layout Wrapper & Content */
     .app-layout-wrapper {
         margin-top: 50px !important;
+        width: 100% !important;
     }
 
-    /* 3. Perbaikan Banner Header Utama */
-    .kai-banner-homepage, .kai-banner {
-        padding: 40px 16px !important; /* Kurangi padding atas-bawah yang terlalu tebal */
-        min-height: auto !important;
-    }
-
-    .banner-badge {
-        font-size: 0.65rem !important;
-        padding: 3px 8px !important;
-    }
-
-    .banner-title {
-        font-size: 1.25rem !important; /* Ukuran teks judul yang pas untuk HP */
-        line-height: 1.3 !important;
-    }
-
-    .banner-subtitle {
-        font-size: 0.8rem !important;
-    }
-
-    #greeting-text {
-        font-size: 0.95rem !important;
-    }
-
-    /* 4. Sidebar Melayang Penuh di Mobile saat Ditempuh */
     .app-sidebar {
         top: 50px !important;
         height: calc(100vh - 50px) !important;
@@ -1637,6 +1032,92 @@ body {
     }
 
     .app-main-content {
-        margin-left: 0 !important; /* Konten penuh di HP */
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .dashboard-content {
+        width: 100% !important;
+        margin: 16px 0 32px 0 !important;
+        padding: 0 12px !important;
+        gap: 20px !important;
+    }
+
+    /* 2. Banner Utama di HP */
+    .kai-banner-homepage, .kai-banner {
+        padding: 30px 16px !important;
+        min-height: auto !important;
+    }
+
+    .banner-title {
+        font-size: 1.25rem !important;
+        line-height: 1.3 !important;
+    }
+
+    .banner-subtitle {
+        font-size: 0.8rem !important;
+    }
+
+    /* 3. Perbaikan Kartu Filter Cetak di HP */
+    .print-filter-card {
+        padding: 16px 14px !important;
         width: 100% !important;
     }
+
+    .filter-header-wrapper {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    .btn-cetak-mobile {
+        width: 100% !important;
+        justify-content: center !important;
+        white-space: normal !important;
+        padding: 11px 14px !important;
+        font-size: 0.85rem !important;
+    }
+
+    .filter-form-group {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: 100% !important;
+        gap: 10px !important;
+    }
+
+    .filter-form-group .select-wrapper,
+    .filter-form-group select,
+    .btn-terapkan-mobile {
+        width: 100% !important;
+        min-width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* 4. Kertas Preview A4 Memenuhi Layar HP & Bebas Digeser */
+    .paper-preview {
+        padding: 16px 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: auto !important;
+    }
+
+    .paper-preview::-webkit-scrollbar {
+        height: 5px;
+    }
+    
+    .paper-preview::-webkit-scrollbar-thumb {
+        background: var(--kai-orange);
+        border-radius: 4px;
+    }
+
+    /* 5. Grid Widget & Statistik di HP */
+    .widgets-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .bulan-summary-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
