@@ -217,6 +217,189 @@ html, body {
     padding: 2px 8px;
     border-radius: 4px;
 }
+/* ==========================================================================
+   Homepage 
+   ========================================================================== */
+.location-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    margin-top: 16px;
+}
+
+.location-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.location-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.location-icon {
+    color: var(--kai-orange, #ff6600);
+}
+
+.location-address {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.map-wrapper {
+    width: 100%;
+    height: 280px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.map-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* About Section Style */
+.about-section {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 32px 24px;
+    border: 1px solid #e2e8f0;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 24px;
+}
+
+.about-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.about-headline {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1e293b;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.about-links {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.about-link {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #002060; /* KAI Blue */
+    text-decoration: none;
+}
+
+.about-link:hover {
+    color: var(--kai-orange, #ff6600);
+}
+
+.about-divider {
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    margin-bottom: 24px;
+}
+
+.about-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 20px;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* Responsive Layout Mobile */
+@media (max-width: 768px) {
+    .about-section {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+/* Container Grid Statistik */
+.about-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+/* Kartu Statistik Standar */
+.stat-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Highlight Khusus Kartu Total Personel */
+.stat-item.highlight {
+    background: #002060; /* Biru Navy KAI */
+    border-color: #002060;
+}
+
+.stat-item.highlight .stat-number {
+    color: #ff6600; /* Oranye KAI */
+}
+
+.stat-item.highlight .stat-label {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Angka Statistik */
+.stat-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    margin-bottom: 6px;
+}
+
+/* Label Deskripsi */
+.stat-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+    line-height: 1.3;
+}
 
 /* ==========================================================================
    Settingan Side Bar Fixed & Responsive
