@@ -39,11 +39,18 @@
                 <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
                 
                 <nav style="display: flex; flex-direction: column; gap: 6px;">
-                    <a href="./index.html" class="sidebar-item active" title="Homepage">
+                    <a href="../index.html" class="sidebar-item active" title="Homepage">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         <span class="sidebar-text">Homepage</span>
                     </a>
                     
+                    <!-- Sub-Navigasi -->
+                    <div href="./index.html"  class="sidebar-item" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        </a>
+                        <a href="./personel/struktur-organisasi.html" class="sidebar-sub-item active" style="color: var(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Struktur Organisasi</span>
+                        </a>
+                    </div>
                     <a href="./cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                         <span class="sidebar-text">Dashboard Cuti</span>
@@ -69,9 +76,78 @@
                 </div>
             </section>
 
+            <!-- ABOUT SECTION -->
+            <section class="about-section">
+                <div class="about-label">TENTANG KAMI</div>
+                
+                <div class="about-content">
+                    <h2 class="about-headline">
+                        UPT Crew KA Kelas C Kisaran adalah Unit Pelaksana Teknis yang berada di wilayah Divisi Regional I Sumatera Utara (DIVRE I SU) yang memiliki wewenang dan bertanggung jawab dalam penugasan Masinis dan Asisten Masinis untuk dinas Kereta Api, Langsir, atau dinas cadangan di Stasiun awal pemberangkatan Kereta Api atau di Stasiun pergantian Awak KA.
+                    </h2>
+
+                    <div class="about-links">
+                        <a href="./personel/struktur-organisasi.html" class="about-link">Struktur Organisasi &rarr;</a>
+                    </div>
+
+                    <div class="about-stats-grid">
+                        <!-- Highlight Total Personel -->
+                        <div class="stat-item highlight">
+                            <div class="stat-number" id="stat-total">-</div>
+                            <div class="stat-label">Total Personel Aktif</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="stat-kupt">-</div>
+                            <div class="stat-label">KUPT Crew KA</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="stat-instruktur">-</div>
+                            <div class="stat-label">Penyelia Instruktur</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="stat-penyelia">-</div>
+                            <div class="stat-label">Penyelia Dinas</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="stat-madya">-</div>
+                            <div class="stat-label">Masinis Madya</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="stat-muda">-</div>
+                            <div class="stat-label">Masinis Muda</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="stat-pertama">-</div>
+                            <div class="stat-label">Masinis Pertama</div>
+                        </div> 
+                    </div>
+                </div>
+            </section>
+
             <div class="dashboard-content" id="main-content">
                 <!-- Konten dashboard utama dapat diletakkan di sini -->
             </div>
+
+            <!-- LOKASI -->
+            <section class="location-card">
+                <div class="location-header">
+                    <div class="location-title">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        Lokasi UPT Crew KA Kisaran
+                    </div>
+                </div>
+                <div class="location-address">
+                    Jl. Akasia, Mekar Baru, Kec. Kota Kisaran Barat, Kabupaten Asahan, Sumatera Utara 21211
+                </div>
+                <div class="map-wrapper">
+                    <iframe 
+                        src="https://maps.google.com/maps?q=UPT%20Crew%20KA%20Kisaran&t=&z=17&ie=UTF8&iwloc=&output=embed" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </section>
         </main>
 
     </div>
@@ -106,5 +182,6 @@
         });
     </script>
     <script src="js/main.js"></script>
+    <script src="js/data-about.js"></script>
 </body>
 </html>
