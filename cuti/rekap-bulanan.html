@@ -62,6 +62,9 @@
                         <a href="./cetak-pdf.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Cetak PDF</span>
                         </a>
+                        <a href="https://docs.google.com/spreadsheets/d/1MG0IcvbKuIy2t7JIOp3FgShbjy5tLRxD/edit?gid=1442494186#gid=1442494186" target="_blank" rel="noopener noreferrer" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Buku Cuti</span>
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -163,22 +166,11 @@
                             </div>
                         </div>
 
-                        <!-- 2. Filter Pencarian Tabel -->
-                        <div class="table-search-bar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
-                            <div class="search-input-wrapper global-search-wrapper" style="width: 320px; max-width: 100%;">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <line x1="21" x2="16.65" y1="21" y2="16.65"/>
-                                </svg>
-                                <input type="text" id="input-cari-bulan" placeholder="Cari nama atau NIPP pegawai..." aria-label="Cari nama atau NIPP dalam tabel bulanan" style="padding: 9px 12px 9px 34px; font-size: 0.85rem; width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                            </div>
-                            <div class="table-count-label" id="label-jumlah-rekap" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">Menampilkan data rekapitulasi</div>
-                        </div>
 
-                        <!-- 3. Tabel Rekapitulasi Per Personel -->
-                        <div class="table-responsive-wrapper" style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                            <table class="data-table" id="tabel-rekap-bulanan">
-                                <thead>
+                       <!-- 3. Tabel Rekapitulasi Per Personel (Tanpa Double Scroll) -->
+                        <div class="table-responsive-wrapper" style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+                            <table class="data-table" id="tabel-rekap-bulanan" style="width: 100%; border-collapse: collapse; margin: 0;">
+                                <thead style="position: sticky; top: 0; z-index: 2; background-color: var(--surface-card, #ffffff);">
                                     <tr>
                                         <th scope="col" class="cell-center">No</th>
                                         <th scope="col">Nama Pegawai</th>
