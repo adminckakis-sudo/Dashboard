@@ -254,6 +254,52 @@
     </div>
 
     <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("global-search-input");
+    const searchResults = document.getElementById("global-search-results");
+
+    if (searchInput && searchResults) {
+        searchInput.addEventListener("input", function() {
+            const query = this.value.trim().toLowerCase();
+
+            if (query.length === 0) {
+                searchResults.innerHTML = "";
+                searchResults.style.display = "none";
+                return;
+            }
+
+            // Asumsi dataPegawai adalah array berisi { nama: "...", nipp: "...", jabatan: "..." }
+            // Jika data diambil dari spreadsheet/API, sesuaikan variabel array datanya.
+            const filteredResults = typeof dataPegawai !== "undefined" 
+                ? dataPegawai.filter(p => p.nama.toLowerCase().includes(query) || p.nipp.includes(query))
+                : [];
+
+            if (filteredResults.length > 0) {
+                searchResults.innerHTML = filteredResults.map(p => `
+                    <div class="search-result-item" style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; cursor: pointer;">
+                        <div style="font-weight: 700; color: #121d42; font-size: 0.88rem;">${p.nama}</div>
+                        <div style="font-size: 0.75rem; color: #64748b;">NIPP: ${p.nipp} &bull; ${p.jabatan}</div>
+                    </div>
+                `).join('');
+                searchResults.style.display = "block";
+            } else {
+                searchResults.innerHTML = `
+                    <div style="padding: 12px; font-size: 0.85rem; color: #64748b; text-align: center;">
+                        Pegawai tidak ditemukan
+                    </div>`;
+                searchResults.style.display = "block";
+            }
+        });
+
+        // Sembunyikan hasil pencarian jika klik di luar area input
+        document.addEventListener("click", function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = "none";
+            }
+        });
+    }
+});
+
         document.addEventListener("DOMContentLoaded", function() {
             const btnToggle = document.getElementById("btn-toggle-menu");
             const sidebar = document.getElementById("app-sidebar");
@@ -263,6 +309,7 @@
                 });
             }
         });
+        
     </script>
     <script src="../js/main.js"></script>
 </body>
