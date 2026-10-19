@@ -32,7 +32,7 @@ async function loadAndRenderSpreadsheetData() {
                 const nipp = columns[2].replace(/"/g, '').trim();
                 const jabatan = columns[3].replace(/"/g, '').trim().toUpperCase();
                 
-                // Mengambil nilai Kolom Binaan (Kolom ke-5 / indeks 4 jika ada di spreadsheet)
+                // Mengambil nilai Kolom Binaan (Kolom ke-5 / indeks 4)
                 const binaan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
 
                 if (jabatan !== '') {
@@ -71,12 +71,10 @@ async function loadAndRenderSpreadsheetData() {
             });
         }
 
-        // 2. Render Kolom Instruktur & Pembagian Masinis Berdasarkan Kolom Binaan
+        // 2. Render Kolom Instruktur dengan PEMBUNGKUS BINAAN (binaan-container)
         if (instrukturWrapper && listInstruktur.length > 0) {
-            // Buat kontainer/kolom untuk setiap Instruktur
-            listInstruktur.forEach((ins, index) => {
-                // Buat ID aman berbasis nama instruktur (misal: "grid-alwi-ratomi")
-                const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-0]/g, '-');
+            listInstruktur.forEach((ins) => {
+                const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
                 const colId = `grid-binaan-${safeNameId}`;
 
                 instrukturWrapper.innerHTML += `
@@ -86,29 +84,34 @@ async function loadAndRenderSpreadsheetData() {
                             <div class="so-name">${ins.nama}</div>
                             <div class="so-nipp">NIPP. ${ins.nipp}</div>
                         </div>
-                        <div class="line-v-center" style="height: 12px;"></div>
-                        <div class="so-asp-grid" id="${colId}"></div>
+
+                        <!-- Garis penghubung lurus dari Instruktur ke Kotak Binaan -->
+                        <div class="line-v-center" style="height: 16px;"></div>
+
+                        <!-- KOTAK PEMBUNGKUS BINAAN -->
+                        <div class="binaan-container">
+                            <div class="binaan-header">BINAAN</div>
+                            <div class="so-asp-grid" id="${colId}"></div>
+                        </div>
                     </div>
                 `;
             });
 
-            // Masukkan kartu Masinis ke kolom Instruktur yang sesuai dengan kolom 'Binaan'
+            // Masukkan kartu Masinis ke dalam grid yang dibungkus kotak
             listMasinis.forEach((m) => {
                 let targetGrid = null;
 
-                // Cari kontainer yang namanya cocok dengan nilai di kolom Binaan
                 if (m.binaan) {
                     listInstruktur.forEach((ins) => {
                         if (ins.nama.toUpperCase().includes(m.binaan) || m.binaan.includes(ins.nama.toUpperCase())) {
-                            const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-0]/g, '-');
+                            const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
                             targetGrid = document.getElementById(`grid-binaan-${safeNameId}`);
                         }
                     });
                 }
 
-                // Jika kolom binaan kosong atau tidak cocok, masukkan ke Instruktur pertama sebagai fallback
                 if (!targetGrid) {
-                    const defaultSafeNameId = listInstruktur[0].nama.toLowerCase().replace(/[^a-z0-0]/g, '-');
+                    const defaultSafeNameId = listInstruktur[0].nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
                     targetGrid = document.getElementById(`grid-binaan-${defaultSafeNameId}`);
                 }
 
