@@ -59,6 +59,9 @@
                         <a href="./cetak-pdf.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Cetak PDF</span>
                         </a>
+                        <a href="https://docs.google.com/spreadsheets/d/1MG0IcvbKuIy2t7JIOp3FgShbjy5tLRxD/edit?gid=1442494186#gid=1442494186" target="_blank" rel="noopener noreferrer" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Buku Cuti</span>
+                        </a>
                     </div>
                 </nav>
             </div>
@@ -74,39 +77,42 @@
                         </div>
                     </div>
 
-                    <!-- Toolbar Pencarian -->
-                    <div class="bulan-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-                        <div class="toolbar-left" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                            <div class="global-search-wrapper" style="width: 320px; max-width: 100%;">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <circle cx="11" cy="11" r="8"/>
-                                    <line x1="21" x2="16.65" y1="21" y2="16.65"/>
-                                </svg>
-                                <input type="text" id="input-cari-sisa-cuti" placeholder="Cari nama atau NIPP pegawai..." aria-label="Cari nama atau NIPP dalam database cuti" style="padding: 9px 12px 9px 34px; font-size: 0.85rem; width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
-                            </div>
-                            <span class="table-count-label" id="label-jumlah-cuti" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">Memuat data database pegawai...</span>
-                        </div>
-                    </div>
+                    <!-- Toolbar Utama (Tanpa Filter Manual) -->
+<!-- Toolbar Utama -->
+<div class="bulan-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+    <div class="toolbar-left" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <div class="global-search-wrapper" style="width: 320px; max-width: 100%;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" x2="16.65" y1="21" y2="16.65"/>
+            </svg>
+            <input type="text" id="input-cari-sisa-cuti" placeholder="Cari nama atau NIPP pegawai..." aria-label="Cari nama atau NIPP dalam database cuti" style="padding: 9px 12px 9px 34px; font-size: 0.85rem; width: 100%; border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: #1e293b; background-color: #ffffff;">
+        </div>
+        <span class="table-count-label" id="label-jumlah-cuti" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 500;">Memuat data bulan aktif...</span>
+    </div>
+</div>
 
-                    <!-- Tabel Sisa Cuti -->
-                    <div class="table-responsive-wrapper">
-                        <table class="data-table" id="tabel-sisa-cuti">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="cell-center">No</th>
-                                    <th scope="col">Nama Pegawai</th>
-                                    <th scope="col" class="cell-center">NIPP</th>
-                                    <th scope="col" class="cell-center">Hak Cuti</th>
-                                    <th scope="col" class="cell-center">Cuti Terpakai</th>
-                                    <th scope="col" class="cell-center">Sisa Cuti</th>
-                                    <th scope="col">Detail Tanggal Pengambilan Cuti</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabel-sisa-cuti-body">
-                                <tr><td colspan="7" class="cell-center" style="padding: 30px; color: var(--text-muted);">Menghubungkan ke database pegawai dan rekapitulasi cuti...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
+<!-- Tabel Sisa Cuti -->
+<div class="table-responsive-wrapper">
+    <table class="data-table" id="tabel-sisa-cuti">
+        <thead>
+            <tr>
+                <th scope="col" class="cell-center">No</th>
+                <th scope="col">Nama Pegawai</th>
+                <th scope="col" class="cell-center">NIPP</th>
+                <th scope="col" class="cell-center">Hak Cuti</th>
+                <th scope="col" class="cell-center">Cuti Terpakai</th>
+                <th scope="col" class="cell-center">Sisa Cuti</th>
+                <th scope="col">Detail Tanggal Pengambilan Cuti</th>
+            </tr>
+        </thead>
+        <tbody id="tabel-sisa-cuti-body">
+            <tr><td colspan="7" class="cell-center" style="padding: 30px; color: var(--text-muted);">Menghubungkan ke database pegawai...</td></tr>
+        </tbody>
+    </table>
+</div>
+                    
+                    
                 </section>
             </div>
         </main>
