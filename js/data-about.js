@@ -16,16 +16,17 @@ function renderAvatar(nama, nipp, extraClass = '') {
     const cleanNama = formatFileName(nama);
     const cleanNipp = nipp ? String(nipp).trim() : '00000';
 
-    const primarySrc = `./assets/struktur-organisasi/${cleanNama}_${cleanNipp}.png`;
-    const secondarySrc = `./assets/struktur-organisasi/${cleanNipp}.png`;
-    const defaultSrc = `./assets/struktur-organisasi/default.jpg`;
+    // Perbaikan: Jalur primarySrc diarahkan ke dalam folder assets/struktur-organisasi/
+    const primarySrc = `../assets/struktur-organisasi/${cleanNama}_${cleanNipp}.png`;
+    const secondarySrc = `../assets/struktur-organisasi/${cleanNipp}.png`;
+    const defaultSrc = `../assets/struktur-organisasi/default.jpg`;
 
     return `
         <div class="so-avatar-wrapper">
             <img src="${primarySrc}" 
                  alt="${nama}" 
                  class="so-avatar ${extraClass}"
-                 onerror="if (this.src.endsWith('${cleanNipp}.png')) { this.src='${defaultSrc}'; } else { this.src='${secondarySrc}'; }">
+                 onerror="if (this.src.includes('${cleanNama}')) { this.src='${secondarySrc}'; } else if (this.src.includes('${cleanNipp}.png')) { this.src='${defaultSrc}'; }">
         </div>
     `;
 }
