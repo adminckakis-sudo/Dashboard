@@ -500,6 +500,50 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     font-weight: 700  ;
 }
 
+/* Media Query Tampilan Mobile */
+@media (max-width: 768px) {
+    /* Header & Brand Text */
+    .top-header-inner {
+        padding: 8px 12px;
+    }
+    .brand-text {
+        font-size: 0.72rem;
+        line-height: 1.2;
+    }
+
+    /* Padding Konten Utama */
+    .app-main-content {
+        padding: 12px 8px;
+    }
+
+    /* Layout About Section */
+    .about-section {
+        grid-template-columns: 1fr;
+        padding: 20px 16px;
+        gap: 12px;
+    }
+
+    /* Ukuran Judul & Teks Penjelas Mobile */
+    .about-headline {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    /* Grid Statistik Mobile (2 Kolom) */
+    .about-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-number {
+        font-size: 1.4rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+}
 /* ==========================================================================
    GLOBAL SEARCH HEADER & DROPDOWN STYLING
    ========================================================================== */
@@ -1507,6 +1551,7 @@ body:has(.app-sidebar.collapsed) .app-main-content {
     }
 }
 
+
 /* ==========================================================================
    WARNA & AKSEN KARTU RINGKASAN REKAPITULASI BULANAN
    ========================================================================== */
@@ -1860,4 +1905,157 @@ body:has(.app-sidebar.collapsed) .app-main-content {
 .data-table tbody tr:hover td,
 .modal-data-table tbody tr:hover td {
     background-color: #ffe4d2  ; /* Highlight oranye soft saat baris ditunjuk */
+}
+
+/* ==========================================================================
+   PERBAIKAN RESPONSIVE MOBILE (MENCEGAH TEKS & KARTU TERPOTONG)
+   ========================================================================== */
+@media screen and (max-width: 768px) {
+
+    /* 1. Perbaikan Section Tren Cuti (Gambar 1) */
+    .tren-stats-summary-grid {
+        display: flex !important;
+        flex-direction: column !important; /* Susun 3 kotak secara vertikal agar muat penuh */
+        gap: 10px !important;
+        border-bottom: none !important;
+    }
+
+    .stat-box {
+        width: 100% !important;
+        padding: 12px 14px !important;
+    }
+
+    /* 2. Perbaikan Dual Grid Rekapitulasi & Monitoring (Gambar 2) */
+    .dashboard-grid-dual {
+        grid-template-columns: 1fr !important; /* Ubah dari 2 kolom ke 1 kolom vertikal */
+        gap: 16px !important;
+    }
+
+    /* 3. Menghilangkan Kebocoran Sisi Kanan (Horizontal Scroll) */
+    html, body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+
+    .app-main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+    }
+
+    .dashboard-content {
+        padding: 0 12px !important;
+        overflow-x: hidden !important;
+    }
+
+    .kpi-utama-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* ==========================================================================
+   OPSI 2: CSS TREE VIEW (GARIS OTOMATIS DAN AKURAT KIRI-KANAN)
+   ========================================================================== */
+
+.tree {
+    display: flex;
+    justify-content: center;
+}
+
+.tree ul {
+    padding-top: 20px;
+    position: relative;
+    transition: all 0.5s;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.tree li {
+    float: left;
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: 20px 12px 0 12px;
+    transition: all 0.5s;
+}
+
+/* --- LOGIKA GARIS OTOMATIS --- */
+
+/* Garis vertikal naik ke atas dari tiap elemen */
+.tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 50%;
+    border-top: 2px solid var(--kai-blue-dark, #121d42);
+    width: 50%;
+    height: 20px;
+}
+
+.tree li::after {
+    right: auto;
+    left: 50%;
+    border-left: 2px solid var(--kai-blue-dark, #121d42);
+}
+
+/* Menghapus garis berlebih pada anak pertama (paling kiri) dan terakhir (paling kanan) */
+.tree li:only-child::after, .tree li:only-child::before {
+    display: none;
+}
+
+.tree li:only-child {
+    padding-top: 0;
+}
+
+.tree li:first-child::before, .tree li:last-child::after {
+    border: none;
+}
+
+/* Menyambungkan garis sudut lengkung/lurus di ujung kiri & kanan */
+.tree li:last-child::before {
+    border-right: 2px solid var(--kai-blue-dark, #121d42);
+    border-radius: 0 4px 0 0;
+}
+
+.tree li:first-child::after {
+    border-radius: 4px 0 0 0;
+}
+
+/* Garis turun ke bawah dari kartu induk */
+.tree ul ul::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    border-left: 2px solid var(--kai-blue-dark, #121d42);
+    width: 0;
+    height: 20px;
+}
+
+/* Penyesuaian Tampilan Kartu */
+.tree .so-card {
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+}
+
+/* Tampilan Mobile */
+@media screen and (max-width: 768px) {
+    .tree ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .tree li {
+        padding: 10px 0;
+    }
+
+    .tree li::before, .tree li::after, .tree ul ul::before {
+        display: none;
+    }
 }
