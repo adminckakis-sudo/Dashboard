@@ -1,6 +1,35 @@
 // URL ekspor CSV langsung dari Google Sheets (Sheet: Jabatan, gid=1567798541)
 const csvUrl = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
 
+// Helper mengubah nama menjadi format nama_file (lowercase & underscore)
+function formatFileName(nama) {
+    if (!nama) return 'personel';
+    return nama
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, '_');
+}
+
+// Fungsi pembuat elemen tag <img> dengan pendeteksian nama_nipp.png -> nipp.png -> default.jpg
+function renderAvatar(nama, nipp, extraClass = '') {
+    const cleanNama = formatFileName(nama);
+    const cleanNipp = nipp ? String(nipp).trim() : '00000';
+
+    const primarySrc = `../assets/struktur-organisasi/${cleanNama}_${cleanNipp}.png`;
+    const secondarySrc = `../assets/struktur-organisasi/${cleanNipp}.png`;
+    const defaultSrc = `../assets/struktur-organisasi/default.jpg`;
+
+    return `
+        <div class="so-avatar-wrapper">
+            <img src="${primarySrc}" 
+                 alt="${nama}" 
+                 class="so-avatar ${extraClass}"
+                 onerror="if (this.src.endsWith('${cleanNipp}.png')) { this.src='${defaultSrc}'; } else { this.src='${secondarySrc}'; }">
+        </div>
+    `;
+}
+
 async function loadAndRenderSpreadsheetData() {
     try {
         const response = await fetch(csvUrl);
@@ -10,6 +39,7 @@ async function loadAndRenderSpreadsheetData() {
         let total = 0, kuptCount = 0, instrukturCount = 0, penyeliaCount = 0;
         let madya = 0, muda = 0, pertama = 0;
 
+        const kuptCardEl = document.querySelector(".card-kupt-node");
         const kuptNameEl = document.getElementById("so-kupt-name");
         const kuptNippEl = document.getElementById("so-kupt-nipp");
         const instrukturWrapper = document.getElementById("so-instruktur-wrapper");
@@ -39,8 +69,17 @@ async function loadAndRenderSpreadsheetData() {
                     total++;
                     if (jabatan.includes("KUPT")) {
                         kuptCount++;
-                        if (kuptNameEl) kuptNameEl.textContent = nama;
-                        if (kuptNippEl) kuptNippEl.textContent = `NIPP. ${nipp}`;
+                        if (kuptCardEl) {
+                            kuptCardEl.innerHTML = `
+                                ${renderAvatar(nama, nipp)}
+                                <div class="so-role">KUPT CREW KA KELAS C KISARAN</div>
+                                <div class="so-name" id="so-kupt-name">${nama}</div>
+                                <div class="so-nipp" id="so-kupt-nipp">NIPP. ${nipp}</div>
+                            `;
+                        } else {
+                            if (kuptNameEl) kuptNameEl.textContent = nama;
+                            if (kuptNippEl) kuptNippEl.textContent = `NIPP. ${nipp}`;
+                        }
                     } else if (jabatan.includes("INSTRUKTUR")) {
                         instrukturCount++;
                         listInstruktur.push({ nama, nipp, jabatan });
@@ -63,9 +102,12 @@ async function loadAndRenderSpreadsheetData() {
             listPenyelia.forEach(p => {
                 penyeliaWrapper.innerHTML += `
                     <div class="so-node-card card-penyelia-node">
-                        <div class="so-role">PENYELIA DINAS</div>
-                        <div class="so-name">${p.nama}</div>
-                        <div class="so-nipp">NIPP. ${p.nipp}</div>
+                        ${renderAvatar(p.nama, p.nipp)}
+                        <div class="so-info">
+                            <div class="so-role">PENYELIA DINAS</div>
+                            <div class="so-name">${p.nama}</div>
+                            <div class="so-nipp">NIPP. ${p.nipp}</div>
+                        </div>
                     </div>
                 `;
             });
@@ -80,9 +122,12 @@ async function loadAndRenderSpreadsheetData() {
                 instrukturWrapper.innerHTML += `
                     <div class="so-instruktur-column">
                         <div class="so-node-card card-instruktur-node">
-                            <div class="so-role">PENYELIA INSTRUKTUR</div>
-                            <div class="so-name">${ins.nama}</div>
-                            <div class="so-nipp">NIPP. ${ins.nipp}</div>
+                            ${renderAvatar(ins.nama, ins.nipp)}
+                            <div class="so-info">
+                                <div class="so-role">PENYELIA INSTRUKTUR</div>
+                                <div class="so-name">${ins.nama}</div>
+                                <div class="so-nipp">NIPP. ${ins.nipp}</div>
+                            </div>
                         </div>
 
                         <!-- Garis penghubung lurus dari Instruktur ke Kotak Binaan -->
@@ -118,6 +163,7 @@ async function loadAndRenderSpreadsheetData() {
                 if (targetGrid) {
                     targetGrid.innerHTML += `
                         <div class="card-asp">
+                            ${renderAvatar(m.nama, m.nipp)}
                             <div class="so-role">${m.jabatan}</div>
                             <div class="so-name">${m.nama}</div>
                             <div class="so-nipp">NIPP. ${m.nipp}</div>
