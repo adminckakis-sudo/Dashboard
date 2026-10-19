@@ -9,55 +9,72 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-/* 1. LAYOUT UMUM & PEMBUNGKUS SCROLL 2D */
+/* ==========================================================================
+   1. LAYOUT UMUM & PEMBUNGKUS SCROLL 2D (DESKTOP & MOBILE BEBAS SCROLL)
+   ========================================================================== */
 html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: auto !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x pan-y !important;
+}
+
+.app-layout-wrapper {
+    display: flex !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    position: relative !important;
 }
 
 .app-main-content {
     display: block !important;
-    width: 100% !important;
-    height: 100vh !important;
-    overflow: auto !important; /* Memicu scrollbar 2D alami */
+    width: max-content !important;
+    min-width: 100% !important;
+    min-height: 100vh !important;
     box-sizing: border-box !important;
     padding: 0 !important;
-    cursor: grab !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-    /* Buka kunci gestur sentuh 2D bawaan browser/F12 */
+    margin: 0 !important;
+    overflow: visible !important;
     touch-action: pan-x pan-y !important;
-    -webkit-overflow-scrolling: touch !important;
 }
 
 .dashboard-content {
-    display: inline-block !important; /* Memaksa wadah meluas mengikuti lebar bagan */
+    display: block !important;
     width: max-content !important;
     min-width: 100% !important;
-    min-height: 100% !important;
-    padding: 12px !important;
+    padding: 20px 24px 80px 24px !important;
     box-sizing: border-box !important;
+    overflow: visible !important;
+    touch-action: pan-x pan-y !important;
 }
 
-/* 2. KONTAINER BAGAN MENTOK KIRI & TRANSFORM ZOOM */
+/* ==========================================================================
+   2. KONTAINER BAGAN FISIK & TRANSFORM ZOOM
+   ========================================================================== */
 .so-physical-wrapper {
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
+    align-items: flex-start !important;
     width: max-content !important;
-    margin: 0 !important; /* Mentok ke kiri */
-    padding: 16px 12px !important;
+    margin: 0 !important;
+    padding: 24px 20px 40px 20px !important;
     background: #ffffff !important;
     box-sizing: border-box !important;
-    transform-origin: top left !important; /* Zoom dari pojok kiri atas */
-    transition: transform 0.15s ease-out;
+    transform-origin: top left !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(18, 29, 66, 0.06);
+    border: 1px solid #e2e8f0;
+    touch-action: pan-x pan-y !important;
 }
 
-/* Mencegah gambar & teks mengunci kursor mouse saat di-drag */
+/* Mencegah gambar & teks mengunci kursor saat drag / touch */
 .so-physical-wrapper img,
 .so-physical-wrapper span,
 .so-physical-wrapper div {
@@ -76,25 +93,31 @@ body.is-dragging * {
     justify-content: center !important;
     align-items: center !important;
     width: 100% !important;
-    margin-bottom: 20px !important;
-    padding-bottom: 12px !important;
+    margin-bottom: 24px !important;
+    padding-bottom: 14px !important;
     border-bottom: 2px solid #121d42 !important;
 }
 
 .so-board-title {
     text-align: center !important;
-    font-size: 1.15rem !important;
+    font-size: 1.25rem !important;
     font-weight: 800 !important;
     color: #121d42 !important;
     text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.35 !important;
 }
 
-/* 3. GAYA FOTO & KARTU */
+/* ==========================================================================
+   3. GAYA FOTO & KARTU ORGANISASI
+   ========================================================================== */
 .so-avatar-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
 }
 
 .so-avatar {
@@ -103,6 +126,13 @@ body.is-dragging * {
     background-color: #f1f5f9;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
     border: 3px solid #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: block;
+}
+
+.so-avatar:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 16px rgba(240, 100, 0, 0.35);
 }
 
 .card-kupt-node {
@@ -111,43 +141,51 @@ body.is-dragging * {
     align-items: center !important;
     text-align: center !important;
     margin: 0 auto !important;
-    padding: 16px 20px !important;
-    min-width: 220px !important;
-    max-width: 260px !important;
+    padding: 18px 24px !important;
+    min-width: 240px !important;
+    max-width: 280px !important;
     background: #121d42 !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+    box-shadow: 0 6px 16px rgba(18, 29, 66, 0.2) !important;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.card-kupt-node:hover {
+    transform: translateY(-2px);
 }
 
 .card-kupt-node .so-avatar {
     width: 130px !important;
     height: 130px !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 12px !important;
     border: 3.5px solid #f06400 !important;
 }
 
 .card-kupt-node .so-role {
     color: #f06400 !important;
     font-weight: 800;
-    font-size: 0.72rem;
-    letter-spacing: 0.5px;
+    font-size: 0.74rem;
+    letter-spacing: 0.8px;
 }
 
 .card-kupt-node .so-name {
     color: #ffffff !important;
     font-weight: 700;
-    font-size: 0.92rem;
-    margin-top: 4px;
+    font-size: 0.95rem;
+    margin-top: 5px;
     margin-bottom: 2px;
 }
 
 .card-kupt-node .so-nipp {
     color: #cbd5e1 !important;
-    font-size: 0.72rem;
+    font-size: 0.74rem;
     font-weight: 500;
 }
 
-/* 4. GARIS DAN POHON STRUKTUR */
+/* ==========================================================================
+   4. GARIS DAN POHON STRUKTUR
+   ========================================================================== */
 .line-v-center {
     width: 2px !important;
     height: 24px !important;
@@ -158,7 +196,7 @@ body.is-dragging * {
 .so-main-tree {
     display: flex !important;
     justify-content: center !important;
-    gap: 36px !important;
+    gap: 40px !important;
     width: 100% !important;
     position: relative !important;
     padding-top: 20px !important;
@@ -176,7 +214,7 @@ body.is-dragging * {
 
 .so-instruktur-section {
     display: flex;
-    gap: 28px;
+    gap: 32px;
     position: relative;
 }
 
@@ -199,9 +237,16 @@ body.is-dragging * {
 .so-node-card {
     background: #ffffff;
     border: 1.5px solid #121d42;
-    border-radius: 8px;
-    padding: 12px 14px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.so-node-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 .card-instruktur-node, 
@@ -212,19 +257,19 @@ body.is-dragging * {
     align-items: center !important;
     text-align: center !important;
     gap: 8px !important;
-    padding: 12px 14px !important;
-    min-width: 180px !important;
-    max-width: 220px !important;
+    padding: 14px 16px !important;
+    min-width: 190px !important;
+    max-width: 230px !important;
 }
 
 .card-instruktur-node {
-    border-top: 3.5px solid #f06400;
+    border-top: 4px solid #f06400;
 }
 
 .card-penyelia-node, .card-penyelia {
     width: 100%;
-    border-left: 3.5px solid #0284c7;
-    margin-bottom: 8px;
+    border-left: 4px solid #0284c7;
+    margin-bottom: 10px;
 }
 
 .card-instruktur-node .so-avatar,
@@ -238,8 +283,8 @@ body.is-dragging * {
 .so-penyelia-section {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    width: 220px;
+    gap: 10px;
+    width: 230px;
     position: relative;
 }
 
@@ -257,28 +302,28 @@ body.is-dragging * {
 .binaan-container {
     background: #f8fafc;
     border: 2px dashed #cbd5e1;
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 10px;
+    padding: 14px 12px;
     margin-top: 12px;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .binaan-header {
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 800;
     color: #475569;
     text-transform: uppercase;
     text-align: center;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-    padding-bottom: 4px;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
     border-bottom: 1px solid #e2e8f0;
 }
 
 .so-asp-grid {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 8px !important;
+    gap: 10px !important;
     width: 100% !important;
     box-sizing: border-box !important;
 }
@@ -289,19 +334,27 @@ body.is-dragging * {
     align-items: center !important;
     text-align: center !important;
     justify-content: flex-start !important;
-    padding: 10px 6px !important;
+    padding: 10px 8px !important;
     min-width: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
     background: #ffffff !important;
     border: 1.5px solid #cbd5e1 !important;
     box-sizing: border-box !important;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-asp:hover {
+    transform: translateY(-2px);
+    border-color: #f06400 !important;
+    box-shadow: 0 4px 10px rgba(240, 100, 0, 0.15);
 }
 
 .card-asp .so-avatar {
-    width: 100px !important;
-    height: 100px !important;
+    width: 96px !important;
+    height: 96px !important;
     margin-bottom: 6px !important;
     border: 2.5px solid #cbd5e1 !important;
 }
@@ -318,6 +371,7 @@ body.is-dragging * {
     font-weight: 700 !important; 
     color: #64748b !important; 
     text-transform: uppercase; 
+    letter-spacing: 0.3px;
 }
 
 .so-name { 
@@ -325,7 +379,7 @@ body.is-dragging * {
     font-weight: 700 !important; 
     color: #0f172a !important; 
     margin-top: 2px !important;
-    line-height: 1.2 !important;
+    line-height: 1.25 !important;
 }
 
 .card-asp .so-name {
@@ -339,12 +393,15 @@ body.is-dragging * {
 }
 
 .so-nipp { 
-    font-size: 0.65rem !important; 
+    font-size: 0.68rem !important; 
     color: #64748b !important; 
     margin-top: 2px !important;
+    font-weight: 600;
 }
 
-/* 5. WIDGET TOMBOL ZOOM */
+/* ==========================================================================
+   5. WIDGET TOMBOL ZOOM MELAYANG
+   ========================================================================== */
 .zoom-controls-widget {
     position: fixed;
     bottom: 24px;
@@ -353,42 +410,233 @@ body.is-dragging * {
     display: flex;
     align-items: center;
     background: #121d42;
-    padding: 6px 10px;
+    padding: 6px 12px;
     border-radius: 30px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    gap: 6px;
+    gap: 8px;
+    user-select: none;
 }
 
 .zoom-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.12);
     border: none;
     color: #ffffff;
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
+    transition: background 0.15s ease;
 }
 
-.zoom-btn:hover { background: #f06400; }
+.zoom-btn:hover { 
+    background: #f06400; 
+}
 
 .zoom-display {
     color: #ffffff;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 700;
     min-width: 48px;
     text-align: center;
+    font-variant-numeric: tabular-nums;
 }
 
-/* 6. RESPONSIF MOBILE */
-@media (max-width: 768px) {
+/* ==========================================================================
+   6. MODAL PENAMPIL GAMBAR / LIGHTBOX FOTO PERSONEL
+   ========================================================================== */
+.so-lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(18, 29, 66, 0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: fadeInLightbox 0.2s ease-out;
+}
+
+@keyframes fadeInLightbox {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.so-lightbox-content {
+    background: #ffffff;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    animation: zoomInLightbox 0.2s ease-out;
+}
+
+@keyframes zoomInLightbox {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.so-lightbox-header {
+    width: 100%;
+    background: #121d42;
+    color: #ffffff;
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 3px solid #f06400;
+}
+
+.so-lightbox-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #ff9d54;
+    text-transform: uppercase;
+}
+
+.so-lightbox-close {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+    opacity: 0.85;
+    transition: opacity 0.15s ease;
+}
+
+.so-lightbox-close:hover {
+    opacity: 1;
+    color: #f06400;
+}
+
+.so-lightbox-body {
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.so-lightbox-img-frame {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid #121d42;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.so-lightbox-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.so-lightbox-name {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #121d42;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.so-lightbox-nipp {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.so-lightbox-role-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #edf1fa;
+    color: #1c2a5f;
+    border: 1px solid rgba(28, 42, 95, 0.2);
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   7. OVERRIDE MEDIA QUERY KHUSUS MOBILE (BEBAS SCROLL 2D & RESPONSIVE)
+   ========================================================================== */
+@media (max-width: 1024px), (max-width: 768px), (max-width: 600px) {
+    /* Batalkan penguncian overflow-x: hidden dari style.css secara mutlak */
+    html, body {
+        overflow: auto !important;
+        overflow-x: auto !important;
+        overflow-y: auto !important;
+        width: auto !important;
+        min-width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        min-height: 100% !important;
+        touch-action: pan-x pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .app-layout-wrapper {
+        overflow: visible !important;
+        width: max-content !important;
+        min-width: 100% !important;
+        max-width: none !important;
+    }
+
+    .app-main-content {
+        margin-left: 0 !important;
+        width: max-content !important;
+        min-width: 100% !important;
+        max-width: none !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+        touch-action: pan-x pan-y !important;
+    }
+
+    .dashboard-content {
+        padding: 16px 12px 90px 12px !important;
+        width: max-content !important;
+        min-width: 100% !important;
+        max-width: none !important;
+        overflow: visible !important;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+        touch-action: pan-x pan-y !important;
+    }
+
+    .so-physical-wrapper {
+        touch-action: pan-x pan-y !important;
+        padding: 16px 12px 30px 12px !important;
+    }
+
     .so-asp-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
     }
 }
     </style>
@@ -398,8 +646,8 @@ body.is-dragging * {
     <header class="top-header" role="banner">
         <div class="top-header-inner">
             <div class="header-left-group">
-                <button id="btn-toggle-menu" title="Buka/Tutup Menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button id="btn-toggle-menu" type="button" title="Buka/Tutup Menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
                         <line x1="3" y1="18" x2="21" y2="18"></line>
@@ -413,13 +661,28 @@ body.is-dragging * {
     </header>
 
     <div class="app-layout-wrapper">
-        <aside class="app-sidebar collapsed" id="app-sidebar">
+        <!-- SIDEBAR -->
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
             <div>
-                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; color: var(--kai-orange); margin-bottom: 14px;">MENU UTAMA</div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                
                 <nav style="display: flex; flex-direction: column; gap: 6px;">
-                    <a href="../index.html" class="sidebar-item">Homepage</a>
-                    <a href="./struktur-organisasi.html" class="sidebar-item active">Struktur Organisasi</a>
-                    <a href="../cuti/dashboard-cuti.html" class="sidebar-item">Dashboard Cuti</a>
+                    <a href="../index.html" class="sidebar-item active" title="Homepage">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>
+                    
+                    <!-- Sub-Navigasi -->
+                    <div href="../index.html"  class="sidebar-item" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        </a>
+                        <a href="./struktur-organisasi.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Struktur Organisasi</span>
+                        </a>
+                    </div>
+                    <a href="../cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        <span class="sidebar-text">Dashboard Cuti</span>
+                    </a>
                 </nav>
             </div>
         </aside>
@@ -433,7 +696,7 @@ body.is-dragging * {
                         </div>
                     </div>
 
-                    <div class="so-node-card card-kupt-node">
+                    <div class="so-node-card card-kupt-node" id="kupt-card-container">
                         <div class="so-role">KUPT CREW KA KELAS C KISARAN</div>
                         <div class="so-name" id="so-kupt-name">Memuat data...</div>
                         <div class="so-nipp" id="so-kupt-nipp">-</div>
@@ -455,78 +718,324 @@ body.is-dragging * {
         <button type="button" class="zoom-btn" id="btn-zoom-out" title="Perkecil (Zoom Out)">-</button>
         <span class="zoom-display" id="zoom-value-text">100%</span>
         <button type="button" class="zoom-btn" id="btn-zoom-in" title="Perbesar (Zoom In)">+</button>
-        <button type="button" class="zoom-btn" id="btn-zoom-reset" title="Kembalikan Semula (Reset Zoom)" style="font-size: 0.8rem;">&#x21bb;</button>
+        <button type="button" class="zoom-btn" id="btn-zoom-reset" title="Kembalikan Semula (Reset Zoom)" style="font-size: 0.85rem;">&#x21bb;</button>
     </div>
 
+    <!-- MODAL PENAMPIL GAMBAR / LIGHTBOX FOTO PERSONEL -->
+    <div id="so-lightbox-modal" class="so-lightbox-overlay" role="dialog" aria-modal="true" aria-labelledby="lightbox-person-name">
+        <div class="so-lightbox-content">
+            <div class="so-lightbox-header">
+                <span class="so-lightbox-title">Informasi Personel</span>
+                <button type="button" id="so-lightbox-close-btn" class="so-lightbox-close" aria-label="Tutup jendela">&times;</button>
+            </div>
+            <div class="so-lightbox-body">
+                <div class="so-lightbox-img-frame">
+                    <img id="so-lightbox-img" class="so-lightbox-img" src="" alt="Foto Personel">
+                </div>
+                <div class="so-lightbox-name" id="lightbox-person-name">-</div>
+                <div class="so-lightbox-nipp" id="lightbox-person-nipp">-</div>
+                <div class="so-lightbox-role-badge" id="lightbox-person-role">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT UTAMA JAM & SIDEBAR -->
+    <script src="../js/main.js"></script>
+
+    <!-- LOGIKA STRUKTUR ORGANISASI, PENAMPIL GAMBAR ROBUST & 2D TOUCH PAN SCROLL -->
     <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // 1. Toggle Sidebar Menu
-    const btnToggle = document.getElementById("btn-toggle-menu");
-    const sidebar = document.getElementById("app-sidebar");
-    if (btnToggle && sidebar) {
-        btnToggle.addEventListener("click", function() {
-            sidebar.classList.toggle("collapsed");
+    (function() {
+        // ==========================================================================
+        // A. RESOLUSI JALUR GAMBAR ROBUST (LOKAL & GITHUB PAGES)
+        // ==========================================================================
+        function getBaseAssetsFolder() {
+            // Resolusi jalur ../assets/struktur-organisasi/ terhadap URL dokumen aktif
+            return new URL('../assets/struktur-organisasi/', window.location.href).href;
+        }
+
+        // SVG Avatar Inisial Korporat KAI jika foto tidak ditemukan
+        function generateInitialsAvatarSvg(nama) {
+            const words = (nama || 'Pegawai').trim().split(/\s+/);
+            const initials = words.length >= 2 
+                ? (words[0][0] + words[1][0]).toUpperCase() 
+                : (words[0].substring(0, 2)).toUpperCase();
+            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+                <defs>
+                    <linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#1c2a5f"/>
+                        <stop offset="100%" stop-color="#121d42"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>
+                <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>
+                <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        // Penanganan error bertingkat: coba .png -> coba .PNG (Linux case-sensitive) -> fallback SVG inisial
+        window.handleAvatarLoadError = function(img, nama, cleanNipp) {
+            if (!img.dataset.caseAttempt) {
+                img.dataset.caseAttempt = 'upper';
+                // Coba ekstensi kapital .PNG (seperti pada 56853.PNG)
+                img.src = `${getBaseAssetsFolder()}${cleanNipp}.PNG`;
+            } else if (img.dataset.caseAttempt === 'upper') {
+                img.dataset.caseAttempt = 'done';
+                img.src = generateInitialsAvatarSvg(nama);
+            }
+        };
+
+        // Fungsi pembuat tag <img> avatar yang langsung mengarah ke [nipp].png
+        function createAvatarHtml(nama, nipp, extraClass = '') {
+            const cleanNipp = nipp ? String(nipp).trim() : '00000';
+            const safeNama = (nama || '').replace(/"/g, '&quot;');
+            const directPngSrc = `${getBaseAssetsFolder()}${cleanNipp}.png`;
+
+            return `
+                <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
+                    <img src="${directPngSrc}" 
+                         alt="${safeNama}" 
+                         class="so-avatar ${extraClass}"
+                         onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
+                </div>
+            `;
+        }
+
+        // ==========================================================================
+        // B. FITUR PENAMPIL GAMBAR (LIGHTBOX POPUP)
+        // ==========================================================================
+        const lightboxModal = document.getElementById('so-lightbox-modal');
+        const lightboxImg = document.getElementById('so-lightbox-img');
+        const lightboxName = document.getElementById('lightbox-person-name');
+        const lightboxNipp = document.getElementById('lightbox-person-nipp');
+        const lightboxRole = document.getElementById('lightbox-person-role');
+        const lightboxCloseBtn = document.getElementById('so-lightbox-close-btn');
+
+        function openLightbox(data) {
+            if (!lightboxModal) return;
+            if (lightboxImg) {
+                lightboxImg.onerror = function() {
+                    this.src = generateInitialsAvatarSvg(data.nama);
+                };
+                lightboxImg.src = data.imgSrc || generateInitialsAvatarSvg(data.nama);
+            }
+            if (lightboxName) lightboxName.textContent = data.nama || '-';
+            if (lightboxNipp) lightboxNipp.textContent = data.nipp ? `NIPP. ${data.nipp}` : '-';
+            if (lightboxRole) lightboxRole.textContent = data.role || '-';
+            lightboxModal.style.display = 'flex';
+        }
+
+        function closeLightbox() {
+            if (lightboxModal) lightboxModal.style.display = 'none';
+        }
+
+        if (lightboxCloseBtn) lightboxCloseBtn.addEventListener('click', closeLightbox);
+        if (lightboxModal) {
+            lightboxModal.addEventListener('click', function(e) {
+                if (e.target === lightboxModal) closeLightbox();
+            });
+        }
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
         });
-    }
 
-    // 2. LOGIKA FITUR ZOOM IN, ZOOM OUT & RESET
-    let currentScale = 1.0;
-    const minScale = 0.3;
-    const maxScale = 2.0;
-    const step = 0.1;
+        // Event delegasi klik kartu / avatar untuk membuka penampil gambar
+        document.addEventListener('click', function(e) {
+            const card = e.target.closest('.card-kupt-node, .card-instruktur-node, .card-penyelia-node, .card-asp');
+            if (card) {
+                const imgEl = card.querySelector('img.so-avatar');
+                const nameEl = card.querySelector('.so-name');
+                const nippEl = card.querySelector('.so-nipp');
+                const roleEl = card.querySelector('.so-role');
 
-    const wrapper = document.getElementById("so-physical-wrapper");
-    const zoomText = document.getElementById("zoom-value-text");
-    const btnIn = document.getElementById("btn-zoom-in");
-    const btnOut = document.getElementById("btn-zoom-out");
-    const btnReset = document.getElementById("btn-zoom-reset");
+                if (imgEl) {
+                    openLightbox({
+                        imgSrc: imgEl.src,
+                        nama: nameEl ? nameEl.textContent.trim() : '',
+                        nipp: nippEl ? nippEl.textContent.replace(/[^0-9]/g, '') : '',
+                        role: roleEl ? roleEl.textContent.trim() : ''
+                    });
+                }
+            }
+        });
 
-    function applyZoom(newScale) {
-        currentScale = Math.min(Math.max(newScale, minScale), maxScale);
-        if (wrapper) {
-            wrapper.style.transform = `scale(${currentScale})`;
+        // ==========================================================================
+        // C. INTEGRASI SPREADSHEET & PEMBUATAN POHON ORGANISASI
+        // ==========================================================================
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
+
+        async function muatStrukturOrganisasi() {
+            try {
+                const response = await fetch(CSV_URL);
+                const csvData = await response.text();
+                const lines = csvData.split('\n');
+
+                const kuptCardEl = document.getElementById("kupt-card-container");
+                const instrukturWrapper = document.getElementById("so-instruktur-wrapper");
+                const penyeliaWrapper = document.getElementById("so-penyelia-wrapper");
+
+                if (instrukturWrapper) instrukturWrapper.innerHTML = "";
+                if (penyeliaWrapper) penyeliaWrapper.innerHTML = "";
+
+                const listInstruktur = [];
+                const listPenyelia = [];
+                const listMasinis = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    const columns = line.split(',');
+
+                    if (columns.length >= 4) {
+                        const nama = columns[1].replace(/"/g, '').trim();
+                        const nipp = columns[2].replace(/"/g, '').trim();
+                        const jabatan = columns[3].replace(/"/g, '').trim().toUpperCase();
+                        const binaan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
+
+                        if (jabatan !== '') {
+                            if (jabatan.includes("KUPT")) {
+                                if (kuptCardEl) {
+                                    kuptCardEl.innerHTML = `
+                                        ${createAvatarHtml(nama, nipp)}
+                                        <div class="so-role">KUPT CREW KA KELAS C KISARAN</div>
+                                        <div class="so-name">${nama}</div>
+                                        <div class="so-nipp">NIPP. ${nipp}</div>
+                                    `;
+                                }
+                            } else if (jabatan.includes("INSTRUKTUR")) {
+                                listInstruktur.push({ nama, nipp, jabatan });
+                            } else if (jabatan.includes("PENYELIA") && !jabatan.includes("INSTRUKTUR")) {
+                                listPenyelia.push({ nama, nipp, jabatan });
+                            } else if (jabatan.includes("MASINIS") || jabatan.includes("ASP")) {
+                                listMasinis.push({ nama, nipp, jabatan, binaan });
+                            }
+                        }
+                    }
+                }
+
+                // 1. Render Penyelia Dinas
+                if (penyeliaWrapper) {
+                    listPenyelia.forEach(p => {
+                        penyeliaWrapper.innerHTML += `
+                            <div class="so-node-card card-penyelia-node">
+                                ${createAvatarHtml(p.nama, p.nipp)}
+                                <div class="so-info">
+                                    <div class="so-role">PENYELIA DINAS</div>
+                                    <div class="so-name">${p.nama}</div>
+                                    <div class="so-nipp">NIPP. ${p.nipp}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // 2. Render Instruktur & Kotak Binaan
+                if (instrukturWrapper && listInstruktur.length > 0) {
+                    listInstruktur.forEach(ins => {
+                        const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                        const colId = `grid-binaan-${safeNameId}`;
+
+                        instrukturWrapper.innerHTML += `
+                            <div class="so-instruktur-column">
+                                <div class="so-node-card card-instruktur-node">
+                                    ${createAvatarHtml(ins.nama, ins.nipp)}
+                                    <div class="so-info">
+                                        <div class="so-role">PENYELIA INSTRUKTUR</div>
+                                        <div class="so-name">${ins.nama}</div>
+                                        <div class="so-nipp">NIPP. ${ins.nipp}</div>
+                                    </div>
+                                </div>
+                                <div class="line-v-center" style="height: 16px;"></div>
+                                <div class="binaan-container">
+                                    <div class="binaan-header">BINAAN</div>
+                                    <div class="so-asp-grid" id="${colId}"></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    // Distribusi Masinis ke Instruktur Pembina
+                    listMasinis.forEach(m => {
+                        let targetGrid = null;
+                        if (m.binaan) {
+                            listInstruktur.forEach(ins => {
+                                if (ins.nama.toUpperCase().includes(m.binaan) || m.binaan.includes(ins.nama.toUpperCase())) {
+                                    const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                                    targetGrid = document.getElementById(`grid-binaan-${safeNameId}`);
+                                }
+                            });
+                        }
+
+                        if (!targetGrid) {
+                            const defaultSafeNameId = listInstruktur[0].nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                            targetGrid = document.getElementById(`grid-binaan-${defaultSafeNameId}`);
+                        }
+
+                        if (targetGrid) {
+                            targetGrid.innerHTML += `
+                                <div class="card-asp">
+                                    ${createAvatarHtml(m.nama, m.nipp)}
+                                    <div class="so-role">${m.jabatan}</div>
+                                    <div class="so-name">${m.nama}</div>
+                                    <div class="so-nipp">NIPP. ${m.nipp}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+            } catch (err) {
+                console.error("Gagal memuat bagan struktur organisasi:", err);
+            }
         }
-        if (zoomText) {
-            zoomText.textContent = `${Math.round(currentScale * 100)}%`;
+
+        // ==========================================================================
+        // D. KONTROL ZOOM (IN, OUT, RESET, PINCH)
+        // ==========================================================================
+        let currentScale = 1.0;
+        const minScale = 0.3;
+        const maxScale = 2.0;
+        const step = 0.1;
+
+        const wrapper = document.getElementById("so-physical-wrapper");
+        const zoomText = document.getElementById("zoom-value-text");
+        const btnIn = document.getElementById("btn-zoom-in");
+        const btnOut = document.getElementById("btn-zoom-out");
+        const btnReset = document.getElementById("btn-zoom-reset");
+
+        function applyZoom(newScale) {
+            currentScale = Math.min(Math.max(newScale, minScale), maxScale);
+            if (wrapper) wrapper.style.transform = `scale(${currentScale})`;
+            if (zoomText) zoomText.textContent = `${Math.round(currentScale * 100)}%`;
         }
-    }
 
-    if (btnIn) btnIn.addEventListener("click", () => applyZoom(currentScale + step));
-    if (btnOut) btnOut.addEventListener("click", () => applyZoom(currentScale - step));
-    if (btnReset) btnReset.addEventListener("click", () => applyZoom(1.0));
+        if (btnIn) btnIn.addEventListener("click", () => applyZoom(currentScale + step));
+        if (btnOut) btnOut.addEventListener("click", () => applyZoom(currentScale - step));
+        if (btnReset) btnReset.addEventListener("click", () => applyZoom(1.0));
 
-    // Auto zoom-out 50% saat dibuka di layar kecil / Mode F12
-    if (window.innerWidth <= 768) {
-        applyZoom(0.5);
-    }
+        if (window.innerWidth <= 768) {
+            applyZoom(0.65);
+        }
 
-    // Pintasan Keyboard
-    window.addEventListener("keydown", function(e) {
-        if (e.target.closest("input, textarea, select")) return;
-        if (e.key === "+" || e.key === "=") applyZoom(currentScale + step);
-        if (e.key === "-" || e.key === "_") applyZoom(currentScale - step);
-        if (e.key === "0") applyZoom(1.0);
-    });
+        // ==========================================================================
+        // E. SISTEM 2D SCROLL BEBAS (MOUSE DRAG DESKTOP & FLUID TOUCH PAN MOBILE)
+        // ==========================================================================
+        
+        // 1. Mouse Drag untuk Desktop
+        let isMouseDown = false;
+        let mouseStartX = 0, mouseStartY = 0;
+        let mouseScrollLeft = 0, mouseScrollTop = 0;
 
-    // 3. FITUR DRAG TO SCROLL MOUSE KHUSUS DESKTOP
-    const container = document.querySelector('.app-main-content');
-    let isMouseDown = false;
-    let startX = 0, startY = 0;
-    let scrollLeft = 0, scrollTop = 0;
-
-    if (container) {
-        container.addEventListener('mousedown', function(e) {
-            // Abaikan tombol interaktif & widget zoom
-            if (e.target.closest('button, a, input, select, textarea, .zoom-controls-widget')) return;
+        window.addEventListener('mousedown', function(e) {
+            if (e.target.closest('button, a, input, select, textarea, .zoom-controls-widget, .so-lightbox-overlay')) return;
 
             isMouseDown = true;
             document.body.classList.add('is-dragging');
-
-            startX = e.clientX;
-            startY = e.clientY;
-
-            scrollLeft = container.scrollLeft;
-            scrollTop = container.scrollTop;
+            mouseStartX = e.clientX;
+            mouseStartY = e.clientY;
+            mouseScrollLeft = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft;
+            mouseScrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
         });
 
         window.addEventListener('mouseup', function() {
@@ -537,17 +1046,82 @@ document.addEventListener("DOMContentLoaded", function() {
         window.addEventListener('mousemove', function(e) {
             if (!isMouseDown) return;
             e.preventDefault();
-
-            const walkX = (e.clientX - startX);
-            const walkY = (e.clientY - startY);
-
-            container.scrollLeft = scrollLeft - walkX;
-            container.scrollTop = scrollTop - walkY;
+            const deltaX = e.clientX - mouseStartX;
+            const deltaY = e.clientY - mouseStartY;
+            window.scrollTo(mouseScrollLeft - deltaX, mouseScrollTop - deltaY);
         });
-    }
-});
+
+        // 2. Touch Pan 2D untuk Layar Sentuh Mobile (Membuka Kunci Scroll Bebas)
+        let isTouchPanning = false;
+        let touchStartX = 0, touchStartY = 0;
+        let touchScrollStartX = 0, touchScrollStartY = 0;
+        let initialPinchDist = null;
+        let initialScaleOnPinch = 1.0;
+
+        function getDistance(t1, t2) {
+            return Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        }
+
+        window.addEventListener('touchstart', function(e) {
+            if (e.target.closest('button, a, input, select, textarea, .zoom-controls-widget, .so-lightbox-overlay')) return;
+
+            if (e.touches.length === 1) {
+                isTouchPanning = true;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchScrollStartX = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft;
+                touchScrollStartY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+            } else if (e.touches.length === 2) {
+                // Pinch-to-zoom dengan 2 jari
+                isTouchPanning = false;
+                initialPinchDist = getDistance(e.touches[0], e.touches[1]);
+                initialScaleOnPinch = currentScale;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', function(e) {
+            // Tangani Pinch-to-Zoom
+            if (e.touches.length === 2 && initialPinchDist) {
+                const currentDist = getDistance(e.touches[0], e.touches[1]);
+                const factor = currentDist / initialPinchDist;
+                applyZoom(initialScaleOnPinch * factor);
+                return;
+            }
+
+            // Tangani Usapan Bebas 2D (Pan Scroll)
+            if (!isTouchPanning || e.touches.length !== 1) return;
+
+            const deltaX = e.touches[0].clientX - touchStartX;
+            const deltaY = e.touches[0].clientY - touchStartY;
+
+            // Gerakkan viewport secara simultan ke sumbu horizontal dan vertikal
+            window.scrollTo(touchScrollStartX - deltaX, touchScrollStartY - deltaY);
+        }, { passive: true });
+
+        window.addEventListener('touchend', function(e) {
+            if (e.touches.length === 0) {
+                isTouchPanning = false;
+                initialPinchDist = null;
+            }
+        });
+
+        window.addEventListener('touchcancel', function() {
+            isTouchPanning = false;
+            initialPinchDist = null;
+        });
+
+        // 3. Toggle Sidebar Menu Mobile
+        const btnToggle = document.getElementById("btn-toggle-menu");
+        const sidebar = document.getElementById("app-sidebar");
+        if (btnToggle && sidebar) {
+            btnToggle.addEventListener("click", function() {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+
+        // Jalankan pemuatan data saat DOM siap
+        document.addEventListener("DOMContentLoaded", muatStrukturOrganisasi);
+    })();
     </script>
-    <script src="../js/main.js"></script>
-    <script src="../js/data-about.js"></script>
 </body>
 </html>
