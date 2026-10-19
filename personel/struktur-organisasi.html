@@ -9,66 +9,130 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-    /* Izinkan pembungkus luar untuk mengalirkan scroll horizontal di HP */
-    .dashboard-content,
-    .app-main-content {
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch;
+    /* 1. LAYOUT UMUM & WADAH SCROLL UTAMA (2D) */
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden !important; /* Kunci scroll halaman luar agar ditangani main content */
     }
 
-    /* Container utama bagan dengan pengaturan tengah penuh */
+    .app-main-content {
+        display: block !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: auto !important; /* Wadah scroll horizontal & vertikal */
+        box-sizing: border-box !important;
+        padding: 0 !important;
+        cursor: grab !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+    }
+
+    .dashboard-content {
+        display: block !important;
+        width: max-content !important;
+        min-width: 100% !important;
+        min-height: 100% !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. KONTAINER BAGAN MENTOK KIRI & TRANSFORM ORIGIN TOP LEFT */
     .so-physical-wrapper {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: max-content;
-        min-width: 100%;
-        padding: 24px 16px;
-        background: #ffffff;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        box-sizing: border-box;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: max-content !important;
+        margin: 0 !important; /* Mentok ke kiri */
+        padding: 16px 12px !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        
+        transform-origin: top left !important; /* Zoom dari pojok kiri atas */
+        transition: transform 0.15s ease-out;
+    }
+
+    /* Mencegah gambar memicu native drag bawaan browser */
+    .so-avatar,
+    .so-avatar-wrapper {
+        pointer-events: none !important;
+        -webkit-user-drag: none !important;
+    }
+
+    body.is-dragging, 
+    body.is-dragging * {
+        cursor: grabbing !important;
     }
 
     .so-board-header {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        min-width: 1000px;
-        margin-bottom: 20px;
-        padding-bottom: 12px;
-        border-bottom: 2px solid #121d42;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-bottom: 20px !important;
+        padding-bottom: 12px !important;
+        border-bottom: 2px solid #121d42 !important;
     }
 
     .so-board-title {
-        text-align: center;
-        font-size: 1.15rem;
-        font-weight: 800;
-        color: #121d42;
-        text-transform: uppercase;
+        text-align: center !important;
+        font-size: 1.15rem !important;
+        font-weight: 800 !important;
+        color: #121d42 !important;
+        text-transform: uppercase !important;
     }
 
-    /* Kartu KUPT di Tengah */
+    /* 3. GAYA FOTO (AVATAR) */
+    .so-avatar-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .so-avatar {
+        object-fit: cover;
+        border-radius: 50%;
+        background-color: #f1f5f9;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        border: 3px solid #ffffff;
+        transition: transform 0.2s ease;
+    }
+
+    /* 4. KARTU KUPT */
     .card-kupt-node {
-    min-width: 260px;
-    background: #121d42 !important; /* Memaksa warna latar navy */
-    border: 2px solid #121d42;
-    border-radius: 4px;
-    padding: 10px 14px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    margin: 0 auto;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        margin: 0 auto !important;
+        padding: 16px 20px !important;
+        min-width: 220px !important;
+        max-width: 260px !important;
+        background: #121d42 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+    }
+
+    .card-kupt-node .so-avatar {
+        width: 130px !important;
+        height: 130px !important;
+        margin-bottom: 10px !important;
+        border: 3.5px solid #f06400 !important;
     }
 
     .card-kupt-node .so-role {
-    color: #f06400 !important; /* Warna oranye KAI */
-    font-weight: 800;
-    font-size: 0.72rem;
-    letter-spacing: 0.5px;
+        color: #f06400 !important;
+        font-weight: 800;
+        font-size: 0.72rem;
+        letter-spacing: 0.5px;
     }
+
     .card-kupt-node .so-name {
-        color: #ffffff !important; /* Memaksa warna nama jadi putih bersih */
+        color: #ffffff !important;
         font-weight: 700;
         font-size: 0.92rem;
         margin-top: 4px;
@@ -76,75 +140,36 @@
     }
 
     .card-kupt-node .so-nipp {
-        color: #cbd5e1 !important; /* Memaksa warna NIPP jadi abu terang */
+        color: #cbd5e1 !important;
         font-size: 0.72rem;
         font-weight: 500;
-    }                                           
-    /* Kartu Staf & Derajat Bagan */
-    .so-node-card {
-        background: #ffffff;
-        border: 1.5px solid #121d42;
-        border-radius: 4px;
-        padding: 8px 10px;
-        text-align: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .card-instruktur-node {
-        min-width: 200px;
-        border-top: 3.5px solid #f06400;
-    }
-
-    .card-penyelia-node, .card-penyelia {
-        width: 100%;
-        min-width: 180px;
-        border-left: 3.5px solid #0284c7;
-        text-align: left;
-        padding: 6px 10px;
-        margin-bottom: 8px;
-    }
-
-    .card-asp {
-        width: 100%;
-        padding: 6px 4px;
-        border: 1px solid #cbd5e1;
-        border-radius: 3px;
-        background: #ffffff;
-        text-align: center;
-        box-sizing: border-box;
-    }
-
-    .so-role { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
-    .so-name { font-size: 0.78rem; font-weight: 700; color: #0f172a; margin-top: 1px; }
-    .so-nipp { font-size: 0.65rem; color: #64748b; }
-
+    /* 5. GARIS DAN POHON STRUKTUR */
     .line-v-center {
-        width: 2px;
-        height: 24px;
-        background: #121d42;
-        margin: 0 auto;
+        width: 2px !important;
+        height: 24px !important;
+        background: #121d42 !important;
+        margin: 0 auto !important;
     }
 
-    /* Struktur Pohon Utama */
     .so-main-tree {
-        display: flex;
-        justify-content: center;
-        gap: 36px;
-        width: 100%;
-        min-width: 1000px;
-        position: relative;
-        padding-top: 20px;
+        display: flex !important;
+        justify-content: center !important;
+        gap: 36px !important;
+        width: 100% !important;
+        position: relative !important;
+        padding-top: 20px !important;
     }
 
-    /* Garis Melintang Utama yang Simetris */
     .so-main-tree::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 220px;  /* Terunci dari batas luar kolom instruktur kiri */
-        right: 220px; /* Terunci dari batas luar seksi penyelia kanan */
-        height: 2px;
-        background: #121d42;
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 15% !important;
+        right: 15% !important;
+        height: 2px !important;
+        background: #121d42 !important;
     }
 
     .so-instruktur-section {
@@ -169,13 +194,44 @@
         background: #121d42;
     }
 
-    /* Grid Masinis 4 Kolom */
-    .so-asp-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 6px;
+    /* 6. KARTU INSTRUKTUR & PENYELIA */
+    .so-node-card {
+        background: #ffffff;
+        border: 1.5px solid #121d42;
+        border-radius: 8px;
+        padding: 12px 14px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .card-instruktur-node, 
+    .card-penyelia-node, 
+    .card-penyelia {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 8px !important;
+        padding: 12px 14px !important;
+        min-width: 180px !important;
+        max-width: 220px !important;
+    }
+
+    .card-instruktur-node {
+        border-top: 3.5px solid #f06400;
+    }
+
+    .card-penyelia-node, .card-penyelia {
         width: 100%;
-        margin-top: 8px;
+        border-left: 3.5px solid #0284c7;
+        margin-bottom: 8px;
+    }
+
+    .card-instruktur-node .so-avatar,
+    .card-penyelia-node .so-avatar,
+    .card-penyelia .so-avatar {
+        width: 110px !important;
+        height: 110px !important;
+        border: 3px solid #121d42 !important;
     }
 
     .so-penyelia-section {
@@ -188,29 +244,150 @@
         margin-top: -20px;
         padding-top: 20px;
     }
-    /* Container pembungkus data binaan */
-.binaan-container {
-    background: #f8fafc;
-    border: 2px dashed #cbd5e1; /* Gunakan solid jika ingin garis lurus tebal: border: 2px solid #121d42; */
-    border-radius: 8px;
-    padding: 12px;
-    margin-top: 12px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-}
 
-/* Judul opsional untuk kotak binaan */
-.binaan-header {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: #475569;
-    text-transform: uppercase;
-    text-align: center;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-    padding-bottom: 4px;
-    border-bottom: 1px solid #e2e8f0;
-}
-</style>
+    /* 7. KOTAK BINAAN & GRID MASINIS */
+    .binaan-container {
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 12px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .binaan-header {
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: #475569;
+        text-transform: uppercase;
+        text-align: center;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .so-asp-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .card-asp {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        justify-content: flex-start !important;
+        padding: 10px 6px !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 6px !important;
+        background: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        box-sizing: border-box !important;
+    }
+
+    .card-asp .so-avatar {
+        width: 100px !important;
+        height: 100px !important;
+        margin-bottom: 6px !important;
+        border: 2.5px solid #cbd5e1 !important;
+    }
+
+    /* 8. TEKS & TIPOGRAFI */
+    .so-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .so-role { 
+        font-size: 0.65rem !important; 
+        font-weight: 700 !important; 
+        color: #64748b !important; 
+        text-transform: uppercase; 
+    }
+
+    .so-name { 
+        font-size: 0.8rem !important; 
+        font-weight: 700 !important; 
+        color: #0f172a !important; 
+        margin-top: 2px !important;
+        line-height: 1.2 !important;
+    }
+
+    .card-asp .so-name {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-word;
+    }
+
+    .so-nipp { 
+        font-size: 0.65rem !important; 
+        color: #64748b !important; 
+        margin-top: 2px !important;
+    }
+
+    /* 9. WIDGET TOMBOL ZOOM MELAYANG (FLOATING CONTROLS) */
+    .zoom-controls-widget {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        background: #121d42;
+        padding: 6px 10px;
+        border-radius: 30px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        gap: 6px;
+    }
+
+    .zoom-btn {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: #ffffff;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 700;
+        transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .zoom-btn:hover {
+        background: #f06400;
+        transform: scale(1.08);
+    }
+
+    .zoom-btn:active {
+        transform: scale(0.95);
+    }
+
+    .zoom-display {
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        min-width: 48px;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+        user-select: none;
+    }
+    </style>
 </head>
 <body>
 
@@ -245,7 +422,7 @@
 
         <main class="app-main-content">
             <div class="dashboard-content" id="main-content">
-                <div class="so-physical-wrapper">
+                <div class="so-physical-wrapper" id="so-physical-wrapper">
                     <div class="so-board-header">
                         <div class="so-board-title" style="width:100%;">
                             STRUKTUR ORGANISASI<br>UPT CREW KA KELAS C KISARAN
@@ -269,16 +446,120 @@
         </main>
     </div>
 
+    <!-- WIDGET TOMBOL ZOOM MELAYANG POJOK KANAN BAWAH -->
+    <div class="zoom-controls-widget" role="region" aria-label="Kontrol Perbesaran Bagan">
+        <button type="button" class="zoom-btn" id="btn-zoom-out" title="Perkecil (Zoom Out)">-</button>
+        <span class="zoom-display" id="zoom-value-text">100%</span>
+        <button type="button" class="zoom-btn" id="btn-zoom-in" title="Perbesar (Zoom In)">+</button>
+        <button type="button" class="zoom-btn" id="btn-zoom-reset" title="Kembalikan Semula (Reset Zoom)" style="font-size: 0.8rem;">&#x21bb;</button>
+    </div>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const btnToggle = document.getElementById("btn-toggle-menu");
-            const sidebar = document.getElementById("app-sidebar");
-            if (btnToggle && sidebar) {
-                btnToggle.addEventListener("click", function() {
-                    sidebar.classList.toggle("collapsed");
-                });
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. Toggle Sidebar Menu
+        const btnToggle = document.getElementById("btn-toggle-menu");
+        const sidebar = document.getElementById("app-sidebar");
+        if (btnToggle && sidebar) {
+            btnToggle.addEventListener("click", function() {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+
+        // 2. LOGIKA FITUR ZOOM IN, ZOOM OUT & RESET
+        let currentScale = 1.0;
+        const minScale = 0.4;  // Batas perkecil (40%)
+        const maxScale = 2.0;  // Batas perbesar (200%)
+        const step = 0.1;
+
+        const wrapper = document.getElementById("so-physical-wrapper");
+        const zoomText = document.getElementById("zoom-value-text");
+        const btnIn = document.getElementById("btn-zoom-in");
+        const btnOut = document.getElementById("btn-zoom-out");
+        const btnReset = document.getElementById("btn-zoom-reset");
+
+        function applyZoom(newScale) {
+            currentScale = Math.min(Math.max(newScale, minScale), maxScale);
+            if (wrapper) {
+                wrapper.style.transform = `scale(${currentScale})`;
+            }
+            if (zoomText) {
+                zoomText.textContent = `${Math.round(currentScale * 100)}%`;
+            }
+        }
+
+        if (btnIn) btnIn.addEventListener("click", () => applyZoom(currentScale + step));
+        if (btnOut) btnOut.addEventListener("click", () => applyZoom(currentScale - step));
+        if (btnReset) btnReset.addEventListener("click", () => applyZoom(1.0));
+
+        // Pintasan Keyboard (+ / - / 0)
+        window.addEventListener("keydown", function(e) {
+            if (e.target.closest("input, textarea, select")) return;
+            if (e.key === "+" || e.key === "=") {
+                applyZoom(currentScale + step);
+            } else if (e.key === "-" || e.key === "_") {
+                applyZoom(currentScale - step);
+            } else if (e.key === "0") {
+                applyZoom(1.0);
             }
         });
+
+        // Zoom menggunakan Roda Tetikus (Ctrl + Scroll Wheel)
+        window.addEventListener("wheel", function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                    applyZoom(currentScale + 0.05);
+                } else {
+                    applyZoom(currentScale - 0.05);
+                }
+            }
+        }, { passive: false });
+
+        // 3. FITUR HOLD & DRAG TO SCROLL BEBAS 2 DIMENSI (TARGET CONTAINER)
+        const scrollContainer = document.querySelector('.app-main-content');
+        let isMouseDown = false;
+        let startX = 0;
+        let startY = 0;
+        let scrollLeft = 0;
+        let scrollTop = 0;
+
+        // Matikan native image drag bawaan browser
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('dragstart', (e) => e.preventDefault());
+        });
+
+        if (scrollContainer) {
+            scrollContainer.addEventListener('mousedown', function(e) {
+                // Abaikan klik pada tombol interaktif & widget zoom
+                if (e.target.closest('button, a, input, select, textarea, .zoom-controls-widget')) return;
+
+                isMouseDown = true;
+                document.body.classList.add('is-dragging');
+
+                startX = e.clientX;
+                startY = e.clientY;
+
+                scrollLeft = scrollContainer.scrollLeft;
+                scrollTop = scrollContainer.scrollTop;
+            });
+
+            window.addEventListener('mouseup', function() {
+                isMouseDown = false;
+                document.body.classList.remove('is-dragging');
+            });
+
+            window.addEventListener('mousemove', function(e) {
+                if (!isMouseDown) return;
+                e.preventDefault();
+
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+
+                scrollContainer.scrollLeft = scrollLeft - deltaX;
+                scrollContainer.scrollTop = scrollTop - deltaY;
+            });
+        }
+    });
     </script>
     <script src="../js/main.js"></script>
     <script src="../js/data-about.js"></script>
