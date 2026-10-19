@@ -965,3 +965,356 @@ window.addEventListener('DOMContentLoaded', () => {
         muatDataSisaCuti();
     }
 });
+
+// ==========================================================================
+// FUNGSIONALITAS REKAM JEJAK 12 BULAN (DASHBOARD-CUTI.HTML)
+// ==========================================================================
+async function ambilRekamJejakSetahun(nippPegawai) {
+    // Inisialisasi rekap 12 bulan
+    let rekapBulan = NAMA_BULAN_LENGKAP.map((namaBulan, idx) => ({
+        bulanIdx: idx,
+        namaBulan: namaBulan,
+        hadir: 0,
+        ct: 0,    // Cuti Tahunan
+        csk: 0,   // Cuti Sakit
+        itmb: 0,  // Cuti Penting / ITMB / CP / SPKA
+        tms: 0,   // Tidak Memenuhi Syarat
+        mangkir: 0 // Mangkir / Tanpa Keterangan
+    }));
+
+    // Ambil data dari 12 sheet bulan secara paralel
+    const promises = Object.keys(GID_BULAN).map(async (bulanIdxStr) => {
+        const bulanIdx = parseInt(bulanIdxStr, 10);
+        const gid = GID_BULAN[bulanIdx];
+
+        if (!gid) return;
+
+        try {
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${gid}`;
+            const res = await fetch(url);
+            if (!res.ok) return;
+
+            const text = await res.text();
+            const rows = text.split('\n');
+
+            rows.forEach(baris => {
+                const kolom = baris.split(',').map(k => k.replace(/"/g, '').trim());
+                if (kolom.length >= 4) {
+                    const nipp = kolom[2];
+                    if (nipp === nippPegawai) {
+                        for (let tgl = 1; tgl <= 31; tgl++) {
+                            const idxKolom = tgl + 3;
+                            if (kolom[idxKolom]) {
+                                const st = kolom[idxKolom].toUpperCase();
+                                if (st === 'CT') rekapBulan[bulanIdx].ct++;
+                                else if (st === 'CSK') rekapBulan[bulanIdx].csk++;
+                                else if (st === 'ITMB' || st === 'SPKA' || st === 'CP') rekapBulan[bulanIdx].itmb++;
+                                else if (st === 'TMS') rekapBulan[bulanIdx].tms++;
+                                else if (st === 'M') rekapBulan[bulanIdx].mangkir++;
+                                else if (st === 'H' || st === 'V' || st === 'OK') rekapBulan[bulanIdx].hadir++;
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.warn(`Gagal memuat rekam jejak bulan ${NAMA_BULAN_LENGKAP[bulanIdx]}:`, e);
+        }
+    });
+
+    await Promise.all(promises);
+    return rekapBulan;
+}
+
+function tampilkanModalRekamJejak(pegawai, rekapBulan) {
+    const modal = document.getElementById('modal-detail');
+    const modalTitle = document.getElementById('modal-title');
+    const modalTableHead = document.querySelector('.modal-data-table thead');
+    const modalTableBody = document.getElementById('modal-table-body');
+    const modalCountInfo = document.getElementById('modal-count-info');
+    const modalSearchWrapper = document.querySelector('.modal-search-wrapper');
+
+    if (!modal || !modalTableBody) return;
+
+    if (modalTitle) modalTitle.textContent = `Rekam Jejak Kehadiran 1 Tahun - ${pegawai.nama} (${pegawai.nipp})`;
+    if (modalSearchWrapper) modalSearchWrapper.style.display = 'none';
+
+    // Sesuaikan Header Tabel dengan Kolom Semua Jenis Cuti
+    if (modalTableHead) {
+        modalTableHead.innerHTML = `
+            <tr>
+                <th scope="col" class="cell-center">No</th>
+                <th scope="col">Bulan</th>
+                <th scope="col" class="cell-center">Hadir</th>
+                <th scope="col" class="cell-center">Cuti Tahunan (CT)</th>
+                <th scope="col" class="cell-center">Cuti Sakit (CSK)</th>
+                <th scope="col" class="cell-center">Cuti Penting (ITMB/CP)</th>
+                <th scope="col" class="cell-center">TMS</th>
+                <th scope="col" class="cell-center">Mangkir</th>
+            </tr>
+        `;
+    }
+
+    modalTableBody.innerHTML = '';
+
+    let totalHadir = 0, totalCt = 0, totalCsk = 0, totalItmb = 0, totalTms = 0, totalMangkir = 0;
+
+    rekapBulan.forEach((rb, index) => {
+        totalHadir += rb.hadir;
+        totalCt += rb.ct;
+        totalCsk += rb.csk;
+        totalItmb += rb.itmb;
+        totalTms += rb.tms;
+        totalMangkir += rb.mangkir;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="cell-center">${index + 1}</td>
+            <td style="font-weight: 600;">${rb.namaBulan}</td>
+            <td class="cell-center">${rb.hadir}</td>
+            <td class="cell-center ${rb.ct > 0 ? 'val-nonzero-cuti' : ''}">${rb.ct}</td>
+            <td class="cell-center ${rb.csk > 0 ? 'val-nonzero-sakit' : ''}">${rb.csk}</td>
+            <td class="cell-center ${rb.itmb > 0 ? 'val-nonzero-penting' : ''}">${rb.itmb}</td>
+            <td class="cell-center ${rb.tms > 0 ? 'val-nonzero-tms' : ''}">${rb.tms}</td>
+            <td class="cell-center ${rb.mangkir > 0 ? 'val-nonzero-mangkir' : ''}">${rb.mangkir}</td>
+        `;
+        modalTableBody.appendChild(tr);
+    });
+
+    // Baris Total Akumulasi 1 Tahun
+    const trTotal = document.createElement('tr');
+    trTotal.style.fontWeight = '700';
+    trTotal.style.backgroundColor = '#f1f5f9';
+    trTotal.innerHTML = `
+        <td colspan="2" class="cell-center">TOTAL 1 TAHUN</td>
+        <td class="cell-center">${totalHadir}</td>
+        <td class="cell-center" style="color: var(--status-cuti);">${totalCt} Hari</td>
+        <td class="cell-center" style="color: var(--status-sakit);">${totalCsk} Hari</td>
+        <td class="cell-center" style="color: var(--status-penting);">${totalItmb} Hari</td>
+        <td class="cell-center" style="color: var(--status-tms);">${totalTms} Hari</td>
+        <td class="cell-center" style="color: var(--status-mangkir);">${totalMangkir} Hari</td>
+    `;
+    modalTableBody.appendChild(trTotal);
+
+    if (modalCountInfo) {
+        modalCountInfo.textContent = `Rekapitulasi 12 bulan untuk ${pegawai.nama}`;
+    }
+
+    modal.style.display = 'flex';
+}
+// ==========================================================================
+// FUNGSIONALITAS REKAM JEJAK 12 BULAN PERIODE PEGAWAI (DASHBOARD-CUTI.HTML)
+// ==========================================================================
+async function ambilRekamJejakSetahun(nippTarget) {
+    const targetNippStr = String(nippTarget).trim();
+
+    // Inisialisasi struktur rekap 12 bulan
+    let rekapBulan = NAMA_BULAN_LENGKAP.map((namaBulan, idx) => ({
+        bulanIdx: idx,
+        namaBulan: namaBulan,
+        hadir: 0,
+        ct: 0,    // Cuti Tahunan
+        csk: 0,   // Cuti Sakit
+        itmb: 0,  // Cuti Penting / ITMB / CP
+        tms: 0,   // TMS
+        mangkir: 0 // Mangkir
+    }));
+
+    // Tarik data 12 bulan secara paralel dari Google Sheets
+    const fetchPromises = Object.keys(GID_BULAN).map(async (bulanIdxStr) => {
+        const bulanIdx = parseInt(bulanIdxStr, 10);
+        const gid = GID_BULAN[bulanIdx];
+
+        if (!gid) return;
+
+        try {
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${gid}`;
+            const res = await fetch(url);
+            if (!res.ok) return;
+
+            const text = await res.text();
+            const rows = text.split('\n');
+
+            rows.forEach(baris => {
+                const kolom = baris.split(',').map(k => k.replace(/"/g, '').trim());
+                if (kolom.length >= 4) {
+                    const nippKolom = String(kolom[2]).trim();
+
+                    if (nippKolom === targetNippStr) {
+                        for (let tgl = 1; tgl <= 31; tgl++) {
+                            const idxKolom = tgl + 3;
+                            if (kolom[idxKolom]) {
+                                const st = kolom[idxKolom].toUpperCase();
+                                if (st === 'CT') rekapBulan[bulanIdx].ct++;
+                                else if (st === 'CSK') rekapBulan[bulanIdx].csk++;
+                                else if (st === 'ITMB' || st === 'SPKA' || st === 'CP') rekapBulan[bulanIdx].itmb++;
+                                else if (st === 'TMS') rekapBulan[bulanIdx].tms++;
+                                else if (st === 'M') rekapBulan[bulanIdx].mangkir++;
+                                else if (st === 'H' || st === 'V' || st === 'OK') rekapBulan[bulanIdx].hadir++;
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.warn(`Gagal memuat rekam jejak bulan ${NAMA_BULAN_LENGKAP[bulanIdx]}:`, e);
+        }
+    });
+
+    await Promise.all(fetchPromises);
+    return rekapBulan;
+}
+
+function tampilkanModalRekamJejak(pegawai, rekapBulan) {
+    const modal = document.getElementById('modal-detail');
+    const modalTitle = document.getElementById('modal-title');
+    const modalTableHead = document.querySelector('.modal-data-table thead');
+    const modalTableBody = document.getElementById('modal-table-body');
+    const modalCountInfo = document.getElementById('modal-count-info');
+    const modalSearchWrapper = document.querySelector('.modal-search-wrapper');
+
+    if (!modal || !modalTableBody) return;
+
+    if (modalTitle) modalTitle.textContent = `Rekam Jejak Kehadiran 1 Tahun - ${pegawai.nama} (${pegawai.nipp})`;
+    if (modalSearchWrapper) modalSearchWrapper.style.display = 'none';
+
+    // Set Header Tabel dengan Kolom Semua Jenis Cuti
+    if (modalTableHead) {
+        modalTableHead.innerHTML = `
+            <tr>
+                <th scope="col" class="cell-center">No</th>
+                <th scope="col">Bulan</th>
+                <th scope="col" class="cell-center">Hadir</th>
+                <th scope="col" class="cell-center">Cuti Tahunan (CT)</th>
+                <th scope="col" class="cell-center">Cuti Sakit (CSK)</th>
+                <th scope="col" class="cell-center">Cuti Penting (ITMB/CP)</th>
+                <th scope="col" class="cell-center">TMS</th>
+                <th scope="col" class="cell-center">Mangkir</th>
+            </tr>
+        `;
+    }
+
+    modalTableBody.innerHTML = '';
+
+    let totalHadir = 0, totalCt = 0, totalCsk = 0, totalItmb = 0, totalTms = 0, totalMangkir = 0;
+
+    rekapBulan.forEach((rb, index) => {
+        totalHadir += rb.hadir;
+        totalCt += rb.ct;
+        totalCsk += rb.csk;
+        totalItmb += rb.itmb;
+        totalTms += rb.tms;
+        totalMangkir += rb.mangkir;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="cell-center">${index + 1}</td>
+            <td style="font-weight: 600;">${rb.namaBulan}</td>
+            <td class="cell-center">${rb.hadir}</td>
+            <td class="cell-center ${rb.ct > 0 ? 'val-nonzero-cuti' : ''}">${rb.ct}</td>
+            <td class="cell-center ${rb.csk > 0 ? 'val-nonzero-sakit' : ''}">${rb.csk}</td>
+            <td class="cell-center ${rb.itmb > 0 ? 'val-nonzero-penting' : ''}">${rb.itmb}</td>
+            <td class="cell-center ${rb.tms > 0 ? 'val-nonzero-tms' : ''}">${rb.tms}</td>
+            <td class="cell-center ${rb.mangkir > 0 ? 'val-nonzero-mangkir' : ''}">${rb.mangkir}</td>
+        `;
+        modalTableBody.appendChild(tr);
+    });
+
+    // Baris Total Akumulasi 1 Tahun
+    const trTotal = document.createElement('tr');
+    trTotal.style.fontWeight = '700';
+    trTotal.style.backgroundColor = '#f1f5f9';
+    trTotal.innerHTML = `
+        <td colspan="2" class="cell-center">TOTAL 1 TAHUN</td>
+        <td class="cell-center">${totalHadir}</td>
+        <td class="cell-center" style="color: var(--status-cuti);">${totalCt} Hari</td>
+        <td class="cell-center" style="color: var(--status-sakit);">${totalCsk} Hari</td>
+        <td class="cell-center" style="color: var(--status-penting);">${totalItmb} Hari</td>
+        <td class="cell-center" style="color: var(--status-tms);">${totalTms} Hari</td>
+        <td class="cell-center" style="color: var(--status-mangkir);">${totalMangkir} Hari</td>
+    `;
+    modalTableBody.appendChild(trTotal);
+
+    if (modalCountInfo) {
+        modalCountInfo.textContent = `Rekapitulasi 12 bulan untuk ${pegawai.nama}`;
+    }
+
+    modal.style.display = 'flex';
+}
+
+function aktifkanPencarianDashboardCuti() {
+    const searchInput = document.getElementById('global-search-input');
+    const searchResults = document.getElementById('global-search-results');
+
+    if (!searchInput || !searchResults) return;
+
+    searchInput.addEventListener('input', function () {
+        const query = this.value.trim().toLowerCase();
+
+        if (query.length === 0) {
+            searchResults.innerHTML = '';
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        // Ambil data pegawai baik dari cache dashboard maupun cache sisa cuti
+        const dataSumber = (typeof cacheDataPegawai !== 'undefined' && cacheDataPegawai.length > 0)
+            ? cacheDataPegawai
+            : (window.cacheSisaCuti || []);
+
+        const matched = dataSumber.filter(p =>
+            (p.nama && String(p.nama).toLowerCase().includes(query)) ||
+            (p.nipp && String(p.nipp).toLowerCase().includes(query))
+        );
+
+        if (matched.length > 0) {
+            searchResults.innerHTML = matched.map((p, index) => `
+                <div class="search-item-row" data-index="${index}" style="padding: 10px 14px; border-bottom: 1px solid #e2e8f0; cursor: pointer; text-align: left; background: #ffffff;">
+                    <div style="font-weight: 700; color: #121d42; font-size: 0.88rem;">${p.nama}</div>
+                    <div style="font-size: 0.75rem; color: #64748b;">NIPP: ${p.nipp} &bull; ${p.jabatan || 'ASP'}</div>
+                </div>
+            `).join('');
+            searchResults.style.display = 'block';
+
+            const rows = searchResults.querySelectorAll('.search-item-row');
+            rows.forEach(row => {
+                row.addEventListener('click', async function () {
+                    const idx = this.getAttribute('data-index');
+                    const pegawaiSelected = matched[idx];
+                    searchResults.style.display = 'none';
+
+                    // Tampilkan pesan indikator memuat data
+                    const modal = document.getElementById('modal-detail');
+                    const modalTitle = document.getElementById('modal-title');
+                    const modalTableBody = document.getElementById('modal-table-body');
+                    
+                    if (modal && modalTableBody) {
+                        if (modalTitle) modalTitle.textContent = `Memuat Rekam Jejak - ${pegawaiSelected.nama}...`;
+                        modalTableBody.innerHTML = `<tr><td colspan="8" class="cell-center" style="padding: 28px; font-weight: 600;">Sedang menarik rekam jejak 12 bulan dari Google Sheets...</td></tr>`;
+                        modal.style.display = 'flex';
+                    }
+
+                    // Ambil riwayat rekam jejak 12 bulan penuh
+                    const rekapBulan = await ambilRekamJejakSetahun(pegawaiSelected.nipp);
+                    tampilkanModalRekamJejak(pegawaiSelected, rekapBulan);
+                });
+            });
+        } else {
+            searchResults.innerHTML = `
+                <div style="padding: 12px; font-size: 0.85rem; color: #64748b; text-align: center; background: #ffffff;">
+                    Data pegawai tidak ditemukan
+                </div>`;
+            searchResults.style.display = 'block';
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(aktifkanPencarianDashboardCuti, 500);
+});
