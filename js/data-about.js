@@ -17,8 +17,8 @@ function renderAvatar(nama, nipp, extraClass = '') {
     const cleanNipp = nipp ? String(nipp).trim() : '00000';
 
     // Perbaikan: Jalur primarySrc diarahkan ke dalam folder assets/struktur-organisasi/
-const primarySrc = `/assets/struktur-organisasi/${cleanNipp}.png`;
-const defaultSrc = `/assets/struktur-organisasi/default.jpg`;
+const primarySrc = `../assets/struktur-organisasi/${cleanNipp}.png`;
+const defaultSrc = `../assets/struktur-organisasi/default.jpg`;
     
     return `
         <div class="so-avatar-wrapper">
