@@ -12,11 +12,15 @@ function formatFileName(nama) {
 }
 
 function getBasePath() {
-    // Jika halaman dibuka dari dalam subfolder (seperti folder personel/ atau cuti/)
+    // Menggunakan path relatif universal agar bekerja di GitHub Pages & Lokal
     const path = window.location.pathname;
+    
+    // Jika halaman dibuka dari dalam folder sub-menu (seperti /personel/ atau /cuti/)
     if (path.includes('/personel/') || path.includes('/cuti/')) {
         return '../assets/struktur-organisasi/';
     }
+    
+    // Jika dibuka dari root utama (index.html)
     return 'assets/struktur-organisasi/';
 }
 
@@ -26,22 +30,6 @@ function renderAvatar(nama, nipp, extraClass = '') {
 
     const primarySrc = `${basePath}${cleanNipp}.png`;
     const fallbackSrc = `${basePath}${cleanNipp}.PNG`;
-
-    return `
-        <div class="so-avatar-wrapper">
-            <img src="${primarySrc}" 
-                 alt="${nama}" 
-                 class="so-avatar ${extraClass}"
-                 onerror="if (!this.dataset.retry) { this.dataset.retry = '1'; this.src='${fallbackSrc}'; }">
-        </div>
-    `;
-}
-
-// Fungsi pembuat elemen tag <img> dengan pendeteksian nama_nipp.png -> nipp.png -> default.jpg
-function renderAvatar(nama, nipp, extraClass = '') {
-    const cleanNipp = nipp ? String(nipp).trim() : '00000';
-    const primarySrc = `../assets/struktur-organisasi/${cleanNipp}.png`;
-    const fallbackSrc = `../assets/struktur-organisasi/${cleanNipp}.PNG`;
 
     return `
         <div class="so-avatar-wrapper">
