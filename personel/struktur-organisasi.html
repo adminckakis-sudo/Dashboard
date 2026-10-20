@@ -74,7 +74,6 @@ html, body {
     touch-action: pan-x pan-y !important;
 }
 
-/* Mencegah gambar & teks mengunci kursor saat drag / touch */
 .so-physical-wrapper img,
 .so-physical-wrapper span,
 .so-physical-wrapper div {
@@ -585,7 +584,6 @@ body.is-dragging * {
    7. OVERRIDE MEDIA QUERY KHUSUS MOBILE (BEBAS SCROLL 2D & RESPONSIVE)
    ========================================================================== */
 @media (max-width: 1024px), (max-width: 768px), (max-width: 600px) {
-    /* Batalkan penguncian overflow-x: hidden dari style.css secara mutlak */
     html, body {
         overflow: auto !important;
         overflow-x: auto !important;
@@ -673,8 +671,7 @@ body.is-dragging * {
                     </a>
                     
                     <!-- Sub-Navigasi -->
-                    <div href="../index.html"  class="sidebar-item" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        </a>
+                    <div class="sidebar-item" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
                         <a href="./struktur-organisasi.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Struktur Organisasi</span>
                         </a>
@@ -745,64 +742,64 @@ body.is-dragging * {
     <!-- LOGIKA STRUKTUR ORGANISASI, PENAMPIL GAMBAR ROBUST & 2D TOUCH PAN SCROLL -->
     <script>
     (function() {
-// A. RESOLUSI JALUR GAMBAR ROBUST (LOKAL & GITHUB PAGES)
-function getBaseAssetsFolder() {
-    // Menggunakan path relatif langsung tanpa konversi new URL()
-    const path = window.location.pathname;
-    if (path.includes('/personel/') || path.includes('/cuti/')) {
-        return '../assets/struktur-organisasi/';
-    }
-    return 'assets/struktur-organisasi/';
-}
+        // ==========================================================================
+        // A. RESOLUSI JALUR GAMBAR ROBUST (LOKAL & GITHUB PAGES)
+        // ==========================================================================
+        function getBaseAssetsFolder() {
+            const path = window.location.pathname;
+            if (path.includes('/personel/') || path.includes('/cuti/')) {
+                return '../assets/struktur-organisasi/';
+            }
+            return 'assets/struktur-organisasi/';
+        }
 
-// SVG Avatar Inisial Korporat KAI jika foto tidak ditemukan
-function generateInitialsAvatarSvg(nama) {
-    const words = (nama || 'Pegawai').trim().split(/\s+/);
-    const initials = words.length >= 2 
-        ? (words[0][0] + words[1][0]).toUpperCase() 
-        : (words[0].substring(0, 2)).toUpperCase();
-    
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
-        <defs>
-            <linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#1c2a5f"/>
-                <stop offset="100%" stop-color="#121d42"/>
-            </linearGradient>
-        </defs>
-        <circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>
-        <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>
-        <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
-    </svg>`;
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-}
+        // SVG Avatar Inisial Korporat KAI jika foto tidak ditemukan
+        function generateInitialsAvatarSvg(nama) {
+            const words = (nama || 'Pegawai').trim().split(/\s+/);
+            const initials = words.length >= 2 
+                ? (words[0][0] + words[1][0]).toUpperCase() 
+                : (words[0].substring(0, 2)).toUpperCase();
+            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+                <defs>
+                    <linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#1c2a5f"/>
+                        <stop offset="100%" stop-color="#121d42"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>
+                <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>
+                <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
 
-// Penanganan error bertingkat
-window.handleAvatarLoadError = function(img, nama, cleanNipp) {
-    const base = getBaseAssetsFolder();
-    if (!img.dataset.caseAttempt) {
-        img.dataset.caseAttempt = 'upper';
-        // Coba ekstensi kapital .PNG jika server Linux case-sensitive
-        img.src = `${base}${cleanNipp}.PNG`;
-    } else if (img.dataset.caseAttempt === 'upper') {
-        img.dataset.caseAttempt = 'done';
-        img.src = generateInitialsAvatarSvg(nama);
-    }
-};
+        // Penanganan error bertingkat
+        window.handleAvatarLoadError = function(img, nama, cleanNipp) {
+            const base = getBaseAssetsFolder();
+            if (!img.dataset.caseAttempt) {
+                img.dataset.caseAttempt = 'upper';
+                img.src = `${base}${cleanNipp}.PNG`;
+            } else if (img.dataset.caseAttempt === 'upper') {
+                img.dataset.caseAttempt = 'done';
+                img.src = generateInitialsAvatarSvg(nama);
+            }
+        };
 
-// Fungsi pembuat tag <img> avatar
-function createAvatarHtml(nama, nipp, extraClass = '') {
-    const cleanNipp = nipp ? String(nipp).trim() : '00000';
-    const safeNama = (nama || '').replace(/"/g, '&quot;');
-    const directPngSrc = `${getBaseAssetsFolder()}${cleanNipp}.png`;
+        // Fungsi pembuat tag <img> avatar
+        function createAvatarHtml(nama, nipp, extraClass = '') {
+            const cleanNipp = nipp ? String(nipp).trim() : '00000';
+            const safeNama = (nama || '').replace(/"/g, '&quot;');
+            const directPngSrc = `${getBaseAssetsFolder()}${cleanNipp}.png`;
 
-    return `
-        <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
-            <img src="${directPngSrc}" 
-                 alt="${safeNama}" 
-                 class="so-avatar ${extraClass}"
-                 onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
-        </div>
-    `;
+            return `
+                <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
+                    <img src="${directPngSrc}" 
+                         alt="${safeNama}" 
+                         class="so-avatar ${extraClass}"
+                         onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
+                </div>
+            `;
         }
 
         // ==========================================================================
@@ -843,7 +840,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
             if (e.key === 'Escape') closeLightbox();
         });
 
-        // Event delegasi klik kartu / avatar untuk membuka penampil gambar
         document.addEventListener('click', function(e) {
             const card = e.target.closest('.card-kupt-node, .card-instruktur-node, .card-penyelia-node, .card-asp');
             if (card) {
@@ -1024,8 +1020,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
         // ==========================================================================
         // E. SISTEM 2D SCROLL BEBAS (MOUSE DRAG DESKTOP & FLUID TOUCH PAN MOBILE)
         // ==========================================================================
-        
-        // 1. Mouse Drag untuk Desktop
         let isMouseDown = false;
         let mouseStartX = 0, mouseStartY = 0;
         let mouseScrollLeft = 0, mouseScrollTop = 0;
@@ -1054,7 +1048,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
             window.scrollTo(mouseScrollLeft - deltaX, mouseScrollTop - deltaY);
         });
 
-        // 2. Touch Pan 2D untuk Layar Sentuh Mobile (Membuka Kunci Scroll Bebas)
         let isTouchPanning = false;
         let touchStartX = 0, touchStartY = 0;
         let touchScrollStartX = 0, touchScrollStartY = 0;
@@ -1075,7 +1068,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
                 touchScrollStartX = window.scrollX || document.documentElement.scrollLeft || document.body.scrollLeft;
                 touchScrollStartY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
             } else if (e.touches.length === 2) {
-                // Pinch-to-zoom dengan 2 jari
                 isTouchPanning = false;
                 initialPinchDist = getDistance(e.touches[0], e.touches[1]);
                 initialScaleOnPinch = currentScale;
@@ -1083,7 +1075,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
         }, { passive: true });
 
         window.addEventListener('touchmove', function(e) {
-            // Tangani Pinch-to-Zoom
             if (e.touches.length === 2 && initialPinchDist) {
                 const currentDist = getDistance(e.touches[0], e.touches[1]);
                 const factor = currentDist / initialPinchDist;
@@ -1091,13 +1082,11 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
                 return;
             }
 
-            // Tangani Usapan Bebas 2D (Pan Scroll)
             if (!isTouchPanning || e.touches.length !== 1) return;
 
             const deltaX = e.touches[0].clientX - touchStartX;
             const deltaY = e.touches[0].clientY - touchStartY;
 
-            // Gerakkan viewport secara simultan ke sumbu horizontal dan vertikal
             window.scrollTo(touchScrollStartX - deltaX, touchScrollStartY - deltaY);
         }, { passive: true });
 
@@ -1113,7 +1102,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
             initialPinchDist = null;
         });
 
-        // 3. Toggle Sidebar Menu Mobile
         const btnToggle = document.getElementById("btn-toggle-menu");
         const sidebar = document.getElementById("app-sidebar");
         if (btnToggle && sidebar) {
@@ -1122,7 +1110,6 @@ function createAvatarHtml(nama, nipp, extraClass = '') {
             });
         }
 
-        // Jalankan pemuatan data saat DOM siap
         document.addEventListener("DOMContentLoaded", muatStrukturOrganisasi);
     })();
     </script>
