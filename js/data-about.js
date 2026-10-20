@@ -11,21 +11,44 @@ function formatFileName(nama) {
         .replace(/\s+/g, '_');
 }
 
-// Fungsi pembuat elemen tag <img> dengan pendeteksian nama_nipp.png -> nipp.png -> default.jpg
-function renderAvatar(nama, nipp, extraClass = '') {
-    const cleanNama = formatFileName(nama);
-    const cleanNipp = nipp ? String(nipp).trim() : '00000';
+function getBasePath() {
+    // Jika halaman dibuka dari dalam subfolder (seperti folder personel/ atau cuti/)
+    const path = window.location.pathname;
+    if (path.includes('/personel/') || path.includes('/cuti/')) {
+        return '../assets/struktur-organisasi/';
+    }
+    return 'assets/struktur-organisasi/';
+}
 
-    // Perbaikan: Jalur primarySrc diarahkan ke dalam folder assets/struktur-organisasi/
-const primarySrc = `../assets/struktur-organisasi/${cleanNipp}.png`;
-const defaultSrc = `../assets/struktur-organisasi/default.jpg`;
-    
+function renderAvatar(nama, nipp, extraClass = '') {
+    const cleanNipp = nipp ? String(nipp).trim() : '00000';
+    const basePath = getBasePath();
+
+    const primarySrc = `${basePath}${cleanNipp}.png`;
+    const fallbackSrc = `${basePath}${cleanNipp}.PNG`;
+
     return `
         <div class="so-avatar-wrapper">
             <img src="${primarySrc}" 
                  alt="${nama}" 
                  class="so-avatar ${extraClass}"
-                 onerror="if (this.src.includes('${cleanNama}')) { this.src='${secondarySrc}'; } else if (this.src.includes('${cleanNipp}.png')) { this.src='${defaultSrc}'; }">
+                 onerror="if (!this.dataset.retry) { this.dataset.retry = '1'; this.src='${fallbackSrc}'; }">
+        </div>
+    `;
+}
+
+// Fungsi pembuat elemen tag <img> dengan pendeteksian nama_nipp.png -> nipp.png -> default.jpg
+function renderAvatar(nama, nipp, extraClass = '') {
+    const cleanNipp = nipp ? String(nipp).trim() : '00000';
+    const primarySrc = `../assets/struktur-organisasi/${cleanNipp}.png`;
+    const fallbackSrc = `../assets/struktur-organisasi/${cleanNipp}.PNG`;
+
+    return `
+        <div class="so-avatar-wrapper">
+            <img src="${primarySrc}" 
+                 alt="${nama}" 
+                 class="so-avatar ${extraClass}"
+                 onerror="if (!this.dataset.retry) { this.dataset.retry = '1'; this.src='${fallbackSrc}'; }">
         </div>
     `;
 }
