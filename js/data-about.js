@@ -1,6 +1,17 @@
 // URL ekspor CSV langsung dari Google Sheets (Sheet: Jabatan, gid=1567798541)
 const csvUrl = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
 
+// Helper penentu jalur relatif folder assets sesuai lokasi halaman
+function getBasePath() {
+    const path = window.location.pathname;
+    // Jika halaman dibuka dari dalam subfolder (seperti /personel/ atau /cuti/)
+    if (path.includes('/personel/') || path.includes('/cuti/')) {
+        return '../assets/struktur-organisasi/';
+    }
+    // Jika dibuka dari root utama (index.html)
+    return 'assets/struktur-organisasi/';
+}
+
 // Helper mengubah nama menjadi format nama_file (lowercase & underscore)
 function formatFileName(nama) {
     if (!nama) return 'personel';
@@ -11,32 +22,33 @@ function formatFileName(nama) {
         .replace(/\s+/g, '_');
 }
 
-function getBasePath() {
-    // Menggunakan path relatif universal agar bekerja di GitHub Pages & Lokal
-    const path = window.location.pathname;
-    
-    // Jika halaman dibuka dari dalam folder sub-menu (seperti /personel/ atau /cuti/)
-    if (path.includes('/personel/') || path.includes('/cuti/')) {
-        return '../assets/struktur-organisasi/';
+// Penanganan error bertingkat jika foto tidak ditemukan / case-sensitivity
+window.handleAvatarLoadError = function(img, nama, cleanNipp) {
+    const base = getBasePath();
+    if (!img.dataset.caseAttempt) {
+        img.dataset.caseAttempt = 'upper';
+        // Coba ekstensi kapital .PNG (seperti pada 56853.PNG)
+        img.src = `${base}${cleanNipp}.PNG`;
+    } else if (img.dataset.caseAttempt === 'upper') {
+        img.dataset.caseAttempt = 'done';
+        img.src = `${base}default.jpg`;
     }
-    
-    // Jika dibuka dari root utama (index.html)
-    return 'assets/struktur-organisasi/';
-}
+};
 
+// Fungsi pembuat elemen tag <img> dengan pendeteksian nipp.png
 function renderAvatar(nama, nipp, extraClass = '') {
     const cleanNipp = nipp ? String(nipp).trim() : '00000';
+    const safeNama = (nama || '').replace(/"/g, '&quot;');
     const basePath = getBasePath();
 
     const primarySrc = `${basePath}${cleanNipp}.png`;
-    const fallbackSrc = `${basePath}${cleanNipp}.PNG`;
 
     return `
-        <div class="so-avatar-wrapper">
+        <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
             <img src="${primarySrc}" 
-                 alt="${nama}" 
+                 alt="${safeNama}" 
                  class="so-avatar ${extraClass}"
-                 onerror="if (!this.dataset.retry) { this.dataset.retry = '1'; this.src='${fallbackSrc}'; }">
+                 onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
         </div>
     `;
 }
@@ -72,8 +84,6 @@ async function loadAndRenderSpreadsheetData() {
                 const nama = columns[1].replace(/"/g, '').trim();
                 const nipp = columns[2].replace(/"/g, '').trim();
                 const jabatan = columns[3].replace(/"/g, '').trim().toUpperCase();
-                
-                // Mengambil nilai Kolom Binaan (Kolom ke-5 / indeks 4)
                 const binaan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
 
                 if (jabatan !== '') {
@@ -141,10 +151,8 @@ async function loadAndRenderSpreadsheetData() {
                             </div>
                         </div>
 
-                        <!-- Garis penghubung lurus dari Instruktur ke Kotak Binaan -->
                         <div class="line-v-center" style="height: 16px;"></div>
 
-                        <!-- KOTAK PEMBUNGKUS BINAAN -->
                         <div class="binaan-container">
                             <div class="binaan-header">BINAAN</div>
                             <div class="so-asp-grid" id="${colId}"></div>
