@@ -745,61 +745,64 @@ body.is-dragging * {
     <!-- LOGIKA STRUKTUR ORGANISASI, PENAMPIL GAMBAR ROBUST & 2D TOUCH PAN SCROLL -->
     <script>
     (function() {
-        // ==========================================================================
-        // A. RESOLUSI JALUR GAMBAR ROBUST (LOKAL & GITHUB PAGES)
-        // ==========================================================================
-        function getBaseAssetsFolder() {
-            // Resolusi jalur ../assets/struktur-organisasi/ terhadap URL dokumen aktif
-            return new URL('../assets/struktur-organisasi/', window.location.href).href;
-        }
+// A. RESOLUSI JALUR GAMBAR ROBUST (LOKAL & GITHUB PAGES)
+function getBaseAssetsFolder() {
+    // Menggunakan path relatif langsung tanpa konversi new URL()
+    const path = window.location.pathname;
+    if (path.includes('/personel/') || path.includes('/cuti/')) {
+        return '../assets/struktur-organisasi/';
+    }
+    return 'assets/struktur-organisasi/';
+}
 
-        // SVG Avatar Inisial Korporat KAI jika foto tidak ditemukan
-        function generateInitialsAvatarSvg(nama) {
-            const words = (nama || 'Pegawai').trim().split(/\s+/);
-            const initials = words.length >= 2 
-                ? (words[0][0] + words[1][0]).toUpperCase() 
-                : (words[0].substring(0, 2)).toUpperCase();
-            
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
-                <defs>
-                    <linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#1c2a5f"/>
-                        <stop offset="100%" stop-color="#121d42"/>
-                    </linearGradient>
-                </defs>
-                <circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>
-                <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>
-                <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
-            </svg>`;
-            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
-        }
+// SVG Avatar Inisial Korporat KAI jika foto tidak ditemukan
+function generateInitialsAvatarSvg(nama) {
+    const words = (nama || 'Pegawai').trim().split(/\s+/);
+    const initials = words.length >= 2 
+        ? (words[0][0] + words[1][0]).toUpperCase() 
+        : (words[0].substring(0, 2)).toUpperCase();
+    
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+        <defs>
+            <linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1c2a5f"/>
+                <stop offset="100%" stop-color="#121d42"/>
+            </linearGradient>
+        </defs>
+        <circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>
+        <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>
+        <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+    </svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
 
-        // Penanganan error bertingkat: coba .png -> coba .PNG (Linux case-sensitive) -> fallback SVG inisial
-        window.handleAvatarLoadError = function(img, nama, cleanNipp) {
-            if (!img.dataset.caseAttempt) {
-                img.dataset.caseAttempt = 'upper';
-                // Coba ekstensi kapital .PNG (seperti pada 56853.PNG)
-                img.src = `${getBaseAssetsFolder()}${cleanNipp}.PNG`;
-            } else if (img.dataset.caseAttempt === 'upper') {
-                img.dataset.caseAttempt = 'done';
-                img.src = generateInitialsAvatarSvg(nama);
-            }
-        };
+// Penanganan error bertingkat
+window.handleAvatarLoadError = function(img, nama, cleanNipp) {
+    const base = getBaseAssetsFolder();
+    if (!img.dataset.caseAttempt) {
+        img.dataset.caseAttempt = 'upper';
+        // Coba ekstensi kapital .PNG jika server Linux case-sensitive
+        img.src = `${base}${cleanNipp}.PNG`;
+    } else if (img.dataset.caseAttempt === 'upper') {
+        img.dataset.caseAttempt = 'done';
+        img.src = generateInitialsAvatarSvg(nama);
+    }
+};
 
-        // Fungsi pembuat tag <img> avatar yang langsung mengarah ke [nipp].png
-        function createAvatarHtml(nama, nipp, extraClass = '') {
-            const cleanNipp = nipp ? String(nipp).trim() : '00000';
-            const safeNama = (nama || '').replace(/"/g, '&quot;');
-            const directPngSrc = `${getBaseAssetsFolder()}${cleanNipp}.png`;
+// Fungsi pembuat tag <img> avatar
+function createAvatarHtml(nama, nipp, extraClass = '') {
+    const cleanNipp = nipp ? String(nipp).trim() : '00000';
+    const safeNama = (nama || '').replace(/"/g, '&quot;');
+    const directPngSrc = `${getBaseAssetsFolder()}${cleanNipp}.png`;
 
-            return `
-                <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
-                    <img src="${directPngSrc}" 
-                         alt="${safeNama}" 
-                         class="so-avatar ${extraClass}"
-                         onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
-                </div>
-            `;
+    return `
+        <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
+            <img src="${directPngSrc}" 
+                 alt="${safeNama}" 
+                 class="so-avatar ${extraClass}"
+                 onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
+        </div>
+    `;
         }
 
         // ==========================================================================
