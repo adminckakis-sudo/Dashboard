@@ -481,6 +481,18 @@
         // Ambil data otomatis dari Google Spreadsheet saat dimuat
         fetchSpreadsheetData();
         renderPengajuanBaruTable();
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const btnToggle = document.getElementById("btn-toggle-menu");
+            const sidebar = document.getElementById("app-sidebar");
+            
+            if(btnToggle && sidebar) {
+                btnToggle.addEventListener("click", function() {
+                    sidebar.classList.toggle("collapsed");
+                });
+            }
+        });
     </script>
 </body>
 </html>
