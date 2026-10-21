@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Pengajuan - UPT Crew KA Kisaran</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        .data-table tbody tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .data-table tbody tr:hover {
+            background-color: var(--kai-orange-soft, #fff3eb) !important;
+        }
+        .progress-card-section {
+            background-color: var(--surface-card, #fff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius-md, 8px);
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-subtle, 0 1px 3px rgba(0,0,0,0.05));
+        }
+        .check-icon {
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .badge-lulus {
+            background-color: #dcfce7;
+            color: #15803d;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .badge-proses {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+        .cell-green {
+            background-color: #dcfce7;
+        }
+        .btn-edit {
+            background-color: var(--kai-orange, #f06400);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.2s ease;
+        }
+        .btn-edit:hover {
+            opacity: 0.9;
+            color: #fff;
+        }
+        .loading-state {
+            text-align: center;
+            padding: 20px;
+            font-weight: 600;
+            color: var(--text-muted, #64748b);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header" role="banner">
+        <div class="top-header-inner">
+            <div class="header-left-group">
+                <button id="btn-toggle-menu" type="button" title="Buka/Tutup Menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
+            <div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                
+                <nav style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="../index.html" class="sidebar-item" title="Homepage">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>              
+
+                    <a href="../cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        <span class="sidebar-text">Dashboard Cuti</span>
+                    </a>
+
+                    <a href="./dashboard-sertifikasi.html" class="sidebar-item" title="Pantauan Sertifikasi">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                            <circle cx="9" cy="10" r="2.5"></circle>
+                            <path d="M15 8h2"></path>
+                            <path d="M15 12h2"></path>
+                            <path d="M7 16c0-1.5 1.5-2.5 3-2.5s3 1 3 2.5"></path>
+                        </svg>
+                        <span class="sidebar-text">Sertifikasi</span>
+                    </a>
+
+                    <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        <a href="./progress-pengajuan.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Progress Pengajuan</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="app-main-content">
+            <div class="dashboard-content">
+                
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h1 class="section-title">Progress Pengajuan Sertifikasi</h1>
+                    </div>
+                    <a href="./edit-pengajuan.html" class="btn-edit">
+                        <i class="fa-solid fa-pen-to-square"></i> Edit Data
+                    </a>
+                </div>
+
+                <!-- KOLOM 1 (ATAS): PROGRESS PERPANJANGAN -->
+                <div class="progress-card-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--kai-blue, #0d1b2a);">
+                                <i class="fa-solid fa-arrows-rotate" style="color: var(--kai-orange, #f06400); margin-right: 6px;"></i> Progress Perpanjangan
+                            </h2>
+                        </div>
+                        <span id="count-perpanjangan" class="badge-status badge-status-warning">0 Berkas</span>
+                    </div>
+
+                    <div class="table-responsive-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="cell-center" style="width: 40px;">No</th>
+                                    <th>NAMA</th>
+                                    <th class="cell-center">Nipp</th>
+                                    <th class="cell-center">Tingkatan ASP</th>
+                                    <th class="cell-center">Habis Masa Berlaku</th>
+                                    <th class="cell-center">Sudah Refresh</th>
+                                    <th class="cell-center">Sudah Diajukan</th>
+                                    <th class="cell-center">Sudah Disetujui MT</th>
+                                    <th class="cell-center">Mengikuti Uji Sertifikasi</th>
+                                    <th class="cell-center">Hasil</th>
+                                    <th class="cell-center">Terima Smart Card</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablePerpanjanganBody">
+                                <tr>
+                                    <td colspan="11" class="loading-state">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat data real-time dari Google Spreadsheet...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- KOLOM 2 (BAWAH): PENGAJUAN BARU -->
+                <div class="progress-card-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h2 style="font-size: 1.1rem; font-weight: 700; color: var(--kai-blue, #0d1b2a);">
+                                <i class="fa-solid fa-file-circle-plus" style="color: var(--status-hadir, #10b981); margin-right: 6px;"></i> Pengajuan Baru
+                            </h2>
+                        </div>
+                        <span id="count-pengajuan-baru" class="badge-status badge-status-aktif">0 Usulan</span>
+                    </div>
+
+                    <div class="table-responsive-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="cell-center" style="width: 40px;">No</th>
+                                    <th>NAMA</th>
+                                    <th class="cell-center">Nipp</th>
+                                    <th class="cell-center">Tingkatan ASP</th>
+                                    <th class="cell-center">Sudah Diajukan</th>
+                                    <th class="cell-center">Sudah Disetujui MT</th>
+                                    <th class="cell-center">Mengikuti Uji Sertifikasi</th>
+                                    <th class="cell-center">Hasil</th>
+                                    <th class="cell-center">Terima Smart Card</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablePengajuanBaruBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL POP-UP GAMBAR SERTIFIKAT -->
+    <div id="certModal" class="modal-overlay" style="display: none; z-index: 100000;">
+        <div class="modal-content" style="max-width: 800px; height: auto; max-height: 90vh;">
+            <div class="modal-header">
+                <div>
+                    <div class="modal-subtitle">Dokumen Sertifikat Kecakapan</div>
+                    <h2 class="modal-title" id="certModalTitle">Sertifikat Pegawai</h2>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeCertModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center; padding: 20px; background-color: #000; display: flex; justify-content: center; align-items: center; min-height: 300px;">
+                <img id="certImage" src="" alt="Sertifikat Pegawai" style="max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 4px; display: none;">
+                <div id="certLoader" style="color: #fff; font-size: 0.9rem;">
+                    <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                    <p style="margin-top: 10px;">Memuat Sertifikat...</p>
+                </div>
+                <div id="certError" style="color: #ff6b6b; font-size: 0.9rem; display: none;">
+                    <i class="fa-solid fa-file-circle-xmark fa-3x" style="margin-bottom: 10px;"></i>
+                    <p id="certErrorText">Berkas sertifikat tidak ditemukan di folder <code>assets/asp/</code></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="modal-count-info" id="certModalMeta">NIPP: -</span>
+                <button type="button" class="btn btn-secondary" onclick="closeCertModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        // INTEGRASI GOOGLE SPREADSHEET REAL-TIME
+        const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
+        const GID = "392940711";
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
+
+        let rawData = [];
+
+        async function fetchSpreadsheetData() {
+            try {
+                const response = await fetch(CSV_URL);
+                const csvText = await response.text();
+                const rows = parseCSV(csvText);
+
+                rawData = rows.slice(1).map((row, index) => {
+                    if (!row || row.length === 0 || !row[1]) return null;
+                    
+                    return {
+                        no: index + 1,
+                        nama: row[1] ? row[1].trim() : '',
+                        nipp: row[2] ? row[2].trim() : '',
+                        jabatan: row[3] ? row[3].trim() : '',
+                        tingkat: row[4] ? row[4].trim() : '',
+                        exp: row[5] ? formatDateToISO(row[5].trim()) : ''
+                    };
+                }).filter(item => item && item.nama !== '');
+
+                renderPerpanjanganTable();
+            } catch (error) {
+                console.error("Gagal memuat data dari Spreadsheet:", error);
+                document.getElementById('tablePerpanjanganBody').innerHTML = `
+                    <tr>
+                        <td colspan="11" class="loading-state" style="color: #ef4444;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Gagal mengambil data dari Google Spreadsheet.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            return lines.map(line => {
+                const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                if (!matches) {
+                    return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1'));
+                }
+                return matches.map(cell => cell.replace(/^"(.*)"$/, '$1'));
+            });
+        }
+
+        function formatDateToISO(dateStr) {
+            if (!dateStr || dateStr === '-') return '';
+            if (dateStr.includes('-')) return dateStr;
+            
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                const day = parts[0].padStart(2, '0');
+                const month = parts[1].padStart(2, '0');
+                const year = parts[2];
+                return `${year}-${month}-${day}`;
+            }
+            return dateStr;
+        }
+
+        function checkMark(val) {
+            return val ? `<span class="check-icon">&#8730;</span>` : `-`;
+        }
+
+        function formatDateVerbose(dateStr) {
+            if (!dateStr || dateStr === '-') return '-';
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            
+            const day = String(d.getDate()).padStart(2, '0');
+            const months = [
+                "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ];
+            const month = months[d.getMonth()];
+            const year = d.getFullYear();
+            
+            return `${day} ${month} ${year}`;
+        }
+
+        function renderPerpanjanganTable() {
+            const tbody = document.getElementById('tablePerpanjanganBody');
+            tbody.innerHTML = '';
+            const today = new Date('2026-10-21');
+            let count = 0;
+
+            rawData.forEach((item) => {
+                if (!item.exp) return;
+                const expDate = new Date(item.exp);
+                const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+                // Filter: Masa berlaku kurang dari 2 tahun (<= 730 hari)
+                if (diffDays <= 730) {
+                    count++;
+                    
+                    let refresh = true;
+                    let diajukan = true;
+                    let disetujuiMT = diffDays <= 500;
+                    let ujiSertifikasi = diffDays <= 300;
+                    let lulus = diffDays <= 180;
+                    let terimaCard = diffDays <= 0;
+
+                    const row = `
+                        <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
+                            <td class="cell-center">${count}</td>
+                            <td style="font-weight: 600;">${item.nama.toUpperCase()}</td>
+                            <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
+                            <td class="cell-center">${item.tingkat ? item.tingkat.toUpperCase() : '-'}</td>
+                            <td class="cell-center">${formatDateVerbose(item.exp)}</td>
+                            <td class="cell-center">${checkMark(refresh)}</td>
+                            <td class="cell-center">${checkMark(diajukan)}</td>
+                            <td class="cell-center">${checkMark(disetujuiMT)}</td>
+                            <td class="cell-center">${checkMark(ujiSertifikasi)}</td>
+                            <td class="cell-center">${lulus ? '<span class="badge-lulus">LULUS</span>' : '<span class="badge-proses">PROSES</span>'}</td>
+                            <td class="cell-center ${terimaCard ? 'cell-green' : ''}">${checkMark(terimaCard)}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                }
+            });
+
+            if (count === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="cell-center" style="padding: 20px; color: var(--text-muted);">
+                            Tidak ada sertifikat yang akan habis dalam waktu kurang dari 2 tahun.
+                        </td>
+                    </tr>
+                `;
+            }
+
+            document.getElementById('count-perpanjangan').innerText = `${count} Berkas`;
+        }
+
+        function renderPengajuanBaruTable() {
+            const tbody = document.getElementById('tablePengajuanBaruBody');
+            tbody.innerHTML = '';
+
+            const localPengajuan = JSON.parse(localStorage.getItem('pengajuanBaruList') || '[]');
+
+            if (localPengajuan.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11" class="cell-center" style="padding: 20px; color: var(--text-muted);">
+                            Belum ada pengajuan baru yang diinput secara manual.
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('count-pengajuan-baru').innerText = `0 Usulan`;
+                return;
+            }
+
+            localPengajuan.forEach((item, index) => {
+                const row = `
+                    <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat dokumen ${item.nama}">
+                        <td class="cell-center">${index + 1}</td>
+                        <td style="font-weight: 600;">${item.nama.toUpperCase()}</td>
+                        <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
+                        <td class="cell-center">${item.tingkat || 'PERTAMA'}</td>
+                        <td class="cell-center">${formatDateVerbose(item.exp)}</td>
+                        <td class="cell-center">${checkMark(item.refresh)}</td>
+                        <td class="cell-center">${checkMark(item.diajukan)}</td>
+                        <td class="cell-center">${checkMark(item.disetujuiMT)}</td>
+                        <td class="cell-center">${checkMark(item.ujiSertifikasi)}</td>
+                        <td class="cell-center"><span class="${item.hasil === 'LULUS' ? 'badge-lulus' : 'badge-proses'}">${item.hasil || 'PROSES'}</span></td>
+                        <td class="cell-center ${item.terimaSmartCard ? 'cell-green' : ''}">${checkMark(item.terimaSmartCard)}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+
+            document.getElementById('count-pengajuan-baru').innerText = `${localPengajuan.length} Usulan`;
+        }
+
+        function viewCertificate(nipp, nama) {
+            const certModal = document.getElementById('certModal');
+            const certImage = document.getElementById('certImage');
+            const certLoader = document.getElementById('certLoader');
+            const certError = document.getElementById('certError');
+
+            document.getElementById('certModalTitle').innerText = `Sertifikat: ${nama}`;
+            document.getElementById('certModalMeta').innerText = `NIPP: ${nipp}`;
+            
+            certImage.style.display = 'none';
+            certError.style.display = 'none';
+            certLoader.style.display = 'block';
+            certModal.style.display = 'flex';
+
+            const pngUrl = `../assets/asp/${nipp}.png`;
+            const jpgUrl = `../assets/asp/${nipp}.jpg`;
+
+            const imgTester = new Image();
+            imgTester.onload = function() {
+                certImage.src = pngUrl;
+                certLoader.style.display = 'none';
+                certImage.style.display = 'block';
+            };
+            imgTester.onerror = function() {
+                const imgTesterJpg = new Image();
+                imgTesterJpg.onload = function() {
+                    certImage.src = jpgUrl;
+                    certLoader.style.display = 'none';
+                    certImage.style.display = 'block';
+                };
+                imgTesterJpg.onerror = function() {
+                    certLoader.style.display = 'none';
+                    document.getElementById('certErrorText').innerHTML = `Berkas <code>${nipp}.png</code> atau <code>${nipp}.jpg</code> tidak ditemukan di folder <code>assets/asp/</code>`;
+                    certError.style.display = 'block';
+                };
+                imgTesterJpg.src = jpgUrl;
+            };
+            imgTester.src = pngUrl;
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').style.display = 'none';
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' || event.key === 'Esc') {
+                closeCertModal();
+            }
+        });
+
+        // Ambil data otomatis dari Google Spreadsheet saat dimuat
+        fetchSpreadsheetData();
+        renderPengajuanBaruTable();
+    </script>
+</body>
+</html>
