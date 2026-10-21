@@ -1,40 +1,31 @@
-
-# Editor & IDE
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# Sistem Operasi
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# File Log & Debugging
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Direktori dependensi (jika nanti menggunakan Node.js/npm)
-=======
-# Editor & IDE
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# Sistem Operasi
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# File Log & Debugging
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Direktori dependensi (jika nanti menggunakan Node.js/npm)
-
+# Node modules & dependensi lokal
 node_modules/
+package-lock.json
+yarn.lock
+
+# Log & file temporary sistem
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+
+# Lingkungan IDE & Editor Kode
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# File lingkungan sensitif
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Folder build & cache
+dist/
+build/
+.cache/
