@@ -1,31 +1,32 @@
-# Node modules & dependensi lokal
-node_modules/
-package-lock.json
-yarn.lock
+# ==========================================
+# 1. KONFIGURASI SPESIFIK PROYEK
+# ==========================================
+.agents/
+# AGENTS.md # Un-comment jika file ini tidak ingin di-commit
 
-# Log & file temporary sistem
-*.log
+# ==========================================
+# 2. FILE SISTEM & EDITOR (OS / IDE)
+# ==========================================
 .DS_Store
 Thumbs.db
-*.tmp
-*.swp
-
-# Lingkungan IDE & Editor Kode
+ehthumbs.db
 .vscode/
 .idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 
-# File lingkungan sensitif
+# ==========================================
+# 3. KREDENSIAL & RAHSIA (SECURITY)
+# ==========================================
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+*.pem
+*.key
+credentials.json
+client_secret*.json
 
-# Folder build & cache
+# ==========================================
+# 4. DEPENDENSI & BUILD (PENCEGAHAN)
+# ==========================================
+node_modules/
 dist/
 build/
-.cache/
+*.log
