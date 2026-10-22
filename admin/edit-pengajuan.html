@@ -31,34 +31,77 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // Eksport auth ke window agar bisa dipanggil saat mengambil ID token
+        window.auth = auth;
+
         setPersistence(auth, browserLocalPersistence);
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
+    // Durasilimit: 15 menit dalam milidetik (15 * 60 * 1000 = 900000 ms)
+    const TIMEOUT_LIMIT = 15 * 60 * 1000;
+
+    // Fungsi untuk memperbarui waktu aktivitas terakhir
+    function updateLastActiveTimestamp() {
+        localStorage.setItem("lastActiveTime", Date.now().toString());
+    }
+
+    // Perbarui waktu setiap ada interaksi atau ketika tab ditutup/disembunyikan
+    window.addEventListener("beforeunload", updateLastActiveTimestamp);
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+            updateLastActiveTimestamp();
+        }
+    });
+
+    // GATEKEEPER DENGAN CEK BATAS WAKTU 15 MENIT
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const lastActive = localStorage.getItem("lastActiveTime");
+            const now = Date.now();
+
+            // Jika pernah ada waktu aktif terakhir dan selisihnya > 15 menit
+            if (lastActive && (now - parseInt(lastActive, 10) > TIMEOUT_LIMIT)) {
+                // Hapus catatan waktu dan paksa logout
+                localStorage.removeItem("lastActiveTime");
+                await signOut(auth);
                 window.location.href = "../login.html";
-            } else {
-                window.currentUserEmail = user.email;
+                return;
+            }
+
+            // Jika masih dalam batas 15 menit, perbarui timestamp aktif
+            updateLastActiveTimestamp();
+            window.currentUserEmail = user.email;
+
+            // Jika posisi sedang di halaman login.html, alihkan ke admin
+            if (window.location.pathname.endsWith("login.html")) {
+                window.location.href = "./admin/homepage-admin.html";
+            }
+        } else {
+            // Jika tidak ada user dan tidak sedang di login.html, alihkan ke login.html
+            if (!window.location.pathname.endsWith("login.html")) {
+                window.location.href = "../login.html";
+            }
+        }
+    });
+
+    window.handleLogout = function() {
+        Swal.fire({
+            title: 'Konfirmasi Logout',
+            text: 'Apakah Anda yakin ingin keluar dari sistem?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem("lastActiveTime");
+                signOut(auth).then(() => {
+                    window.location.href = "../login.html";
+                });
             }
         });
-
-        window.handleLogout = function() {
-            Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: 'Apakah Anda yakin ingin keluar dari sistem?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#64748b',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    signOut(auth).then(() => {
-                        window.location.href = "../login.html";
-                    });
-                }
-            });
-        };
+    };
     </script>
 
     <style>
@@ -252,7 +295,8 @@
                         <i class="fa-solid fa-user-shield"></i> <span class="sidebar-text">Administrator</span>
                     </a>
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        <a href="/admin/edit-pengajuan.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700;">
+                        <!-- DIBERSIHKAN: Menggunakan relatif path ./edit-pengajuan.html agar tidak bermasalah di hosting -->
+                        <a href="./edit-pengajuan.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700;">
                             <span class="sidebar-text">Sertifikasi</span>
                         </a>
                         <a href="./data-logger.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
@@ -416,7 +460,7 @@
     </div>
 
     <script>
-        var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrHDjL7PST0T4gTqnGL9BxH8URUonRFubenTG_Iscb2f0ASGy0_6WmbAnv-tEb2UbvLQ/exec";
+        var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
         var SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
         var GID = "392940711";
 
@@ -871,109 +915,118 @@
             });
 
             // UPDATE PROGRESS (PENGAJUAN BARU ATAU PERPANJANGAN)
-            var formUpdate = document.getElementById('formUpdateProgress');
-            if (formUpdate) {
-                formUpdate.addEventListener('submit', async function(e) {
-                    e.preventDefault();
+// UPDATE PROGRESS (PENGAJUAN BARU ATAU PERPANJANGAN)
+var formUpdate = document.getElementById('formUpdateProgress');
+if (formUpdate) {
+    formUpdate.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-                    var idx = document.getElementById('modalIndex').value;
-                    var item = (activeTab === 'BARU') ? pengajuanList[idx] : perpanjanganList[idx];
+        var idx = document.getElementById('modalIndex').value;
+        var item = (activeTab === 'BARU') ? pengajuanList[idx] : perpanjanganList[idx];
 
-                    steps.forEach(function(s) {
-                        var chkElem = document.getElementById(s.chk);
-                        var dateElem = document.getElementById(s.date);
+        steps.forEach(function(s) {
+            var chkElem = document.getElementById(s.chk);
+            var dateElem = document.getElementById(s.date);
 
-                        item[s.key] = chkElem.checked;
-                        item[s.key + 'Date'] = chkElem.checked ? dateElem.innerText : '';
+            item[s.key] = chkElem.checked;
+            item[s.key + 'Date'] = chkElem.checked ? dateElem.innerText : '';
+        });
+
+        var expDateVal = document.getElementById('smartCardExpInput').value;
+        item.smartCardExpDate = expDateVal;
+
+        var isAllStepsCompleted = steps.every(function(s) { return item[s.key] === true; });
+
+        if (isAllStepsCompleted && !expDateVal) {
+            Swal.fire({
+                title: 'Tanggal Kadaluwarsa Wajib Diisi!',
+                text: 'Tahapan telah selesai (Terima Smart Card). Silakan isi tanggal kadaluwarsa Smart Card baru.',
+                icon: 'warning',
+                confirmButtonColor: '#f06400'
+            });
+            return;
+        }
+
+        var btnSubmit = e.target.querySelector('button[type="submit"]');
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+        try {
+            if (isAllStepsCompleted && expDateVal) {
+                var newExpDateObj = new Date(expDateVal);
+                if (!isNaN(newExpDateObj.getTime())) {
+                    item.expDateObj = newExpDateObj;
+                    item.expDateStr = formatDateISOToVerbose(newExpDateObj);
+                    var today = new Date();
+                    var diffTime = newExpDateObj.getTime() - today.getTime();
+                    item.diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+                }
+
+                // PERBAIKAN: Ambil ID Token terbaru dengan parameter (true)
+                const idToken = await window.auth.currentUser.getIdToken(true);
+
+                // Kirim request ke Google Apps Script
+                const res = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        authToken: idToken,
+                        actionType: activeTab === 'BARU' ? "UPDATE_PROGRESS" : "UPDATE_PERPANJANGAN",
+                        nipp: item.nipp,
+                        nama: item.nama,
+                        tingkat: item.tingkat,
+                        expDate: expDateVal
+                    })
+                });
+
+                const responseData = await res.json();
+
+                if (responseData.result === "success") {
+                    createAuditLog(item.nipp, item.nama, 'Proses ' + activeTab + ' Selesai & Kirim Spreadsheet (Exp Baru: ' + expDateVal + ')');
+
+                    Swal.fire({
+                        title: 'Proses Selesai!',
+                        text: 'Masa berlaku terbaru telah di-update dan data berhasil disinkronkan ke Google Spreadsheet.',
+                        icon: 'success',
+                        confirmButtonColor: '#f06400'
                     });
+                } else {
+                    throw new Error(responseData.message || "Gagal sinkronisasi data.");
+                }
+            } else {
+                createAuditLog(item.nipp, item.nama, 'Update Progress ' + activeTab + ' (Lokal)');
 
-                    var expDateVal = document.getElementById('smartCardExpInput').value;
-                    item.smartCardExpDate = expDateVal;
-
-                    var isAllStepsCompleted = steps.every(function(s) { return item[s.key] === true; });
-
-                    if (isAllStepsCompleted && !expDateVal) {
-                        Swal.fire({
-                            title: 'Tanggal Kadaluwarsa Wajib Diisi!',
-                            text: 'Tahapan telah selesai (Terima Smart Card). Silakan isi tanggal kadaluwarsa Smart Card baru.',
-                            icon: 'warning',
-                            confirmButtonColor: '#f06400'
-                        });
-                        return;
-                    }
-
-                    var btnSubmit = e.target.querySelector('button[type="submit"]');
-                    btnSubmit.disabled = true;
-                    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-
-                    try {
-                        if (isAllStepsCompleted && expDateVal) {
-                            // UPDATE TAMPILAN MASA BERLAKU DI TABEL SECARA REAL-TIME DENGAN TANGGAL KADALUWARSA BARU
-                            var newExpDateObj = new Date(expDateVal);
-                            if (!isNaN(newExpDateObj.getTime())) {
-                                item.expDateObj = newExpDateObj;
-                                item.expDateStr = formatDateISOToVerbose(newExpDateObj);
-                                var today = new Date();
-                                var diffTime = newExpDateObj.getTime() - today.getTime();
-                                item.diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
-                            }
-
-                            // SEND DATA KE GOOGLE SPREADSHEET VIA APPS SCRIPT WEB APP
-                            await fetch(WEB_APP_URL, {
-                                method: 'POST',
-                                mode: 'no-cors',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    actionType: activeTab === 'BARU' ? "UPDATE_PROGRESS" : "UPDATE_PERPANJANGAN",
-                                    nipp: item.nipp,
-                                    nama: item.nama,
-                                    tingkat: item.tingkat,
-                                    expDate: expDateVal
-                                })
-                            });
-
-                            createAuditLog(item.nipp, item.nama, 'Proses ' + activeTab + ' Selesai & Kirim Spreadsheet (Exp Baru: ' + expDateVal + ')');
-
-                            Swal.fire({
-                                title: 'Proses Selesai!',
-                                text: 'Masa berlaku terbaru telah di-update dan data berhasil disinkronkan ke Google Spreadsheet.',
-                                icon: 'success',
-                                confirmButtonColor: '#f06400'
-                            });
-                        } else {
-                            createAuditLog(item.nipp, item.nama, 'Update Progress ' + activeTab + ' (Lokal)');
-
-                            Swal.fire({
-                                title: 'Progress Diperbarui!',
-                                text: 'Perubahan disimpan secara lokal. Data dikirim ke Spreadsheet setelah seluruh tahapan selesai.',
-                                icon: 'info',
-                                confirmButtonColor: '#f06400'
-                            });
-                        }
-
-                        if (activeTab === 'BARU') {
-                            localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
-                        } else {
-                            localStorage.setItem('perpanjanganList', JSON.stringify(perpanjanganList));
-                        }
-
-                        closeModal();
-                        loadData();
-
-                    } catch (error) {
-                        console.error("Gagal update ke Spreadsheet:", error);
-                        Swal.fire({
-                            title: 'Peringatan!',
-                            text: 'Gagal memperbarui Spreadsheet, namun data lokal tetap tersimpan.',
-                            icon: 'warning',
-                            confirmButtonColor: '#f06400'
-                        });
-                    } finally {
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerHTML = 'Simpan Perubahan';
-                    }
+                Swal.fire({
+                    title: 'Progress Diperbarui!',
+                    text: 'Perubahan disimpan secara lokal. Data dikirim ke Spreadsheet setelah seluruh tahapan selesai.',
+                    icon: 'info',
+                    confirmButtonColor: '#f06400'
                 });
             }
+
+            if (activeTab === 'BARU') {
+                localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
+            } else {
+                localStorage.setItem('perpanjanganList', JSON.stringify(perpanjanganList));
+            }
+
+            closeModal();
+            loadData();
+
+        } catch (error) {
+            console.error("Gagal update ke Spreadsheet:", error);
+            Swal.fire({
+                title: 'Peringatan / Error!',
+                text: 'Gagal memperbarui Spreadsheet: ' + error.message,
+                icon: 'warning',
+                confirmButtonColor: '#f06400'
+            });
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = 'Simpan Perubahan';
+        }
+    });
+}
 
             loadData();
         });
