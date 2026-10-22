@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Logger - UPT Crew KA Kisaran</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+
+    <!-- FIREBASE AUTHENTICATION GATEKEEPER -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut, 
+            setPersistence, 
+            browserSessionPersistence 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
+            authDomain: "login-page-dashboard.firebaseapp.com",
+            projectId: "login-page-dashboard",
+            storageBucket: "login-page-dashboard.firebasestorage.app",
+            messagingSenderId: "817524864615",
+            appId: "1:817524864615:web:fc27233cbf881e726e06c2",
+            measurementId: "G-CLG98RXRNT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Menyamakan mode persistence dengan login.html
+        setPersistence(auth, browserSessionPersistence);
+
+        // Proteksi Halaman: Jika belum login, tendang ke login.html
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "../login.html";
+            }
+        });
+
+        // Fungsi Logout Manual
+        window.handleLogout = function() {
+            signOut(auth).then(() => {
+                window.location.href = "../login.html";
+            });
+        };
+    </script>
+</head>
+<body>
+
+    <header class="top-header" role="banner">
+        <div class="top-header-inner">
+            <div class="header-left-group">
+                <button id="btn-toggle-menu" type="button" title="Buka/Tutup Menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+            <div class="header-right-group">
+                <button type="button" class="btn" style="background-color: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer;" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout-wrapper">
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
+            <div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                <nav style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="../index.html" class="sidebar-item" title="Homepage">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>
+                    <a href="./homepage-admin.html" class="sidebar-item" title="Administrator">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-2h2zm0-4h-2V7h2z"></path></svg>
+                        <span class="sidebar-text">Administrator</span>
+                    </a>
+                    <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        <a href="/admin/edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Sertifikasi</span>
+                        </a>
+                        <a href="./data-logger.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Data Logger</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="app-main-content">
+            <div class="dashboard-content">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Audit Log System (Data Logger)</h1>
+                        <p class="section-desc">Riwayat perubahan data, pengajuan baru, dan pembaruan foto Smart Card.</p>
+                    </div>
+                </div>
+
+                <div style="background: #fff; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 20px;">
+                    <div class="table-responsive-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="cell-center" style="width: 50px;">No</th>
+                                    <th class="cell-center">Waktu (WIB)</th>
+                                    <th>Admin Email</th>
+                                    <th class="cell-center">NIPP</th>
+                                    <th>Nama Pegawai</th>
+                                    <th>Aktivitas Perubahan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loggerTableBody">
+                                <tr>
+                                    <td colspan="6" class="cell-center" style="padding: 20px; color: var(--text-muted);">
+                                        Belum ada data riwayat aktivitas yang tercatat.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const btnToggle = document.getElementById('btn-toggle-menu');
+        const sidebar = document.getElementById('app-sidebar');
+        btnToggle?.addEventListener('click', () => sidebar.classList.toggle('collapsed'));
+
+        function loadAuditLogs() {
+            const tbody = document.getElementById('loggerTableBody');
+            const logs = JSON.parse(localStorage.getItem('auditDataLogs') || '[]');
+
+            if (logs.length === 0) return;
+
+            tbody.innerHTML = '';
+            logs.reverse().forEach((log, index) => {
+                const row = `
+                    <tr>
+                        <td class="cell-center">${index + 1}</td>
+                        <td class="cell-center" style="font-size: 0.8rem;">${log.timestamp}</td>
+                        <td style="font-size: 0.85rem; font-weight: 600;">${log.adminEmail}</td>
+                        <td class="cell-center" style="font-family: monospace;">${log.nipp}</td>
+                        <td style="font-weight: 600;">${log.nama}</td>
+                        <td style="font-size: 0.85rem;">${log.action}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        loadAuditLogs();
+    </script>
+</body>
+</html>

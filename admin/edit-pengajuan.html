@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Pengajuan & Perpanjangan - UPT Crew KA Kisaran</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+
+    <!-- SWEETALERT2 FOR MODERN POP-UP NOTIFICATIONS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- FIREBASE AUTHENTICATION GATEKEEPER -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
+            authDomain: "login-page-dashboard.firebaseapp.com",
+            projectId: "login-page-dashboard",
+            storageBucket: "login-page-dashboard.firebasestorage.app",
+            messagingSenderId: "817524864615",
+            appId: "1:817524864615:web:fc27233cbf881e726e06c2",
+            measurementId: "G-CLG98RXRNT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        setPersistence(auth, browserLocalPersistence);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "../login.html";
+            } else {
+                window.currentUserEmail = user.email;
+            }
+        });
+
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    signOut(auth).then(() => {
+                        window.location.href = "../login.html";
+                    });
+                }
+            });
+        };
+    </script>
+
+    <style>
+        .card-container {
+            background: #fff;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .table-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .btn-add-pengajuan {
+            background-color: var(--kai-orange, #f06400);
+            color: #ffffff;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-add-pengajuan:hover {
+            background-color: #d95700;
+        }
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-process { background: #fef3c7; color: #b45309; }
+        .badge-warning { background: #fee2e2; color: #b91c1c; }
+
+        /* TAB NAVIGATION */
+        .tab-container {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            padding: 10px 18px;
+            border: none;
+            background: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+        .tab-button.active {
+            color: var(--kai-orange, #f06400);
+            border-bottom-color: var(--kai-orange, #f06400);
+        }
+        
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .btn-update { background-color: var(--kai-orange, #f06400); color: #fff; }
+        .btn-update:hover { background-color: #d95700; }
+        .btn-delete { background-color: #ef4444; color: #fff; }
+        .btn-delete:hover { background-color: #dc2626; }
+        
+        .form-group-custom {
+            margin-bottom: 12px;
+        }
+        .form-group-custom label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #334155;
+        }
+        .form-control-custom {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+        .form-control-custom:read-only {
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .step-item.disabled {
+            opacity: 0.5;
+            background: #f1f5f9;
+        }
+        .step-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .step-date {
+            font-size: 0.75rem;
+            color: var(--kai-orange, #f06400);
+            font-weight: 700;
+        }
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header" role="banner">
+        <div class="top-header-inner">
+            <div class="header-left-group">
+                <button id="btn-toggle-menu" type="button" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+            <div class="header-right-group">
+                <button type="button" class="btn" style="background-color: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer;" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout-wrapper">
+        <aside class="app-sidebar collapsed" id="app-sidebar">
+            <div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                <nav style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="../index.html" class="sidebar-item">
+                        <i class="fa-solid fa-house"></i> <span class="sidebar-text">Homepage</span>
+                    </a>
+                    <a href="../admin/homepage-admin.html" class="sidebar-item">
+                        <i class="fa-solid fa-user-shield"></i> <span class="sidebar-text">Administrator</span>
+                    </a>
+                    <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        <a href="/admin/edit-pengajuan.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700;">
+                            <span class="sidebar-text">Sertifikasi</span>
+                        </a>
+                        <a href="./data-logger.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Data Logger</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="app-main-content">
+            <div class="dashboard-content">
+                <div class="section-header">
+                    <div>
+                        <h1 class="section-title">Monitoring Progress Sertifikasi</h1>
+                        <p class="section-desc">Kelola dan perbarui tahapan proses usulan pengajuan baru serta perpanjangan sertifikasi.</p>
+                    </div>
+                </div>
+
+                <!-- TAB SWITCHER -->
+                <div class="tab-container">
+                    <button type="button" class="tab-button active" id="tabPengajuanBaru" onclick="switchTab('BARU')">
+                        <i class="fa-solid fa-file-circle-plus"></i> Pengajuan Baru
+                    </button>
+                    <button type="button" class="tab-button" id="tabPerpanjangan" onclick="switchTab('PERPANJANGAN')">
+                        <i class="fa-solid fa-arrows-rotate"></i> Progress Perpanjangan
+                    </button>
+                </div>
+
+                <div class="card-container">
+                    <div class="table-header-actions">
+                        <h2 id="tableTitle" style="font-size: 1rem; font-weight: 700; color: var(--kai-blue, #0d1b2a); margin: 0;">
+                            Daftar Usulan Pengajuan Baru
+                        </h2>
+                        <button type="button" class="btn-add-pengajuan" id="btnOpenAddModal">
+                            <i class="fa-solid fa-plus"></i> Tambah Pengajuan Baru
+                        </button>
+                    </div>
+
+                    <div class="table-responsive-wrapper">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr id="tableHeaderRow">
+                                    <th class="cell-center">No</th>
+                                    <th class="cell-center">NIPP</th>
+                                    <th>Nama Pegawai</th>
+                                    <th class="cell-center">Tingkat</th>
+                                    <th class="cell-center">Progress Tahapan</th>
+                                    <th class="cell-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="progressTableBody">
+                                <tr>
+                                    <td colspan="6" class="cell-center" style="padding: 20px; color: var(--text-muted);">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat data dari Google Spreadsheet...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL 1: TAMBAH PENGAJUAN BARU -->
+    <div id="addModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color: var(--kai-blue); margin-bottom: 16px;">Input Pengajuan Sertifikasi Baru</h3>
+            
+            <form id="formTambahPengajuan">
+                <div class="form-group-custom">
+                    <label for="addNipp">NIPP Pegawai</label>
+                    <input type="text" id="addNipp" class="form-control-custom" placeholder="Ketik NIPP personel (Contoh: 51128)..." required>
+                    <div id="addNippAlert" class="alert-error"></div>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="addNama">Nama Pegawai</label>
+                    <input type="text" id="addNama" class="form-control-custom" placeholder="Otomatis terisi dari Spreadsheet..." readonly required>
+                </div>
+
+                <div class="form-group-custom">
+                    <label for="addTingkat">Tingkatan ASP</label>
+                    <select id="addTingkat" class="form-control-custom" required>
+                        <option value="PERTAMA">PERTAMA</option>
+                        <option value="MUDA">MUDA</option>
+                        <option value="MADYA">MADYA</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                    <button type="button" class="btn-action" style="background: #cbd5e1; color: #334155;" id="btnBatalAddModal">Batal</button>
+                    <button type="submit" class="btn-action btn-update" id="btnSubmitAddPengajuan" disabled>Simpan Pengajuan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: UPDATE PROGRESS -->
+    <div id="updateModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color: var(--kai-blue);">Update Progress <span id="modalModeTitle">Pengajuan</span></h3>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Pegawai: <strong id="modalNama"></strong> (<span id="modalNipp"></span>)</p>
+            
+            <form id="formUpdateProgress">
+                <input type="hidden" id="modalIndex">
+                
+                <div style="margin-bottom: 16px;">
+                    <div class="step-item" id="containerRefresh">
+                        <label class="step-label">
+                            <input type="checkbox" id="chkRefresh"> 1. Refresh
+                        </label>
+                        <span class="step-date" id="dateRefresh">-</span>
+                    </div>
+
+                    <div class="step-item" id="containerDiajukan">
+                        <label class="step-label">
+                            <input type="checkbox" id="chkDiajukan" disabled> 2. Sudah Diajukan
+                        </label>
+                        <span class="step-date" id="dateDiajukan">-</span>
+                    </div>
+
+                    <div class="step-item" id="containerDisetujuiMT">
+                        <label class="step-label">
+                            <input type="checkbox" id="chkDisetujuiMT" disabled> 3. Disetujui MT
+                        </label>
+                        <span class="step-date" id="dateDisetujuiMT">-</span>
+                    </div>
+
+                    <div class="step-item" id="containerUjiSertifikasi">
+                        <label class="step-label">
+                            <input type="checkbox" id="chkUjiSertifikasi" disabled> 4. Uji Sertifikasi
+                        </label>
+                        <span class="step-date" id="dateUjiSertifikasi">-</span>
+                    </div>
+
+                    <div class="step-item" id="containerTerimaSmartCard">
+                        <label class="step-label">
+                            <input type="checkbox" id="chkTerimaSmartCard" disabled> 5. Terima Smart Card
+                        </label>
+                        <span class="step-date" id="dateTerimaSmartCard">-</span>
+                    </div>
+                </div>
+
+                <div id="smartCardUploadContainer" style="display: none; background: #f8fafc; padding: 12px; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 16px;">
+                    <div class="form-group-custom" style="margin-bottom: 0;">
+                        <label for="smartCardExpInput" style="font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 4px;">
+                            <i class="fa-solid fa-calendar-xmark" style="color: var(--kai-orange);"></i> Tanggal Kadaluwarsa Smart Card Baru
+                        </label>
+                        <input type="date" id="smartCardExpInput" class="form-control-custom">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" class="btn-action" style="background: #cbd5e1; color: #334155;" id="btnBatalModal">Batal</button>
+                    <button type="submit" class="btn-action btn-update">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrHDjL7PST0T4gTqnGL9BxH8URUonRFubenTG_Iscb2f0ASGy0_6WmbAnv-tEb2UbvLQ/exec";
+        var SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
+        var GID = "392940711";
+
+        var rawData = [];
+        var pengajuanList = [];
+        var perpanjanganList = [];
+        var activeTab = 'BARU'; // 'BARU' atau 'PERPANJANGAN'
+
+        var steps = [
+            { key: 'refresh', chk: 'chkRefresh', date: 'dateRefresh', container: 'containerRefresh' },
+            { key: 'diajukan', chk: 'chkDiajukan', date: 'dateDiajukan', container: 'containerDiajukan' },
+            { key: 'disetujuiMT', chk: 'chkDisetujuiMT', date: 'dateDisetujuiMT', container: 'containerDisetujuiMT' },
+            { key: 'ujiSertifikasi', chk: 'chkUjiSertifikasi', date: 'dateUjiSertifikasi', container: 'containerUjiSertifikasi' },
+            { key: 'terimaSmartCard', chk: 'chkTerimaSmartCard', date: 'dateTerimaSmartCard', container: 'containerTerimaSmartCard' }
+        ];
+
+        // MENGAMBIL DATA DARI SPREADSHEET REAL-TIME (GVIZ API)
+        function fetchDirectSpreadsheetData() {
+            window.handleSpreadsheetResponse = function(response) {
+                if (!response || !response.table || !response.table.rows) return;
+                
+                var rows = response.table.rows;
+                var today = new Date();
+
+                rawData = rows.map(function(r) {
+                    var c = r.c;
+                    if (!c) return null;
+                    
+                    var namaVal = (c[1] && c[1].v !== null && c[1].v !== undefined) ? String(c[1].v).trim() : '';
+                    var nippVal = (c[2] && c[2].v !== null && c[2].v !== undefined) ? String(c[2].v).trim() : '';
+                    var tingkatVal = (c[4] && c[4].v !== null && c[4].v !== undefined) ? String(c[4].v).trim() : '';
+                    
+                    // Kolom Expired (Index 5)
+                    var expVal = (c[5] && c[5].v !== null && c[5].v !== undefined) ? c[5].v : null;
+                    var expDateObj = parseGoogleDate(expVal);
+
+                    return {
+                        nama: namaVal,
+                        nipp: nippVal,
+                        tingkat: tingkatVal,
+                        expDateObj: expDateObj,
+                        expDateStr: (c[5] && c[5].f) ? c[5].f : (expDateObj ? formatDateISOToVerbose(expDateObj) : '-')
+                    };
+                }).filter(function(item) { 
+                    return item !== null && item.nipp !== '' && item.nipp.toUpperCase() !== 'NIPP'; 
+                });
+
+                // FILTERING DATA PERPANJANGAN (Sisa Berlaku < 2 Tahun / 730 Hari)
+                var savedPerpanjangan = JSON.parse(localStorage.getItem('perpanjanganList') || '[]');
+
+                perpanjanganList = rawData.filter(function(item) {
+                    if (!item.expDateObj) return false;
+                    var diffTime = item.expDateObj.getTime() - today.getTime();
+                    var diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+                    item.diffDays = diffDays;
+                    return diffDays <= 730; // Kriteria < 2 Tahun
+                }).map(function(item) {
+                    var existing = savedPerpanjangan.find(function(s) { return s.nipp === item.nipp; });
+                    return existing ? Object.assign({}, item, existing) : {
+                        ...item,
+                        refresh: false,
+                        diajukan: false,
+                        disetujuiMT: false,
+                        ujiSertifikasi: false,
+                        terimaSmartCard: false,
+                        smartCardExpDate: ''
+                    };
+                });
+
+                loadData();
+            };
+
+            var script = document.createElement('script');
+            script.src = "https://docs.google.com/spreadsheets/d/" + SPREADSHEET_ID + "/gviz/tq?gid=" + GID + "&tqx=responseHandler:handleSpreadsheetResponse";
+            document.body.appendChild(script);
+        }
+
+        function parseGoogleDate(val) {
+            if (!val) return null;
+            if (typeof val === 'string' && val.indexOf('Date(') === 0) {
+                var parts = val.match(/\d+/g);
+                if (parts) return new Date(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
+            }
+            var d = new Date(val);
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+        function formatDateISOToVerbose(d) {
+            var day = String(d.getDate()).padStart(2, '0');
+            var months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            var month = months[d.getMonth()];
+            var year = d.getFullYear();
+            return day + ' ' + month + ' ' + year;
+        }
+
+        function switchTab(type) {
+            activeTab = type;
+            var tabBaru = document.getElementById('tabPengajuanBaru');
+            var tabPerp = document.getElementById('tabPerpanjangan');
+            var btnAdd = document.getElementById('btnOpenAddModal');
+            var title = document.getElementById('tableTitle');
+
+            if (type === 'BARU') {
+                tabBaru.classList.add('active');
+                tabPerp.classList.remove('active');
+                btnAdd.style.display = 'inline-flex';
+                title.innerText = 'Daftar Usulan Pengajuan Baru';
+            } else {
+                tabPerp.classList.add('active');
+                tabBaru.classList.remove('active');
+                btnAdd.style.display = 'none';
+                title.innerText = 'Daftar Pegawai Perpanjangan Smart Card (< 2 Tahun)';
+            }
+            loadData();
+        }
+
+        function getTodayFormatted() {
+            var now = new Date();
+            var yyyy = now.getFullYear();
+            var mm = String(now.getMonth() + 1).padStart(2, '0');
+            var dd = String(now.getDate()).padStart(2, '0');
+            return dd + '/' + mm + '/' + yyyy;
+        }
+
+        function createAuditLog(nipp, nama, actionMessage) {
+            var now = new Date();
+            var timeString = now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) + ' WIB';
+            var adminEmail = window.currentUserEmail || 'Admin';
+
+            var newLog = {
+                timestamp: timeString,
+                adminEmail: adminEmail,
+                nipp: nipp,
+                nama: nama,
+                action: actionMessage
+            };
+
+            var existingLogs = JSON.parse(localStorage.getItem('auditDataLogs') || '[]');
+            existingLogs.push(newLog);
+            localStorage.setItem('auditDataLogs', JSON.stringify(existingLogs));
+        }
+
+        function validateStepSequence() {
+            var previousChecked = true;
+
+            steps.forEach(function(s) {
+                var chkElem = document.getElementById(s.chk);
+                var dateElem = document.getElementById(s.date);
+                var containerElem = document.getElementById(s.container);
+
+                if (!chkElem) return;
+
+                if (previousChecked) {
+                    chkElem.disabled = false;
+                    containerElem.classList.remove('disabled');
+                } else {
+                    chkElem.checked = false;
+                    chkElem.disabled = true;
+                    dateElem.innerText = '-';
+                    containerElem.classList.add('disabled');
+                }
+
+                previousChecked = chkElem.checked;
+            });
+
+            var smartCardChecked = document.getElementById('chkTerimaSmartCard').checked;
+            var uploadContainer = document.getElementById('smartCardUploadContainer');
+            if (uploadContainer) {
+                uploadContainer.style.display = smartCardChecked ? 'block' : 'none';
+            }
+        }
+
+        function openModal(index) {
+            var item = (activeTab === 'BARU') ? pengajuanList[index] : perpanjanganList[index];
+            if (!item) return;
+
+            document.getElementById('modalIndex').value = index;
+            document.getElementById('modalModeTitle').innerText = activeTab === 'BARU' ? 'Pengajuan Baru' : 'Perpanjangan';
+            document.getElementById('modalNama').innerText = item.nama;
+            document.getElementById('modalNipp').innerText = item.nipp;
+            document.getElementById('smartCardExpInput').value = item.smartCardExpDate || '';
+
+            steps.forEach(function(s) {
+                var chkElem = document.getElementById(s.chk);
+                var dateElem = document.getElementById(s.date);
+                chkElem.checked = !!item[s.key];
+                dateElem.innerText = item[s.key + 'Date'] || '-';
+            });
+
+            validateStepSequence();
+            document.getElementById('updateModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('updateModal').style.display = 'none';
+            document.getElementById('smartCardExpInput').value = '';
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('formTambahPengajuan').reset();
+            document.getElementById('addNippAlert').style.display = 'none';
+            document.getElementById('btnSubmitAddPengajuan').disabled = true;
+        }
+
+        function deletePengajuan(index) {
+            var item = pengajuanList[index];
+            if (!item) return;
+
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: 'Apakah Anda yakin ingin menghapus data pengajuan ' + item.nama + ' (' + item.nipp + ')?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Hapus Data',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    createAuditLog(item.nipp, item.nama, 'Menghapus Data Pengajuan');
+                    pengajuanList.splice(index, 1);
+                    localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
+                    
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'Data pengajuan berhasil dihapus.',
+                        icon: 'success',
+                        confirmButtonColor: '#f06400'
+                    });
+                    
+                    loadData();
+                }
+            });
+        }
+
+        function loadData() {
+            pengajuanList = JSON.parse(localStorage.getItem('pengajuanBaruList') || '[]');
+            var tbody = document.getElementById('progressTableBody');
+            var trHead = document.getElementById('tableHeaderRow');
+
+            if (!tbody) return;
+
+            if (activeTab === 'BARU') {
+                trHead.innerHTML = `
+                    <th class="cell-center">No</th>
+                    <th class="cell-center">NIPP</th>
+                    <th>Nama Pegawai</th>
+                    <th class="cell-center">Tingkat</th>
+                    <th class="cell-center">Progress Tahapan</th>
+                    <th class="cell-center">Aksi</th>
+                `;
+
+                if (pengajuanList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="cell-center" style="padding: 20px; color: var(--text-muted);">Belum ada data pengajuan baru.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                pengajuanList.forEach(function(item, index) {
+                    var countChecked = 0;
+                    steps.forEach(function(s) { if (item[s.key]) countChecked++; });
+
+                    var isComplete = countChecked === steps.length;
+                    var statusBadge = isComplete 
+                        ? '<span class="badge-status badge-success"><i class="fa-solid fa-check-circle"></i> Selesai (5/5)</span>'
+                        : '<span class="badge-status badge-process"><i class="fa-solid fa-spinner fa-spin"></i> Proses (' + countChecked + '/5)</span>';
+
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="cell-center">${index + 1}</td>
+                        <td class="cell-center" style="font-family: monospace; font-weight:700;">${item.nipp}</td>
+                        <td style="font-weight: 600;">${item.nama}</td>
+                        <td class="cell-center">${item.tingkat}</td>
+                        <td class="cell-center">${statusBadge}</td>
+                        <td class="cell-center" style="display: flex; justify-content: center; gap: 6px;">
+                            <button type="button" class="btn-action btn-update btn-edit-row" data-index="${index}">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                            <button type="button" class="btn-action btn-delete btn-delete-row" data-index="${index}">
+                                <i class="fa-solid fa-trash-can"></i> Hapus
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                trHead.innerHTML = `
+                    <th class="cell-center">No</th>
+                    <th class="cell-center">NIPP</th>
+                    <th>Nama Pegawai</th>
+                    <th class="cell-center">Masa Berlaku</th>
+                    <th class="cell-center">Sisa Hari</th>
+                    <th class="cell-center">Progress Tahapan</th>
+                    <th class="cell-center">Aksi</th>
+                `;
+
+                if (perpanjanganList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="cell-center" style="padding: 20px; color: var(--text-muted);">Tidak ada berkas yang perlu diperpanjang (&lt; 2 tahun).</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                perpanjanganList.forEach(function(item, index) {
+                    var countChecked = 0;
+                    steps.forEach(function(s) { if (item[s.key]) countChecked++; });
+
+                    var isComplete = countChecked === steps.length;
+                    var statusBadge = isComplete 
+                        ? '<span class="badge-status badge-success"><i class="fa-solid fa-check-circle"></i> Selesai (5/5)</span>'
+                        : '<span class="badge-status badge-process"><i class="fa-solid fa-spinner fa-spin"></i> Proses (' + countChecked + '/5)</span>';
+
+                    var sisaWaktuBadge = item.diffDays <= 0 
+                        ? '<span class="badge-status badge-warning">Expired</span>'
+                        : '<span style="font-weight:700; color:#b45309;">' + item.diffDays + ' Hari</span>';
+
+                    var row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="cell-center">${index + 1}</td>
+                        <td class="cell-center" style="font-family: monospace; font-weight:700;">${item.nipp}</td>
+                        <td style="font-weight: 600;">${item.nama}</td>
+                        <td class="cell-center">${item.expDateStr}</td>
+                        <td class="cell-center">${sisaWaktuBadge}</td>
+                        <td class="cell-center">${statusBadge}</td>
+                        <td class="cell-center">
+                            <button type="button" class="btn-action btn-update btn-edit-row" data-index="${index}">
+                                <i class="fa-solid fa-pen-to-square"></i> Progress
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            document.querySelectorAll('.btn-edit-row').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var idx = parseInt(this.getAttribute('data-index'));
+                    openModal(idx);
+                });
+            });
+
+            document.querySelectorAll('.btn-delete-row').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var idx = parseInt(this.getAttribute('data-index'));
+                    deletePengajuan(idx);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchDirectSpreadsheetData();
+
+            var btnToggle = document.getElementById('btn-toggle-menu');
+            var sidebar = document.getElementById('app-sidebar');
+            if (btnToggle && sidebar) {
+                btnToggle.addEventListener('click', function() { sidebar.classList.toggle('collapsed'); });
+            }
+
+            document.getElementById('btnOpenAddModal')?.addEventListener('click', function() {
+                document.getElementById('addModal').style.display = 'flex';
+            });
+
+            document.getElementById('btnBatalAddModal')?.addEventListener('click', closeAddModal);
+            document.getElementById('btnBatalModal')?.addEventListener('click', closeModal);
+
+            var addNippInput = document.getElementById('addNipp');
+            var addNamaInput = document.getElementById('addNama');
+            var addTingkatSelect = document.getElementById('addTingkat');
+            var addNippAlert = document.getElementById('addNippAlert');
+            var btnSubmitAdd = document.getElementById('btnSubmitAddPengajuan');
+
+            addNippInput?.addEventListener('input', function() {
+                var typedNipp = this.value.trim();
+                addNippAlert.style.display = 'none';
+
+                if (typedNipp === '') {
+                    addNamaInput.value = '';
+                    addTingkatSelect.value = 'PERTAMA';
+                    btnSubmitAdd.disabled = true;
+                    return;
+                }
+
+                var matched = rawData.find(function(item) { 
+                    return String(item.nipp).replace(/\s+/g, '') === String(typedNipp).replace(/\s+/g, ''); 
+                });
+
+                if (matched) {
+                    addNamaInput.value = matched.nama;
+                    var valTingkat = matched.tingkat ? matched.tingkat.toUpperCase() : 'PERTAMA';
+                    if (['PERTAMA', 'MUDA', 'MADYA'].includes(valTingkat)) {
+                        addTingkatSelect.value = valTingkat;
+                    } else {
+                        addTingkatSelect.value = 'PERTAMA';
+                    }
+                    btnSubmitAdd.disabled = false;
+                } else {
+                    addNamaInput.value = '';
+                    addTingkatSelect.value = 'PERTAMA';
+                    btnSubmitAdd.disabled = true;
+                    addNippAlert.innerText = 'Error: NIPP ' + typedNipp + ' tidak terdaftar di database Spreadsheet!';
+                    addNippAlert.style.display = 'block';
+                }
+            });
+
+            // SIMPAN PENGAJUAN BARU (SIMPAN LOKAL)
+            document.getElementById('formTambahPengajuan')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var newEntry = {
+                    nama: addNamaInput.value,
+                    nipp: addNippInput.value.trim(),
+                    tingkat: addTingkatSelect.value,
+                    refresh: false,
+                    diajukan: false,
+                    disetujuiMT: false,
+                    ujiSertifikasi: false,
+                    terimaSmartCard: false,
+                    smartCardExpDate: ''
+                };
+
+                pengajuanList.push(newEntry);
+                localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
+
+                createAuditLog(newEntry.nipp, newEntry.nama, 'Menambahkan Usulan Pengajuan Baru (Lokal)');
+
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: 'Pengajuan baru berhasil disimpan. Data akan dikirim ke Spreadsheet setelah seluruh tahapan selesai.',
+                    icon: 'success',
+                    confirmButtonColor: '#f06400'
+                });
+
+                closeAddModal();
+                loadData();
+            });
+
+            steps.forEach(function(s) {
+                var chkElem = document.getElementById(s.chk);
+                if (chkElem) {
+                    chkElem.addEventListener('change', function() {
+                        var dateElem = document.getElementById(s.date);
+                        if (this.checked) {
+                            if (!dateElem.innerText || dateElem.innerText === '-') {
+                                dateElem.innerText = getTodayFormatted();
+                            }
+                        } else {
+                            dateElem.innerText = '-';
+                        }
+                        validateStepSequence();
+                    });
+                }
+            });
+
+            // UPDATE PROGRESS (PENGAJUAN BARU ATAU PERPANJANGAN)
+            var formUpdate = document.getElementById('formUpdateProgress');
+            if (formUpdate) {
+                formUpdate.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+
+                    var idx = document.getElementById('modalIndex').value;
+                    var item = (activeTab === 'BARU') ? pengajuanList[idx] : perpanjanganList[idx];
+
+                    steps.forEach(function(s) {
+                        var chkElem = document.getElementById(s.chk);
+                        var dateElem = document.getElementById(s.date);
+
+                        item[s.key] = chkElem.checked;
+                        item[s.key + 'Date'] = chkElem.checked ? dateElem.innerText : '';
+                    });
+
+                    var expDateVal = document.getElementById('smartCardExpInput').value;
+                    item.smartCardExpDate = expDateVal;
+
+                    var isAllStepsCompleted = steps.every(function(s) { return item[s.key] === true; });
+
+                    if (isAllStepsCompleted && !expDateVal) {
+                        Swal.fire({
+                            title: 'Tanggal Kadaluwarsa Wajib Diisi!',
+                            text: 'Tahapan telah selesai (Terima Smart Card). Silakan isi tanggal kadaluwarsa Smart Card baru.',
+                            icon: 'warning',
+                            confirmButtonColor: '#f06400'
+                        });
+                        return;
+                    }
+
+                    var btnSubmit = e.target.querySelector('button[type="submit"]');
+                    btnSubmit.disabled = true;
+                    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+                    try {
+                        if (isAllStepsCompleted && expDateVal) {
+                            // UPDATE TAMPILAN MASA BERLAKU DI TABEL SECARA REAL-TIME DENGAN TANGGAL KADALUWARSA BARU
+                            var newExpDateObj = new Date(expDateVal);
+                            if (!isNaN(newExpDateObj.getTime())) {
+                                item.expDateObj = newExpDateObj;
+                                item.expDateStr = formatDateISOToVerbose(newExpDateObj);
+                                var today = new Date();
+                                var diffTime = newExpDateObj.getTime() - today.getTime();
+                                item.diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+                            }
+
+                            // SEND DATA KE GOOGLE SPREADSHEET VIA APPS SCRIPT WEB APP
+                            await fetch(WEB_APP_URL, {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    actionType: activeTab === 'BARU' ? "UPDATE_PROGRESS" : "UPDATE_PERPANJANGAN",
+                                    nipp: item.nipp,
+                                    nama: item.nama,
+                                    tingkat: item.tingkat,
+                                    expDate: expDateVal
+                                })
+                            });
+
+                            createAuditLog(item.nipp, item.nama, 'Proses ' + activeTab + ' Selesai & Kirim Spreadsheet (Exp Baru: ' + expDateVal + ')');
+
+                            Swal.fire({
+                                title: 'Proses Selesai!',
+                                text: 'Masa berlaku terbaru telah di-update dan data berhasil disinkronkan ke Google Spreadsheet.',
+                                icon: 'success',
+                                confirmButtonColor: '#f06400'
+                            });
+                        } else {
+                            createAuditLog(item.nipp, item.nama, 'Update Progress ' + activeTab + ' (Lokal)');
+
+                            Swal.fire({
+                                title: 'Progress Diperbarui!',
+                                text: 'Perubahan disimpan secara lokal. Data dikirim ke Spreadsheet setelah seluruh tahapan selesai.',
+                                icon: 'info',
+                                confirmButtonColor: '#f06400'
+                            });
+                        }
+
+                        if (activeTab === 'BARU') {
+                            localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
+                        } else {
+                            localStorage.setItem('perpanjanganList', JSON.stringify(perpanjanganList));
+                        }
+
+                        closeModal();
+                        loadData();
+
+                    } catch (error) {
+                        console.error("Gagal update ke Spreadsheet:", error);
+                        Swal.fire({
+                            title: 'Peringatan!',
+                            text: 'Gagal memperbarui Spreadsheet, namun data lokal tetap tersimpan.',
+                            icon: 'warning',
+                            confirmButtonColor: '#f06400'
+                        });
+                    } finally {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = 'Simpan Perubahan';
+                    }
+                });
+            }
+
+            loadData();
+        });
+    </script>
+</body>
+</html>
