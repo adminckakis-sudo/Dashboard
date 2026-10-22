@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
 
+    <!-- SWEETALERT2 FOR MODERN POP-UP NOTIFICATIONS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- FIREBASE AUTHENTICATION GATEKEEPER -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -18,7 +21,7 @@
             onAuthStateChanged, 
             signOut, 
             setPersistence, 
-            browserSessionPersistence 
+            browserLocalPersistence 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -33,21 +36,60 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        window.auth = auth;
 
-        // Menyamakan mode persistence dengan login.html
-        setPersistence(auth, browserSessionPersistence);
+        setPersistence(auth, browserLocalPersistence);
 
-        // Proteksi Halaman: Jika belum login, tendang ke login.html
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "../login.html";
+        const TIMEOUT_LIMIT = 15 * 60 * 1000;
+
+        function updateLastActiveTimestamp() {
+            localStorage.setItem("lastActiveTime", Date.now().toString());
+        }
+
+        window.addEventListener("beforeunload", updateLastActiveTimestamp);
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "hidden") {
+                updateLastActiveTimestamp();
             }
         });
 
-        // Fungsi Logout Manual
-        window.handleLogout = function() {
-            signOut(auth).then(() => {
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
                 window.location.href = "../login.html";
+            } else {
+                const lastActive = localStorage.getItem("lastActiveTime");
+                const now = Date.now();
+
+                if (lastActive && (now - parseInt(lastActive, 10) > TIMEOUT_LIMIT)) {
+                    localStorage.removeItem("lastActiveTime");
+                    await signOut(auth);
+                    window.location.href = "../login.html";
+                    return;
+                }
+
+                updateLastActiveTimestamp();
+                window.currentUserEmail = user.email;
+            }
+        });
+
+        // FUNGSI LOGOUT DENGAN SWEETALERT2
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem("lastActiveTime");
+                    signOut(auth).then(() => {
+                        window.location.href = "../login.html";
+                    });
+                }
             });
         };
     </script>
@@ -90,7 +132,8 @@
                         <span class="sidebar-text">Administrator</span>
                     </a>
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        <a href="/admin/edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                        <!-- DIBERSIHKAN: Menggunakan relatif path ./edit-pengajuan.html -->
+                        <a href="./edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
                             <span class="sidebar-text">Sertifikasi</span>
                         </a>
                         <a href="./data-logger.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
@@ -106,7 +149,7 @@
                 <div class="section-header">
                     <div>
                         <h1 class="section-title">Audit Log System (Data Logger)</h1>
-                        <p class="section-desc">Riwayat perubahan data, pengajuan baru, dan pembaruan foto Smart Card.</p>
+                        <p class="section-desc">Riwayat perubahan data.</p>
                     </div>
                 </div>
 
