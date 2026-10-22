@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrator - UPT Crew KA Kisaran</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 120px);
+            padding: 20px;
+        }
+        .login-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius-md, 8px);
+            box-shadow: var(--shadow-subtle, 0 1px 3px rgba(0,0,0,0.05));
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            box-sizing: border-box;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .login-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--kai-blue, #0d1b2a);
+            margin-bottom: 6px;
+        }
+        .login-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted, #64748b);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main, #334155);
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color, #cbd5e1);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--kai-orange, #f06400);
+        }
+        .btn-login {
+            width: 100%;
+            background-color: var(--kai-orange, #f06400);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-login:hover {
+            background-color: #d95800;
+        }
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="top-header" role="banner">
+        <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+                <button id="btn-toggle-menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka/Tutup Menu">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
+            <div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                
+                <nav style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="index.html" class="sidebar-item" title="Homepage">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>
+                    <a href="./cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        <span class="sidebar-text">Dashboard Cuti</span>
+                    </a>
+                    <a href="./sertifikasi/dashboard-sertifikasi.html" class="sidebar-item" title="Pantauan Sertifikasi">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                            <circle cx="9" cy="10" r="2.5"></circle>
+                            <path d="M15 8h2"></path>
+                            <path d="M15 12h2"></path>
+                            <path d="M7 16c0-1.5 1.5-2.5 3-2.5s3 1 3 2.5"></path>
+                        </svg>
+                        <span class="sidebar-text">Sertifikasi</span>
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="app-main-content">
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h1 class="login-title">LOGIN ADMINISTRATOR</h1>
+                        <p class="login-subtitle">Masuk untuk mengelola sistem internal UPT Crew KA Kisaran</p>
+                    </div>
+
+                    <div id="errorMessage" class="alert-error"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="nama@domain.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Kata Sandi</label>
+                            <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn-login" id="btnLogin">
+                            <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FIREBASE LOGIC & REDIRECT -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+        getAuth, 
+        signInWithEmailAndPassword, 
+        onAuthStateChanged, 
+        setPersistence, 
+        browserLocalPersistence 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
+        authDomain: "login-page-dashboard.firebaseapp.com",
+        projectId: "login-page-dashboard",
+        storageBucket: "login-page-dashboard.firebasestorage.app",
+        messagingSenderId: "817524864615",
+        appId: "1:817524864615:web:fc27233cbf881e726e06c2",
+        measurementId: "G-CLG98RXRNT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Mencegah logout saat refresh dengan menyimpan sesi di Local Storage
+    setPersistence(auth, browserLocalPersistence);
+
+    // Jika pengguna sudah dalam keadaan login, langsung arahkan ke Admin Homepage
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            window.location.href = "./admin/homepage-admin.html";
+        }
+    });
+
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const btnLogin = document.getElementById('btnLogin');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        btnLogin.disabled = true;
+        btnLogin.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+        errorMessage.style.display = 'none';
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            window.location.href = "./admin/homepage-admin.html";
+        } catch (error) {
+            errorMessage.style.display = 'block';
+            errorMessage.innerText = "Email atau kata sandi salah. Silakan coba lagi.";
+            btnLogin.disabled = false;
+            btnLogin.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Masuk`;
+        }
+    });
+</script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const btnToggle = document.getElementById("btn-toggle-menu");
+            const sidebar = document.getElementById("app-sidebar");
+            
+            if (btnToggle && sidebar) {
+                btnToggle.addEventListener("click", function() {
+                    sidebar.classList.toggle("collapsed");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
