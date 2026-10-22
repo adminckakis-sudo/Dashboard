@@ -3,20 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UPT Crew KA Kelas C Kisaran</title>
+    <title>Login Administrator - UPT Crew KA Kisaran</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+
+    <!-- SWEETALERT2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 120px);
+            padding: 20px;
+        }
+        .login-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius-md, 8px);
+            box-shadow: var(--shadow-subtle, 0 1px 3px rgba(0,0,0,0.05));
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            box-sizing: border-box;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .login-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--kai-blue, #0d1b2a);
+            margin-bottom: 6px;
+        }
+        .login-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted, #64748b);
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-main, #334155);
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color, #cbd5e1);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--kai-orange, #f06400);
+        }
+
+        /* STYLING UNTUK INPUT PASSWORD DENGAN IKON MATA */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-wrapper .form-control {
+            padding-right: 40px; /* Ruang untuk ikon mata */
+        }
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toggle-password-btn:hover {
+            color: var(--kai-orange, #f06400);
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: var(--kai-orange, #f06400);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-login:hover {
+            background-color: #d95800;
+        }
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- ================= TOP UTILITY BAR ================= -->
     <header class="top-header" role="banner">
         <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
-                <!-- Tombol Toggle Sidebar -->
-                <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka/Tutup Menu">
+                <button id="btn-toggle-menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka/Tutup Menu">
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="12" x2="21" y2="12"></line>
                         <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -30,30 +141,19 @@
         </div>
     </header>
 
-    <!-- ================= WRAPPER UTAMA (SIDEBAR & KONTEN) ================= -->
     <div class="app-layout-wrapper">
-        
-        <!-- SIDEBAR -->
         <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
             <div>
                 <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
                 
                 <nav style="display: flex; flex-direction: column; gap: 6px;">
-                    <a href="../index.html" class="sidebar-item active" title="Homepage">
+                    <a href="index.html" class="sidebar-item" title="Homepage">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         <span class="sidebar-text">Homepage</span>
                     </a>
-                    
-                    <!-- Sub-Navigasi -->
-                    <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        <a href="./personel/struktur-organisasi.html" class="sidebar-sub-item active" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
-                            <span class="sidebar-text">Struktur Organisasi</span>
-                        </a>
-                    </div>
                     <a href="./cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
                         <span class="sidebar-text">Dashboard Cuti</span>
-                    </a>
                     </a>
                     <a href="./sertifikasi/dashboard-sertifikasi.html" class="sidebar-item" title="Pantauan Sertifikasi">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -65,141 +165,339 @@
                         </svg>
                         <span class="sidebar-text">Sertifikasi</span>
                     </a>
-                    <div>
-                        <a href="login.html" class="sidebar-item" title="Administrator Page">
-                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-2h2zm0-4h-2V7h2z"></path>
-                            </svg>
-                            <span class="sidebar-text">Administrator</span>
-                        </a>
-                    </div>
                 </nav>
             </div>
         </aside>
 
-        <!-- KONTEN UTAMA DI KANAN -->
         <main class="app-main-content">
-            <section class="kai-banner-homepage" aria-label="Identitas Dashboard">
-                <div class="banner-overlay"></div>
-                <div class="banner-container">
-                    <div class="banner-badge">UPT CREW KA KELAS C KISARAN</div>
-                    
-                    <!-- Tempat Ucapan Salam Sesuai Waktu -->
-                    <div id="greeting-text" style="font-size: 1.15rem; font-weight: 700; color: var(--kai-orange); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;"></div>
-                    
-                    <h1 class="banner-title">DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
-                    <p class="banner-subtitle" style="font-size: 1.1rem; color: #cbd5e1; margin-top: 8px; max-width: 800px;">
-                        Portal Informasi UPT Crew KA Kelas C Kisaran
-                    </p>
-                </div>
-            </section>
-
-            <!-- ABOUT SECTION -->
-            <section class="about-section">
-                <div class="about-label">TENTANG KAMI</div>
-                
-                <div class="about-content">
-                    <h2 class="about-headline">
-                        UPT Crew KA Kelas C Kisaran adalah Unit Pelaksana Teknis yang berada di wilayah Divisi Regional I Sumatera Utara (DIVRE I SU) yang memiliki wewenang dan bertanggung jawab dalam penugasan Masinis dan Asisten Masinis untuk dinas Kereta Api, Langsir, atau dinas cadangan di Stasiun awal pemberangkatan Kereta Api atau di Stasiun pergantian Awak KA.
-                    </h2>
-
-                    <div class="about-links">
-                        <a href="./personel/struktur-organisasi.html" class="about-link">Struktur Organisasi &rarr;</a>
+            <div class="login-container">
+                <div class="login-card">
+                    <div class="login-header">
+                        <h1 class="login-title">LOGIN ADMINISTRATOR</h1>
+                        <p class="login-subtitle">Masuk untuk mengelola sistem internal UPT Crew KA Kisaran</p>
                     </div>
 
-                    <div class="about-stats-grid">
-                        <!-- Highlight Total Personel -->
-                        <div class="stat-item highlight">
-                            <div class="stat-number" id="stat-total">-</div>
-                            <div class="stat-label">Total Personel Aktif</div>
+                    <div id="errorMessage" class="alert-error"></div>
+
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="Masukkan Email Terdaftar" required>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="stat-kupt">-</div>
-                            <div class="stat-label">KUPT Crew KA</div>
+                        
+                        <!-- INPUT PASSWORD DENGAN FITUR TOGGLE MATA -->
+                        <div class="form-group">
+                            <label for="password">Kata Sandi</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                                <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('password', 'toggleIconLogin')">
+                                    <i class="fa-solid fa-eye" id="toggleIconLogin"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="stat-instruktur">-</div>
-                            <div class="stat-label">Penyelia Instruktur</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="stat-penyelia">-</div>
-                            <div class="stat-label">Penyelia Dinas</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="stat-madya">-</div>
-                            <div class="stat-label">Masinis Madya</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="stat-muda">-</div>
-                            <div class="stat-label">Masinis Muda</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" id="stat-pertama">-</div>
-                            <div class="stat-label">Masinis Pertama</div>
-                        </div> 
+
+                        <button type="submit" class="btn-login" id="btnLogin">
+                            <i class="fa-solid fa-right-to-bracket"></i> Masuk
+                        </button>
+                    </form>
+
+                    <div style="text-align: center; margin-top: 12px;">
+                        <button type="button" id="btnOpenForgotPassword" style="background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+                            Lupa kata sandi?
+                        </button>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 10px;">
+                        <button type="button" id="btnOpenRegister" style="background: none; border: none; color: var(--kai-orange, #f06400); font-weight: 700; cursor: pointer; font-size: 0.85rem;">
+                            + Buat Akun Administrator Baru
+                        </button>
                     </div>
                 </div>
-            </section>
-
-            <div class="dashboard-content" id="main-content">
-                <!-- Konten dashboard utama dapat diletakkan di sini -->
             </div>
 
-            <!-- LOKASI -->
-            <section class="location-card">
-                <div class="location-header">
-                    <div class="location-title">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="location-icon">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                        </svg>
-                        Lokasi UPT Crew KA Kisaran
+            <!-- MODAL LUPA PASSWORD -->
+            <div id="forgotPasswordModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;">
+                <div class="login-card" style="max-width: 400px;">
+                    <div class="login-header">
+                        <h2 class="login-title" style="font-size: 1.1rem;">RESET KATA SANDI</h2>
+                        <p class="login-subtitle">Masukkan email terdaftar untuk menerima tautan pemulihan kata sandi.</p>
                     </div>
-                </div>
-                <div class="location-address">
-                    Jl. Akasia, Mekar Baru, Kec. Kota Kisaran Barat, Kabupaten Asahan, Sumatera Utara 21211
-                </div>
-                <div class="map-wrapper">
-                    <iframe 
-                        src="https://maps.google.com/maps?q=UPT%20Crew%20KA%20Kisaran&t=&z=17&ie=UTF8&iwloc=&output=embed" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                </div>
-            </section>
-        </main>
 
+                    <div id="forgotAlert" class="alert-error"></div>
+
+                    <form id="forgotPasswordForm">
+                        <div class="form-group">
+                            <label for="forgotEmail">Email Terdaftar</label>
+                            <input type="email" id="forgotEmail" class="form-control" placeholder="nama@gmail.com" required>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                            <button type="button" id="btnCloseForgot" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
+                            <button type="submit" id="btnSubmitForgot" class="btn-login" style="width: auto; padding: 8px 16px;">Kirim Link Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Script Logika Antarmuka Lokal -->
+    <!-- MODAL REGISTRASI USER BARU -->
+    <div id="registerModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;">
+        <div class="login-card" style="max-width: 420px;">
+            <div class="login-header">
+                <h2 class="login-title" style="font-size: 1.1rem;">REGISTRASI ADMIN BARU</h2>
+                <p class="login-subtitle">Pendaftaran memerlukan persetujuan Super Admin</p>
+            </div>
+
+            <div id="registerAlert" class="alert-error"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="regEmail">Email Baru</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="admin.baru@gmail.com" required>
+                </div>
+
+                <!-- REGISTRASI PASSWORD DENGAN FITUR TOGGLE MATA -->
+                <div class="form-group">
+                    <label for="regPassword">Kata Sandi (Min. 6 Karakter)</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('regPassword', 'toggleIconReg')">
+                            <i class="fa-solid fa-eye" id="toggleIconReg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                    <button type="button" id="btnCloseRegister" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
+                    <button type="submit" id="btnSubmitRegister" class="btn-login" style="width: auto; padding: 8px 16px;">Daftarkan User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            sendPasswordResetEmail, 
+            signOut,
+            setPersistence, 
+            browserLocalPersistence 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";    
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
+            authDomain: "login-page-dashboard.firebaseapp.com",
+            projectId: "login-page-dashboard",
+            storageBucket: "login-page-dashboard.firebasestorage.app",
+            messagingSenderId: "817524864615",
+            appId: "1:817524864615:web:fc27233cbf881e726e06c2",
+            measurementId: "G-CLG98RXRNT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        setPersistence(auth, browserLocalPersistence);
+
+        function updateLastActiveTimestamp() {
+            localStorage.setItem("lastActiveTime", Date.now().toString());
+        }
+
+        // KONTROL MODAL REGISTRASI
+        const btnOpenRegister = document.getElementById("btnOpenRegister");
+        const btnCloseRegister = document.getElementById("btnCloseRegister");
+        const registerModal = document.getElementById("registerModal");
+        const registerForm = document.getElementById("registerForm");
+        const registerAlert = document.getElementById("registerAlert");
+
+        btnOpenRegister?.addEventListener("click", () => registerModal.style.display = "flex");
+        btnCloseRegister?.addEventListener("click", () => {
+            registerModal.style.display = "none";
+            registerForm.reset();
+            registerAlert.style.display = "none";
+        });
+
+        // KONTROL MODAL LUPA PASSWORD
+        const btnOpenForgot = document.getElementById("btnOpenForgotPassword");
+        const btnCloseForgot = document.getElementById("btnCloseForgot");
+        const forgotModal = document.getElementById("forgotPasswordModal");
+        const forgotForm = document.getElementById("forgotPasswordForm");
+        const forgotAlert = document.getElementById("forgotAlert");
+
+        btnOpenForgot?.addEventListener("click", () => forgotModal.style.display = "flex");
+        btnCloseForgot?.addEventListener("click", () => {
+            forgotModal.style.display = "none";
+            forgotForm.reset();
+            forgotAlert.style.display = "none";
+        });
+
+// PROSES PENGIRIMAN EMAIL RESET PASSWORD
+forgotForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("forgotEmail").value.trim();
+    const btnSubmit = document.getElementById("btnSubmitForgot");
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+    forgotAlert.style.display = "none";
+
+    // Konfigurasi URL tujuan setelah reset password
+    const actionCodeSettings = {
+        // Sesuaikan dengan URL lokal tempat kamu menjalankan Live Server
+        url: window.location.origin + '/login.html',
+        handleCodeInApp: true
+    };
+
+    try {
+        // Kirim email reset dengan konfigurasi URL action
+        await sendPasswordResetEmail(auth, email, actionCodeSettings);
+
+        Swal.fire({
+            title: 'Email Terkirim!',
+            text: `Tautan pemulihan kata sandi telah dikirim ke ${email}. Silakan periksa inbox/spam.`,
+            icon: 'success',
+            confirmButtonColor: '#f06400'
+        });
+
+        forgotModal.style.display = "none";
+        forgotForm.reset();
+    } catch (error) {
+        forgotAlert.style.display = "block";
+        if (error.code === 'auth/user-not-found') {
+            forgotAlert.innerText = "Email tidak terdaftar di sistem!";
+        } else if (error.code === 'auth/invalid-email') {
+            forgotAlert.innerText = "Format email tidak valid!";
+        } else {
+            forgotAlert.innerText = "Gagal mengirim email: " + error.message;
+        }
+    } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Kirim Link Reset";
+    }
+});
+        // PROSES REGISTRASI USER BARU
+        registerForm?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("regEmail").value;
+            const password = document.getElementById("regPassword").value;
+            const btnSubmit = document.getElementById("btnSubmitRegister");
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+            registerAlert.style.display = "none";
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await setDoc(doc(db, "users", user.uid), {
+                    email: email,
+                    isApproved: false,
+                    createdAt: new Date().toISOString()
+                });
+
+                await signOut(auth);
+
+                Swal.fire({
+                    title: 'Registrasi Berhasil!',
+                    text: 'Akun Anda berhasil dibuat. Silakan hubungi Super Admin untuk menyetujui akun Anda.',
+                    icon: 'info',
+                    confirmButtonColor: '#f06400'
+                });
+
+                registerModal.style.display = "none";
+                registerForm.reset();
+            } catch (error) {
+                registerAlert.style.display = "block";
+                if (error.code === 'auth/email-already-in-use') {
+                    registerAlert.innerText = "Email sudah terdaftar!";
+                } else if (error.code === 'auth/weak-password') {
+                    registerAlert.innerText = "Kata sandi terlalu lemah (min. 6 karakter).";
+                } else {
+                    registerAlert.innerText = "Gagal mendaftar: " + error.message;
+                }
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Daftarkan User";
+            }
+        });
+
+        // PROSES LOGIN & VERIFIKASI FIRESTORE
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const btnLogin = document.getElementById('btnLogin');
+
+        loginForm?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+            errorMessage.style.display = 'none';
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+
+                if (userDoc.exists() && userDoc.data().isApproved === true) {
+                    updateLastActiveTimestamp();
+                    window.location.href = "/admin/homepage-admin.html";
+                } else {
+                    await signOut(auth);
+                    errorMessage.style.display = 'block';
+                    errorMessage.innerText = "Akun Anda belum disetujui oleh Super Admin.";
+                }
+            } catch (error) {
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = "Email atau kata sandi salah. Silakan coba lagi.";
+            } finally {
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Masuk`;
+            }
+        });
+    </script>
+
+    <!-- FUNGSI JAVASCRIPT UNTUK TOGGLE LIHAT PASSWORD -->
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('app-sidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('collapsed');
+        function togglePasswordVisibility(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
             }
         }
 
         document.addEventListener("DOMContentLoaded", function() {
-            const greetingElement = document.getElementById("greeting-text");
-            if (greetingElement) {
-                const hour = new Date().getHours();
-                let greeting = "";
-                
-                if (hour >= 4 && hour < 11) {
-                    greeting = "Selamat Pagi,";
-                } else if (hour >= 11 && hour < 15) {
-                    greeting = "Selamat Siang,";
-                } else if (hour >= 15 && hour < 19) {
-                    greeting = "Selamat Sore,";
-                } else {
-                    greeting = "Selamat Malam,";
-                }
-                
-                greetingElement.textContent = greeting;
+            const btnToggle = document.getElementById("btn-toggle-menu");
+            const sidebar = document.getElementById("app-sidebar");
+            
+            if (btnToggle && sidebar) {
+                btnToggle.addEventListener("click", function() {
+                    sidebar.classList.toggle("collapsed");
+                });
             }
         });
     </script>
-    <script src="js/main.js"></script>
-    <script src="js/data-about.js"></script>
 </body>
 </html>
