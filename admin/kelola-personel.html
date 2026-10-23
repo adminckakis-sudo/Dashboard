@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Database Personel - UPT Crew KA Kisaran</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- FIREBASE AUTH & GATEKEEPER -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signOut, 
+            setPersistence, 
+            browserLocalPersistence 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
+            authDomain: "login-page-dashboard.firebaseapp.com",
+            projectId: "login-page-dashboard",
+            storageBucket: "login-page-dashboard.firebasestorage.app",
+            messagingSenderId: "817524864615",
+            appId: "1:817524864615:web:fc27233cbf881e726e06c2",
+            measurementId: "G-CLG98RXRNT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        setPersistence(auth, browserLocalPersistence);
+
+        const TIMEOUT_LIMIT = 15 * 60 * 1000;
+
+        function updateLastActiveTimestamp() {
+            localStorage.setItem("lastActiveTime", Date.now().toString());
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "../login.html";
+            } else {
+                const lastActive = localStorage.getItem("lastActiveTime");
+                const now = Date.now();
+                if (lastActive && (now - parseInt(lastActive, 10) > TIMEOUT_LIMIT)) {
+                    localStorage.removeItem("lastActiveTime");
+                    await signOut(auth);
+                    window.location.href = "../login.html";
+                    return;
+                }
+                updateLastActiveTimestamp();
+            }
+        });
+
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem("lastActiveTime");
+                    signOut(auth).then(() => {
+                        window.location.href = "../login.html";
+                    });
+                }
+            });
+        };
+    </script>
+
+    <style>
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            padding: 8px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            width: 280px;
+        }
+        .btn-add {
+            background-color: #22c55e;
+            color: #fff;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-add:hover { background-color: #16a34a; }
+        .data-table-container {
+            overflow-x: auto;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+        .data-table th {
+            background-color: #f8fafc;
+            color: var(--kai-blue, #0d1b2a);
+            font-weight: 700;
+        }
+        .btn-action {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+        .btn-edit { background: #3b82f6; color: #fff; }
+        .btn-delete { background: #ef4444; color: #fff; }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-group-full { grid-column: span 2; }
+        .form-group-full label, .form-grid label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #334155;
+        }
+        .form-grid input, .form-group-full input, .form-grid select, .form-group-full select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="top-header" role="banner">
+        <div class="top-header-inner">
+            <div class="header-left-group">
+                <button id="btn-toggle-menu" type="button" title="Buka/Tutup Menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+            <div class="header-right-group">
+                <button type="button" class="btn-logout" onclick="handleLogout()" style="background-color: #ef4444; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
+            <div>
+                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+                
+                <nav style="display: flex; flex-direction: column; gap: 6px;">
+                    <a href="../index.html" class="sidebar-item" title="Homepage">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>              
+
+                    <a href="../cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        <span class="sidebar-text">Dashboard Cuti</span>
+                    </a>
+
+                    <a href="../sertifikasi/dashboard-sertifikasi.html" class="sidebar-item" title="Pantauan Sertifikasi">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                            <circle cx="9" cy="10" r="2.5"></circle>
+                            <path d="M15 8h2"></path>
+                            <path d="M15 12h2"></path>
+                            <path d="M7 16c0-1.5 1.5-2.5 3-2.5s3 1 3 2.5"></path>
+                        </svg>
+                        <span class="sidebar-text">Sertifikasi</span>
+                    </a>
+
+                    <a href="./homepage-admin.html" class="sidebar-item active" title="Administrator">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-2h2zm0-4h-2V7h2z"></path>
+                        </svg>
+                        <span class="sidebar-text">Administrator</span>
+                    </a>
+
+                    <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
+                        <a href="./data-logger.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Data Logger</span>
+                        </a>
+                        <a href="./kelola-personel.html" class="sidebar-sub-item active" style="color:car(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Pengelolaan Personel</span>
+                        </a>
+                        <a href="./edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Sertifikasi</span>
+                        </a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="app-main-content">
+            <div class="dashboard-content">
+                <div class="section-header" style="margin-bottom: 20px;">
+                    <div>
+                        <h1 class="section-title" style="font-size: 1.3rem; font-weight: 800; color: var(--kai-blue);">Kelola Database Personel Terpadu</h1>
+                    </div>
+                </div>
+
+                <div class="table-controls">
+                    <input type="text" id="searchInput" class="search-input" placeholder=" Cari NIPP / Nama / Jabatan..." onkeyup="filterTable()">
+                    <button type="button" class="btn-add" onclick="openAddModal()">
+                        <i class="fa-solid fa-user-plus"></i> Tambah Personel Baru
+                    </button>
+                </div>
+
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>NO</th>
+                                <th>NAMA</th>
+                                <th>NIPP</th>
+                                <th>JABATAN</th>
+                                <th>BINAAN</th>
+                                <th>MULAI BEKERJA</th>
+                                <th style="text-align:center;">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh data dari Google Sheets...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL EDIT / TAMBAH -->
+    <div id="personnelModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                <h3 id="modalTitle" style="margin: 0; font-size: 1.1rem; color: var(--kai-blue);">Edit Data Personel</h3>
+                <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+            </div>
+            <form id="personnelForm">
+                <input type="hidden" id="editRowIndexMulai">
+                <input type="hidden" id="editRowIndexJabatan">
+
+                <div class="form-grid">
+                    <div class="form-group-full">
+                        <label>NAMA</label>
+                        <input type="text" id="inputNama" required placeholder="Masukkan Nama Lengkap">
+                    </div>
+                    <div>
+                        <label>NIPP</label>
+                        <input type="text" id="inputNipp" required placeholder="Masukkan NIPP">
+                    </div>
+                    <div>
+                        <label>JABATAN</label>
+                        <select id="inputJabatan" required>
+                            <option value="">-- Pilih Jabatan --</option>
+                            <option value="KUPT CREW KA">KUPT CREW KA</option>
+                            <option value="PENYELIA INSTRUKTUR">PENYELIA INSTRUKTUR</option>
+                            <option value="PENYELIA DINAS">PENYELIA DINAS</option>
+                            <option value="MASINIS MADYA">MASINIS MADYA</option>
+                            <option value="MASINIS MUDA">MASINIS MUDA</option>
+                            <option value="MASINIS PERTAMA">MASINIS PERTAMA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>BINAAN</label>
+                        <select id="inputBinaan">
+                            <option value="-">- (Tidak Ada)</option>
+                            <option value="Budiman">Budiman</option>
+                            <option value="Alwi Ratomi">Alwi Ratomi</option>
+                        </select>
+                    </div>
+                    <div class="form-group-full">
+                        <label>MULAI BEKERJA</label>
+                        <input type="date" id="inputMulaiBekerja">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                    <button type="button" onclick="closeModal()" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
+                    <button type="submit" id="btnSaveData" class="btn-add" style="background: var(--kai-orange);">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP KAMU DI SINI
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+
+        let combinedData = [];
+
+        function cleanNipp(val) {
+            if (!val) return "";
+            return String(val).replace(/\D/g, "");
+        }
+
+        // Format tanggal dari DD/MM/YYYY atau ISO ke YYYY-MM-DD (untuk input type="date")
+        function parseToInputDate(val) {
+            if (!val) return "";
+            let strVal = String(val).trim();
+
+            if (strVal.includes("T") && strVal.includes("Z")) {
+                let d = new Date(strVal);
+                if (!isNaN(d.getTime())) {
+                    return d.toISOString().split('T')[0];
+                }
+            }
+
+            if (strVal.includes("/")) {
+                let parts = strVal.split("/");
+                if (parts.length === 3) {
+                    let day = parts[0].padStart(2, '0');
+                    let month = parts[1].padStart(2, '0');
+                    let year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            }
+            return strVal;
+        }
+
+        // Format tampilan tanggal di tabel (DD/MM/YYYY)
+        function formatDateValue(val) {
+            if (!val) return "-";
+            let strVal = String(val).trim();
+            if (strVal.includes("T") && strVal.includes("Z")) {
+                let d = new Date(strVal);
+                if (!isNaN(d.getTime())) {
+                    let day = String(d.getDate()).padStart(2, '0');
+                    let month = String(d.getMonth() + 1).padStart(2, '0');
+                    let year = d.getFullYear();
+                    return `${day}/${month}/${year}`;
+                }
+            }
+            return strVal;
+        }
+
+        // Pemetaan Urutan Hierarki Jabatan
+        const JABATAN_RANK = {
+            "KUPT CREW KA": 1,
+            "PENYELIA INSTRUKTUR": 2,
+            "PENYELIA DINAS": 3,
+            "MASINIS MADYA": 4,
+            "MASINIS MUDA": 5,
+            "MASINIS PERTAMA": 6
+        };
+
+        async function fetchSpreadsheetData() {
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, { method: "GET", redirect: "follow" });
+                const result = await response.json();
+
+                if (result.result === "success" || result.status === "success") {
+                    const dataMulai = result.data["Data Mulai Bekerja"] || [];
+                    const dataJabatan = result.data["Jabatan"] || [];
+
+                    const processedNipps = new Set();
+                    combinedData = [];
+
+                    // 1. DAHULUKAN SHEET "Data Mulai Bekerja"
+                    dataMulai.forEach(m => {
+                        const nippClean = cleanNipp(m["NIPP"] || m["NIP"]);
+                        if (nippClean) processedNipps.add(nippClean);
+
+                        const matchJabatan = dataJabatan.find(j => cleanNipp(j["NIPP"] || j["NIP"]) === nippClean);
+
+                        combinedData.push({
+                            rowIndexMulai: m._rowIndex,
+                            rowIndexJabatan: matchJabatan ? matchJabatan._rowIndex : null,
+                            nama: m["NAMA"] || (matchJabatan ? matchJabatan["NAMA"] : ""),
+                            nipp: m["NIPP"] || m["NIP"] || (matchJabatan ? matchJabatan["NIPP"] : ""),
+                            jabatan: matchJabatan ? (matchJabatan["Jabatan"] || matchJabatan["JABATAN"] || "") : (m["JABATAN"] || ""),
+                            binaan: matchJabatan ? (matchJabatan["Binaan"] || matchJabatan["BINAAN"] || "-") : "-",
+                            mulaiBekerja: formatDateValue(m["MULAI BEKERJA"] || m["TANGGAL MASUK"] || "")
+                        });
+                    });
+
+                    // 2. MASUKKAN PERSONEL DARI SHEET "Jabatan" YANG BELUM TERCATAT DI "Data Mulai Bekerja" (KUPT, Instruktur, Penyelia)
+                    dataJabatan.forEach(j => {
+                        const nippClean = cleanNipp(j["NIPP"] || j["NIP"]);
+                        if (nippClean && !processedNipps.has(nippClean)) {
+                            processedNipps.add(nippClean);
+                            combinedData.push({
+                                rowIndexMulai: null,
+                                rowIndexJabatan: j._rowIndex,
+                                nama: j["NAMA"] || "",
+                                nipp: j["NIPP"] || j["NIP"] || "",
+                                jabatan: j["Jabatan"] || j["JABATAN"] || "",
+                                binaan: j["Binaan"] || j["BINAAN"] || "-",
+                                mulaiBekerja: "-"
+                            });
+                        }
+                    });
+
+                    // 3. LOGIKA PENGURUTAN (SORTING) SESUAI HIERARKI JABATAN
+                    combinedData.sort((a, b) => {
+                        const rankA = JABATAN_RANK[String(a.jabatan).toUpperCase().trim()] || 99;
+                        const rankB = JABATAN_RANK[String(b.jabatan).toUpperCase().trim()] || 99;
+
+                        if (rankA !== rankB) {
+                            return rankA - rankB; // Urutkan berdasarkan level hierarki
+                        }
+                        
+                        // Jika jabatan sama, urutkan alfabetis berdasarkan Nama
+                        return a.nama.localeCompare(b.nama);
+                    });
+
+                    renderTable(combinedData);
+                } else {
+                    Swal.fire("Error", "Gagal mengambil data dari Google Sheets", "error");
+                }
+            } catch (error) {
+                Swal.fire("Error Koneksi", error.message, "error");
+            }
+        }
+
+        function renderTable(dataList) {
+            const tbody = document.getElementById("tableBody");
+            if (dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Data personel tidak ditemukan.</td></tr>`;
+                return;
+            }
+
+            let html = "";
+            dataList.forEach((item, idx) => {
+                html += `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td><strong>${item.nama}</strong></td>
+                        <td>${item.nipp}</td>
+                        <td>${item.jabatan || '-'}</td>
+                        <td>${item.binaan || '-'}</td>
+                        <td>${item.mulaiBekerja || '-'}</td>
+                        <td style="text-align:center;">
+                            <button class="btn-action btn-edit" onclick="openEditModal('${item.nipp}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                            <button class="btn-action btn-delete" onclick="deletePersonel(${item.rowIndexMulai}, ${item.rowIndexJabatan})"><i class="fa-solid fa-trash"></i> Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterTable() {
+            const keyword = document.getElementById("searchInput").value.toLowerCase();
+            const filtered = combinedData.filter(item => 
+                String(item.nama).toLowerCase().includes(keyword) ||
+                String(item.nipp).toLowerCase().includes(keyword) ||
+                String(item.jabatan).toLowerCase().includes(keyword) ||
+                String(item.binaan).toLowerCase().includes(keyword)
+            );
+            renderTable(filtered);
+        }
+
+        function openEditModal(nipp) {
+            const item = combinedData.find(i => cleanNipp(i.nipp) === cleanNipp(nipp));
+            if (!item) return;
+
+            document.getElementById("modalTitle").innerText = "Edit Data Personel";
+            document.getElementById("editRowIndexMulai").value = item.rowIndexMulai || "";
+            document.getElementById("editRowIndexJabatan").value = item.rowIndexJabatan || "";
+            
+            document.getElementById("inputNama").value = item.nama;
+            document.getElementById("inputNipp").value = item.nipp;
+            document.getElementById("inputJabatan").value = item.jabatan;
+            document.getElementById("inputBinaan").value = item.binaan && item.binaan !== "-" ? item.binaan : "-";
+            document.getElementById("inputMulaiBekerja").value = parseToInputDate(item.mulaiBekerja);
+
+            document.getElementById("personnelModal").style.display = "flex";
+        }
+
+        function openAddModal() {
+            document.getElementById("modalTitle").innerText = "Tambah Personel Baru";
+            document.getElementById("editRowIndexMulai").value = "";
+            document.getElementById("editRowIndexJabatan").value = "";
+            document.getElementById("personnelForm").reset();
+            document.getElementById("personnelModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("personnelModal").style.display = "none";
+        }
+
+        // SIMPAN PERUBAHAN KE GOOGLE SHEETS
+        document.getElementById("personnelForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const btnSave = document.getElementById("btnSaveData");
+            
+            const rMulai = document.getElementById("editRowIndexMulai").value;
+            const rJabatan = document.getElementById("editRowIndexJabatan").value;
+
+            const inputNama = document.getElementById("inputNama").value;
+            const inputNipp = document.getElementById("inputNipp").value;
+            const inputJabatan = document.getElementById("inputJabatan").value;
+            const inputBinaan = document.getElementById("inputBinaan").value;
+            
+            let rawMulai = document.getElementById("inputMulaiBekerja").value; // Format YYYY-MM-DD dari input type="date"
+            let formattedMulai = "";
+            if (rawMulai) {
+                let parts = rawMulai.split("-");
+                if (parts.length === 3) {
+                    formattedMulai = `${parts[2]}/${parts[1]}/${parts[0]}`; // Konversi ke DD/MM/YYYY
+                }
+            }
+
+            btnSave.disabled = true;
+            btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
+
+            try {
+                const requests = [];
+
+                // 1. Simpan ke Sheet "Data Mulai Bekerja"
+                requests.push(fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: rMulai ? "update" : "add",
+                        sheetName: "Data Mulai Bekerja",
+                        rowIndex: rMulai ? parseInt(rMulai, 10) : null,
+                        data: {
+                            "NAMA": inputNama,
+                            "NIPP": inputNipp,
+                            "MULAI BEKERJA": formattedMulai
+                        }
+                    })
+                }));
+
+                // 2. Simpan ke Sheet "Jabatan"
+                requests.push(fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: rJabatan ? "update" : "add",
+                        sheetName: "Jabatan",
+                        rowIndex: rJabatan ? parseInt(rJabatan, 10) : null,
+                        data: {
+                            "NAMA": inputNama,
+                            "NIPP": inputNipp,
+                            "Jabatan": inputJabatan,
+                            "Binaan": inputBinaan
+                        }
+                    })
+                }));
+
+                await Promise.all(requests);
+
+                Swal.fire("Berhasil!", "Data personel berhasil diperbarui di Google Sheets!", "success");
+                closeModal();
+                fetchSpreadsheetData();
+            } catch (error) {
+                Swal.fire("Gagal", "Gagal memperbarui data: " + error.message, "error");
+            } finally {
+                btnSave.disabled = false;
+                btnSave.innerText = "Simpan Perubahan";
+            }
+        });
+
+        // HAPUS PERSONEL DARI KEDUA SHEET
+        async function deletePersonel(rMulai, rJabatan) {
+            const confirm = await Swal.fire({
+                title: 'Hapus Personel?',
+                text: 'Data personel ini akan dihapus dari seluruh sheet database.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Hapus'
+            });
+
+            if (confirm.isConfirmed) {
+                try {
+                    const deleteReqs = [];
+                    if (rMulai) {
+                        deleteReqs.push(fetch(APPS_SCRIPT_URL, {
+                            method: "POST",
+                            headers: { "Content-Type": "text/plain;charset=utf-8" },
+                            body: JSON.stringify({ action: "delete", sheetName: "Data Mulai Bekerja", rowIndex: rMulai })
+                        }));
+                    }
+                    if (rJabatan) {
+                        deleteReqs.push(fetch(APPS_SCRIPT_URL, {
+                            method: "POST",
+                            headers: { "Content-Type": "text/plain;charset=utf-8" },
+                            body: JSON.stringify({ action: "delete", sheetName: "Jabatan", rowIndex: rJabatan })
+                        }));
+                    }
+                    await Promise.all(deleteReqs);
+                    Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+                    fetchSpreadsheetData();
+                } catch (error) {
+                    Swal.fire("Gagal", error.message, "error");
+                }
+            }
+        }
+
+        document.getElementById('btn-toggle-menu')?.addEventListener('click', () => {
+            document.getElementById('app-sidebar').classList.toggle('collapsed');
+        });
+
+        document.addEventListener("DOMContentLoaded", fetchSpreadsheetData);
+    </script>
+</body>
+</html>
