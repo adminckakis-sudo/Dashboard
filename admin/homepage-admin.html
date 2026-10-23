@@ -13,7 +13,7 @@
     <!-- SWEETALERT2 FOR MODERN POP-UP NOTIFICATIONS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- FIREBASE AUTHENTICATION & GATEKEEPER -->
+    <!-- FIREBASE AUTHENTICATION, FIRESTORE & GATEKEEPER -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { 
@@ -23,6 +23,16 @@
             setPersistence, 
             browserLocalPersistence 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            query, 
+            where, 
+            onSnapshot, 
+            doc, 
+            updateDoc, 
+            deleteDoc 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
@@ -36,6 +46,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         window.auth = auth;
 
         setPersistence(auth, browserLocalPersistence);
@@ -54,6 +65,7 @@
             }
         });
 
+        // GATEKEEPER AKSEBILITAS & MONITORING PENDING USERS
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = "../login.html";
@@ -72,8 +84,98 @@
                 updateLastActiveTimestamp();
                 const adminEmail = document.getElementById("admin-email");
                 if (adminEmail) adminEmail.textContent = user.email;
+
+                // Jalankan pemantauan real-time untuk permintaan akun baru
+                listenPendingUsers();
             }
         });
+
+        // MONITORING REAL-TIME PENDAFTARAN AKUN (isApproved: false)
+        function listenPendingUsers() {
+            const q = query(collection(db, "users"), where("isApproved", "==", false));
+            
+            onSnapshot(q, (snapshot) => {
+                const tbody = document.getElementById("pendingUsersTableBody");
+                if (!tbody) return;
+
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="cell-center" style="padding: 16px; color: var(--text-muted, #64748b);">Tidak ada permintaan akun baru.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                let index = 1;
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const uid = docSnap.id;
+                    const createdAt = data.createdAt ? new Date(data.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+
+                    const row = `
+                        <tr>
+                            <td class="cell-center">${index++}</td>
+                            <td style="font-weight: 600;">${data.email}</td>
+                            <td class="cell-center">${createdAt}</td>
+                            <td class="cell-center">
+                                <span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">
+                                    Menunggu Persetujuan
+                                </span>
+                            </td>
+                            <td class="cell-center" style="display: flex; justify-content: center; gap: 6px;">
+                                <button type="button" onclick="approveAccount('${uid}', '${data.email}')" style="background: #22c55e; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; cursor: pointer;">
+                                    <i class="fa-solid fa-check"></i> Setujui
+                                </button>
+                                <button type="button" onclick="rejectAccount('${uid}', '${data.email}')" style="background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; cursor: pointer;">
+                                    <i class="fa-solid fa-xmark"></i> Tolak
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            });
+        }
+
+        // FUNGSI UNTUK MENYETUJUI AKUN
+        window.approveAccount = async function(uid, email) {
+            try {
+                await updateDoc(doc(db, "users", uid), {
+                    isApproved: true
+                });
+                
+                Swal.fire({
+                    title: 'Akun Disetujui!',
+                    text: `Akun ${email} berhasil disetujui dan kini dapat digunakan untuk login.`,
+                    icon: 'success',
+                    confirmButtonColor: '#f06400'
+                });
+            } catch (error) {
+                Swal.fire('Error', 'Gagal menyetujui akun: ' + error.message, 'error');
+            }
+        };
+
+        // FUNGSI UNTUK MENOLAK PERMINTAAN AKUN
+        window.rejectAccount = async function(uid, email) {
+            const result = await Swal.fire({
+                title: 'Tolak Pendaftaran?',
+                text: `Apakah Anda yakin ingin menolak permintaan pendaftaran ${email}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Tolak',
+                cancelButtonText: 'Batal'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await deleteDoc(doc(db, "users", uid));
+                    Swal.fire('Ditolak', 'Permintaan pendaftaran telah dihapus dari sistem.', 'info');
+                } catch (error) {
+                    Swal.fire('Error', 'Gagal menghapus dokumen: ' + error.message, 'error');
+                }
+            }
+        };
 
         // FUNGSI LOGOUT DENGAN KONFIRMASI POP-UP SWEETALERT2
         window.handleLogout = function() {
@@ -215,11 +317,14 @@
                     </a>
 
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        <a href="./edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
-                            <span class="sidebar-text">Sertifikasi</span>
-                        </a>
                         <a href="./data-logger.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
                             <span class="sidebar-text">Data Logger</span>
+                        </a>
+                        <a href="./kelola-personel.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Pengelolaan Personel</span>
+                        </a>
+                        <a href="./edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Sertifikasi</span>
                         </a>
                     </div>
                 </nav>
@@ -238,15 +343,6 @@
 
                 <!-- ADMIN MENU CARDS / WIDGETS -->
                 <div class="admin-card-grid">
-                    <a href="./edit-pengajuan.html" class="admin-menu-card">
-                        <div>
-                            <div class="admin-card-icon">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </div>
-                            <div class="admin-card-title">Edit &amp; Input Pengajuan</div>
-                            <div class="admin-card-desc">Tambah usulan pengajuan sertifikasi baru atau perbarui status tahapan perpanjangan secara manual.</div>
-                        </div>
-                    </a>
                     <a href="./data-logger.html" class="admin-menu-card">
                         <div>
                             <div class="admin-card-icon">
@@ -256,6 +352,52 @@
                             <div class="admin-card-desc">Lihat rekam jejak aktivitas pengeditan data dan pembaruan berkas dari administrator.</div>
                         </div>
                     </a>
+                    <a href="./edit-pengajuan.html" class="admin-menu-card">
+                        <div>
+                            <div class="admin-card-icon">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </div>
+                            <div class="admin-card-title">Edit &amp; Input Pengajuan</div>
+                            <div class="admin-card-desc">Tambah usulan pengajuan sertifikasi baru atau perbarui status tahapan perpanjangan.</div>
+                        </div>
+                    </a>
+                    <a href="./kelola-personel.html" class="admin-menu-card">
+                        <div>
+                            <div class="admin-card-icon">
+                                <i class="fa-solid fa-users-gear"></i>
+                            </div>
+                            <div class="admin-card-title">Pengelolaan Personel</div>
+                            <div class="admin-card-desc">Kelola seluruh data personel terpadu.</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- TABEL MANAJEMEN APPROVAL USER BARU -->
+                <div style="background: #fff; border: 1px solid var(--border-color, #e2e8f0); border-radius: 8px; padding: 20px; margin-top: 24px; box-shadow: var(--shadow-subtle, 0 1px 3px rgba(0,0,0,0.05));">
+                    <h2 style="font-size: 1.05rem; font-weight: 700; color: var(--kai-blue, #0d1b2a); margin-bottom: 16px; margin-top: 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-user-clock" style="color: var(--kai-orange, #f06400);"></i> Permintaan Persetujuan Akun Administrator Baru
+                    </h2>
+                    
+                    <div class="table-responsive-wrapper">
+                        <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th class="cell-center" style="width: 50px;">No</th>
+                                    <th>Email Pengguna</th>
+                                    <th class="cell-center">Tanggal Daftar</th>
+                                    <th class="cell-center">Status</th>
+                                    <th class="cell-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingUsersTableBody">
+                                <tr>
+                                    <td colspan="5" class="cell-center" style="padding: 16px; color: var(--text-muted, #64748b);">
+                                        <i class="fa-solid fa-spinner fa-spin"></i> Memuat data pendaftaran...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </div>
