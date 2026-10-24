@@ -204,24 +204,19 @@
             return String(val).replace(/\D/g, "");
         }
 
-        async function getPhotoUrlByNipp(nippClean) {
-            if (!nippClean) return `./assets/images/default-avatar.png`;
-
-            const pngPath = `./assets/struktur-organisasi/${nippClean}.png`;
-            const jpgPath = `./assets/struktur-organisasi/${nippClean}.jpg`;
-
-            const checkImage = (url) => {
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => resolve(true);
-                    img.onerror = () => resolve(false);
-                    img.src = url;
-                });
-            };
-
-            if (await checkImage(pngPath)) return pngPath;
-            if (await checkImage(jpgPath)) return jpgPath;
-            return `./assets/images/default-avatar.png`;
+        // Generator SVG In-Memory agar tidak pernah mengalami 404
+        function generateInitialsAvatarSvg(nama) {
+            const words = (nama || 'Pegawai').trim().split(/\s+/);
+            const initials = words.length >= 2 
+                ? (words[0][0] + words[1][0]).toUpperCase() 
+                : (words[0].substring(0, 2)).toUpperCase();
+            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+                <rect width="130" height="130" fill="#1c2a5f"/>
+                <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3"/>
+                <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
         }
 
         async function loadEotmHomepage() {
@@ -237,6 +232,7 @@
                 if (eotmResult.result !== "success" || !eotmResult.nipp) {
                     if (eotmName) eotmName.innerText = "Belum Ada Data";
                     if (eotmRole) eotmRole.innerText = "-";
+                    if (eotmAvatar) eotmAvatar.src = generateInitialsAvatarSvg("Pegawai");
                     return;
                 }
 
@@ -250,9 +246,7 @@
                 let jabatanFound = "Masinis";
 
                 if (allData.result === "success" && allData.data) {
-                    // Membaca sheet "Database" atau fallback ke sheet pertama
                     const listDatabase = allData.data["Database"] || Object.values(allData.data)[0] || [];
-
                     const matchPegawai = listDatabase.find(j => cleanNipp(j.NIPP || j.NIP) === nippClean);
 
                     if (matchPegawai) {
@@ -265,14 +259,28 @@
                 if (eotmName) eotmName.innerText = namaFound;
                 if (eotmRole) eotmRole.innerText = `NIPP. ${nippClean} • ${jabatanFound}`;
 
-                // 4. Set foto profil
+                // 4. Set foto profil dengan fallback otomatis ke PNG -> JPG -> SVG
                 if (eotmAvatar) {
-                    eotmAvatar.src = await getPhotoUrlByNipp(nippClean);
+                    const pngPath = `./assets/struktur-organisasi/${nippClean}.png`;
+                    const jpgPath = `./assets/struktur-organisasi/${nippClean}.jpg`;
+                    const svgFallback = generateInitialsAvatarSvg(namaFound);
+
+                    eotmAvatar.onerror = function() {
+                        if (!this.dataset.triedJpg) {
+                            this.dataset.triedJpg = "true";
+                            this.src = jpgPath;
+                        } else {
+                            this.onerror = null;
+                            this.src = svgFallback;
+                        }
+                    };
+                    eotmAvatar.src = pngPath;
                 }
 
             } catch (err) {
                 console.error("Gagal memuat EOTM Homepage:", err);
                 if (eotmName) eotmName.innerText = "Gagal Memuat Data";
+                if (eotmAvatar) eotmAvatar.src = generateInitialsAvatarSvg("Pegawai");
             }
         }
 
