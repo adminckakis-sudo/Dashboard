@@ -34,6 +34,10 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        
+        // Expose instance auth secara global untuk mengambil token saat fetch
+        window.firebaseAuth = auth;
+
         setPersistence(auth, browserLocalPersistence);
 
         const TIMEOUT_LIMIT = 15 * 60 * 1000;
@@ -183,7 +187,6 @@
             box-sizing: border-box;
             font-family: inherit;
         }
-
         .setting-card {
             background-color: #ffffff;
             border: 1px solid #e2e8f0;
@@ -417,9 +420,27 @@
         let combinedData = [];
         let eotmSelectedData = null;
 
+        // Sanitasi XSS untuk mencegah Stored XSS saat render data
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         function cleanNipp(val) {
             if (!val) return "";
             return String(val).replace(/\D/g, "").trim();
+        }
+
+        async function getFirebaseToken() {
+            if (window.firebaseAuth && window.firebaseAuth.currentUser) {
+                return await window.firebaseAuth.currentUser.getIdToken();
+            }
+            return null;
         }
 
         function generateInitialsAvatarSvg(nama) {
@@ -466,7 +487,6 @@
             if (!val || val === "-" || val === "undefined") return "-";
             let strVal = String(val).trim();
 
-            // Tangani ISO String misal 2024-05-10T00:00:00.000Z
             if (strVal.includes("T")) {
                 let d = new Date(strVal);
                 if (!isNaN(d.getTime())) {
@@ -477,7 +497,6 @@
                 }
             }
 
-            // Jika format YYYY-MM-DD
             if (strVal.includes("-")) {
                 let parts = strVal.split("-");
                 if (parts.length === 3 && parts[0].length === 4) {
@@ -516,7 +535,6 @@
                     }
 
                     combinedData = rawList.map(item => {
-                        // Fleksibilitas pencarian nama properti kolom Mulai Bekerja
                         const rawMulai = item["MULAI BEKERJA"] || item["Mulai Bekerja"] || item["mulai_bekerja"] || item["MULAI_BEKERJA"] || item["Tanggal Masuk"] || item["TANGGAL MASUK"] || "";
 
                         return {
@@ -558,16 +576,17 @@
 
             let html = "";
             dataList.forEach((item, idx) => {
+                const safeNipp = escapeHtml(item.nipp);
                 html += `
                     <tr>
                         <td>${idx + 1}</td>
-                        <td><strong>${item.nama}</strong></td>
-                        <td>${item.nipp}</td>
-                        <td>${item.jabatan || '-'}</td>
-                        <td>${item.binaan || '-'}</td>
-                        <td>${item.mulaiBekerja || '-'}</td>
+                        <td><strong>${escapeHtml(item.nama)}</strong></td>
+                        <td>${safeNipp}</td>
+                        <td>${escapeHtml(item.jabatan) || '-'}</td>
+                        <td>${escapeHtml(item.binaan) || '-'}</td>
+                        <td>${escapeHtml(item.mulaiBekerja) || '-'}</td>
                         <td style="text-align:center;">
-                            <button class="btn-action btn-edit" onclick="openEditModal('${item.nipp}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                            <button class="btn-action btn-edit" onclick="openEditModal('${safeNipp}')"><i class="fa-solid fa-pen"></i> Edit</button>
                             <button class="btn-action btn-delete" onclick="deletePersonel(${item.rowIndex})"><i class="fa-solid fa-trash"></i> Hapus</button>
                         </td>
                     </tr>
@@ -681,6 +700,21 @@
             updateEotmPreview(inputVal);
         });
 
+        async function loadExistingEotmSetting() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getEotm`);
+                const data = await response.json();
+
+                if (data.result === "success" && data.nipp) {
+                    document.getElementById("inputNippEotm").value = data.nipp;
+                    updateEotmPreview(data.nipp);
+                }
+            } catch (err) {
+                console.error("Gagal membaca EOTM dari Apps Script:", err);
+            }
+        }
+
+        // SIMPAN EOTM DENGAN TOKEN AUTH (Hanya 1 event listener)
         document.getElementById("eotmForm")?.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -694,8 +728,11 @@
             btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
 
             try {
+                const authToken = await getFirebaseToken();
+
                 const payload = {
                     action: "saveEotm",
+                    authToken: authToken,
                     nipp: eotmSelectedData.nipp,
                     updatedAt: new Date().toISOString()
                 };
@@ -726,27 +763,14 @@
             }
         });
 
-        async function loadExistingEotmSetting() {
-            try {
-                const response = await fetch(`${APPS_SCRIPT_URL}?action=getEotm`);
-                const data = await response.json();
-
-                if (data.result === "success" && data.nipp) {
-                    document.getElementById("inputNippEotm").value = data.nipp;
-                    updateEotmPreview(data.nipp);
-                }
-            } catch (err) {
-                console.error("Gagal membaca EOTM dari Apps Script:", err);
-            }
-        }
-
+        // SIMPAN / EDIT PERSONEL DENGAN TOKEN AUTH (Hanya 1 event listener)
         document.getElementById("personnelForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             const btnSave = document.getElementById("btnSaveData");
             const rIndex = document.getElementById("editRowIndex").value;
 
-            const inputNama = document.getElementById("inputNama").value;
-            const inputNipp = document.getElementById("inputNipp").value;
+            const inputNama = document.getElementById("inputNama").value.trim();
+            const inputNipp = document.getElementById("inputNipp").value.trim();
             const inputJabatan = document.getElementById("inputJabatan").value;
             const inputBinaan = document.getElementById("inputBinaan").value;
             
@@ -763,11 +787,14 @@
             btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
 
             try {
+                const authToken = await getFirebaseToken();
+
                 const response = await fetch(APPS_SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
                         action: rIndex ? "update" : "add",
+                        authToken: authToken,
                         sheetName: "Database",
                         rowIndex: rIndex ? parseInt(rIndex, 10) : null,
                         data: {
@@ -796,6 +823,7 @@
             }
         });
 
+        // HAPUS PERSONEL DENGAN TOKEN AUTH (Hanya 1 deklarasi)
         async function deletePersonel(rIndex) {
             const confirm = await Swal.fire({
                 title: 'Hapus Personel?',
@@ -808,11 +836,14 @@
 
             if (confirm.isConfirmed) {
                 try {
+                    const authToken = await getFirebaseToken();
+
                     const response = await fetch(APPS_SCRIPT_URL, {
                         method: "POST",
                         headers: { "Content-Type": "text/plain;charset=utf-8" },
                         body: JSON.stringify({ 
                             action: "delete", 
+                            authToken: authToken,
                             sheetName: "Database", 
                             rowIndex: rIndex 
                         })
