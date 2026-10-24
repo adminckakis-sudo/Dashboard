@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -29,6 +30,7 @@
             </div>
         </div>
     </header>
+    
 
     <!-- ================= WRAPPER UTAMA (SIDEBAR & KONTEN) ================= -->
     <div class="app-layout-wrapper">
@@ -67,9 +69,8 @@
                         <span class="sidebar-text">Sertifikasi</span>
                     </a>
 
-                    <!-- DIUBAH: Arahkan langsung ke ./login.html -->
                     <div>
-                    <a href="./login.html" id="link-admin" class="sidebar-item" title="Administrator Page">
+                        <a href="./login.html" id="link-admin" class="sidebar-item" title="Administrator Page">
                             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-2h2zm0-4h-2V7h2z"></path>
                             </svg>
@@ -95,8 +96,8 @@
                         Portal Informasi UPT Crew KA Kelas C Kisaran
                     </p>
                 </div>
-            </section>
-
+            </section>     
+            
             <!-- ABOUT SECTION -->
             <section class="about-section">
                 <div class="about-label">TENTANG KAMI</div>
@@ -111,7 +112,6 @@
                     </div>
 
                     <div class="about-stats-grid">
-                        <!-- Highlight Total Personel -->
                         <div class="stat-item highlight">
                             <div class="stat-number" id="stat-total">-</div>
                             <div class="stat-label">Total Personel Aktif</div>
@@ -144,9 +144,24 @@
                 </div>
             </section>
 
-            <div class="dashboard-content" id="main-content">
-                <!-- Konten dashboard utama dapat diletakkan di sini -->
-            </div>
+            <div class="dashboard-content" id="main-content"></div>
+
+            <!-- KARTU PEGAWAI TERBAIK DINAMIS (GOOGLE SHEETS) -->
+            <section class="dashboard-section">
+                <div class="eotm-card">
+                    <div class="eotm-badge-wrapper">
+                        <img id="eotmAvatar" src="./assets/images/default-avatar.png" alt="Pegawai Terbaik" class="eotm-avatar" onerror="this.onerror=null; this.src='./assets/images/default-avatar.png';">
+                        <div class="eotm-trophy-icon">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                    </div>
+                    <div class="eotm-info">
+                        <span class="eotm-tag">PEGAWAI TERBAIK BULAN INI</span>
+                        <h3 id="eotmName" class="eotm-name">Memuat Data...</h3>
+                        <p id="eotmRole" class="eotm-role">-</p>
+                    </div>
+                </div>
+            </section>
 
             <!-- LOKASI -->
             <section class="location-card">
@@ -173,12 +188,91 @@
 
     </div>
 
-    <!-- Script Logika Antarmuka Lokal -->
+    <!-- Script Antarmuka & Pemuatan Data Pegawai Terbaik -->
     <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+
         function toggleSidebar() {
             const sidebar = document.getElementById('app-sidebar');
             if (sidebar) {
                 sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        function cleanNipp(val) {
+            if (!val) return "";
+            return String(val).replace(/\D/g, "");
+        }
+
+        async function getPhotoUrlByNipp(nippClean) {
+            if (!nippClean) return `./assets/images/default-avatar.png`;
+
+            const pngPath = `./assets/struktur-organisasi/${nippClean}.png`;
+            const jpgPath = `./assets/struktur-organisasi/${nippClean}.jpg`;
+
+            const checkImage = (url) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => resolve(true);
+                    img.onerror = () => resolve(false);
+                    img.src = url;
+                });
+            };
+
+            if (await checkImage(pngPath)) return pngPath;
+            if (await checkImage(jpgPath)) return jpgPath;
+            return `./assets/images/default-avatar.png`;
+        }
+
+        async function loadEotmHomepage() {
+            const eotmAvatar = document.getElementById("eotmAvatar");
+            const eotmName = document.getElementById("eotmName");
+            const eotmRole = document.getElementById("eotmRole");
+
+            try {
+                // 1. Ambil NIPP Pegawai Terbaik dari Apps Script
+                const resEotm = await fetch(`${APPS_SCRIPT_URL}?action=getEotm`);
+                const eotmResult = await resEotm.json();
+
+                if (eotmResult.result !== "success" || !eotmResult.nipp) {
+                    if (eotmName) eotmName.innerText = "Belum Ada Data";
+                    if (eotmRole) eotmRole.innerText = "-";
+                    return;
+                }
+
+                const nippClean = cleanNipp(eotmResult.nipp);
+
+                // 2. Ambil data dari Spreadsheet
+                const resAll = await fetch(APPS_SCRIPT_URL);
+                const allData = await resAll.json();
+
+                let namaFound = "Pegawai Terbaik";
+                let jabatanFound = "Masinis";
+
+                if (allData.result === "success" && allData.data) {
+                    // Membaca sheet "Database" atau fallback ke sheet pertama
+                    const listDatabase = allData.data["Database"] || Object.values(allData.data)[0] || [];
+
+                    const matchPegawai = listDatabase.find(j => cleanNipp(j.NIPP || j.NIP) === nippClean);
+
+                    if (matchPegawai) {
+                        namaFound = matchPegawai.NAMA || namaFound;
+                        jabatanFound = (matchPegawai.Jabatan || matchPegawai.JABATAN || jabatanFound).trim();
+                    }
+                }
+
+                // 3. Tampilkan data ke UI
+                if (eotmName) eotmName.innerText = namaFound;
+                if (eotmRole) eotmRole.innerText = `NIPP. ${nippClean} • ${jabatanFound}`;
+
+                // 4. Set foto profil
+                if (eotmAvatar) {
+                    eotmAvatar.src = await getPhotoUrlByNipp(nippClean);
+                }
+
+            } catch (err) {
+                console.error("Gagal memuat EOTM Homepage:", err);
+                if (eotmName) eotmName.innerText = "Gagal Memuat Data";
             }
         }
 
@@ -200,12 +294,14 @@
                 
                 greetingElement.textContent = greeting;
             }
+
+            loadEotmHomepage();
         });
+
         document.getElementById('link-admin')?.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = './login.html';
-    });
-    
+            e.preventDefault();
+            window.location.href = './login.html';
+        });
     </script>
     <script src="js/main.js"></script>
     <script src="js/data-about.js"></script>
