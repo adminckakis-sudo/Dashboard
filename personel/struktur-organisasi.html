@@ -10,14 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
 /* ==========================================================================
-   1. LAYOUT UMUM & KONTAINER CANVAS CANVAS PAN 2D (NO SCROLLBAR)
+   1. LAYOUT UMUM & KONTAINER CANVAS PAN 2D (NO SCROLLBAR)
    ========================================================================== */
 html, body {
     width: 100% !important;
     height: 100vh !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important; /* Matikan scrollbar browser bawaan */
+    overflow: hidden !important;
     user-select: none !important;
     -webkit-user-select: none !important;
 }
@@ -38,7 +38,7 @@ html, body {
     box-sizing: border-box !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: hidden !important; /* Kontainer sebagai Canvas Pan */
+    overflow: hidden !important;
     position: relative !important;
     cursor: grab;
     background-color: #f8fafc;
@@ -54,7 +54,7 @@ html, body {
 }
 
 /* ==========================================================================
-   2. KONTAINER BAGAN FISIK & TRANSFORM CANVAS (TRANSLATE + SCALE)
+   2. KONTAINER BAGAN FISIK & TRANSFORM CANVAS
    ========================================================================== */
 .so-physical-wrapper {
     display: flex !important;
@@ -65,7 +65,7 @@ html, body {
     padding: 30px 40px 60px 40px !important;
     background: #ffffff !important;
     box-sizing: border-box !important;
-    transform-origin: 0 0 !important; /* Titik acuan Transform Canvas */
+    transform-origin: 0 0 !important;
     border-radius: 12px;
     box-shadow: 0 8px 30px rgba(18, 29, 66, 0.08);
     border: 1px solid #cbd5e1;
@@ -83,7 +83,6 @@ html, body {
     -webkit-user-select: none !important;
 }
 
-/* Ubah kursor saat tombol mouse ditahan */
 body.is-dragging, 
 body.is-dragging *,
 .app-main-content.is-dragging {
@@ -470,7 +469,7 @@ body.is-dragging *,
 }
 
 /* ==========================================================================
-   6. MODAL PENAMPIL GAMBAR / LIGHTBOX FOTO PERSONEL
+   6. MODAL LIGHTBOX FOTO PERSONEL
    ========================================================================== */
 .so-lightbox-overlay {
     position: fixed;
@@ -635,7 +634,6 @@ body.is-dragging *,
                         <span class="sidebar-text">Homepage</span>
                     </a>
                     
-                    <!-- Sub-Navigasi -->
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
                         <a href="./struktur-organisasi.html" class="sidebar-sub-item active" style="color: var(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Struktur Organisasi</span>
@@ -685,7 +683,7 @@ body.is-dragging *,
         </main>
     </div>
 
-    <!-- WIDGET TOMBOL ZOOM MELAYANG POJOK KANAN BAWAH -->
+    <!-- WIDGET TOMBOL ZOOM MELAYANG -->
     <div class="zoom-controls-widget" role="region" aria-label="Kontrol Perbesaran Bagan">
         <button type="button" class="zoom-btn" id="btn-zoom-out" title="Perkecil (Zoom Out)">-</button>
         <span class="zoom-display" id="zoom-value-text">100%</span>
@@ -693,7 +691,7 @@ body.is-dragging *,
         <button type="button" class="zoom-btn" id="btn-zoom-reset" title="Kembalikan Semula (Reset Zoom)" style="font-size: 0.85rem;">&#x21bb;</button>
     </div>
 
-    <!-- MODAL PENAMPIL GAMBAR / LIGHTBOX FOTO PERSONEL -->
+    <!-- MODAL LIGHTBOX FOTO PERSONEL -->
     <div id="so-lightbox-modal" class="so-lightbox-overlay" role="dialog" aria-modal="true" aria-labelledby="lightbox-person-name">
         <div class="so-lightbox-content">
             <div class="so-lightbox-header">
@@ -711,18 +709,15 @@ body.is-dragging *,
         </div>
     </div>
 
-    <!-- SCRIPT UTAMA JAM & SIDEBAR -->
+    <!-- SCRIPT UTAMA -->
     <script src="../js/main.js"></script>
 
-    <!-- LOGIKA STRUKTUR ORGANISASI, PENAMPIL GAMBAR & CANVAS PAN 2D -->
+    <!-- LOGIKA STRUKTUR ORGANISASI -->
     <script>
     (function() {
-        // ==========================================================================
-        // A. RESOLUSI JALUR GAMBAR ROBUST
-        // ==========================================================================
         function getBaseAssetsFolder() {
             const path = window.location.pathname;
-            if (path.includes('/personel/') || path.includes('/cuti/')) {
+            if (path.includes('/personel/') || path.includes('/cuti/') || path.includes('/sertifikasi/')) {
                 return '../assets/struktur-organisasi/';
             }
             return 'assets/struktur-organisasi/';
@@ -734,49 +729,45 @@ body.is-dragging *,
                 ? (words[0][0] + words[1][0]).toUpperCase() 
                 : (words[0].substring(0, 2)).toUpperCase();
             
-            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
-                <defs>
-                    <linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#1c2a5f"/>
-                        <stop offset="100%" stop-color="#121d42"/>
-                    </linearGradient>
-                </defs>
-                <circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>
-                <circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>
-                <text x="65" y="74" font-family="'Montserrat', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
-            </svg>`;
+            const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">' +
+                '<defs><linearGradient id="kaiGrad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+                '<stop offset="0%" stop-color="#1c2a5f"/><stop offset="100%" stop-color="#121d42"/>' +
+                '</linearGradient></defs>' +
+                '<circle cx="65" cy="65" r="63" fill="url(#kaiGrad)"/>' +
+                '<circle cx="65" cy="65" r="58" fill="none" stroke="#f06400" stroke-width="3" stroke-dasharray="5 3"/>' +
+                '<text x="65" y="74" font-family="\'Montserrat\', sans-serif" font-size="38" font-weight="800" fill="#ffffff" text-anchor="middle">' + initials + '</text>' +
+                '</svg>';
             return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
         }
 
         window.handleAvatarLoadError = function(img, nama, cleanNipp) {
             const base = getBaseAssetsFolder();
+            const nippBersih = String(cleanNipp).replace(/\D/g, '').trim();
+
             if (!img.dataset.caseAttempt) {
                 img.dataset.caseAttempt = 'upper';
-                img.src = `${base}${cleanNipp}.PNG`;
+                img.src = base + nippBersih + '.PNG';
             } else if (img.dataset.caseAttempt === 'upper') {
+                img.dataset.caseAttempt = 'jpg';
+                img.src = base + nippBersih + '.jpg';
+            } else if (img.dataset.caseAttempt === 'jpg') {
                 img.dataset.caseAttempt = 'done';
                 img.src = generateInitialsAvatarSvg(nama);
             }
         };
 
-        function createAvatarHtml(nama, nipp, extraClass = '') {
-            const cleanNipp = nipp ? String(nipp).trim() : '00000';
+        function createAvatarHtml(nama, nipp, extraClass) {
+            extraClass = extraClass || '';
+            const cleanNipp = nipp ? String(nipp).replace(/\D/g, '').trim() : '00000';
             const safeNama = (nama || '').replace(/"/g, '&quot;');
-            const directPngSrc = `${getBaseAssetsFolder()}${cleanNipp}.png`;
+            const directPngSrc = getBaseAssetsFolder() + cleanNipp + '.png';
 
-            return `
-                <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
-                    <img src="${directPngSrc}" 
-                         alt="${safeNama}" 
-                         class="so-avatar ${extraClass}"
-                         onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
-                </div>
-            `;
+            return '<div class="so-avatar-wrapper" data-nama="' + safeNama + '" data-nipp="' + cleanNipp + '">' +
+                '<img src="' + directPngSrc + '" alt="' + safeNama + '" class="so-avatar ' + extraClass + '" ' +
+                'onerror="handleAvatarLoadError(this, \'' + safeNama.replace(/'/g, "\\'") + '\', \'' + cleanNipp + '\')">' +
+                '</div>';
         }
 
-        // ==========================================================================
-        // B. FITUR LIGHTBOX POPUP
-        // ==========================================================================
         const lightboxModal = document.getElementById('so-lightbox-modal');
         const lightboxImg = document.getElementById('so-lightbox-img');
         const lightboxName = document.getElementById('lightbox-person-name');
@@ -793,7 +784,7 @@ body.is-dragging *,
                 lightboxImg.src = data.imgSrc || generateInitialsAvatarSvg(data.nama);
             }
             if (lightboxName) lightboxName.textContent = data.nama || '-';
-            if (lightboxNipp) lightboxNipp.textContent = data.nipp ? `NIPP. ${data.nipp}` : '-';
+            if (lightboxNipp) lightboxNipp.textContent = data.nipp ? 'NIPP. ' + data.nipp : '-';
             if (lightboxRole) lightboxRole.textContent = data.role || '-';
             lightboxModal.style.display = 'flex';
         }
@@ -812,11 +803,10 @@ body.is-dragging *,
             if (e.key === 'Escape') closeLightbox();
         });
 
-        // Flag untuk membedakan antara Drag dan Klik
         let isDragged = false;
 
         document.addEventListener('click', function(e) {
-            if (isDragged) return; // Batalkan jika event berasal dari gerakan drag
+            if (isDragged) return;
 
             const card = e.target.closest('.card-kupt-node, .card-instruktur-node, .card-penyelia-node, .card-asp');
             if (card) {
@@ -836,9 +826,6 @@ body.is-dragging *,
             }
         });
 
-        // ==========================================================================
-        // C. INTEGRASI SPREADSHEET & RENDER DATA
-        // ==========================================================================
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
 
         async function muatStrukturOrganisasi() {
@@ -861,99 +848,94 @@ body.is-dragging *,
                 for (let i = 1; i < lines.length; i++) {
                     const line = lines[i].trim();
                     if (!line) continue;
-                    const columns = line.split(',');
 
-                    if (columns.length >= 4) {
-                        const nama = columns[1].replace(/"/g, '').trim();
-                        const nipp = columns[2].replace(/"/g, '').trim();
-                        const jabatan = columns[3].replace(/"/g, '').trim().toUpperCase();
-                        const binaan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
+                    const columns = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
 
-                        if (jabatan !== '') {
+                    if (columns.length >= 5) {
+                        const nama = columns[1] ? columns[1].replace(/"/g, '').trim() : '';
+                        const nipp = columns[2] ? columns[2].replace(/"/g, '').trim() : '';
+                        const jabatan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
+                        const binaan = columns[7] ? columns[7].replace(/"/g, '').trim().toUpperCase() : '';
+
+                        const nippClean = nipp.replace(/\D/g, '');
+
+                        if (nippClean !== '' && nippClean.length >= 4) {
                             if (jabatan.includes("KUPT")) {
                                 if (kuptCardEl) {
-                                    kuptCardEl.innerHTML = `
-                                        ${createAvatarHtml(nama, nipp)}
-                                        <div class="so-role">KUPT CREW KA KELAS C KISARAN</div>
-                                        <div class="so-name">${nama}</div>
-                                        <div class="so-nipp">NIPP. ${nipp}</div>
-                                    `;
+                                    kuptCardEl.innerHTML = createAvatarHtml(nama, nippClean) +
+                                        '<div class="so-role">KUPT CREW KA KELAS C KISARAN</div>' +
+                                        '<div class="so-name">' + nama + '</div>' +
+                                        '<div class="so-nipp">NIPP. ' + nippClean + '</div>';
                                 }
                             } else if (jabatan.includes("INSTRUKTUR")) {
-                                listInstruktur.push({ nama, nipp, jabatan });
+                                listInstruktur.push({ nama: nama, nipp: nippClean, jabatan: jabatan });
                             } else if (jabatan.includes("PENYELIA") && !jabatan.includes("INSTRUKTUR")) {
-                                listPenyelia.push({ nama, nipp, jabatan });
+                                listPenyelia.push({ nama: nama, nipp: nippClean, jabatan: jabatan });
                             } else if (jabatan.includes("MASINIS") || jabatan.includes("ASP")) {
-                                listMasinis.push({ nama, nipp, jabatan, binaan });
+                                listMasinis.push({ nama: nama, nipp: nippClean, jabatan: jabatan, binaan: binaan });
                             }
                         }
                     }
                 }
 
                 if (penyeliaWrapper) {
-                    listPenyelia.forEach(p => {
-                        penyeliaWrapper.innerHTML += `
-                            <div class="so-node-card card-penyelia-node">
-                                ${createAvatarHtml(p.nama, p.nipp)}
-                                <div class="so-info">
-                                    <div class="so-role">PENYELIA DINAS</div>
-                                    <div class="so-name">${p.nama}</div>
-                                    <div class="so-nipp">NIPP. ${p.nipp}</div>
-                                </div>
-                            </div>
-                        `;
+                    listPenyelia.forEach(function(p) {
+                        penyeliaWrapper.innerHTML += '<div class="so-node-card card-penyelia-node">' +
+                            createAvatarHtml(p.nama, p.nipp) +
+                            '<div class="so-info">' +
+                            '<div class="so-role">PENYELIA DINAS</div>' +
+                            '<div class="so-name">' + p.nama + '</div>' +
+                            '<div class="so-nipp">NIPP. ' + p.nipp + '</div>' +
+                            '</div>' +
+                            '</div>';
                     });
                 }
 
                 if (instrukturWrapper && listInstruktur.length > 0) {
-                    listInstruktur.forEach(ins => {
+                    listInstruktur.forEach(function(ins) {
                         const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
-                        const colId = `grid-binaan-${safeNameId}`;
+                        const colId = 'grid-binaan-' + safeNameId;
 
-                        instrukturWrapper.innerHTML += `
-                            <div class="so-instruktur-column">
-                                <div class="so-node-card card-instruktur-node">
-                                    ${createAvatarHtml(ins.nama, ins.nipp)}
-                                    <div class="so-info">
-                                        <div class="so-role">PENYELIA INSTRUKTUR</div>
-                                        <div class="so-name">${ins.nama}</div>
-                                        <div class="so-nipp">NIPP. ${ins.nipp}</div>
-                                    </div>
-                                </div>
-                                <div class="line-v-center" style="height: 16px;"></div>
-                                <div class="binaan-container">
-                                    <div class="binaan-header">BINAAN</div>
-                                    <div class="so-asp-grid" id="${colId}"></div>
-                                </div>
-                            </div>
-                        `;
+                        instrukturWrapper.innerHTML += '<div class="so-instruktur-column">' +
+                            '<div class="so-node-card card-instruktur-node">' +
+                            createAvatarHtml(ins.nama, ins.nipp) +
+                            '<div class="so-info">' +
+                            '<div class="so-role">PENYELIA INSTRUKTUR</div>' +
+                            '<div class="so-name">' + ins.nama + '</div>' +
+                            '<div class="so-nipp">NIPP. ' + ins.nipp + '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="line-v-center" style="height: 16px;"></div>' +
+                            '<div class="binaan-container">' +
+                            '<div class="binaan-header">BINAAN</div>' +
+                            '<div class="so-asp-grid" id="' + colId + '"></div>' +
+                            '</div>' +
+                            '</div>';
                     });
 
-                    listMasinis.forEach(m => {
+                    listMasinis.forEach(function(m) {
                         let targetGrid = null;
                         if (m.binaan) {
-                            listInstruktur.forEach(ins => {
+                            listInstruktur.forEach(function(ins) {
                                 if (ins.nama.toUpperCase().includes(m.binaan) || m.binaan.includes(ins.nama.toUpperCase())) {
                                     const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
-                                    targetGrid = document.getElementById(`grid-binaan-${safeNameId}`);
+                                    targetGrid = document.getElementById('grid-binaan-' + safeNameId);
                                 }
                             });
                         }
 
                         if (!targetGrid) {
                             const defaultSafeNameId = listInstruktur[0].nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
-                            targetGrid = document.getElementById(`grid-binaan-${defaultSafeNameId}`);
+                            targetGrid = document.getElementById('grid-binaan-' + defaultSafeNameId);
                         }
 
                         if (targetGrid) {
-                            targetGrid.innerHTML += `
-                                <div class="card-asp">
-                                    ${createAvatarHtml(m.nama, m.nipp)}
-                                    <div class="so-role">${m.jabatan}</div>
-                                    <div class="so-name">${m.nama}</div>
-                                    <div class="so-nipp">NIPP. ${m.nipp}</div>
-                                </div>
-                            `;
+                            targetGrid.innerHTML += '<div class="card-asp">' +
+                                createAvatarHtml(m.nama, m.nipp) +
+                                '<div class="so-role">' + m.jabatan + '</div>' +
+                                '<div class="so-name">' + m.nama + '</div>' +
+                                '<div class="so-nipp">NIPP. ' + m.nipp + '</div>' +
+                                '</div>';
                         }
                     });
                 }
@@ -963,9 +945,6 @@ body.is-dragging *,
             }
         }
 
-// ==========================================================================
-        // D. SISTEM CANVAS PAN & ZOOM (POSISI AWAL PRESISI)
-        // ==========================================================================
         const wrapper = document.getElementById("so-physical-wrapper");
         const viewport = document.getElementById("pan-viewport");
         const zoomText = document.getElementById("zoom-value-text");
@@ -973,7 +952,7 @@ body.is-dragging *,
         const btnOut = document.getElementById("btn-zoom-out");
         const btnReset = document.getElementById("btn-zoom-reset");
 
-        let currentScale = 1.0; // Zoom default 100%
+        let currentScale = 1.0;
         let panX = 0;
         let panY = 0;
 
@@ -981,23 +960,18 @@ body.is-dragging *,
         const maxScale = 2.5;
         const step = 0.15;
 
-        // Fungsi mengatur posisi tepat di tengah horizontal dan di atas secara vertikal
         function setInitialCenterPosition() {
             if (!wrapper || !viewport) return;
 
             const viewportWidth = viewport.clientWidth || window.innerWidth;
             const scaledWidth = wrapper.offsetWidth * currentScale;
 
-            // Hitung panX agar bagan berada pas di tengah layar secara horizontal
             panX = (viewportWidth - scaledWidth) / 2;
-            
-            // Set panY ke nilai kecil (misal 20px) agar bagian judul atas berada dekat di bawah header
             panY = 20;
 
             updateTransform();
         }
 
-        // Fungsi pembatas koordinat geser
         function clampPanCoordinates() {
             if (!wrapper || !viewport) return;
 
@@ -1030,10 +1004,10 @@ body.is-dragging *,
         function updateTransform() {
             clampPanCoordinates();
             if (wrapper) {
-                wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScale})`;
+                wrapper.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + currentScale + ')';
             }
             if (zoomText) {
-                zoomText.textContent = `${Math.round(currentScale * 100)}%`;
+                zoomText.textContent = Math.round(currentScale * 100) + '%';
             }
         }
 
@@ -1042,20 +1016,19 @@ body.is-dragging *,
             updateTransform();
         }
 
-        if (btnIn) btnIn.addEventListener("click", () => applyZoom(currentScale + step));
-        if (btnOut) btnOut.addEventListener("click", () => applyZoom(currentScale - step));
+        if (btnIn) btnIn.addEventListener("click", function() { applyZoom(currentScale + step); });
+        if (btnOut) btnOut.addEventListener("click", function() { applyZoom(currentScale - step); });
         if (btnReset) {
-            btnReset.addEventListener("click", () => {
+            btnReset.addEventListener("click", function() {
                 currentScale = 1.0;
                 setInitialCenterPosition();
             });
         }
 
-        // --- MOUSE DRAG DESKTOP ---
         let isMouseDown = false;
         let startX = 0, startY = 0;
 
-        document.addEventListener('dragstart', (e) => e.preventDefault());
+        document.addEventListener('dragstart', function(e) { e.preventDefault(); });
 
         if (viewport) {
             viewport.addEventListener('mousedown', function(e) {
@@ -1098,7 +1071,6 @@ body.is-dragging *,
             window.addEventListener('mouseup', stopDragging);
             window.addEventListener('mouseleave', stopDragging);
 
-            // --- TOUCH PAN MOBILE ---
             let isTouchPanning = false;
             let touchStartX = 0, touchStartY = 0;
 
@@ -1127,32 +1099,26 @@ body.is-dragging *,
             });
         }
 
-        // Panggil penataan posisi saat DOM selesai dimuat & saat data spreadsheet ter-render
         document.addEventListener("DOMContentLoaded", function() {
-            muatStrukturOrganisasi().then(() => {
+            muatStrukturOrganisasi().then(function() {
                 setTimeout(setInitialCenterPosition, 100);
             });
         });
 
         window.addEventListener('resize', setInitialCenterPosition);
-        // Terapkan posisi awal saat dimuat
         updateTransform();
-        document.addEventListener("DOMContentLoaded", muatStrukturOrganisasi);
     })();
 
-    // ==========================================================================
-        // D.  SCRIPT SIDEBAR
-        // ==========================================================================
-        document.addEventListener("DOMContentLoaded", function() {
-            const btnToggle = document.getElementById("btn-toggle-menu");
-            const sidebar = document.getElementById("app-sidebar");
-            
-            if (btnToggle && sidebar) {
-                btnToggle.addEventListener("click", function() {
-                    sidebar.classList.toggle("collapsed");
-                });
-            }
-        });
+    document.addEventListener("DOMContentLoaded", function() {
+        const btnToggle = document.getElementById("btn-toggle-menu");
+        const sidebar = document.getElementById("app-sidebar");
+        
+        if (btnToggle && sidebar) {
+            btnToggle.addEventListener("click", function() {
+                sidebar.classList.toggle("collapsed");
+            });
+        }
+    });
     </script>
 </body>
 </html>
