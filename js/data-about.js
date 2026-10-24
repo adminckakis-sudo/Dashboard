@@ -1,51 +1,41 @@
-// URL ekspor CSV langsung dari Google Sheets (Sheet: Jabatan, gid=1567798541)
+// URL ekspor CSV langsung dari Google Sheets (Sheet: Database, gid=1567798541)
 const csvUrl = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
 
 // Helper penentu jalur relatif folder assets sesuai lokasi halaman
 function getBasePath() {
     const path = window.location.pathname;
-    // Jika halaman dibuka dari dalam subfolder (seperti /personel/ atau /cuti/)
-    if (path.includes('/personel/') || path.includes('/cuti/')) {
+    if (path.includes('/personel/') || path.includes('/cuti/') || path.includes('/sertifikasi/')) {
         return '../assets/struktur-organisasi/';
     }
-    // Jika dibuka dari root utama (index.html)
     return 'assets/struktur-organisasi/';
 }
 
-// Helper mengubah nama menjadi format nama_file (lowercase & underscore)
-function formatFileName(nama) {
-    if (!nama) return 'personel';
-    return nama
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s]/g, '')
-        .replace(/\s+/g, '_');
-}
-
-// Penanganan error bertingkat jika foto tidak ditemukan / case-sensitivity
+// Penanganan error bertingkat jika foto tidak ditemukan
 window.handleAvatarLoadError = function(img, nama, cleanNipp) {
     const base = getBasePath();
+    const nippBersih = String(cleanNipp).replace(/\D/g, '').trim();
+
     if (!img.dataset.caseAttempt) {
         img.dataset.caseAttempt = 'upper';
-        // Coba ekstensi kapital .PNG (seperti pada 56853.PNG)
-        img.src = `${base}${cleanNipp}.PNG`;
+        img.src = `${base}${nippBersih}.PNG`;
     } else if (img.dataset.caseAttempt === 'upper') {
+        img.dataset.caseAttempt = 'jpg';
+        img.src = `${base}${nippBersih}.jpg`;
+    } else if (img.dataset.caseAttempt === 'jpg') {
         img.dataset.caseAttempt = 'done';
         img.src = `${base}default.jpg`;
     }
 };
 
-// Fungsi pembuat elemen tag <img> dengan pendeteksian nipp.png
+// Fungsi pembuat elemen tag <img> dengan pembersihan NIPP menyeluruh
 function renderAvatar(nama, nipp, extraClass = '') {
-    const cleanNipp = nipp ? String(nipp).trim() : '00000';
+    const cleanNipp = nipp ? String(nipp).replace(/\D/g, '').trim() : '00000';
     const safeNama = (nama || '').replace(/"/g, '&quot;');
     const basePath = getBasePath();
 
-    const primarySrc = `${basePath}${cleanNipp}.png`;
-
     return `
         <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
-            <img src="${primarySrc}" 
+            <img src="${basePath}${cleanNipp}.png" 
                  alt="${safeNama}" 
                  class="so-avatar ${extraClass}"
                  onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
@@ -78,47 +68,51 @@ async function loadAndRenderSpreadsheetData() {
         for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
-            const columns = line.split(',');
 
-            if (columns.length >= 4) {
-                const nama = columns[1].replace(/"/g, '').trim();
-                const nipp = columns[2].replace(/"/g, '').trim();
-                const jabatan = columns[3].replace(/"/g, '').trim().toUpperCase();
-                const binaan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
+            // Parser CSV Regex agar koma di dalam teks ("Tempat, Tanggal Lahir") tidak memecah kolom
+            const columns = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
 
-                if (jabatan !== '') {
+            if (columns.length >= 5) {
+                const nama = columns[1] ? columns[1].replace(/"/g, '').trim() : '';
+                const nipp = columns[2] ? columns[2].replace(/"/g, '').trim() : '';
+                const jabatan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : ''; // Kolom E (Jabatan)
+                const binaan = columns[7] ? columns[7].replace(/"/g, '').trim().toUpperCase() : '';   // Kolom H (Binaan)
+
+                const nippClean = nipp.replace(/\D/g, '');
+
+                if (nippClean !== '' && nippClean.length >= 4) {
                     total++;
                     if (jabatan.includes("KUPT")) {
                         kuptCount++;
                         if (kuptCardEl) {
                             kuptCardEl.innerHTML = `
-                                ${renderAvatar(nama, nipp)}
+                                ${renderAvatar(nama, nippClean)}
                                 <div class="so-role">KUPT CREW KA KELAS C KISARAN</div>
                                 <div class="so-name" id="so-kupt-name">${nama}</div>
-                                <div class="so-nipp" id="so-kupt-nipp">NIPP. ${nipp}</div>
+                                <div class="so-nipp" id="so-kupt-nipp">NIPP. ${nippClean}</div>
                             `;
                         } else {
                             if (kuptNameEl) kuptNameEl.textContent = nama;
-                            if (kuptNippEl) kuptNippEl.textContent = `NIPP. ${nipp}`;
+                            if (kuptNippEl) kuptNippEl.textContent = `NIPP. ${nippClean}`;
                         }
                     } else if (jabatan.includes("INSTRUKTUR")) {
                         instrukturCount++;
-                        listInstruktur.push({ nama, nipp, jabatan });
+                        listInstruktur.push({ nama, nipp: nippClean, jabatan });
                     } else if (jabatan.includes("PENYELIA") && !jabatan.includes("INSTRUKTUR")) {
                         penyeliaCount++;
-                        listPenyelia.push({ nama, nipp, jabatan });
+                        listPenyelia.push({ nama, nipp: nippClean, jabatan });
                     } else if (jabatan.includes("MASINIS") || jabatan.includes("ASP")) {
                         if (jabatan.includes("MADYA")) madya++;
                         else if (jabatan.includes("MUDA")) muda++;
                         else if (jabatan.includes("PERTAMA")) pertama++;
                         
-                        listMasinis.push({ nama, nipp, jabatan, binaan });
+                        listMasinis.push({ nama, nipp: nippClean, jabatan, binaan });
                     }
                 }
             }
         }
 
-        // 1. Render Penyelia Dinas (Kanan)
+        // 1. Render Penyelia Dinas
         if (penyeliaWrapper) {
             listPenyelia.forEach(p => {
                 penyeliaWrapper.innerHTML += `
@@ -134,7 +128,7 @@ async function loadAndRenderSpreadsheetData() {
             });
         }
 
-        // 2. Render Kolom Instruktur dengan PEMBUNGKUS BINAAN (binaan-container)
+        // 2. Render Kolom Instruktur dan Binaan
         if (instrukturWrapper && listInstruktur.length > 0) {
             listInstruktur.forEach((ins) => {
                 const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -161,7 +155,6 @@ async function loadAndRenderSpreadsheetData() {
                 `;
             });
 
-            // Masukkan kartu Masinis ke dalam grid yang dibungkus kotak
             listMasinis.forEach((m) => {
                 let targetGrid = null;
 
@@ -192,7 +185,7 @@ async function loadAndRenderSpreadsheetData() {
             });
         }
 
-        // Update Statistik jika elemen tersedia
+        // Update Elemen Statistik
         if (document.getElementById("stat-total")) document.getElementById("stat-total").textContent = total;
         if (document.getElementById("stat-kupt")) document.getElementById("stat-kupt").textContent = kuptCount;
         if (document.getElementById("stat-instruktur")) document.getElementById("stat-instruktur").textContent = instrukturCount;
