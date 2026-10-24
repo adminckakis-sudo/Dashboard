@@ -183,6 +183,33 @@
             box-sizing: border-box;
             font-family: inherit;
         }
+
+        .setting-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        .preview-eotm-box {
+            margin-top: 14px;
+            padding: 14px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .preview-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--kai-orange, #f06400);
+            background-color: #e2e8f0;
+        }
     </style>
 </head>
 <body>
@@ -249,7 +276,7 @@
                         <a href="./data-logger.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
                             <span class="sidebar-text">Data Logger</span>
                         </a>
-                        <a href="./kelola-personel.html" class="sidebar-sub-item active" style="color:car(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                        <a href="./kelola-personel.html" class="sidebar-sub-item active" style="color:var(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
                             <span class="sidebar-text">Pengelolaan Personel</span>
                         </a>
                         <a href="./edit-pengajuan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
@@ -266,6 +293,38 @@
                     <div>
                         <h1 class="section-title" style="font-size: 1.3rem; font-weight: 800; color: var(--kai-blue);">Kelola Database Personel Terpadu</h1>
                     </div>
+                </div>
+
+                <!-- SECTION SETTING PEGAWAI TERBAIK BULANAN -->
+                <div class="setting-card">
+                    <h3 style="font-size: 1.05rem; color: var(--kai-blue, #0d1b2a); margin-bottom: 14px; font-weight: 700;">
+                        <i class="fa-solid fa-trophy" style="color: var(--kai-orange, #f06400);"></i> Pengaturan Pegawai Terbaik Bulanan
+                    </h3>
+
+                    <form id="eotmForm">
+                        <div class="form-group-full">
+                            <label for="inputNippEotm">NIPP Pegawai Terbaik</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="inputNippEotm" placeholder="Masukkan NIPP Pegawai" style="flex-grow: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem;" required>
+                                <button type="button" id="btnCariEotm" class="btn-add" style="background: var(--kai-blue, #0d1b2a); padding: 8px 16px;">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Cari
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Preview Hasil Pencarian -->
+                        <div class="preview-eotm-box" id="previewEotmBox" style="display: none;">
+                            <img id="prevFotoEotm" src="" alt="Foto Pegawai" class="preview-avatar">
+                            <div>
+                                <strong id="prevNamaEotm" style="display: block; color: var(--kai-blue, #0d1b2a); font-size: 0.95rem;">-</strong>
+                                <span id="prevJabatanEotm" style="font-size: 0.8rem; color: #64748b;">-</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btnSimpanEotm" class="btn-add" style="background: var(--kai-orange, #f06400); margin-top: 14px; width: 100%; justify-content: center;">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Pegawai Terbaik
+                        </button>
+                    </form>
                 </div>
 
                 <div class="table-controls">
@@ -307,8 +366,7 @@
                 <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
             </div>
             <form id="personnelForm">
-                <input type="hidden" id="editRowIndexMulai">
-                <input type="hidden" id="editRowIndexJabatan">
+                <input type="hidden" id="editRowIndex">
 
                 <div class="form-grid">
                     <div class="form-group-full">
@@ -354,25 +412,41 @@
     </div>
 
     <script>
-        // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP KAMU DI SINI
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
 
         let combinedData = [];
+        let eotmSelectedData = null;
 
         function cleanNipp(val) {
             if (!val) return "";
-            return String(val).replace(/\D/g, "");
+            return String(val).replace(/\D/g, "").trim();
         }
 
-        // Format tanggal dari DD/MM/YYYY atau ISO ke YYYY-MM-DD (untuk input type="date")
+        function generateInitialsAvatarSvg(nama) {
+            const words = (nama || 'Pegawai').trim().split(/\s+/);
+            const initials = words.length >= 2 
+                ? (words[0][0] + words[1][0]).toUpperCase() 
+                : (words[0].substring(0, 2)).toUpperCase();
+            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="#1c2a5f"/>
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#f06400" stroke-width="3"/>
+                <text x="50" y="58" font-family="'Montserrat', sans-serif" font-size="32" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
         function parseToInputDate(val) {
             if (!val) return "";
             let strVal = String(val).trim();
 
-            if (strVal.includes("T") && strVal.includes("Z")) {
+            if (strVal.includes("T")) {
                 let d = new Date(strVal);
                 if (!isNaN(d.getTime())) {
-                    return d.toISOString().split('T')[0];
+                    let year = d.getFullYear();
+                    let month = String(d.getMonth() + 1).padStart(2, '0');
+                    let day = String(d.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
                 }
             }
 
@@ -388,11 +462,12 @@
             return strVal;
         }
 
-        // Format tampilan tanggal di tabel (DD/MM/YYYY)
         function formatDateValue(val) {
-            if (!val) return "-";
+            if (!val || val === "-" || val === "undefined") return "-";
             let strVal = String(val).trim();
-            if (strVal.includes("T") && strVal.includes("Z")) {
+
+            // Tangani ISO String misal 2024-05-10T00:00:00.000Z
+            if (strVal.includes("T")) {
                 let d = new Date(strVal);
                 if (!isNaN(d.getTime())) {
                     let day = String(d.getDate()).padStart(2, '0');
@@ -401,10 +476,18 @@
                     return `${day}/${month}/${year}`;
                 }
             }
+
+            // Jika format YYYY-MM-DD
+            if (strVal.includes("-")) {
+                let parts = strVal.split("-");
+                if (parts.length === 3 && parts[0].length === 4) {
+                    return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+                }
+            }
+
             return strVal;
         }
 
-        // Pemetaan Urutan Hierarki Jabatan
         const JABATAN_RANK = {
             "KUPT CREW KA": 1,
             "PENYELIA INSTRUKTUR": 2,
@@ -420,61 +503,44 @@
                 const result = await response.json();
 
                 if (result.result === "success" || result.status === "success") {
-                    const dataMulai = result.data["Data Mulai Bekerja"] || [];
-                    const dataJabatan = result.data["Jabatan"] || [];
-
-                    const processedNipps = new Set();
-                    combinedData = [];
-
-                    // 1. DAHULUKAN SHEET "Data Mulai Bekerja"
-                    dataMulai.forEach(m => {
-                        const nippClean = cleanNipp(m["NIPP"] || m["NIP"]);
-                        if (nippClean) processedNipps.add(nippClean);
-
-                        const matchJabatan = dataJabatan.find(j => cleanNipp(j["NIPP"] || j["NIP"]) === nippClean);
-
-                        combinedData.push({
-                            rowIndexMulai: m._rowIndex,
-                            rowIndexJabatan: matchJabatan ? matchJabatan._rowIndex : null,
-                            nama: m["NAMA"] || (matchJabatan ? matchJabatan["NAMA"] : ""),
-                            nipp: m["NIPP"] || m["NIP"] || (matchJabatan ? matchJabatan["NIPP"] : ""),
-                            jabatan: matchJabatan ? (matchJabatan["Jabatan"] || matchJabatan["JABATAN"] || "") : (m["JABATAN"] || ""),
-                            binaan: matchJabatan ? (matchJabatan["Binaan"] || matchJabatan["BINAAN"] || "-") : "-",
-                            mulaiBekerja: formatDateValue(m["MULAI BEKERJA"] || m["TANGGAL MASUK"] || "")
-                        });
-                    });
-
-                    // 2. MASUKKAN PERSONEL DARI SHEET "Jabatan" YANG BELUM TERCATAT DI "Data Mulai Bekerja" (KUPT, Instruktur, Penyelia)
-                    dataJabatan.forEach(j => {
-                        const nippClean = cleanNipp(j["NIPP"] || j["NIP"]);
-                        if (nippClean && !processedNipps.has(nippClean)) {
-                            processedNipps.add(nippClean);
-                            combinedData.push({
-                                rowIndexMulai: null,
-                                rowIndexJabatan: j._rowIndex,
-                                nama: j["NAMA"] || "",
-                                nipp: j["NIPP"] || j["NIP"] || "",
-                                jabatan: j["Jabatan"] || j["JABATAN"] || "",
-                                binaan: j["Binaan"] || j["BINAAN"] || "-",
-                                mulaiBekerja: "-"
-                            });
+                    let rawList = [];
+                    if (Array.isArray(result.data)) {
+                        rawList = result.data;
+                    } else if (result.data && result.data["Database"]) {
+                        rawList = result.data["Database"];
+                    } else if (result.data && typeof result.data === 'object') {
+                        const keys = Object.keys(result.data);
+                        if (keys.length > 0 && Array.isArray(result.data[keys[0]])) {
+                            rawList = result.data[keys[0]];
                         }
-                    });
+                    }
 
-                    // 3. LOGIKA PENGURUTAN (SORTING) SESUAI HIERARKI JABATAN
+                    combinedData = rawList.map(item => {
+                        // Fleksibilitas pencarian nama properti kolom Mulai Bekerja
+                        const rawMulai = item["MULAI BEKERJA"] || item["Mulai Bekerja"] || item["mulai_bekerja"] || item["MULAI_BEKERJA"] || item["Tanggal Masuk"] || item["TANGGAL MASUK"] || "";
+
+                        return {
+                            rowIndex: item._rowIndex,
+                            nama: item["NAMA"] || item["Nama"] || item["nama"] || "",
+                            nipp: item["NIPP"] || item["Nip"] || item["nipp"] || "",
+                            jabatan: item["JABATAN"] || item["Jabatan"] || item["jabatan"] || "",
+                            binaan: item["BINAAN"] || item["Binaan"] || item["binaan"] || "-",
+                            mulaiBekerja: formatDateValue(rawMulai)
+                        };
+                    }).filter(i => cleanNipp(i.nipp) !== "");
+
                     combinedData.sort((a, b) => {
                         const rankA = JABATAN_RANK[String(a.jabatan).toUpperCase().trim()] || 99;
                         const rankB = JABATAN_RANK[String(b.jabatan).toUpperCase().trim()] || 99;
 
                         if (rankA !== rankB) {
-                            return rankA - rankB; // Urutkan berdasarkan level hierarki
+                            return rankA - rankB;
                         }
-                        
-                        // Jika jabatan sama, urutkan alfabetis berdasarkan Nama
                         return a.nama.localeCompare(b.nama);
                     });
 
                     renderTable(combinedData);
+                    loadExistingEotmSetting();
                 } else {
                     Swal.fire("Error", "Gagal mengambil data dari Google Sheets", "error");
                 }
@@ -502,7 +568,7 @@
                         <td>${item.mulaiBekerja || '-'}</td>
                         <td style="text-align:center;">
                             <button class="btn-action btn-edit" onclick="openEditModal('${item.nipp}')"><i class="fa-solid fa-pen"></i> Edit</button>
-                            <button class="btn-action btn-delete" onclick="deletePersonel(${item.rowIndexMulai}, ${item.rowIndexJabatan})"><i class="fa-solid fa-trash"></i> Hapus</button>
+                            <button class="btn-action btn-delete" onclick="deletePersonel(${item.rowIndex})"><i class="fa-solid fa-trash"></i> Hapus</button>
                         </td>
                     </tr>
                 `;
@@ -526,8 +592,7 @@
             if (!item) return;
 
             document.getElementById("modalTitle").innerText = "Edit Data Personel";
-            document.getElementById("editRowIndexMulai").value = item.rowIndexMulai || "";
-            document.getElementById("editRowIndexJabatan").value = item.rowIndexJabatan || "";
+            document.getElementById("editRowIndex").value = item.rowIndex || "";
             
             document.getElementById("inputNama").value = item.nama;
             document.getElementById("inputNipp").value = item.nipp;
@@ -540,8 +605,7 @@
 
         function openAddModal() {
             document.getElementById("modalTitle").innerText = "Tambah Personel Baru";
-            document.getElementById("editRowIndexMulai").value = "";
-            document.getElementById("editRowIndexJabatan").value = "";
+            document.getElementById("editRowIndex").value = "";
             document.getElementById("personnelForm").reset();
             document.getElementById("personnelModal").style.display = "flex";
         }
@@ -550,25 +614,148 @@
             document.getElementById("personnelModal").style.display = "none";
         }
 
-        // SIMPAN PERUBAHAN KE GOOGLE SHEETS
+        const inputNippEotm = document.getElementById("inputNippEotm");
+        const previewEotmBox = document.getElementById("previewEotmBox");
+        const prevFotoEotm = document.getElementById("prevFotoEotm");
+        const prevNamaEotm = document.getElementById("prevNamaEotm");
+        const prevJabatanEotm = document.getElementById("prevJabatanEotm");
+
+        function updateEotmPreview(nippRaw) {
+            const nippClean = cleanNipp(nippRaw);
+            
+            if (!nippClean) {
+                previewEotmBox.style.display = "none";
+                eotmSelectedData = null;
+                return;
+            }
+
+            const matchPersonel = combinedData.find(item => cleanNipp(item.nipp) === nippClean);
+
+            if (matchPersonel) {
+                const initialSvg = generateInitialsAvatarSvg(matchPersonel.nama);
+                const pngPath = `../assets/struktur-organisasi/${nippClean}.png`;
+
+                prevFotoEotm.onerror = function() {
+                    this.onerror = null;
+                    this.src = initialSvg;
+                };
+                prevFotoEotm.src = pngPath;
+
+                eotmSelectedData = {
+                    nipp: matchPersonel.nipp,
+                    nama: matchPersonel.nama,
+                    jabatan: matchPersonel.jabatan || "Masinis",
+                    foto: pngPath
+                };
+
+                prevNamaEotm.innerText = matchPersonel.nama;
+                prevJabatanEotm.innerText = `NIPP. ${matchPersonel.nipp} • ${matchPersonel.jabatan || 'Masinis'}`;
+            } else {
+                const initialSvg = generateInitialsAvatarSvg("Pegawai");
+                prevFotoEotm.src = initialSvg;
+
+                eotmSelectedData = {
+                    nipp: nippClean,
+                    nama: "Nama Pegawai Tidak Ditemukan",
+                    jabatan: "-",
+                    foto: initialSvg
+                };
+
+                prevNamaEotm.innerText = "NIPP Tidak Terdaftar di Spreadsheet";
+                prevJabatanEotm.innerText = `NIPP. ${nippClean}`;
+            }
+
+            previewEotmBox.style.display = "flex";
+        }
+
+        inputNippEotm?.addEventListener("input", (e) => {
+            updateEotmPreview(e.target.value);
+        });
+
+        document.getElementById("btnCariEotm")?.addEventListener("click", () => {
+            const inputVal = inputNippEotm.value.trim();
+            if (!inputVal) {
+                Swal.fire("Peringatan", "Masukkan NIPP terlebih dahulu!", "warning");
+                return;
+            }
+            updateEotmPreview(inputVal);
+        });
+
+        document.getElementById("eotmForm")?.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            if (!eotmSelectedData) {
+                Swal.fire("Peringatan", "Silakan ketik NIPP yang valid terlebih dahulu!", "warning");
+                return;
+            }
+
+            const btnSimpan = document.getElementById("btnSimpanEotm");
+            btnSimpan.disabled = true;
+            btnSimpan.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
+
+            try {
+                const payload = {
+                    action: "saveEotm",
+                    nipp: eotmSelectedData.nipp,
+                    updatedAt: new Date().toISOString()
+                };
+
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await res.json();
+
+                if (result.result === "success") {
+                    Swal.fire({
+                        title: "Berhasil Disimpan!",
+                        text: "Pegawai Bulanan Terbaik berhasil diperbarui di Google Sheets.",
+                        icon: "success",
+                        confirmButtonColor: "#f06400"
+                    });
+                } else {
+                    throw new Error(result.message || "Gagal menyimpan data.");
+                }
+            } catch (err) {
+                Swal.fire("Gagal", "Gagal menyimpan ke Google Sheets: " + err.message, "error");
+            } finally {
+                btnSimpan.disabled = false;
+                btnSimpan.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Simpan Pegawai Terbaik`;
+            }
+        });
+
+        async function loadExistingEotmSetting() {
+            try {
+                const response = await fetch(`${APPS_SCRIPT_URL}?action=getEotm`);
+                const data = await response.json();
+
+                if (data.result === "success" && data.nipp) {
+                    document.getElementById("inputNippEotm").value = data.nipp;
+                    updateEotmPreview(data.nipp);
+                }
+            } catch (err) {
+                console.error("Gagal membaca EOTM dari Apps Script:", err);
+            }
+        }
+
         document.getElementById("personnelForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             const btnSave = document.getElementById("btnSaveData");
-            
-            const rMulai = document.getElementById("editRowIndexMulai").value;
-            const rJabatan = document.getElementById("editRowIndexJabatan").value;
+            const rIndex = document.getElementById("editRowIndex").value;
 
             const inputNama = document.getElementById("inputNama").value;
             const inputNipp = document.getElementById("inputNipp").value;
             const inputJabatan = document.getElementById("inputJabatan").value;
             const inputBinaan = document.getElementById("inputBinaan").value;
             
-            let rawMulai = document.getElementById("inputMulaiBekerja").value; // Format YYYY-MM-DD dari input type="date"
+            let rawMulai = document.getElementById("inputMulaiBekerja").value;
             let formattedMulai = "";
             if (rawMulai) {
                 let parts = rawMulai.split("-");
                 if (parts.length === 3) {
-                    formattedMulai = `${parts[2]}/${parts[1]}/${parts[0]}`; // Konversi ke DD/MM/YYYY
+                    formattedMulai = `${parts[2]}/${parts[1]}/${parts[0]}`;
                 }
             }
 
@@ -576,46 +763,31 @@
             btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...`;
 
             try {
-                const requests = [];
-
-                // 1. Simpan ke Sheet "Data Mulai Bekerja"
-                requests.push(fetch(APPS_SCRIPT_URL, {
+                const response = await fetch(APPS_SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
-                        action: rMulai ? "update" : "add",
-                        sheetName: "Data Mulai Bekerja",
-                        rowIndex: rMulai ? parseInt(rMulai, 10) : null,
+                        action: rIndex ? "update" : "add",
+                        sheetName: "Database",
+                        rowIndex: rIndex ? parseInt(rIndex, 10) : null,
                         data: {
                             "NAMA": inputNama,
                             "NIPP": inputNipp,
+                            "JABATAN": inputJabatan,
+                            "BINAAN": inputBinaan,
                             "MULAI BEKERJA": formattedMulai
                         }
                     })
-                }));
+                });
 
-                // 2. Simpan ke Sheet "Jabatan"
-                requests.push(fetch(APPS_SCRIPT_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({
-                        action: rJabatan ? "update" : "add",
-                        sheetName: "Jabatan",
-                        rowIndex: rJabatan ? parseInt(rJabatan, 10) : null,
-                        data: {
-                            "NAMA": inputNama,
-                            "NIPP": inputNipp,
-                            "Jabatan": inputJabatan,
-                            "Binaan": inputBinaan
-                        }
-                    })
-                }));
-
-                await Promise.all(requests);
-
-                Swal.fire("Berhasil!", "Data personel berhasil diperbarui di Google Sheets!", "success");
-                closeModal();
-                fetchSpreadsheetData();
+                const resJson = await response.json();
+                if (resJson.result === "success") {
+                    Swal.fire("Berhasil!", "Data personel berhasil diperbarui di Google Sheets!", "success");
+                    closeModal();
+                    fetchSpreadsheetData();
+                } else {
+                    throw new Error(resJson.message || "Gagal menyimpan data.");
+                }
             } catch (error) {
                 Swal.fire("Gagal", "Gagal memperbarui data: " + error.message, "error");
             } finally {
@@ -624,11 +796,10 @@
             }
         });
 
-        // HAPUS PERSONEL DARI KEDUA SHEET
-        async function deletePersonel(rMulai, rJabatan) {
+        async function deletePersonel(rIndex) {
             const confirm = await Swal.fire({
                 title: 'Hapus Personel?',
-                text: 'Data personel ini akan dihapus dari seluruh sheet database.',
+                text: 'Data personel ini akan dihapus dari sheet database.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
@@ -637,24 +808,22 @@
 
             if (confirm.isConfirmed) {
                 try {
-                    const deleteReqs = [];
-                    if (rMulai) {
-                        deleteReqs.push(fetch(APPS_SCRIPT_URL, {
-                            method: "POST",
-                            headers: { "Content-Type": "text/plain;charset=utf-8" },
-                            body: JSON.stringify({ action: "delete", sheetName: "Data Mulai Bekerja", rowIndex: rMulai })
-                        }));
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain;charset=utf-8" },
+                        body: JSON.stringify({ 
+                            action: "delete", 
+                            sheetName: "Database", 
+                            rowIndex: rIndex 
+                        })
+                    });
+                    const resJson = await response.json();
+                    if (resJson.result === "success") {
+                        Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
+                        fetchSpreadsheetData();
+                    } else {
+                        throw new Error(resJson.message || "Gagal menghapus data.");
                     }
-                    if (rJabatan) {
-                        deleteReqs.push(fetch(APPS_SCRIPT_URL, {
-                            method: "POST",
-                            headers: { "Content-Type": "text/plain;charset=utf-8" },
-                            body: JSON.stringify({ action: "delete", sheetName: "Jabatan", rowIndex: rJabatan })
-                        }));
-                    }
-                    await Promise.all(deleteReqs);
-                    Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
-                    fetchSpreadsheetData();
                 } catch (error) {
                     Swal.fire("Gagal", error.message, "error");
                 }
