@@ -37,7 +37,7 @@ setInterval(updateWaktu, 1000);
 // 2. KONFIGURASI SPREADSHEET & GID
 const SPREADSHEET_ID = '1X_NX9VxRqUX5jtBNjyQU3pHPaz6btw6Y';
 const SPREADSHEET_PEGAWAI_ID = '1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM';
-const GID_DATABASE_PEGAWAI = '0';
+const GID_DATABASE_PEGAWAI = '1567798541';
 
 const GID_BULAN = {
     0: "1431013582",
@@ -658,10 +658,12 @@ async function muatDataSisaCuti() {
 
         rowsDb.forEach(baris => {
             const kolom = baris.split(',').map(k => k.replace(/"/g, '').trim());
-            if (kolom.length >= 4) {
+            // Berdasarkan header baru: 
+            // kolom[0]=NO, kolom[1]=NAMA, kolom[2]=NIPP, kolom[6]=Mulai Bekerja
+            if (kolom.length >= 3) {
                 const namaDb = kolom[1] || '';
                 const nippDb = kolom[2];
-                const mulaiBekerja = kolom[3] || '';
+                const mulaiBekerja = kolom[6] || ''; // Kolom G (Mulai Bekerja)
 
                 if (nippDb && !isNaN(nippDb) && nippDb.length >= 4) {
                     const masaKerja = hitungMasaKerja(mulaiBekerja);
@@ -688,7 +690,7 @@ async function muatDataSisaCuti() {
 
                 rowsBulanAktif.forEach(baris => {
                     const kolom = baris.split(',').map(k => k.replace(/"/g, '').trim());
-                    if (kolom.length >= 4) {
+                    if (kolom.length >= 3) {
                         const nippAktif = kolom[2];
                         const namaAktif = kolom[1] || '';
 
@@ -728,7 +730,7 @@ async function muatDataSisaCuti() {
 
                 rowsCuti.forEach(barisCuti => {
                     const kolomCuti = barisCuti.split(',').map(k => k.replace(/"/g, '').trim());
-                    if (kolomCuti.length >= 4) {
+                    if (kolomCuti.length >= 3) {
                         const nippCuti = kolomCuti[2];
 
                         if (nippCuti && setNippBulanAktif.has(nippCuti) && petaPegawaiDb[nippCuti]) {
@@ -771,7 +773,6 @@ async function muatDataSisaCuti() {
             labelCount.textContent = `Menampilkan ${dataFinal.length} personel (Periode ${namaBulanAktif})`;
         }
 
-        // Panggil pendaftaran pencarian setelah data siap
         inialisasiPencarianSisaCuti();
 
     } catch (error) {
