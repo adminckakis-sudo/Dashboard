@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personel UPT Crew KA Kelas C Kisaran</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+    <style>
+        /* ==========================================================================
+           1. RESET & CUSTOM PROPERTIES (DESIGN SYSTEM KAI)
+           ========================================================================== */
+        :root {
+            --kai-blue: #1c2a5f;
+            --kai-blue-dark: #121d42;
+            --kai-blue-light: #283a7c;
+            --kai-blue-soft: #edf1fa;
+            --kai-orange: #f06400;
+            --kai-orange-hover: #d95700;
+            --kai-orange-soft: #fff3eb;
+
+            --bg-page: #f8fafc;
+            --surface-card: #ffffff;
+            --surface-subtle: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --text-white: #ffffff;
+
+            --status-aktif: #16a34a;
+            --status-aktif-bg: #dcfce7;
+            --status-warning: #d97706;
+            --status-warning-bg: #fef3c7;
+            --status-expired: #dc2626;
+            --status-expired-bg: #fee2e2;
+
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --shadow-subtle: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+            --shadow-card: 0 4px 12px -2px rgba(28, 42, 95, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        i.fa-solid, i.fa-regular, i.fa-brands, .fa-solid, .fa-regular, .fa-brands {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome" !important;
+            font-weight: 900 !important;
+            display: inline-block !important;
+            font-style: normal !important;
+        }
+
+        /* ==========================================================================
+           2. TOP UTILITY HEADER
+           ========================================================================== */
+        .top-header {
+            background-color: var(--kai-blue-dark);
+            color: var(--text-white);
+            border-bottom: 2px solid var(--kai-orange);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45px;
+            z-index: 1000;
+            font-size: 0.82rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .top-header-inner {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 24px 0 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-left-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-sidebar-toggle {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-text {
+            font-weight: 600;
+            font-size: 0.8rem;
+            opacity: 0.95;
+            color: var(--text-white);
+        }
+
+        /* ==========================================================================
+           3. LAYOUT & SIDEBAR
+           ========================================================================== */
+        .app-layout-wrapper {
+            display: flex;
+            width: 100%;
+            margin-top: 45px;
+            min-height: calc(100vh - 45px);
+        }
+
+        .app-sidebar {
+            width: 260px;
+            background-color: var(--kai-blue-dark);
+            color: #fff;
+            padding: 24px 16px;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 45px;
+            left: 0;
+            bottom: 0;
+            height: calc(100vh - 45px);
+            overflow-y: auto;
+            z-index: 99;
+        }
+
+        .app-main-content {
+            flex-grow: 1;
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .app-sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .app-sidebar.collapsed + .app-main-content {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--kai-orange);
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.86rem;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .sidebar-item:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-item.active {
+            color: #ffffff;
+            background: rgba(240, 100, 0, 0.25);
+            border: 1px solid rgba(240, 100, 0, 0.45);
+        }
+
+        .sidebar-sub-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-left: 16px;
+            margin-top: 2px;
+            border-left: 2px solid rgba(240, 100, 0, 0.3);
+        }
+
+        .sidebar-sub-item {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-sub-item:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar-sub-item.active {
+            color: var(--kai-orange);
+            font-weight: 700;
+        }
+
+        /* ==========================================================================
+           4. HALAMAN DATA & TUPOKSI PERSONEL
+           ========================================================================== */
+        .page-header-banner {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 24px 32px;
+        }
+
+        .page-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--kai-blue-dark);
+            margin-bottom: 4px;
+        }
+
+        .dashboard-content {
+            max-width: 100%;
+            width: 100%;
+            margin: 28px auto 48px auto;
+            padding: 0 32px;
+        }
+
+        .jabatan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .jabatan-card {
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-subtle);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            overflow: hidden;
+        }
+
+        .jabatan-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-card);
+            border-color: var(--kai-blue-light);
+        }
+
+        .jabatan-card-header {
+            padding: 24px;
+        }
+
+        .jabatan-badge {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--kai-orange);
+            background-color: var(--kai-orange-soft);
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .jabatan-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--kai-blue-dark);
+            margin-bottom: 8px;
+        }
+
+        .jabatan-tagline {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .jabatan-card-footer {
+            padding: 16px 24px;
+            background-color: var(--surface-subtle);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--kai-blue);
+            color: var(--text-white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--kai-blue-dark);
+        }
+
+        .btn-secondary {
+            background-color: #ffffff;
+            color: var(--text-secondary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--surface-subtle);
+            color: var(--text-primary);
+            border-color: #cbd5e1;
+        }
+
+        /* ==========================================================================
+           5. MODAL STYLING & AVATAR UI
+           ========================================================================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .modal-content-wide {
+            background-color: var(--surface-card);
+            width: 95vw;
+            max-width: 95vw;
+            height: 92vh;
+            max-height: 92vh;
+            border-radius: var(--radius-md);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-content-tupoksi {
+            background-color: var(--surface-card);
+            width: 90vw;
+            max-width: 760px;
+            height: auto;
+            max-height: 88vh;
+            border-radius: var(--radius-md);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            background-color: var(--kai-blue-dark);
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--kai-orange);
+            flex-shrink: 0;
+        }
+
+        .modal-subtitle {
+            font-size: 0.72rem;
+            color: var(--kai-orange);
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-top: 2px;
+            color: #ffffff;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: #cbd5e1;
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            color: #ffffff;
+        }
+
+        .modal-search-wrapper {
+            padding: 12px 24px;
+            background-color: var(--surface-subtle);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .modal-search-wrapper input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            background-color: #ffffff;
+        }
+
+        .modal-search-wrapper input:focus {
+            outline: none;
+            border-color: var(--kai-orange);
+            box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15);
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .tupoksi-detail-body {
+            padding: 4px 0;
+        }
+
+        .tupoksi-ol-list {
+            padding-left: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            list-style-type: lower-alpha;
+        }
+
+        .tupoksi-ol-list li {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .tupoksi-sub-list {
+            padding-left: 20px;
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            list-style-type: decimal;
+        }
+
+        .tupoksi-sub-list-alpha {
+            padding-left: 20px;
+            margin-top: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            list-style-type: lower-alpha;
+        }
+
+        .table-responsive-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            height: 100%;
+            max-height: 100%;
+        }
+
+        .modal-data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.82rem;
+            white-space: nowrap;
+        }
+
+        .modal-data-table th {
+            position: sticky;
+            top: 0;
+            background-color: var(--kai-blue-dark);
+            color: #ffffff;
+            font-weight: 700;
+            padding: 12px 14px;
+            border-bottom: 3px solid var(--kai-orange);
+            text-align: left;
+            z-index: 10;
+        }
+
+        .modal-data-table th.cell-center {
+            text-align: center;
+        }
+
+        .modal-data-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .modal-data-table td.cell-center {
+            text-align: center;
+        }
+
+        .modal-data-table tbody tr:nth-child(odd) { background-color: #ffffff; }
+        .modal-data-table tbody tr:nth-child(even) { background-color: #f8fafc; }
+        .modal-data-table tbody tr:hover { background-color: var(--kai-orange-soft); }
+
+        /* UI Avatar Component (Ukuran Foto Lebih Besar) */
+        .user-profile-cell {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            background-color: var(--surface-subtle);
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-avatar-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--kai-blue-soft);
+            color: var(--kai-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: 2px solid rgba(28, 42, 95, 0.15);
+            flex-shrink: 0;
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-status-aktif {
+            background-color: var(--status-aktif-bg);
+            color: var(--status-aktif);
+        }
+
+        .badge-status-warning {
+            background-color: var(--status-warning-bg);
+            color: var(--status-warning);
+        }
+
+        .badge-status-expired {
+            background-color: var(--status-expired-bg);
+            color: var(--status-expired);
+        }
+
+        .modal-footer {
+            padding: 12px 24px;
+            background-color: var(--surface-subtle);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .modal-count-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        @media screen and (max-width: 768px) {
+            .app-main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .page-header-banner {
+                padding: 16px;
+            }
+            .page-title {
+                font-size: 1.2rem;
+            }
+            .dashboard-content {
+                padding: 0 16px;
+            }
+            .jabatan-grid {
+                grid-template-columns: 1fr;
+            }
+            .jabatan-card-footer {
+                flex-direction: column;
+            }
+            .modal-overlay {
+                padding: 6px;
+            }
+            .modal-content-wide, .modal-content-tupoksi {
+                width: 98vw;
+                height: 95vh;
+                max-height: 95vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP UTILITY BAR -->
+    <header class="top-header" role="banner">
+        <div class="top-header-inner">
+            <div class="header-left-group">
+                <button onclick="toggleSidebar()" class="btn-sidebar-toggle" title="Buka/Tutup Menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="brand-affiliation">
+                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+                </div> 
+            </div>
+        </div>
+    </header>
+
+    <!-- WRAPPER UTAMA -->
+    <div class="app-layout-wrapper">
+        
+        <!-- SIDEBAR -->
+        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
+            <div>
+                <div class="sidebar-section-title">MENU UTAMA</div>
+                <nav class="sidebar-nav">
+                    <a href="../index.html" class="sidebar-item active" title="Homepage">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="sidebar-text">Homepage</span>
+                    </a>
+                    
+                    <div class="sidebar-sub-menu">
+                        <a href="./jadwal-dinasan.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">O.241</span>
+                        </a> 
+                        <a href="./personel.html" class="sidebar-sub-item active" style="color: var(--kai-orange); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Personel</span>
+                        </a>
+                        <a href="./struktur-organisasi.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
+                            <span class="sidebar-text">Struktur Organisasi</span>
+                        </a>
+                    </div>
+
+                    <a href="../cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span class="sidebar-text">Dashboard Cuti</span>
+                    </a>
+
+                    <a href="../sertifikasi/dashboard-sertifikasi.html" class="sidebar-item" title="Pantauan Sertifikasi">
+                        <i class="fa-solid fa-id-card"></i>
+                        <span class="sidebar-text">Sertifikasi</span>
+                    </a>
+
+                </nav>    
+            </div>
+        </aside>
+
+        <!-- KONTEN UTAMA -->
+        <main class="app-main-content">
+            
+            <!-- HEADER HALAMAN -->
+            <section class="page-header-banner">
+                <h1 class="page-title">Personel UPT Crew KA Kelas C Kisaran</h1>
+            </section>
+
+            <!-- CONTAINER CARD JABATAN -->
+            <section class="dashboard-content">
+                <div class="jabatan-grid">
+
+                    <!-- 1. KUPT CREW KA -->
+                    <div class="jabatan-card">
+                        <div class="jabatan-card-header">
+                            <div class="jabatan-badge">Pimpinan UPT</div>
+                            <h2 class="jabatan-title">KUPT Crew KA</h2>
+                            <p class="jabatan-tagline">Mengelola program kerja, kinerja, keselamatan, dan pengembangan kompetensi awak kereta api.</p>
+                        </div>
+                        <div class="jabatan-card-footer">
+                            <button class="btn btn-secondary" onclick="openTupoksiModal('kupt')">
+                                <i class="fa-solid fa-file-text"></i> Lihat Tupoksi
+                            </button>
+                            <button class="btn btn-primary" onclick="openPersonelModal('KUPT CREW KA')">
+                                <i class="fa-solid fa-users"></i> Data Personel (1)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. PENYELIA INSTRUKTUR -->
+                    <div class="jabatan-card">
+                        <div class="jabatan-card-header">
+                            <div class="jabatan-badge">Pembina Teknis</div>
+                            <h2 class="jabatan-title">Penyelia Instruktur</h2>
+                            <p class="jabatan-tagline">Membina, melatih, dan mengawasi operasional masinis serta mengevaluasi kinerjanya secara berkala.</p>
+                        </div>
+                        <div class="jabatan-card-footer">
+                            <button class="btn btn-secondary" onclick="openTupoksiModal('instruktur')">
+                                <i class="fa-solid fa-file-text"></i> Lihat Tupoksi
+                            </button>
+                            <button class="btn btn-primary" onclick="openPersonelModal('PENYELIA INSTRUKTUR')">
+                                <i class="fa-solid fa-users"></i> Data Personel (2)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. PENYELIA DINAS -->
+                    <div class="jabatan-card">
+                        <div class="jabatan-card-header">
+                            <div class="jabatan-badge">Pengatur Operasional</div>
+                            <h2 class="jabatan-title">Penyelia Dinas</h2>
+                            <p class="jabatan-tagline">Mengatur dinasan awak kereta api, input sistem perencanaan, asesmen pradinas, serta memantau operasi dan langsiran.</p>
+                        </div>
+                        <div class="jabatan-card-footer">
+                            <button class="btn btn-secondary" onclick="openTupoksiModal('penyelia')">
+                                <i class="fa-solid fa-file-text"></i> Lihat Tupoksi
+                            </button>
+                            <button class="btn btn-primary" onclick="openPersonelModal('PENYELIA DINAS')">
+                                <i class="fa-solid fa-users"></i> Data Personel (4)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4. MASINIS MADYA & MUDA -->
+                    <div class="jabatan-card">
+                        <div class="jabatan-card-header">
+                            <div class="jabatan-badge">Awak Utama</div>
+                            <h2 class="jabatan-title">Masinis Madya &amp; Muda</h2>
+                            <p class="jabatan-tagline">Mengoperasikan kereta api dan langsir, memimpin perjalanan, memastikan keselamatan operasional, serta membina asisten masinis.</p>
+                        </div>
+                        <div class="jabatan-card-footer">
+                            <button class="btn btn-secondary" onclick="openTupoksiModal('masinis')">
+                                <i class="fa-solid fa-file-text"></i> Lihat Tupoksi
+                            </button>
+                            <button class="btn btn-primary" onclick="openPersonelModal('MASINIS MADYA & MUDA')">
+                                <i class="fa-solid fa-users"></i> Data Personel (25)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 5. MASINIS PERTAMA -->
+                    <div class="jabatan-card">
+                        <div class="jabatan-card-header">
+                            <div class="jabatan-badge">Asisten Masinis</div>
+                            <h2 class="jabatan-title">Masinis Pertama</h2>
+                            <p class="jabatan-tagline">Mematuhi perintah masinis, mengelola pencatatan Lapka dan dokumen perjalanan, memeriksa indikator kabin, serta membantu penanganan gangguan.</p>
+                        </div>
+                        <div class="jabatan-card-footer">
+                            <button class="btn btn-secondary" onclick="openTupoksiModal('pertama')">
+                                <i class="fa-solid fa-file-text"></i> Lihat Tupoksi
+                            </button>
+                            <button class="btn btn-primary" onclick="openPersonelModal('MASINIS PERTAMA')">
+                                <i class="fa-solid fa-users"></i> Data Personel (14)
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL POP-UP DETAIL TUPOKSI -->
+    <div class="modal-overlay" id="tupoksiModal" style="display: none;">
+        <div class="modal-content-tupoksi">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-subtitle">TUGAS POKOK &amp; FUNGSI</span>
+                    <h3 class="modal-title" id="tupoksiModalTitle">Detail Tupoksi</h3>
+                </div>
+                <button class="modal-close-btn" onclick="closeModal('tupoksiModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="tupoksiModalContent" class="tupoksi-detail-body"></div>
+            </div>
+            <div class="modal-footer">
+                <span></span>
+                <button class="btn btn-secondary" onclick="closeModal('tupoksiModal')" style="flex: 0 0 auto; width: 100px;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP DAFTAR PERSONEL -->
+    <div class="modal-overlay" id="personelModal" style="display: none;">
+        <div class="modal-content-wide">
+            <div class="modal-header">
+                <div>
+                    <span class="modal-subtitle">DIREKTORI PERSONEL</span>
+                    <h3 class="modal-title" id="personelModalTitle">Daftar Personel</h3>
+                </div>
+                <button class="modal-close-btn" onclick="closeModal('personelModal')">&times;</button>
+            </div>
+            <div class="modal-search-wrapper">
+                <input type="text" id="personelSearchInput" onkeyup="filterPersonelTable()" placeholder="Cari berdasarkan NIPP, Nama, Jabatan, atau Tempat Lahir...">
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive-wrapper">
+                    <table class="modal-data-table" id="personelDataTable">
+                        <thead>
+                            <tr>
+                                <th class="cell-center">No</th>
+                                <th>Nama Lengkap</th>
+                                <th>NIPP</th>
+                                <th>Tempat, Tanggal Lahir</th>
+                                <th>Jabatan</th>
+                                <th>Pendidikan yang Diakui</th>
+                                <th>Mulai Bekerja</th>
+                                <th>Expired Sertifikasi ASP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="personelTableBody">
+                            <tr><td colspan="8" class="cell-center">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="modal-count-info" id="personelCountInfo">Menampilkan 0 personel</span>
+                <button class="btn btn-secondary" onclick="closeModal('personelModal')" style="flex: 0 0 auto; width: 100px;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIKA INTEGRASI DATA SPREADSHEET & AVATAR -->
+    <script>
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+
+        const TUPOKSI_DATA = {
+            kupt: {
+                title: "KUPT Crew KA Kelas C Kisaran",
+                points: [
+                    "Menyusun program kerja, evaluasi, serta laporan realisasi program kerja UPT.",
+                    "Merencanakan dan mengevaluasi jumlah serta dinasan awak kereta api.",
+                    "Meningkatkan kemampuan teknis dan kompetensi awak kereta api.",
+                    "Mengevaluasi dan melakukan penilaian kinerja penyelia dan awak kereta api.",
+                    "Mengelola risiko dan menjamin keselamatan operasional sesuai bidang yang dikelola.",
+                    "Menyusun, mengusulkan, dan memantau program pengembangan, pelatihan, serta sertifikasi kecakapan awak kereta api."
+                ]
+            },
+            instruktur: {
+                title: "Penyelia Instruktur",
+                points: [
+                    "Melakukan pembinaan dan pelatihan tentang regulasi dan teknik menjalankan kereta api serta langsiran.",
+                    "Memberikan penilaian dan evaluasi teknis secara berkala kepada masinis.",
+                    "Melakukan pembinaan, pelatihan, dan pengawasan di lapangan paling sedikit 4 (empat) kali dalam sebulan."
+                ]
+            },
+            penyelia: {
+                title: "Penyelia Dinas",
+                points: [
+                    "Membuat, mengatur, dan menyiapkan dinasan masinis dan asisten masinis.",
+                    "Memasukkan data dinasan masinis dan asisten masinis ke dalam sistem perencanaan operasi kereta api.",
+                    "Melaksanakan asesmen pradinas kepada awak kereta api.",
+                    "Melakukan pemeriksaan bentuk dan kelengkapan dokumen perjalanan dinas.",
+                    "Memvalidasi akhir dinas masinis dan asisten masinis.",
+                    "Melakukan pemantauan situasi operasi kereta api dan kegiatan langsiran."
+                ]
+            },
+            masinis: {
+                title: "Tugas Masinis",
+                rawHtml: `
+                    <ol class="tupoksi-ol-list">
+                        <li>Melaksanakan pengoperasian Kereta Api atau langsir;</li>
+                        <li>Memimpin selama dalam perjalanan Kereta Api dan bertanggung jawab terhadap seluruh rangkaian Kereta Api yang didinasinya;</li>
+                        <li>Memperhatikan isi Lapka berikut catatan dari PPKA/Pap;</li>
+                        <li>Mengisi dan menandatangani "Pemberitahuan gangguan operasional Kereta Api (Bentuk 94)", "Permintaan Kereta Api Penolong" (Bentuk 93);</li>
+                        <li>Mengawasi pemasangan dan pencabutan semboyan pada Kereta Api;</li>
+                        <li>Berkomunikasi dengan PPKP selama dalam perjalanan antara lain apabila terjadi:
+                            <ol class="tupoksi-sub-list">
+                                <li>Kecelakaan Kereta Api;</li>
+                                <li>Kerusakan sarana;</li>
+                                <li>Genjotan, goyangan dan/atau kerusakan prasarana yang lain; dan</li>
+                                <li>Gangguan operasional lainnya.</li>
+                            </ol>
+                        </li>
+                        <li>Membina Asisten Masinis dalam hal taktis mengoperasikan Lokomotif atau KRD tanpa menyerahkan handel pengendalian;</li>
+                        <li>Memadamkan lampu utama Lokomotif pada saat:
+                            <ol class="tupoksi-sub-list">
+                                <li>Berhenti di Stasiun apabila ada Kereta Api lain yang searah atau dari arah lawan yang berjalan langsung di Stasiun tersebut;</li>
+                                <li>Berpapasan dengan Kereta Api lain di jalur ganda, guna memberikan kesempatan kepada Masinis Kereta Api lainnya untuk melihat semboyan dan jalur yang akan dilalui.</li>
+                            </ol>
+                        </li>
+                    </ol>
+                `
+            },
+            pertama: {
+                title: "Tugas Asisten Masinis",
+                rawHtml: `
+                    <p style="margin-bottom: 10px; font-weight: 600;">(1) Asisten Masinis pada waktu dinas Kereta Api atau dinas langsir, diwajibkan:</p>
+                    <ol class="tupoksi-ol-list">
+                        <li>mMmatuhi dan melaksanakan perintah Masinis;</li>
+                        <li>Memperhatikan:
+                            <ol class="tupoksi-sub-list">
+                                <li>Isyarat, sinyal, tanda dan marka;</li>
+                                <li>Perintah yang diberikan oleh PPKA/Pap;</li>
+                                <li>Perintah dari PLR yang memandu langsiran; dan/atau</li>
+                                <li>Perintah PPKP selama dalam perjalanan.</li>
+                            </ol>
+                        </li>
+                        <li>Membantu Masinis dalam hal:
+                            <ol class="tupoksi-sub-list">
+                                <li>Pencatatan dalam Lapka antara lain setiap gangguan operasional Kereta Api, pengisian "Permintaan Kereta Api Penolong" (Bentuk 93), pengisian "Pemberitahuan gangguan operasional Kereta Api" (Bentuk 94);</li>
+                                <li>Penyusunan bentuk-bentuk yang diterima dari PPKA/Pap untuk dilampirkan pada Lapka, yaitu:
+                                    <ol class="tupoksi-sub-list-alpha">
+                                        <li>Pemberitahuan tentang persilangan (Bentuk 89);</li>
+                                        <li>Berjalan hati-hati (Bentuk 90);</li>
+                                        <li>Perintah berjalan jalur kiri (Bentuk 91); dan</li>
+                                        <li>Perintah melewati sinyal berindikasi "berhenti" (Bentuk 92).</li>
+                                    </ol>
+                                </li>
+                                <li>Penyerahan Lapka kepada PPKA/Pap untuk diberi catatan antara lain, dalam hal:
+                                    <ol class="tupoksi-sub-list-alpha">
+                                        <li>Kereta Api berhenti di Stasiun pemeriksa;</li>
+                                        <li>Terjadi penambahan/pengurangan rangkaian Kereta Api; dan</li>
+                                        <li>Diberhentikan luar biasa pada waktu terjadi kecelakaan.</li>
+                                    </ol>
+                                </li>
+                                <li>Pemasangan dan pencabutan semboyan pada Kereta Api;</li>
+                                <li>Pengecekan indikator-indikator yang berada di kabin Masinis setiap 30 (tiga puluh) menit;</li>
+                                <li>Perbaikan gangguan ringan khusus Kereta Api barang di Jalan Bebas;</li>
+                                <li>Memandu langsir Kereta Api barang yang didinasi apabila tidak terdapat petugas yang ditugasi langsir; dan</li>
+                                <li>Memandu jalannya Kereta Api barang dengan kecepatan terbatas.</li>
+                            </ol>
+                        </li>
+                    </ol>
+                `
+            }
+        };
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('app-sidebar');
+            if (sidebar) sidebar.classList.toggle('collapsed');
+        }
+
+        function openTupoksiModal(key) {
+            const data = TUPOKSI_DATA[key];
+            if (!data) return;
+
+            document.getElementById('tupoksiModalTitle').innerText = data.title;
+            const contentBox = document.getElementById('tupoksiModalContent');
+            
+            if (data.rawHtml) {
+                contentBox.innerHTML = data.rawHtml;
+            } else {
+                let html = '<ol class="tupoksi-ol-list" style="list-style-type: decimal;">';
+                data.points.forEach(point => {
+                    html += `<li>${point}</li>`;
+                });
+                html += '</ol>';
+                contentBox.innerHTML = html;
+            }
+            
+            document.getElementById('tupoksiModal').style.display = 'flex';
+        }
+
+        function cleanVal(val) {
+            if (!val || val === "undefined" || val === "null") return "-";
+            return String(val).trim();
+        }
+
+        function cleanNipp(val) {
+            if (!val) return "";
+            return String(val).replace(/\D/g, "").trim();
+        }
+
+        function formatDateDisplay(dateStr) {
+            if (!dateStr || dateStr === "-") return "-";
+            const dateObj = new Date(dateStr);
+            if (isNaN(dateObj.getTime())) return dateStr;
+            const options = { day: '2-digit', month: 'short', year: 'numeric' };
+            return dateObj.toLocaleDateString('id-ID', options);
+        }
+
+        function getCertStatusBadge(dateStr) {
+            if (!dateStr || dateStr === "-") return '<span class="badge-status">-</span>';
+            const expDate = new Date(dateStr);
+            if (isNaN(expDate.getTime())) return `<span class="badge-status">${dateStr}</span>`;
+            
+            const today = new Date();
+            const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+            
+            const formattedDate = formatDateDisplay(dateStr);
+            
+            if (diffDays < 0) {
+                return `<span class="badge-status badge-status-expired" title="Kadaluarsa">${formattedDate}</span>`;
+            } else if (diffDays <= 90) {
+                return `<span class="badge-status badge-status-warning" title="Segera Perpanjang (${diffDays} Hari)">${formattedDate}</span>`;
+            } else {
+                return `<span class="badge-status badge-status-aktif">${formattedDate}</span>`;
+            }
+        }
+
+        // Render Avatar Foto Lokal 50px x 50px berdasarkan NIPP (.png -> .jpg -> placeholder)
+        function renderPersonelAvatar(nipp, nama) {
+            const initial = nama ? nama.charAt(0).toUpperCase() : "P";
+            if (!nipp) {
+                return `<div class="user-avatar-placeholder">${initial}</div>`;
+            }
+            const pngPath = `../assets/struktur-organisasi/${nipp}.png`;
+            const jpgPath = `../assets/struktur-organisasi/${nipp}.jpg`;
+
+            return `
+                <img src="${pngPath}" alt="${nama}" class="user-avatar" 
+                     onerror="if(this.src.endsWith('.png')){this.src='${jpgPath}';}else{this.onerror=null; this.parentElement.innerHTML='<div class=\\'user-avatar-placeholder\\'>${initial}</div>';}">
+            `;
+        }
+
+        async function openPersonelModal(targetJabatan) {
+            document.getElementById('personelModalTitle').innerText = `Daftar Personel - ${targetJabatan}`;
+            document.getElementById('personelSearchInput').value = '';
+            
+            const tableBody = document.getElementById('personelTableBody');
+            tableBody.innerHTML = `<tr><td colspan="8" class="cell-center">Memuat data personel dan sertifikasi...</td></tr>`;
+            document.getElementById('personelModal').style.display = 'flex';
+
+            try {
+                const res = await fetch(APPS_SCRIPT_URL);
+                const result = await res.json();
+
+                if (result.result !== "success" || !result.data) {
+                    tableBody.innerHTML = `<tr><td colspan="8" class="cell-center" style="color:red;">Gagal mengambil data dari Google Sheets.</td></tr>`;
+                    return;
+                }
+
+                const listDatabase = result.data["Database"] || [];
+                const listSertifikasi = result.data["Sertifikasi"] || [];
+
+                const certMap = {};
+                listSertifikasi.forEach(cert => {
+                    const nippClean = cleanNipp(cert.NIPP || cert.Nip);
+                    if (nippClean) {
+                        certMap[nippClean] = cert["Tanggal Expired"] || cert["Berlaku sd."] || cert["Berlaku s/d"] || "-";
+                    }
+                });
+
+                let filtered = [];
+                if (targetJabatan === "MASINIS MADYA & MUDA") {
+                    filtered = listDatabase.filter(p => {
+                        const j = String(p.Jabatan || p.JABATAN || "").toUpperCase();
+                        return j.includes("MADYA") || j.includes("MUDA");
+                    });
+                } else {
+                    filtered = listDatabase.filter(p => {
+                        const j = String(p.Jabatan || p.JABATAN || "").toUpperCase();
+                        return j.includes(targetJabatan);
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="8" class="cell-center">Tidak ada data personel pada jabatan ini.</td></tr>`;
+                    document.getElementById('personelCountInfo').innerText = "Menampilkan 0 personel";
+                    return;
+                }
+
+                let html = '';
+                filtered.forEach((p, index) => {
+                    const nipp = cleanNipp(p.NIPP || p.NIP);
+                    const nama = cleanVal(p.NAMA || p.Nama);
+                    const ttl = cleanVal(p["Tempat, Tanggal Lahir"] || p.TTL);
+                    const jabatan = cleanVal(p.Jabatan || p.JABATAN);
+                    const pendidikan = cleanVal(p["Pendidikan yang Diakui"] || p.Pendidikan);
+                    const mulaiBekerja = cleanVal(p["Mulai Bekerja"] || p.TMT);
+                    const expSertifikasi = certMap[nipp] || "-";
+
+                    html += `
+                        <tr>
+                            <td class="cell-center">${index + 1}</td>
+                            <td>
+                                <div class="user-profile-cell">
+                                    ${renderPersonelAvatar(nipp, nama)}
+                                    <strong>${nama}</strong>
+                                </div>
+                            </td>
+                            <td>${nipp || '-'}</td>
+                            <td>${ttl}</td>
+                            <td>${jabatan}</td>
+                            <td>${pendidikan}</td>
+                            <td>${mulaiBekerja}</td>
+                            <td class="cell-center">${getCertStatusBadge(expSertifikasi)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableBody.innerHTML = html;
+                document.getElementById('personelCountInfo').innerText = `Menampilkan ${filtered.length} personel`;
+
+            } catch (err) {
+                console.error("Error fetching database:", err);
+                tableBody.innerHTML = `<tr><td colspan="8" class="cell-center" style="color:red;">Terjadi kesalahan sistem saat memuat data.</td></tr>`;
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function filterPersonelTable() {
+            const query = document.getElementById('personelSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#personelTableBody tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            document.getElementById('personelCountInfo').innerText = `Menampilkan ${visibleCount} personel`;
+        }
+
+        // Close modal saat menekan tombol ESC
+        window.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal('tupoksiModal');
+                closeModal('personelModal');
+            }
+        });
+
+        // Close modal saat klik di luar area modal
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
