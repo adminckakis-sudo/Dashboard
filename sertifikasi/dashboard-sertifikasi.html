@@ -81,10 +81,18 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- KONTEN UTAMA -->
         <main class="app-main-content">
+            <section class="kai-banner" aria-label="Identitas Dashboard">
+                <div class="banner-overlay"></div>
+                <div class="banner-container">
+                    <div class="banner-badge">UPT CREW KA KELAS C KISARAN</div>
+                    <h1 class="banner-title">DASHBOARD MONITORING SERTIFIKASI</h1>
+                    <p class="banner-subtitle">Sistem Pemantauan, Pengajuan, dan Perpanjangan Sertifikasi ASP UPT Crew KA Kelas C Kisaran</p>
+                </div>
+            </section>
+
             <div class="dashboard-content">
-                
                 <div class="section-header">
                     <div>
                         <h1 class="section-title">Pantauan Sertifikasi Awak Sarana Perkeretaapian UPT Crew KA Kelas C Kisaran</h1>
@@ -92,7 +100,7 @@
                 </div>
 
                 <!-- KPI Widgets Grid -->
-                <div class="widgets-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                <div class="widgets-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
                     <div class="widget-card widget-hadir" onclick="openDetailModal('Semua')" style="cursor: pointer;">
                         <div class="widget-top">
                             <div class="widget-icon-wrapper"><i class="fa-solid fa-certificate"></i></div>
@@ -150,11 +158,44 @@
                     </div>
                 </div>
 
+                <!-- GRID KARTU SEBARAN SEGMENTED BAR MINIMALIS -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    
+                    <!-- TINGKAT SERTIFIKASI -->
+                    <div class="section-bulanan-card" style="padding: 20px 22px; background: #fff; border-radius: 10px; border: 1px solid var(--border-color, #e2e8f0);">
+                        <h3 style="font-size: 0.95rem; font-weight: 700; color: #121d42; margin-bottom: 16px; text-transform: uppercase;">
+                            <i class="fa-solid fa-layer-group" style="color: var(--kai-orange, #f06400); margin-right: 8px;"></i> Tingkat Sertifikasi ASP
+                        </h3>
+                        
+                        <div id="seg-bar-tingkat" style="display: flex; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; background: #e2e8f0; margin-bottom: 16px;">
+                            <div style="width: 100%; text-align: center; font-size: 0.85rem; color: #94a3b8;">Memuat data...</div>
+                        </div>
+
+                        <div id="seg-legend-tingkat" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.85rem;">
+                        </div>
+                    </div>
+
+                    <!-- PROYEKSI EXPIRED -->
+                    <div class="section-bulanan-card" style="padding: 20px 22px; background: #fff; border-radius: 10px; border: 1px solid var(--border-color, #e2e8f0);">
+                        <h3 style="font-size: 0.95rem; font-weight: 700; color: #121d42; margin-bottom: 16px; text-transform: uppercase;">
+                            <i class="fa-solid fa-calendar-days" style="color: var(--kai-orange, #f06400); margin-right: 8px;"></i> Expired Sertifikasi ASP
+                        </h3>
+                        
+                        <div id="seg-bar-expired" style="display: flex; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; background: #e2e8f0; margin-bottom: 16px;">
+                            <div style="width: 100%; text-align: center; font-size: 0.85rem; color: #94a3b8;">Memuat data...</div>
+                        </div>
+
+                        <div id="seg-legend-expired" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 0.85rem;">
+                        </div>
+                    </div>
+
+                </div>
+
                 <!-- Filter & Search Toolbar -->
-                <div class="section-bulanan-card" style="padding: 16px 20px;">
+                <div class="section-bulanan-card" style="padding: 16px 20px; margin-bottom: 20px;">
                     <div class="table-search-bar" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
                         <div class="search-input-wrapper" style="flex: 1; min-width: 240px;">
-                            <input type="text" id="searchInput" placeholder="Cari Nama atau NIPP..." class="form-control-custom" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 100%;">
+                            <input type="text" id="searchInput" placeholder="Cari Nama atau NIPP..." class="form-control-custom" style="padding: 8px 12px; border: 1px solid var(--border-color, #cbd5e1); border-radius: 6px; width: 100%;">
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <div class="select-wrapper">
@@ -203,7 +244,6 @@
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </main>
     </div>
@@ -237,8 +277,7 @@
                             <th class="cell-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="modalTableBody">
-                    </tbody>
+                    <tbody id="modalTableBody"></tbody>
                 </table>
             </div>
 
@@ -284,28 +323,20 @@
             sidebar.classList.toggle('collapsed');
         });
 
-        // INTEGRASI SPREADSHEET GOOGLE REAL-TIME
         const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
         const GID = "392940711";
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
 
         let rawData = [];
 
-        // Fungsi Membaca dan Menguraikan Data CSV dari Google Sheets
         async function fetchSpreadsheetData() {
             try {
                 const response = await fetch(CSV_URL);
                 const csvText = await response.text();
-                
                 const rows = parseCSV(csvText);
                 
-                // Ambil header di baris pertama
-                const headers = rows[0].map(h => h.trim().toLowerCase());
-                
-                // Petakan kolom secara dinamis berdasarkan header
                 rawData = rows.slice(1).map((row, index) => {
                     if (!row || row.length === 0 || !row[1]) return null;
-                    
                     return {
                         no: index + 1,
                         nama: row[1] ? row[1].trim() : '',
@@ -322,33 +353,27 @@
                 document.getElementById('tableBody').innerHTML = `
                     <tr>
                         <td colspan="8" class="loading-state" style="color: #ef4444;">
-                            <i class="fa-solid fa-triangle-exclamation"></i> Gagal memuat data dari Spreadsheet. Pastikan Spreadsheet dapat diakses publik.
+                            <i class="fa-solid fa-triangle-exclamation"></i> Gagal memuat data dari Spreadsheet.
                         </td>
                     </tr>
                 `;
             }
         }
 
-        // Helper Parser CSV sederhana
         function parseCSV(text) {
             const lines = text.split('\n');
             return lines.map(line => {
                 const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                if (!matches) {
-                    return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1'));
-                }
+                if (!matches) return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1'));
                 return matches.map(cell => cell.replace(/^"(.*)"$/, '$1'));
             });
         }
 
-        // Konversi format tanggal Google Sheet ke ISO YYYY-MM-DD
         function formatDateToISO(dateStr) {
             if (!dateStr || dateStr === '-') return '';
             if (dateStr.includes('-')) return dateStr; 
-            
             const parts = dateStr.split('/');
             if (parts.length === 3) {
-                // Asumsi DD/MM/YYYY
                 const day = parts[0].padStart(2, '0');
                 const month = parts[1].padStart(2, '0');
                 const year = parts[2];
@@ -363,13 +388,71 @@
             const expDate = new Date(expDateStr);
             const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
 
-            if (diffDays < 0) {
-                return { label: 'Kedaluwarsa', class: 'badge-status-expired' };
-            } else if (diffDays <= 365) {
-                return { label: 'Segera Habis', class: 'badge-status-warning' };
-            } else {
-                return { label: 'Aktif', class: 'badge-status-aktif' };
-            }
+            if (diffDays < 0) return { label: 'Kedaluwarsa', class: 'badge-status-expired' };
+            else if (diffDays <= 365) return { label: 'Segera Habis', class: 'badge-status-warning' };
+            else return { label: 'Aktif', class: 'badge-status-aktif' };
+        }
+
+        function renderSegmentedCharts() {
+            const totalData = rawData.length;
+            if (totalData === 0) return;
+
+            const countTingkat = { 'Madya': 0, 'Muda': 0, 'Pertama': 0 };
+            const colorTingkat = { 'Madya': '#0284c7', 'Muda': '#f06400', 'Pertama': '#10b981' };
+
+            const countExpired = { 'Tahun 2027': 0, 'Tahun 2028': 0, 'Tahun 2029': 0, 'Tahun 2030+': 0 };
+            const colorExpired = { 'Tahun 2027': '#eab308', 'Tahun 2028': '#3b82f6', 'Tahun 2029': '#6366f1', 'Tahun 2030+': '#10b981' };
+
+            rawData.forEach(item => {
+                const t = (item.tingkat || '').trim();
+                if (countTingkat.hasOwnProperty(t)) countTingkat[t]++;
+
+                if (item.exp) {
+                    const yr = new Date(item.exp).getFullYear();
+                    if (yr === 2027) countExpired['Tahun 2027']++;
+                    else if (yr === 2028) countExpired['Tahun 2028']++;
+                    else if (yr === 2029) countExpired['Tahun 2029']++;
+                    else if (yr >= 2030) countExpired['Tahun 2030+']++;
+                }
+            });
+
+            // Render Segment Bar Tingkat
+            const barTingkat = document.getElementById('seg-bar-tingkat');
+            const legendTingkat = document.getElementById('seg-legend-tingkat');
+            barTingkat.innerHTML = '';
+            legendTingkat.innerHTML = '';
+
+            Object.keys(countTingkat).forEach(k => {
+                const val = countTingkat[k];
+                const pct = Math.round((val / totalData) * 100) || 0;
+                if (val > 0) {
+                    barTingkat.innerHTML += `<div style="width: ${pct}%; background: ${colorTingkat[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
+                    legendTingkat.innerHTML += `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: ${colorTingkat[k]}; display: inline-block;"></span>
+                            <span style="color: #334155; font-weight: 600;">${k}: <b style="color: #0f172a; font-size: 0.9rem;">${val}</b> <span style="color: #64748b; font-weight: 500;">(${pct}%)</span></span>
+                        </div>`;
+                }
+            });
+
+            // Render Segment Bar Expired
+            const barExpired = document.getElementById('seg-bar-expired');
+            const legendExpired = document.getElementById('seg-legend-expired');
+            barExpired.innerHTML = '';
+            legendExpired.innerHTML = '';
+
+            Object.keys(countExpired).forEach(k => {
+                const val = countExpired[k];
+                const pct = Math.round((val / totalData) * 100) || 0;
+                if (val > 0) {
+                    barExpired.innerHTML += `<div style="width: ${pct}%; background: ${colorExpired[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
+                    legendExpired.innerHTML += `
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: ${colorExpired[k]}; display: inline-block;"></span>
+                            <span style="color: #334155; font-weight: 600;">${k}: <b style="color: #0f172a; font-size: 0.9rem;">${val}</b> <span style="color: #64748b; font-weight: 500;">(${pct}%)</span></span>
+                        </div>`;
+                }
+            });
         }
 
         function renderTable() {
@@ -425,9 +508,10 @@
             document.getElementById('stat-aktif').innerText = countAktif;
             document.getElementById('stat-warning').innerText = countWarning;
             document.getElementById('stat-expired').innerText = countExpired;
+
+            renderSegmentedCharts();
         }
 
-        // MODAL DETAIL LOGIC
         let activeModalFilterStatus = 'Semua';
 
         function openDetailModal(statusType) {
@@ -446,7 +530,6 @@
             const modalBody = document.getElementById('modalTableBody');
             const searchVal = document.getElementById('modalSearchInput').value.toLowerCase();
             modalBody.innerHTML = '';
-
             let renderedCount = 0;
 
             rawData.forEach((item, index) => {
@@ -535,7 +618,6 @@
         document.getElementById('filterJabatan').addEventListener('change', renderTable);
         document.getElementById('filterStatus').addEventListener('change', renderTable);
 
-        // Panggil fungsi pengambilan data otomatis dari Google Sheets
         fetchSpreadsheetData();
 
         document.addEventListener('keydown', function(event) {
