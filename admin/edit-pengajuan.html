@@ -36,72 +36,63 @@
 
         setPersistence(auth, browserLocalPersistence);
 
-    // Durasilimit: 15 menit dalam milidetik (15 * 60 * 1000 = 900000 ms)
-    const TIMEOUT_LIMIT = 15 * 60 * 1000;
+        const TIMEOUT_LIMIT = 15 * 60 * 1000;
 
-    // Fungsi untuk memperbarui waktu aktivitas terakhir
-    function updateLastActiveTimestamp() {
-        localStorage.setItem("lastActiveTime", Date.now().toString());
-    }
-
-    // Perbarui waktu setiap ada interaksi atau ketika tab ditutup/disembunyikan
-    window.addEventListener("beforeunload", updateLastActiveTimestamp);
-    document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") {
-            updateLastActiveTimestamp();
+        function updateLastActiveTimestamp() {
+            localStorage.setItem("lastActiveTime", Date.now().toString());
         }
-    });
 
-    // GATEKEEPER DENGAN CEK BATAS WAKTU 15 MENIT
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const lastActive = localStorage.getItem("lastActiveTime");
-            const now = Date.now();
-
-            // Jika pernah ada waktu aktif terakhir dan selisihnya > 15 menit
-            if (lastActive && (now - parseInt(lastActive, 10) > TIMEOUT_LIMIT)) {
-                // Hapus catatan waktu dan paksa logout
-                localStorage.removeItem("lastActiveTime");
-                await signOut(auth);
-                window.location.href = "../login.html";
-                return;
-            }
-
-            // Jika masih dalam batas 15 menit, perbarui timestamp aktif
-            updateLastActiveTimestamp();
-            window.currentUserEmail = user.email;
-
-            // Jika posisi sedang di halaman login.html, alihkan ke admin
-            if (window.location.pathname.endsWith("login.html")) {
-                window.location.href = "./admin/homepage-admin.html";
-            }
-        } else {
-            // Jika tidak ada user dan tidak sedang di login.html, alihkan ke login.html
-            if (!window.location.pathname.endsWith("login.html")) {
-                window.location.href = "../login.html";
-            }
-        }
-    });
-
-    window.handleLogout = function() {
-        Swal.fire({
-            title: 'Konfirmasi Logout',
-            text: 'Apakah Anda yakin ingin keluar dari sistem?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Ya, Logout',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem("lastActiveTime");
-                signOut(auth).then(() => {
-                    window.location.href = "../login.html";
-                });
+        window.addEventListener("beforeunload", updateLastActiveTimestamp);
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "hidden") {
+                updateLastActiveTimestamp();
             }
         });
-    };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const lastActive = localStorage.getItem("lastActiveTime");
+                const now = Date.now();
+
+                if (lastActive && (now - parseInt(lastActive, 10) > TIMEOUT_LIMIT)) {
+                    localStorage.removeItem("lastActiveTime");
+                    await signOut(auth);
+                    window.location.href = "../login.html";
+                    return;
+                }
+
+                updateLastActiveTimestamp();
+                window.currentUserEmail = user.email;
+
+                if (window.location.pathname.endsWith("login.html")) {
+                    window.location.href = "./admin/homepage-admin.html";
+                }
+            } else {
+                if (!window.location.pathname.endsWith("login.html")) {
+                    window.location.href = "../login.html";
+                }
+            }
+        });
+
+        window.handleLogout = function() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar dari sistem?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem("lastActiveTime");
+                    signOut(auth).then(() => {
+                        window.location.href = "../login.html";
+                    });
+                }
+            });
+        };
     </script>
 
     <style>
@@ -147,7 +138,6 @@
         .badge-process { background: #fef3c7; color: #b45309; }
         .badge-warning { background: #fee2e2; color: #b91c1c; }
 
-        /* TAB NAVIGATION */
         .tab-container {
             display: flex;
             gap: 8px;
@@ -295,7 +285,6 @@
                         <i class="fa-solid fa-user-shield"></i> <span class="sidebar-text">Administrator</span>
                     </a>
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        <!-- DIBERSIHKAN: Menggunakan relatif path ./edit-pengajuan.html agar tidak bermasalah di hosting -->
                         <a href="./data-logger.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
                             <span class="sidebar-text">Data Logger</span>
                         </a>
@@ -305,7 +294,6 @@
                         <a href="./edit-pengajuan.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700;">
                             <span class="sidebar-text">Sertifikasi</span>
                         </a>
-
                     </div>
                 </nav>
             </div>
@@ -470,7 +458,7 @@
         var rawData = [];
         var pengajuanList = [];
         var perpanjanganList = [];
-        var activeTab = 'BARU'; // 'BARU' atau 'PERPANJANGAN'
+        var activeTab = 'BARU';
 
         var steps = [
             { key: 'refresh', chk: 'chkRefresh', date: 'dateRefresh', container: 'containerRefresh' },
@@ -480,7 +468,35 @@
             { key: 'terimaSmartCard', chk: 'chkTerimaSmartCard', date: 'dateTerimaSmartCard', container: 'containerTerimaSmartCard' }
         ];
 
-        // MENGAMBIL DATA DARI SPREADSHEET REAL-TIME (GVIZ API)
+        // FUNGSI UTAMA PENGIRIMAN DATA LOGGER KE SPREADSHEET (SHEET DATALOGGER)
+        async function sendLogToSpreadsheet(nipp, nama, actionText) {
+            try {
+                const token = window.auth?.currentUser ? await window.auth.currentUser.getIdToken() : "";
+                const userEmail = window.currentUserEmail || window.auth?.currentUser?.email || "Admin";
+
+                const payload = {
+                    action: "log",
+                    authToken: token,
+                    data: {
+                        timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+                        adminEmail: userEmail,
+                        nipp: nipp || "-",
+                        nama: nama || "-",
+                        action: actionText
+                    }
+                };
+
+                await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+                console.log("Log aktivitas berhasil dikirim ke Spreadsheet.");
+            } catch (error) {
+                console.error("Gagal mengirim log ke Spreadsheet:", error);
+            }
+        }
+
         function fetchDirectSpreadsheetData() {
             window.handleSpreadsheetResponse = function(response) {
                 if (!response || !response.table || !response.table.rows) return;
@@ -496,7 +512,6 @@
                     var nippVal = (c[2] && c[2].v !== null && c[2].v !== undefined) ? String(c[2].v).trim() : '';
                     var tingkatVal = (c[4] && c[4].v !== null && c[4].v !== undefined) ? String(c[4].v).trim() : '';
                     
-                    // Kolom Expired (Index 5)
                     var expVal = (c[5] && c[5].v !== null && c[5].v !== undefined) ? c[5].v : null;
                     var expDateObj = parseGoogleDate(expVal);
 
@@ -511,7 +526,6 @@
                     return item !== null && item.nipp !== '' && item.nipp.toUpperCase() !== 'NIPP'; 
                 });
 
-                // FILTERING DATA PERPANJANGAN (Sisa Berlaku < 2 Tahun / 730 Hari)
                 var savedPerpanjangan = JSON.parse(localStorage.getItem('perpanjanganList') || '[]');
 
                 perpanjanganList = rawData.filter(function(item) {
@@ -519,7 +533,7 @@
                     var diffTime = item.expDateObj.getTime() - today.getTime();
                     var diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
                     item.diffDays = diffDays;
-                    return diffDays <= 730; // Kriteria < 2 Tahun
+                    return diffDays <= 730;
                 }).map(function(item) {
                     var existing = savedPerpanjangan.find(function(s) { return s.nipp === item.nipp; });
                     return existing ? Object.assign({}, item, existing) : {
@@ -586,24 +600,6 @@
             var mm = String(now.getMonth() + 1).padStart(2, '0');
             var dd = String(now.getDate()).padStart(2, '0');
             return dd + '/' + mm + '/' + yyyy;
-        }
-
-        function createAuditLog(nipp, nama, actionMessage) {
-            var now = new Date();
-            var timeString = now.toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) + ' WIB';
-            var adminEmail = window.currentUserEmail || 'Admin';
-
-            var newLog = {
-                timestamp: timeString,
-                adminEmail: adminEmail,
-                nipp: nipp,
-                nama: nama,
-                action: actionMessage
-            };
-
-            var existingLogs = JSON.parse(localStorage.getItem('auditDataLogs') || '[]');
-            existingLogs.push(newLog);
-            localStorage.setItem('auditDataLogs', JSON.stringify(existingLogs));
         }
 
         function validateStepSequence() {
@@ -682,9 +678,11 @@
                 cancelButtonColor: '#64748b',
                 confirmButtonText: 'Ya, Hapus Data',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    createAuditLog(item.nipp, item.nama, 'Menghapus Data Pengajuan');
+                    // CATAT LOG KE SPREADSHEET
+                    await sendLogToSpreadsheet(item.nipp, item.nama, 'Menghapus Usulan Pengajuan Sertifikasi');
+
                     pengajuanList.splice(index, 1);
                     localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
                     
@@ -868,8 +866,8 @@
                 }
             });
 
-            // SIMPAN PENGAJUAN BARU (SIMPAN LOKAL)
-            document.getElementById('formTambahPengajuan')?.addEventListener('submit', function(e) {
+            // SIMPAN PENGAJUAN BARU + CATAT DATA LOGGER KE SPREADSHEET
+            document.getElementById('formTambahPengajuan')?.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
                 var newEntry = {
@@ -887,11 +885,12 @@
                 pengajuanList.push(newEntry);
                 localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
 
-                createAuditLog(newEntry.nipp, newEntry.nama, 'Menambahkan Usulan Pengajuan Baru (Lokal)');
+                // CATAT LOG KE SPREADSHEET
+                await sendLogToSpreadsheet(newEntry.nipp, newEntry.nama, 'Menambahkan Usulan Pengajuan Sertifikasi Baru (' + newEntry.tingkat + ')');
 
                 Swal.fire({
                     title: 'Berhasil!',
-                    text: 'Pengajuan baru berhasil disimpan. Data akan dikirim ke Spreadsheet setelah seluruh tahapan selesai.',
+                    text: 'Pengajuan baru berhasil disimpan dan dicatat di Data Logger.',
                     icon: 'success',
                     confirmButtonColor: '#f06400'
                 });
@@ -917,119 +916,118 @@
                 }
             });
 
-            // UPDATE PROGRESS (PENGAJUAN BARU ATAU PERPANJANGAN)
-// UPDATE PROGRESS (PENGAJUAN BARU ATAU PERPANJANGAN)
-var formUpdate = document.getElementById('formUpdateProgress');
-if (formUpdate) {
-    formUpdate.addEventListener('submit', async function(e) {
-        e.preventDefault();
+            // UPDATE PROGRESS + CATAT DATA LOGGER KE SPREADSHEET
+            var formUpdate = document.getElementById('formUpdateProgress');
+            if (formUpdate) {
+                formUpdate.addEventListener('submit', async function(e) {
+                    e.preventDefault();
 
-        var idx = document.getElementById('modalIndex').value;
-        var item = (activeTab === 'BARU') ? pengajuanList[idx] : perpanjanganList[idx];
+                    var idx = document.getElementById('modalIndex').value;
+                    var item = (activeTab === 'BARU') ? pengajuanList[idx] : perpanjanganList[idx];
 
-        steps.forEach(function(s) {
-            var chkElem = document.getElementById(s.chk);
-            var dateElem = document.getElementById(s.date);
+                    steps.forEach(function(s) {
+                        var chkElem = document.getElementById(s.chk);
+                        var dateElem = document.getElementById(s.date);
 
-            item[s.key] = chkElem.checked;
-            item[s.key + 'Date'] = chkElem.checked ? dateElem.innerText : '';
-        });
-
-        var expDateVal = document.getElementById('smartCardExpInput').value;
-        item.smartCardExpDate = expDateVal;
-
-        var isAllStepsCompleted = steps.every(function(s) { return item[s.key] === true; });
-
-        if (isAllStepsCompleted && !expDateVal) {
-            Swal.fire({
-                title: 'Tanggal Kadaluwarsa Wajib Diisi!',
-                text: 'Tahapan telah selesai (Terima Smart Card). Silakan isi tanggal kadaluwarsa Smart Card baru.',
-                icon: 'warning',
-                confirmButtonColor: '#f06400'
-            });
-            return;
-        }
-
-        var btnSubmit = e.target.querySelector('button[type="submit"]');
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
-
-        try {
-            if (isAllStepsCompleted && expDateVal) {
-                var newExpDateObj = new Date(expDateVal);
-                if (!isNaN(newExpDateObj.getTime())) {
-                    item.expDateObj = newExpDateObj;
-                    item.expDateStr = formatDateISOToVerbose(newExpDateObj);
-                    var today = new Date();
-                    var diffTime = newExpDateObj.getTime() - today.getTime();
-                    item.diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
-                }
-
-                // PERBAIKAN: Ambil ID Token terbaru dengan parameter (true)
-                const idToken = await window.auth.currentUser.getIdToken(true);
-
-                // Kirim request ke Google Apps Script
-                const res = await fetch(WEB_APP_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({
-                        authToken: idToken,
-                        actionType: activeTab === 'BARU' ? "UPDATE_PROGRESS" : "UPDATE_PERPANJANGAN",
-                        nipp: item.nipp,
-                        nama: item.nama,
-                        tingkat: item.tingkat,
-                        expDate: expDateVal
-                    })
-                });
-
-                const responseData = await res.json();
-
-                if (responseData.result === "success") {
-                    createAuditLog(item.nipp, item.nama, 'Proses ' + activeTab + ' Selesai & Kirim Spreadsheet (Exp Baru: ' + expDateVal + ')');
-
-                    Swal.fire({
-                        title: 'Proses Selesai!',
-                        text: 'Masa berlaku terbaru telah di-update dan data berhasil disinkronkan ke Google Spreadsheet.',
-                        icon: 'success',
-                        confirmButtonColor: '#f06400'
+                        item[s.key] = chkElem.checked;
+                        item[s.key + 'Date'] = chkElem.checked ? dateElem.innerText : '';
                     });
-                } else {
-                    throw new Error(responseData.message || "Gagal sinkronisasi data.");
-                }
-            } else {
-                createAuditLog(item.nipp, item.nama, 'Update Progress ' + activeTab + ' (Lokal)');
 
-                Swal.fire({
-                    title: 'Progress Diperbarui!',
-                    text: 'Perubahan disimpan secara lokal. Data dikirim ke Spreadsheet setelah seluruh tahapan selesai.',
-                    icon: 'info',
-                    confirmButtonColor: '#f06400'
+                    var expDateVal = document.getElementById('smartCardExpInput').value;
+                    item.smartCardExpDate = expDateVal;
+
+                    var isAllStepsCompleted = steps.every(function(s) { return item[s.key] === true; });
+
+                    if (isAllStepsCompleted && !expDateVal) {
+                        Swal.fire({
+                            title: 'Tanggal Kadaluwarsa Wajib Diisi!',
+                            text: 'Tahapan telah selesai (Terima Smart Card). Silakan isi tanggal kadaluwarsa Smart Card baru.',
+                            icon: 'warning',
+                            confirmButtonColor: '#f06400'
+                        });
+                        return;
+                    }
+
+                    var btnSubmit = e.target.querySelector('button[type="submit"]');
+                    btnSubmit.disabled = true;
+                    btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+
+                    try {
+                        if (isAllStepsCompleted && expDateVal) {
+                            var newExpDateObj = new Date(expDateVal);
+                            if (!isNaN(newExpDateObj.getTime())) {
+                                item.expDateObj = newExpDateObj;
+                                item.expDateStr = formatDateISOToVerbose(newExpDateObj);
+                                var today = new Date();
+                                var diffTime = newExpDateObj.getTime() - today.getTime();
+                                item.diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+                            }
+
+                            const idToken = await window.auth.currentUser.getIdToken(true);
+
+                            const res = await fetch(WEB_APP_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'text/plain' },
+                                body: JSON.stringify({
+                                    authToken: idToken,
+                                    actionType: activeTab === 'BARU' ? "UPDATE_PROGRESS" : "UPDATE_PERPANJANGAN",
+                                    nipp: item.nipp,
+                                    nama: item.nama,
+                                    tingkat: item.tingkat,
+                                    expDate: expDateVal
+                                })
+                            });
+
+                            const responseData = await res.json();
+
+                            if (responseData.result === "success") {
+                                // CATAT LOG KE SPREADSHEET
+                                await sendLogToSpreadsheet(item.nipp, item.nama, 'Menyelesaikan Seluruh Tahapan ' + activeTab + ' Sertifikasi (Exp: ' + expDateVal + ')');
+
+                                Swal.fire({
+                                    title: 'Proses Selesai!',
+                                    text: 'Masa berlaku terbaru telah di-update dan data berhasil disinkronkan ke Google Spreadsheet.',
+                                    icon: 'success',
+                                    confirmButtonColor: '#f06400'
+                                });
+                            } else {
+                                throw new Error(responseData.message || "Gagal sinkronisasi data.");
+                            }
+                        } else {
+                            // CATAT LOG KE SPREADSHEET UNTUK PROGRESS BERJALAN
+                            await sendLogToSpreadsheet(item.nipp, item.nama, 'Memperbarui Progress ' + activeTab + ' Sertifikasi');
+
+                            Swal.fire({
+                                title: 'Progress Diperbarui!',
+                                text: 'Perubahan disimpan dan riwayat telah dicatat ke Data Logger.',
+                                icon: 'info',
+                                confirmButtonColor: '#f06400'
+                            });
+                        }
+
+                        if (activeTab === 'BARU') {
+                            localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
+                        } else {
+                            localStorage.setItem('perpanjanganList', JSON.stringify(perpanjanganList));
+                        }
+
+                        closeModal();
+                        loadData();
+
+                    } catch (error) {
+                        console.error("Gagal update ke Spreadsheet:", error);
+                        Swal.fire({
+                            title: 'Peringatan / Error!',
+                            text: 'Gagal memperbarui Spreadsheet: ' + error.message,
+                            icon: 'warning',
+                            confirmButtonColor: '#f06400'
+                        });
+                    } finally {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = 'Simpan Perubahan';
+                    }
                 });
             }
-
-            if (activeTab === 'BARU') {
-                localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
-            } else {
-                localStorage.setItem('perpanjanganList', JSON.stringify(perpanjanganList));
-            }
-
-            closeModal();
-            loadData();
-
-        } catch (error) {
-            console.error("Gagal update ke Spreadsheet:", error);
-            Swal.fire({
-                title: 'Peringatan / Error!',
-                text: 'Gagal memperbarui Spreadsheet: ' + error.message,
-                icon: 'warning',
-                confirmButtonColor: '#f06400'
-            });
-        } finally {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = 'Simpan Perubahan';
-        }
-    });
-}
 
             loadData();
         });
