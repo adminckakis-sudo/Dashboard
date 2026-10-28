@@ -123,49 +123,110 @@
                 </section>
 
                 <!-- SECTION 2: LAPORAN KEHADIRAN HARIAN -->
-                <section class="dashboard-section" id="section-laporan-harian">
-                    <div class="section-header">
-                        <h2 class="section-title">Laporan Presensi Hari Ini</h2>
-                    </div>
+ <!-- SECTION 2: LAPORAN KEHADIRAN HARIAN (SECONDARY WIDGETS) -->
+<section class="dashboard-section" id="section-laporan-harian">
+    <div class="section-header">
+        <h2 class="section-title">Laporan Presensi Hari Ini</h2>
+    </div>
 
-                    <div class="widgets-grid">
-                        <a href="javascript:void(0)" id="tabel-hadir" class="widget-card widget-hadir">
-                            <div class="widget-top"><div class="widget-icon-wrapper"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg></div><span class="widget-status-tag">Hadir</span></div>
-                            <div class="widget-body"><span class="widget-label">ASP Hadir Hari Ini</span><div class="widget-val-row"><span class="widget-val" id="val-hadir">0</span><span class="widget-unit">Pegawai</span></div></div>
-                            <div class="widget-footer-action"><span>Lihat detail</span><span>&rarr;</span></div>
-                        </a>
+    <div class="widgets-grid">
+        <a href="javascript:void(0)" id="tabel-hadir" class="widget-card widget-hadir">
+            <div class="widget-top">
+                <span class="widget-status-tag">Hadir</span>
+            </div>
+            <div class="widget-body">
+                <span class="widget-label">ASP HADIR HARI INI</span>
+                <div class="widget-val-row">
+                    <span class="widget-val" id="val-hadir">0</span>
+                    <span class="widget-unit">Pegawai</span>
+                </div>
+            </div>
+            <div class="widget-footer-action">
+                <span>Lihat detail &rarr;</span>
+            </div>
+        </a>
 
-                        <a href="javascript:void(0)" id="tabel-cuti" class="widget-card widget-cuti">
-                            <div class="widget-top"><div class="widget-icon-wrapper"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg></div><span class="widget-status-tag">Cuti</span></div>
-                            <div class="widget-body"><span class="widget-label">Cuti Tahunan (CT)</span><div class="widget-val-row"><span class="widget-val" id="val-cuti">0</span><span class="widget-unit">Pegawai</span></div></div>
-                            <div class="widget-footer-action"><span>Lihat detail</span><span>&rarr;</span></div>
-                        </a>
+        <a href="javascript:void(0)" id="tabel-cuti" class="widget-card widget-cuti">
+            <div class="widget-top">
+                <span class="widget-status-tag">Cuti</span>
+            </div>
+            <div class="widget-body">
+                <span class="widget-label">CUTI TAHUNAN (CT)</span>
+                <div class="widget-val-row">
+                    <span class="widget-val" id="val-cuti">0</span>
+                    <span class="widget-unit">Pegawai</span>
+                </div>
+            </div>
+            <div class="widget-footer-action">
+                <span>Lihat detail &rarr;</span>
+            </div>
+        </a>
 
-                        <a href="javascript:void(0)" id="tabel-sakit" class="widget-card widget-sakit">
-                            <div class="widget-top"><div class="widget-icon-wrapper"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg></div><span class="widget-status-tag">Sakit</span></div>
-                            <div class="widget-body"><span class="widget-label">Cuti Sakit (CSK)</span><div class="widget-val-row"><span class="widget-val" id="val-sakit">0</span><span class="widget-unit">Pegawai</span></div></div>
-                            <div class="widget-footer-action"><span>Lihat detail</span><span>&rarr;</span></div>
-                        </a>
+        <a href="javascript:void(0)" id="tabel-sakit" class="widget-card widget-sakit">
+            <div class="widget-top">
+                <span class="widget-status-tag">Sakit</span>
+            </div>
+            <div class="widget-body">
+                <span class="widget-label">CUTI SAKIT (CSK)</span>
+                <div class="widget-val-row">
+                    <span class="widget-val" id="val-sakit">0</span>
+                    <span class="widget-unit">Pegawai</span>
+                </div>
+            </div>
+            <div class="widget-footer-action">
+                <span>Lihat detail &rarr;</span>
+            </div>
+        </a>
 
-                        <a href="javascript:void(0)" id="tabel-itmb" class="widget-card widget-penting">
-                            <div class="widget-top"><div class="widget-icon-wrapper"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg></div><span class="widget-status-tag">Izin / CP</span></div>
-                            <div class="widget-body"><span class="widget-label">Cuti Penting (ITMB/CP)</span><div class="widget-val-row"><span class="widget-val" id="val-itmb">0</span><span class="widget-unit">Pegawai</span></div></div>
-                            <div class="widget-footer-action"><span>Lihat detail</span><span>&rarr;</span></div>
-                        </a>
+        <a href="javascript:void(0)" id="tabel-itmb" class="widget-card widget-penting">
+            <div class="widget-top">
+                <span class="widget-status-tag">Izin / CP</span>
+            </div>
+            <div class="widget-body">
+                <span class="widget-label">CUTI PENTING (ITMB/CP)</span>
+                <div class="widget-val-row">
+                    <span class="widget-val" id="val-itmb">0</span>
+                    <span class="widget-unit">Pegawai</span>
+                </div>
+            </div>
+            <div class="widget-footer-action">
+                <span>Lihat detail &rarr;</span>
+            </div>
+        </a>
 
-                        <a href="javascript:void(0)" id="tabel-tms" class="widget-card widget-tms">
-                            <div class="widget-top"><div class="widget-icon-wrapper"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/></svg></div><span class="widget-status-tag">TMS</span></div>
-                            <div class="widget-body"><span class="widget-label">Tidak Memenuhi Syarat (TMS)</span><div class="widget-val-row"><span class="widget-val" id="val-tms">0</span><span class="widget-unit">Pegawai</span></div></div>
-                            <div class="widget-footer-action"><span>Lihat detail</span><span>&rarr;</span></div>
-                        </a>
+        <a href="javascript:void(0)" id="tabel-tms" class="widget-card widget-tms">
+            <div class="widget-top">
+                <span class="widget-status-tag">TMS</span>
+            </div>
+            <div class="widget-body">
+                <span class="widget-label">TIDAK MEMENUHI SYARAT (TMS)</span>
+                <div class="widget-val-row">
+                    <span class="widget-val" id="val-tms">0</span>
+                    <span class="widget-unit">Pegawai</span>
+                </div>
+            </div>
+            <div class="widget-footer-action">
+                <span>Lihat detail &rarr;</span>
+            </div>
+        </a>
 
-                        <a href="javascript:void(0)" id="tabel-mangkir" class="widget-card widget-mangkir">
-                            <div class="widget-top"><div class="widget-icon-wrapper"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg></div><span class="widget-status-tag">Mangkir</span></div>
-                            <div class="widget-body"><span class="widget-label">Mangkir / Tanpa Keterangan</span><div class="widget-val-row"><span class="widget-val" id="val-mangkir">0</span><span class="widget-unit">Pegawai</span></div></div>
-                            <div class="widget-footer-action"><span>Lihat detail</span><span>&rarr;</span></div>
-                        </a>
-                    </div>
-                </section>
+        <a href="javascript:void(0)" id="tabel-mangkir" class="widget-card widget-mangkir">
+            <div class="widget-top">
+                <span class="widget-status-tag">Mangkir</span>
+            </div>
+            <div class="widget-body">
+                <span class="widget-label">MANGKIR / TANPA KETERANGAN</span>
+                <div class="widget-val-row">
+                    <span class="widget-val" id="val-mangkir">0</span>
+                    <span class="widget-unit">Pegawai</span>
+                </div>
+            </div>
+            <div class="widget-footer-action">
+                <span>Lihat detail &rarr;</span>
+            </div>
+        </a>
+    </div>
+</section>
 
                 <!-- SECTION 3: TREN CUTI -->
                 <section class="dashboard-section" id="section-tren-cuti">
