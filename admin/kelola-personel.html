@@ -35,7 +35,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         
-        // Expose instance auth secara global untuk mengambil token saat fetch
         window.firebaseAuth = auth;
 
         setPersistence(auth, browserLocalPersistence);
@@ -147,6 +146,7 @@
         }
         .btn-edit { background: #3b82f6; color: #fff; }
         .btn-delete { background: #ef4444; color: #fff; }
+        
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -160,11 +160,50 @@
             background: #fff;
             border-radius: 8px;
             width: 100%;
-            max-width: 550px;
+            max-width: 650px;
             max-height: 85vh;
             overflow-y: auto;
-            padding: 24px;
+            padding: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
+
+        .modal-header-custom {
+            background-color: var(--kai-blue, #0d1b2a);
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .modal-header-custom h3 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff !important;
+        }
+        .modal-close-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .modal-body-custom {
+            padding: 20px;
+        }
+
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -331,7 +370,7 @@
                 </div>
 
                 <div class="table-controls">
-                    <input type="text" id="searchInput" class="search-input" placeholder=" Cari NIPP / Nama / Jabatan..." onkeyup="filterTable()">
+                    <input type="text" id="searchInput" class="search-input" placeholder=" Cari NIPP / Nama / Jabatan / No ASP..." onkeyup="filterTable()">
                     <button type="button" class="btn-add" onclick="openAddModal()">
                         <i class="fa-solid fa-user-plus"></i> Tambah Personel Baru
                     </button>
@@ -345,6 +384,11 @@
                                 <th>NAMA</th>
                                 <th>NIPP</th>
                                 <th>JABATAN</th>
+                                <th>TEMPAT, TANGGAL LAHIR</th>
+                                <th>PENDIDIKAN DIAKUI</th>
+                                <th>NO ASP</th>
+                                <th>TINGKAT ASP</th>
+                                <th>EXPIRED ASP</th>
                                 <th>BINAAN</th>
                                 <th>MULAI BEKERJA</th>
                                 <th style="text-align:center;">AKSI</th>
@@ -352,7 +396,7 @@
                         </thead>
                         <tbody id="tableBody">
                             <tr>
-                                <td colspan="7" style="text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh data dari Google Sheets...</td>
+                                <td colspan="12" style="text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat seluruh data dari Google Sheets...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -364,53 +408,85 @@
     <!-- MODAL EDIT / TAMBAH -->
     <div id="personnelModal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                <h3 id="modalTitle" style="margin: 0; font-size: 1.1rem; color: var(--kai-blue);">Edit Data Personel</h3>
-                <button type="button" onclick="closeModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b;">&times;</button>
+            <div class="modal-header-custom">
+                <h3 id="modalTitle">Tambah Personel Baru</h3>
+                <button type="button" class="modal-close-btn" onclick="closeModal()">&times;</button>
             </div>
-            <form id="personnelForm">
-                <input type="hidden" id="editRowIndex">
 
-                <div class="form-grid">
-                    <div class="form-group-full">
-                        <label>NAMA</label>
-                        <input type="text" id="inputNama" required placeholder="Masukkan Nama Lengkap">
-                    </div>
-                    <div>
-                        <label>NIPP</label>
-                        <input type="text" id="inputNipp" required placeholder="Masukkan NIPP">
-                    </div>
-                    <div>
-                        <label>JABATAN</label>
-                        <select id="inputJabatan" required>
-                            <option value="">-- Pilih Jabatan --</option>
-                            <option value="KUPT CREW KA">KUPT CREW KA</option>
-                            <option value="PENYELIA INSTRUKTUR">PENYELIA INSTRUKTUR</option>
-                            <option value="PENYELIA DINAS">PENYELIA DINAS</option>
-                            <option value="MASINIS MADYA">MASINIS MADYA</option>
-                            <option value="MASINIS MUDA">MASINIS MUDA</option>
-                            <option value="MASINIS PERTAMA">MASINIS PERTAMA</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>BINAAN</label>
-                        <select id="inputBinaan">
-                            <option value="-">- (Tidak Ada)</option>
-                            <option value="Budiman">Budiman</option>
-                            <option value="Alwi Ratomi">Alwi Ratomi</option>
-                        </select>
-                    </div>
-                    <div class="form-group-full">
-                        <label>MULAI BEKERJA</label>
-                        <input type="date" id="inputMulaiBekerja">
-                    </div>
-                </div>
+            <div class="modal-body-custom">
+                <form id="personnelForm">
+                    <input type="hidden" id="editRowIndex">
 
-                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
-                    <button type="button" onclick="closeModal()" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
-                    <button type="submit" id="btnSaveData" class="btn-add" style="background: var(--kai-orange);">Simpan Perubahan</button>
-                </div>
-            </form>
+                    <div class="form-grid">
+                        <div class="form-group-full">
+                            <label>NAMA</label>
+                            <input type="text" id="inputNama" required placeholder="Masukkan Nama Lengkap">
+                        </div>
+                        <div>
+                            <label>NIPP</label>
+                            <input type="text" id="inputNipp" required placeholder="Masukkan NIPP">
+                        </div>
+                        <div>
+                            <label>JABATAN</label>
+                            <select id="inputJabatan" required>
+                                <option value="">-- Pilih Jabatan --</option>
+                                <option value="KUPT CREW KA">KUPT CREW KA</option>
+                                <option value="PENYELIA INSTRUKTUR">PENYELIA INSTRUKTUR</option>
+                                <option value="PENYELIA DINAS">PENYELIA DINAS</option>
+                                <option value="MASINIS MADYA">MASINIS MADYA</option>
+                                <option value="MASINIS MUDA">MASINIS MUDA</option>
+                                <option value="MASINIS PERTAMA">MASINIS PERTAMA</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>TEMPAT LAHIR</label>
+                            <input type="text" id="inputTempatLahir" placeholder="Contoh: Medan">
+                        </div>
+                        <div>
+                            <label>TANGGAL LAHIR</label>
+                            <input type="date" id="inputTanggalLahir">
+                        </div>
+                        <div>
+                            <label>PENDIDIKAN YANG DIAKUI</label>
+                            <input type="text" id="inputPendidikan" placeholder="Contoh: S1 Teknik Elektro / SMA">
+                        </div>
+                        <div>
+                            <label>NO ASP</label>
+                            <input type="text" id="inputNoAsp" placeholder="Masukkan No. ASP">
+                        </div>
+                        <div>
+                            <label>TINGKAT ASP</label>
+                            <select id="inputTingkat">
+                                <option value="">-- Pilih Tingkat --</option>
+                                <option value="Pertama">Pertama</option>
+                                <option value="Muda">Muda</option>
+                                <option value="Madya">Madya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>TANGGAL EXPIRED ASP</label>
+                            <input type="date" id="inputExpAsp">
+                        </div>
+                        <div>
+                            <label>BINAAN</label>
+                            <select id="inputBinaan">
+                                <option value="-">- (Tidak Ada)</option>
+                                <option value="Budiman">Budiman</option>
+                                <option value="Alwi Ratomi">Alwi Ratomi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>MULAI BEKERJA</label>
+                            <input type="date" id="inputMulaiBekerja">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                        <button type="button" onclick="closeModal()" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
+                        <button type="submit" id="btnSaveData" class="btn-add" style="background: var(--kai-orange);">Simpan Perubahan</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -420,7 +496,53 @@
         let combinedData = [];
         let eotmSelectedData = null;
 
-        // Sanitasi XSS untuk mencegah Stored XSS saat render data
+        const MONTH_MAP_ID = {
+            "januari": "01", "jan": "01",
+            "februari": "02", "feb": "02",
+            "maret": "03", "mar": "03",
+            "april": "04", "apr": "04",
+            "mei": "05",
+            "juni": "06", "jun": "06",
+            "juli": "07", "jul": "07",
+            "agustus": "08", "agu": "08", "agt": "08",
+            "september": "09", "sep": "09", "spetember": "09",
+            "oktober": "10", "okt": "10",
+            "november": "11", "nov": "11",
+            "desember": "12", "des": "12"
+        };
+
+        const MONTH_NAMES_ID = [
+            "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        async function sendLogToSpreadsheet(nipp, nama, actionText) {
+            try {
+                const token = await getFirebaseToken();
+                const userEmail = window.firebaseAuth?.currentUser?.email || "Admin";
+
+                const payload = {
+                    action: "log",
+                    authToken: token,
+                    data: {
+                        timestamp: new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta" }),
+                        adminEmail: userEmail,
+                        nipp: nipp || "-",
+                        nama: nama || "-",
+                        action: actionText
+                    }
+                };
+
+                await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error("Gagal mengirim log ke Spreadsheet:", error);
+            }
+        }
+
         function escapeHtml(str) {
             if (!str) return "";
             return String(str)
@@ -457,9 +579,96 @@
             return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
         }
 
-        function parseToInputDate(val) {
-            if (!val) return "";
+        // FUNGSI MEMFORMAT "TEMPAT, TANGGAL LAHIR" MENJADI "Medan, 30 September 2001"
+        function formatTempatTglLahir(tempatTglRaw) {
+            if (!tempatTglRaw || tempatTglRaw === "-" || tempatTglRaw === "undefined") return "-";
+            let strVal = String(tempatTglRaw).trim();
+
+            let tempat = "";
+            let rawTgl = strVal;
+
+            if (strVal.includes("/")) {
+                let parts = strVal.split("/");
+                tempat = parts[0].trim();
+                rawTgl = parts.slice(1).join("/").trim();
+            } else if (strVal.includes(",")) {
+                let parts = strVal.split(",");
+                tempat = parts[0].trim();
+                rawTgl = parts.slice(1).join(",").trim();
+            }
+
+            if (tempat) {
+                tempat = tempat.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+            }
+
+            let formattedTgl = formatDateToIndonesian(rawTgl);
+
+            if (tempat && formattedTgl && formattedTgl !== "-") {
+                return `${tempat}, ${formattedTgl}`;
+            } else if (tempat) {
+                return tempat;
+            } else if (formattedTgl && formattedTgl !== "-") {
+                return formattedTgl;
+            }
+
+            return strVal;
+        }
+
+        function formatDateToIndonesian(val) {
+            if (!val || val === "-" || val === "undefined") return "-";
             let strVal = String(val).trim();
+
+            if (strVal.includes("T")) {
+                let d = new Date(strVal);
+                if (!isNaN(d.getTime())) {
+                    let day = d.getDate();
+                    let month = MONTH_NAMES_ID[d.getMonth() + 1];
+                    let year = d.getFullYear();
+                    return `${day} ${month} ${year}`;
+                }
+            }
+
+            let partsText = strVal.split(/\s+/);
+            if (partsText.length === 3) {
+                let day = partsText[0];
+                let monthStr = partsText[1].toLowerCase();
+                let monthNum = parseInt(MONTH_MAP_ID[monthStr], 10);
+                let month = MONTH_NAMES_ID[monthNum] || partsText[1];
+                let year = partsText[2];
+                return `${day} ${month} ${year}`;
+            }
+
+            if (strVal.includes("-")) {
+                let parts = strVal.split("-");
+                if (parts.length === 3 && parts[0].length === 4) {
+                    let day = parseInt(parts[2], 10);
+                    let monthNum = parseInt(parts[1], 10);
+                    let month = MONTH_NAMES_ID[monthNum];
+                    return `${day} ${month} ${parts[0]}`;
+                }
+            }
+
+            if (strVal.includes("/")) {
+                let parts = strVal.split("/");
+                if (parts.length === 3) {
+                    let day = parseInt(parts[0], 10);
+                    let monthNum = parseInt(parts[1], 10);
+                    let month = MONTH_NAMES_ID[monthNum];
+                    return `${day} ${month} ${parts[2]}`;
+                }
+            }
+
+            return strVal;
+        }
+
+        function parseToInputDate(val) {
+            if (!val || val === "-" || val === "undefined") return "";
+            let strVal = String(val).trim();
+
+            if (strVal.includes(",")) {
+                let parts = strVal.split(",");
+                strVal = parts.slice(1).join(",").trim();
+            }
 
             if (strVal.includes("T")) {
                 let d = new Date(strVal);
@@ -480,7 +689,26 @@
                     return `${year}-${month}-${day}`;
                 }
             }
-            return strVal;
+
+            let partsText = strVal.split(/\s+/);
+            if (partsText.length === 3) {
+                let day = partsText[0].padStart(2, '0');
+                let monthStr = partsText[1].toLowerCase();
+                let month = MONTH_MAP_ID[monthStr];
+                let year = partsText[2];
+                if (month && !isNaN(day) && !isNaN(year)) {
+                    return `${year}-${month}-${day}`;
+                }
+            }
+
+            if (strVal.includes("-")) {
+                let parts = strVal.split("-");
+                if (parts.length === 3 && parts[0].length === 4) {
+                    return strVal;
+                }
+            }
+
+            return "";
         }
 
         function formatDateValue(val) {
@@ -522,27 +750,56 @@
                 const result = await response.json();
 
                 if (result.result === "success" || result.status === "success") {
-                    let rawList = [];
-                    if (Array.isArray(result.data)) {
-                        rawList = result.data;
-                    } else if (result.data && result.data["Database"]) {
-                        rawList = result.data["Database"];
-                    } else if (result.data && typeof result.data === 'object') {
-                        const keys = Object.keys(result.data);
-                        if (keys.length > 0 && Array.isArray(result.data[keys[0]])) {
-                            rawList = result.data[keys[0]];
+                    let rawDatabase = [];
+                    let rawSertifikasiMap = {};
+
+                    if (result.data) {
+                        if (Array.isArray(result.data)) {
+                            rawDatabase = result.data;
+                        } else if (typeof result.data === 'object') {
+                            rawDatabase = result.data["Database"] || result.data["database"] || [];
+                            const sertifikasiList = result.data["Sertifikasi"] || result.data["sertifikasi"] || [];
+                            
+                            // PEMETAAN SHEET SERTIFIKASI (GID 392940711)
+                            sertifikasiList.forEach(sItem => {
+                                const sNipp = cleanNipp(sItem["NIPP"] || sItem["Nip"] || sItem["nipp"]);
+                                if (sNipp) {
+                                    rawSertifikasiMap[sNipp] = {
+                                        noAsp: sItem["No ASP"] || sItem["NO ASP"] || sItem["No Sertifikasi Dirjen"] || "",
+                                        tingkat: sItem["Tingkat"] || sItem["TINGKAT"] || sItem["Tingkat ASP"] || "",
+                                        expAsp: sItem["Berlaku sd."] || sItem["BERLAKU SD"] || sItem["Tanggal Expired"] || sItem["TANGGAL EXPIRED ASP"] || ""
+                                    };
+                                }
+                            });
                         }
                     }
 
-                    combinedData = rawList.map(item => {
-                        const rawMulai = item["MULAI BEKERJA"] || item["Mulai Bekerja"] || item["mulai_bekerja"] || item["MULAI_BEKERJA"] || item["Tanggal Masuk"] || item["TANGGAL MASUK"] || "";
+                    // PEMETAAN SHEET DATABASE (GID 1567798541)
+                    combinedData = rawDatabase.map(item => {
+                        const cNipp = cleanNipp(item["NIPP"] || item["Nip"] || item["nipp"]);
+                        const cert = rawSertifikasiMap[cNipp] || {};
+
+                        const rawMulai = item["Mulai Bekerja"] || item["MULAI BEKERJA"] || item["mulai_bekerja"] || "";
+                        const rawTempatTglLahir = item["Tempat, Tanggal Lahir"] || item["TEMPAT TANGGAL LAHIR"] || item["Tempat Tanggal Lahir"] || item["TANGGAL LAHIR"] || "";
+                        let tempatTglLahirFormatted = formatTempatTglLahir(rawTempatTglLahir);
+
+                        let pendidikanVal = item["Pendidikan yang Diakui"] || item["PENDIDIKAN YANG DIAKUI"] || item["Pendidikan Yang Diakui"] || item["PENDIDIKAN"] || "";
+                        let noAspVal = item["No ASP"] || item["NO ASP"] || cert.noAsp || "";
+                        let tingkatVal = item["Tingkat"] || item["TINGKAT"] || item["Tingkat ASP"] || cert.tingkat || "";
+                        let rawExpAsp = item["Berlaku sd."] || item["BERLAKU SD"] || item["Tanggal Expired"] || item["TANGGAL EXPIRED ASP"] || cert.expAsp || "";
 
                         return {
                             rowIndex: item._rowIndex,
                             nama: item["NAMA"] || item["Nama"] || item["nama"] || "",
                             nipp: item["NIPP"] || item["Nip"] || item["nipp"] || "",
-                            jabatan: item["JABATAN"] || item["Jabatan"] || item["jabatan"] || "",
-                            binaan: item["BINAAN"] || item["Binaan"] || item["binaan"] || "-",
+                            jabatan: item["Jabatan"] || item["JABATAN"] || item["jabatan"] || "",
+                            rawTempatTglLahir: rawTempatTglLahir,
+                            tempatTglLahirFormatted: tempatTglLahirFormatted,
+                            pendidikan: pendidikanVal,
+                            noAsp: noAspVal,
+                            tingkat: tingkatVal,
+                            expAsp: formatDateValue(rawExpAsp),
+                            binaan: item["Binaan"] || item["BINAAN"] || item["binaan"] || "-",
                             mulaiBekerja: formatDateValue(rawMulai)
                         };
                     }).filter(i => cleanNipp(i.nipp) !== "");
@@ -570,24 +827,30 @@
         function renderTable(dataList) {
             const tbody = document.getElementById("tableBody");
             if (dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Data personel tidak ditemukan.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:20px;">Data personel tidak ditemukan.</td></tr>`;
                 return;
             }
 
             let html = "";
             dataList.forEach((item, idx) => {
                 const safeNipp = escapeHtml(item.nipp);
+                const safeNama = escapeHtml(item.nama);
                 html += `
                     <tr>
                         <td>${idx + 1}</td>
-                        <td><strong>${escapeHtml(item.nama)}</strong></td>
+                        <td><strong>${safeNama}</strong></td>
                         <td>${safeNipp}</td>
                         <td>${escapeHtml(item.jabatan) || '-'}</td>
+                        <td>${escapeHtml(item.tempatTglLahirFormatted) || '-'}</td>
+                        <td>${escapeHtml(item.pendidikan) || '-'}</td>
+                        <td>${escapeHtml(item.noAsp) || '-'}</td>
+                        <td>${escapeHtml(item.tingkat) || '-'}</td>
+                        <td>${escapeHtml(item.expAsp) || '-'}</td>
                         <td>${escapeHtml(item.binaan) || '-'}</td>
                         <td>${escapeHtml(item.mulaiBekerja) || '-'}</td>
                         <td style="text-align:center;">
                             <button class="btn-action btn-edit" onclick="openEditModal('${safeNipp}')"><i class="fa-solid fa-pen"></i> Edit</button>
-                            <button class="btn-action btn-delete" onclick="deletePersonel(${item.rowIndex})"><i class="fa-solid fa-trash"></i> Hapus</button>
+                            <button class="btn-action btn-delete" onclick="deletePersonel(${item.rowIndex}, '${safeNipp}', '${safeNama}')"><i class="fa-solid fa-trash"></i> Hapus</button>
                         </td>
                     </tr>
                 `;
@@ -601,6 +864,9 @@
                 String(item.nama).toLowerCase().includes(keyword) ||
                 String(item.nipp).toLowerCase().includes(keyword) ||
                 String(item.jabatan).toLowerCase().includes(keyword) ||
+                String(item.tempatTglLahirFormatted).toLowerCase().includes(keyword) ||
+                String(item.noAsp).toLowerCase().includes(keyword) ||
+                String(item.pendidikan).toLowerCase().includes(keyword) ||
                 String(item.binaan).toLowerCase().includes(keyword)
             );
             renderTable(filtered);
@@ -616,6 +882,26 @@
             document.getElementById("inputNama").value = item.nama;
             document.getElementById("inputNipp").value = item.nipp;
             document.getElementById("inputJabatan").value = item.jabatan;
+
+            let rawStr = item.rawTempatTglLahir || "";
+            let tempat = "";
+            let tglStr = rawStr;
+            if (rawStr.includes("/")) {
+                let parts = rawStr.split("/");
+                tempat = parts[0].trim();
+                tglStr = parts.slice(1).join("/").trim();
+            } else if (rawStr.includes(",")) {
+                let parts = rawStr.split(",");
+                tempat = parts[0].trim();
+                tglStr = parts.slice(1).join(",").trim();
+            }
+
+            document.getElementById("inputTempatLahir").value = tempat || "";
+            document.getElementById("inputTanggalLahir").value = parseToInputDate(tglStr);
+            document.getElementById("inputPendidikan").value = item.pendidikan || "";
+            document.getElementById("inputNoAsp").value = item.noAsp || "";
+            document.getElementById("inputTingkat").value = item.tingkat || "";
+            document.getElementById("inputExpAsp").value = parseToInputDate(item.expAsp);
             document.getElementById("inputBinaan").value = item.binaan && item.binaan !== "-" ? item.binaan : "-";
             document.getElementById("inputMulaiBekerja").value = parseToInputDate(item.mulaiBekerja);
 
@@ -714,7 +1000,6 @@
             }
         }
 
-        // SIMPAN EOTM DENGAN TOKEN AUTH (Hanya 1 event listener)
         document.getElementById("eotmForm")?.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -746,6 +1031,8 @@
                 const result = await res.json();
 
                 if (result.result === "success") {
+                    await sendLogToSpreadsheet(eotmSelectedData.nipp, eotmSelectedData.nama, "Menetapkan Pegawai Terbaik Bulanan");
+
                     Swal.fire({
                         title: "Berhasil Disimpan!",
                         text: "Pegawai Bulanan Terbaik berhasil diperbarui di Google Sheets.",
@@ -763,7 +1050,7 @@
             }
         });
 
-        // SIMPAN / EDIT PERSONEL DENGAN TOKEN AUTH (Hanya 1 event listener)
+        // SIMPAN / EDIT DATA PERSONEL DAN SESUAIKAN KEMBALI KE PATTERN NAMA HEADER SPREADSHEET
         document.getElementById("personnelForm").addEventListener("submit", async function(e) {
             e.preventDefault();
             const btnSave = document.getElementById("btnSaveData");
@@ -772,7 +1059,32 @@
             const inputNama = document.getElementById("inputNama").value.trim();
             const inputNipp = document.getElementById("inputNipp").value.trim();
             const inputJabatan = document.getElementById("inputJabatan").value;
+            const inputTempatLahir = document.getElementById("inputTempatLahir").value.trim();
+            const inputPendidikan = document.getElementById("inputPendidikan").value.trim();
+            const inputNoAsp = document.getElementById("inputNoAsp").value.trim();
+            const inputTingkat = document.getElementById("inputTingkat").value;
             const inputBinaan = document.getElementById("inputBinaan").value;
+
+            let rawTglLahir = document.getElementById("inputTanggalLahir").value;
+            let formattedTglLahirText = formatDateToIndonesian(rawTglLahir);
+
+            let tempatTglLahirSaved = "";
+            if (inputTempatLahir && formattedTglLahirText && formattedTglLahirText !== "-") {
+                tempatTglLahirSaved = `${inputTempatLahir}, ${formattedTglLahirText}`;
+            } else if (inputTempatLahir) {
+                tempatTglLahirSaved = inputTempatLahir;
+            } else {
+                tempatTglLahirSaved = formattedTglLahirText !== "-" ? formattedTglLahirText : "";
+            }
+
+            let rawExpAsp = document.getElementById("inputExpAsp").value;
+            let formattedExpAsp = "";
+            if (rawExpAsp) {
+                let parts = rawExpAsp.split("-");
+                if (parts.length === 3) {
+                    formattedExpAsp = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+            }
             
             let rawMulai = document.getElementById("inputMulaiBekerja").value;
             let formattedMulai = "";
@@ -788,27 +1100,36 @@
 
             try {
                 const authToken = await getFirebaseToken();
+                const isUpdate = !!rIndex;
 
                 const response = await fetch(APPS_SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({
-                        action: rIndex ? "update" : "add",
+                        action: isUpdate ? "update" : "add",
                         authToken: authToken,
                         sheetName: "Database",
-                        rowIndex: rIndex ? parseInt(rIndex, 10) : null,
+                        rowIndex: isUpdate ? parseInt(rIndex, 10) : null,
                         data: {
                             "NAMA": inputNama,
                             "NIPP": inputNipp,
-                            "JABATAN": inputJabatan,
-                            "BINAAN": inputBinaan,
-                            "MULAI BEKERJA": formattedMulai
+                            "Jabatan": inputJabatan,
+                            "Tempat, Tanggal Lahir": tempatTglLahirSaved,
+                            "Pendidikan yang Diakui": inputPendidikan,
+                            "No ASP": inputNoAsp,
+                            "Tingkat": inputTingkat,
+                            "Berlaku sd.": formattedExpAsp,
+                            "Binaan": inputBinaan,
+                            "Mulai Bekerja": formattedMulai
                         }
                     })
                 });
 
                 const resJson = await response.json();
                 if (resJson.result === "success") {
+                    const actionLogText = isUpdate ? "Mengubah Data Personel" : "Menambahkan Personel Baru";
+                    await sendLogToSpreadsheet(inputNipp, inputNama, actionLogText);
+
                     Swal.fire("Berhasil!", "Data personel berhasil diperbarui di Google Sheets!", "success");
                     closeModal();
                     fetchSpreadsheetData();
@@ -823,8 +1144,7 @@
             }
         });
 
-        // HAPUS PERSONEL DENGAN TOKEN AUTH (Hanya 1 deklarasi)
-        async function deletePersonel(rIndex) {
+        async function deletePersonel(rIndex, nipp, nama) {
             const confirm = await Swal.fire({
                 title: 'Hapus Personel?',
                 text: 'Data personel ini akan dihapus dari sheet database.',
@@ -850,6 +1170,8 @@
                     });
                     const resJson = await response.json();
                     if (resJson.result === "success") {
+                        await sendLogToSpreadsheet(nipp, nama, "Menghapus Data Personel");
+
                         Swal.fire("Terhapus!", "Data berhasil dihapus.", "success");
                         fetchSpreadsheetData();
                     } else {
