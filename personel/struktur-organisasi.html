@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
     <style>
 /* ==========================================================================
    1. LAYOUT UMUM & KONTAINER CANVAS PAN 2D (NO SCROLLBAR)
@@ -70,8 +71,8 @@ html, body {
     box-shadow: 0 8px 30px rgba(18, 29, 66, 0.08);
     border: 1px solid #cbd5e1;
     position: absolute !important;
-    top: 40px;
-    left: 40px;
+    top: 0;
+    left: 0;
     will-change: transform;
 }
 
@@ -421,7 +422,7 @@ body.is-dragging *,
 }
 
 /* ==========================================================================
-   5. WIDGET TOMBOL ZOOM MELAYANG
+   5. WIDGET TOMBOL ZOOM & RESET MELAYANG
    ========================================================================== */
 .zoom-controls-widget {
     position: fixed;
@@ -469,7 +470,7 @@ body.is-dragging *,
 }
 
 /* ==========================================================================
-   6. MODAL LIGHTBOX FOTO PERSONEL
+   6. MODAL LIGHTBOX FOTO & DETAIL PERSONEL LENGKAP
    ========================================================================== */
 .so-lightbox-overlay {
     position: fixed;
@@ -493,7 +494,7 @@ body.is-dragging *,
     background: #ffffff;
     border-radius: 16px;
     width: 100%;
-    max-width: 420px;
+    max-width: 460px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
     overflow: hidden;
     display: flex;
@@ -555,13 +556,13 @@ body.is-dragging *,
 }
 
 .so-lightbox-img-frame {
-    width: 180px;
-    height: 180px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     border: 4px solid #121d42;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     background: #f1f5f9;
     display: flex;
     align-items: center;
@@ -586,7 +587,7 @@ body.is-dragging *,
     font-size: 0.85rem;
     color: #64748b;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .so-lightbox-role-badge {
@@ -600,6 +601,35 @@ body.is-dragging *,
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin-bottom: 14px;
+}
+
+.so-detail-table {
+    width: 100%;
+    text-align: left;
+    font-size: 0.82rem;
+    border-collapse: collapse;
+    margin-top: 8px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.so-detail-table td {
+    padding: 7px 0;
+}
+
+.so-detail-table tr {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.so-detail-label {
+    font-weight: 700;
+    color: #475569;
+    width: 42%;
+}
+
+.so-detail-val {
+    color: #0f172a;
+    font-weight: 500;
 }
     </style>
 </head>
@@ -689,19 +719,19 @@ body.is-dragging *,
         </main>
     </div>
 
-    <!-- WIDGET TOMBOL ZOOM MELAYANG -->
+    <!-- WIDGET TOMBOL ZOOM & RESET MELAYANG -->
     <div class="zoom-controls-widget" role="region" aria-label="Kontrol Perbesaran Bagan">
         <button type="button" class="zoom-btn" id="btn-zoom-out" title="Perkecil (Zoom Out)">-</button>
         <span class="zoom-display" id="zoom-value-text">100%</span>
         <button type="button" class="zoom-btn" id="btn-zoom-in" title="Perbesar (Zoom In)">+</button>
-        <button type="button" class="zoom-btn" id="btn-zoom-reset" title="Kembalikan Semula (Reset Zoom)" style="font-size: 0.85rem;">&#x21bb;</button>
+        <button type="button" class="zoom-btn" id="btn-zoom-reset" title="Kembalikan Semula (Reset Zoom)" style="font-size: 1rem;">&#x21bb;</button>
     </div>
 
-    <!-- MODAL LIGHTBOX FOTO PERSONEL -->
+    <!-- MODAL LIGHTBOX FOTO & DETAIL PERSONEL LENGKAP -->
     <div id="so-lightbox-modal" class="so-lightbox-overlay" role="dialog" aria-modal="true" aria-labelledby="lightbox-person-name">
         <div class="so-lightbox-content">
             <div class="so-lightbox-header">
-                <span class="so-lightbox-title">Informasi Personel</span>
+                <span class="so-lightbox-title">Detail Informasi Personel</span>
                 <button type="button" id="so-lightbox-close-btn" class="so-lightbox-close" aria-label="Tutup jendela">&times;</button>
             </div>
             <div class="so-lightbox-body">
@@ -711,6 +741,36 @@ body.is-dragging *,
                 <div class="so-lightbox-name" id="lightbox-person-name">-</div>
                 <div class="so-lightbox-nipp" id="lightbox-person-nipp">-</div>
                 <div class="so-lightbox-role-badge" id="lightbox-person-role">-</div>
+
+                <!-- TABEL DETAIL PERSONEL -->
+                <table class="so-detail-table">
+                    <tbody>
+                        <tr>
+                            <td class="so-detail-label">Tempat, Tgl Lahir</td>
+                            <td class="so-detail-val" id="lightbox-detail-ttl">-</td>
+                        </tr>
+                        <tr>
+                            <td class="so-detail-label">Pendidikan Diakui</td>
+                            <td class="so-detail-val" id="lightbox-detail-pendidikan">-</td>
+                        </tr>
+                        <tr>
+                            <td class="so-detail-label">Mulai Bekerja</td>
+                            <td class="so-detail-val" id="lightbox-detail-mulai-kerja">-</td>
+                        </tr>
+                        <tr>
+                            <td class="so-detail-label">No. ASP</td>
+                            <td class="so-detail-val" id="lightbox-detail-no-asp">-</td>
+                        </tr>
+                        <tr>
+                            <td class="so-detail-label">Tingkat ASP</td>
+                            <td class="so-detail-val" id="lightbox-detail-tingkat">-</td>
+                        </tr>
+                        <tr style="border-bottom: none;">
+                            <td class="so-detail-label">Expired Smartcard</td>
+                            <td class="so-detail-val" style="color: #d97706; font-weight: 700;" id="lightbox-detail-expired">-</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -721,6 +781,9 @@ body.is-dragging *,
     <!-- LOGIKA STRUKTUR ORGANISASI -->
     <script>
     (function() {
+        const URL_DATABASE = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
+        const URL_SERTIFIKASI = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=392940711';
+
         function getBaseAssetsFolder() {
             const path = window.location.pathname;
             if (path.includes('/personel/') || path.includes('/cuti/') || path.includes('/sertifikasi/')) {
@@ -768,10 +831,16 @@ body.is-dragging *,
             const safeNama = (nama || '').replace(/"/g, '&quot;');
             const directPngSrc = getBaseAssetsFolder() + cleanNipp + '.png';
 
-            return '<div class="so-avatar-wrapper" data-nama="' + safeNama + '" data-nipp="' + cleanNipp + '">' +
+            return '<div class="so-avatar-wrapper">' +
                 '<img src="' + directPngSrc + '" alt="' + safeNama + '" class="so-avatar ' + extraClass + '" ' +
                 'onerror="handleAvatarLoadError(this, \'' + safeNama.replace(/'/g, "\\'") + '\', \'' + cleanNipp + '\')">' +
                 '</div>';
+        }
+
+        function parseCSVLine(line) {
+            return line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(function(col) {
+                return col ? col.replace(/^"|"$/g, '').trim() : '';
+            });
         }
 
         const lightboxModal = document.getElementById('so-lightbox-modal');
@@ -783,15 +852,25 @@ body.is-dragging *,
 
         function openLightbox(data) {
             if (!lightboxModal) return;
+
             if (lightboxImg) {
                 lightboxImg.onerror = function() {
                     this.src = generateInitialsAvatarSvg(data.nama);
                 };
                 lightboxImg.src = data.imgSrc || generateInitialsAvatarSvg(data.nama);
             }
+
             if (lightboxName) lightboxName.textContent = data.nama || '-';
             if (lightboxNipp) lightboxNipp.textContent = data.nipp ? 'NIPP. ' + data.nipp : '-';
-            if (lightboxRole) lightboxRole.textContent = data.role || '-';
+            if (lightboxRole) lightboxRole.textContent = data.jabatan || '-';
+
+            document.getElementById('lightbox-detail-ttl').textContent = data.ttl || '-';
+            document.getElementById('lightbox-detail-pendidikan').textContent = data.pendidikan || '-';
+            document.getElementById('lightbox-detail-mulai-kerja').textContent = data.mulaiKerja || '-';
+            document.getElementById('lightbox-detail-no-asp').textContent = data.noAsp || '-';
+            document.getElementById('lightbox-detail-tingkat').textContent = data.tingkat || '-';
+            document.getElementById('lightbox-detail-expired').textContent = data.expired || '-';
+
             lightboxModal.style.display = 'flex';
         }
 
@@ -809,36 +888,35 @@ body.is-dragging *,
             if (e.key === 'Escape') closeLightbox();
         });
 
-        let isDragged = false;
-
-        document.addEventListener('click', function(e) {
-            if (isDragged) return;
-
-            const card = e.target.closest('.card-kupt-node, .card-instruktur-node, .card-penyelia-node, .card-asp');
-            if (card) {
-                const imgEl = card.querySelector('img.so-avatar');
-                const nameEl = card.querySelector('.so-name');
-                const nippEl = card.querySelector('.so-nipp');
-                const roleEl = card.querySelector('.so-role');
-
-                if (imgEl) {
-                    openLightbox({
-                        imgSrc: imgEl.src,
-                        nama: nameEl ? nameEl.textContent.trim() : '',
-                        nipp: nippEl ? nippEl.textContent.replace(/[^0-9]/g, '') : '',
-                        role: roleEl ? roleEl.textContent.trim() : ''
-                    });
-                }
-            }
-        });
-
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
-
         async function muatStrukturOrganisasi() {
             try {
-                const response = await fetch(CSV_URL);
-                const csvData = await response.text();
-                const lines = csvData.split('\n');
+                const [resDb, resSert] = await Promise.all([
+                    fetch(URL_DATABASE),
+                    fetch(URL_SERTIFIKASI)
+                ]);
+
+                const csvDbText = await resDb.text();
+                const csvSertText = await resSert.text();
+
+                const dbLines = csvDbText.split('\n');
+                const sertLines = csvSertText.split('\n');
+
+                const sertifikasiMap = {};
+                for (let j = 1; j < sertLines.length; j++) {
+                    const line = sertLines[j].trim();
+                    if (!line) continue;
+                    const cols = parseCSVLine(line);
+                    if (cols.length >= 3) {
+                        const nipp = cols[2].replace(/\D/g, '');
+                        if (nipp) {
+                            sertifikasiMap[nipp] = {
+                                tingkat: cols[4] || '-',
+                                expired: cols[6] || '-',
+                                noAsp: cols[7] || '-'
+                            };
+                        }
+                    }
+                }
 
                 const kuptCardEl = document.getElementById("kupt-card-container");
                 const instrukturWrapper = document.getElementById("so-instruktur-wrapper");
@@ -851,34 +929,62 @@ body.is-dragging *,
                 const listPenyelia = [];
                 const listMasinis = [];
 
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
+                for (let i = 1; i < dbLines.length; i++) {
+                    const line = dbLines[i].trim();
                     if (!line) continue;
 
-                    const columns = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    const cols = parseCSVLine(line);
 
-                    if (columns.length >= 5) {
-                        const nama = columns[1] ? columns[1].replace(/"/g, '').trim() : '';
-                        const nipp = columns[2] ? columns[2].replace(/"/g, '').trim() : '';
-                        const jabatan = columns[4] ? columns[4].replace(/"/g, '').trim().toUpperCase() : '';
-                        const binaan = columns[7] ? columns[7].replace(/"/g, '').trim().toUpperCase() : '';
+                    if (cols.length >= 5) {
+                        const nama = cols[1] || '';
+                        const nipp = cols[2] || '';
+                        const ttl = cols[3] || '-';
+                        const jabatan = (cols[4] || '').toUpperCase();
+                        const pendidikan = cols[5] || '-';
+                        const mulaiKerja = cols[6] || '-';
+                        const binaan = (cols[7] || '').toUpperCase();
 
                         const nippClean = nipp.replace(/\D/g, '');
 
                         if (nippClean !== '' && nippClean.length >= 4) {
+                            const dataSert = sertifikasiMap[nippClean] || { tingkat: '-', expired: '-', noAsp: '-' };
+
+                            const pData = {
+                                nama: nama,
+                                nipp: nippClean,
+                                ttl: ttl,
+                                jabatan: jabatan,
+                                pendidikan: pendidikan,
+                                mulaiKerja: mulaiKerja,
+                                binaan: binaan,
+                                tingkat: dataSert.tingkat,
+                                expired: dataSert.expired,
+                                noAsp: dataSert.noAsp
+                            };
+
                             if (jabatan.includes("KUPT")) {
                                 if (kuptCardEl) {
+                                    kuptCardEl.dataset.nama = pData.nama;
+                                    kuptCardEl.dataset.nipp = pData.nipp;
+                                    kuptCardEl.dataset.ttl = pData.ttl;
+                                    kuptCardEl.dataset.jabatan = pData.jabatan;
+                                    kuptCardEl.dataset.pendidikan = pData.pendidikan;
+                                    kuptCardEl.dataset.mulaiKerja = pData.mulaiKerja;
+                                    kuptCardEl.dataset.tingkat = pData.tingkat;
+                                    kuptCardEl.dataset.expired = pData.expired;
+                                    kuptCardEl.dataset.noAsp = pData.noAsp;
+
                                     kuptCardEl.innerHTML = createAvatarHtml(nama, nippClean) +
                                         '<div class="so-role">KUPT CREW KA KELAS C KISARAN</div>' +
                                         '<div class="so-name">' + nama + '</div>' +
                                         '<div class="so-nipp">NIPP. ' + nippClean + '</div>';
                                 }
                             } else if (jabatan.includes("INSTRUKTUR")) {
-                                listInstruktur.push({ nama: nama, nipp: nippClean, jabatan: jabatan });
+                                listInstruktur.push(pData);
                             } else if (jabatan.includes("PENYELIA") && !jabatan.includes("INSTRUKTUR")) {
-                                listPenyelia.push({ nama: nama, nipp: nippClean, jabatan: jabatan });
+                                listPenyelia.push(pData);
                             } else if (jabatan.includes("MASINIS") || jabatan.includes("ASP")) {
-                                listMasinis.push({ nama: nama, nipp: nippClean, jabatan: jabatan, binaan: binaan });
+                                listMasinis.push(pData);
                             }
                         }
                     }
@@ -886,7 +992,11 @@ body.is-dragging *,
 
                 if (penyeliaWrapper) {
                     listPenyelia.forEach(function(p) {
-                        penyeliaWrapper.innerHTML += '<div class="so-node-card card-penyelia-node">' +
+                        penyeliaWrapper.innerHTML += '<div class="so-node-card card-penyelia-node" ' +
+                            'data-nama="' + p.nama + '" data-nipp="' + p.nipp + '" data-ttl="' + p.ttl + '" ' +
+                            'data-jabatan="' + p.jabatan + '" data-pendidikan="' + p.pendidikan + '" ' +
+                            'data-mulai-kerja="' + p.mulaiKerja + '" data-tingkat="' + p.tingkat + '" ' +
+                            'data-expired="' + p.expired + '" data-no-asp="' + p.noAsp + '">' +
                             createAvatarHtml(p.nama, p.nipp) +
                             '<div class="so-info">' +
                             '<div class="so-role">PENYELIA DINAS</div>' +
@@ -903,7 +1013,11 @@ body.is-dragging *,
                         const colId = 'grid-binaan-' + safeNameId;
 
                         instrukturWrapper.innerHTML += '<div class="so-instruktur-column">' +
-                            '<div class="so-node-card card-instruktur-node">' +
+                            '<div class="so-node-card card-instruktur-node" ' +
+                            'data-nama="' + ins.nama + '" data-nipp="' + ins.nipp + '" data-ttl="' + ins.ttl + '" ' +
+                            'data-jabatan="' + ins.jabatan + '" data-pendidikan="' + ins.pendidikan + '" ' +
+                            'data-mulai-kerja="' + ins.mulaiKerja + '" data-tingkat="' + ins.tingkat + '" ' +
+                            'data-expired="' + ins.expired + '" data-no-asp="' + ins.noAsp + '">' +
                             createAvatarHtml(ins.nama, ins.nipp) +
                             '<div class="so-info">' +
                             '<div class="so-role">PENYELIA INSTRUKTUR</div>' +
@@ -936,7 +1050,11 @@ body.is-dragging *,
                         }
 
                         if (targetGrid) {
-                            targetGrid.innerHTML += '<div class="card-asp">' +
+                            targetGrid.innerHTML += '<div class="card-asp" ' +
+                                'data-nama="' + m.nama + '" data-nipp="' + m.nipp + '" data-ttl="' + m.ttl + '" ' +
+                                'data-jabatan="' + m.jabatan + '" data-pendidikan="' + m.pendidikan + '" ' +
+                                'data-mulai-kerja="' + m.mulaiKerja + '" data-tingkat="' + m.tingkat + '" ' +
+                                'data-expired="' + m.expired + '" data-no-asp="' + m.noAsp + '">' +
                                 createAvatarHtml(m.nama, m.nipp) +
                                 '<div class="so-role">' + m.jabatan + '</div>' +
                                 '<div class="so-name">' + m.nama + '</div>' +
@@ -947,7 +1065,7 @@ body.is-dragging *,
                 }
 
             } catch (err) {
-                console.error("Gagal memuat bagan struktur organisasi:", err);
+                console.error("Gagal memuat data struktur organisasi & sertifikasi:", err);
             }
         }
 
@@ -966,9 +1084,11 @@ body.is-dragging *,
         const maxScale = 2.5;
         const step = 0.15;
 
+        // FUNGSI RESET POSITION & ZOOM (KEMBALI KE SEMULA 100%)
         function setInitialCenterPosition() {
             if (!wrapper || !viewport) return;
 
+            currentScale = 1.0;
             const viewportWidth = viewport.clientWidth || window.innerWidth;
             const scaledWidth = wrapper.offsetWidth * currentScale;
 
@@ -978,37 +1098,7 @@ body.is-dragging *,
             updateTransform();
         }
 
-        function clampPanCoordinates() {
-            if (!wrapper || !viewport) return;
-
-            const viewportRect = viewport.getBoundingClientRect();
-            const scaledWidth = wrapper.offsetWidth * currentScale;
-            const scaledHeight = wrapper.offsetHeight * currentScale;
-
-            const margin = 20;
-
-            let minX = viewportRect.width - scaledWidth - margin;
-            let maxX = margin;
-
-            let minY = viewportRect.height - scaledHeight - margin;
-            let maxY = margin;
-
-            if (scaledWidth < viewportRect.width) {
-                minX = (viewportRect.width - scaledWidth) / 2;
-                maxX = minX;
-            }
-
-            if (scaledHeight < viewportRect.height) {
-                minY = margin;
-                maxY = minY;
-            }
-
-            panX = Math.min(Math.max(panX, minX), maxX);
-            panY = Math.min(Math.max(panY, minY), maxY);
-        }
-
         function updateTransform() {
-            clampPanCoordinates();
             if (wrapper) {
                 wrapper.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + currentScale + ')';
             }
@@ -1024,14 +1114,10 @@ body.is-dragging *,
 
         if (btnIn) btnIn.addEventListener("click", function() { applyZoom(currentScale + step); });
         if (btnOut) btnOut.addEventListener("click", function() { applyZoom(currentScale - step); });
-        if (btnReset) {
-            btnReset.addEventListener("click", function() {
-                currentScale = 1.0;
-                setInitialCenterPosition();
-            });
-        }
+        if (btnReset) btnReset.addEventListener("click", setInitialCenterPosition);
 
         let isMouseDown = false;
+        let isDragged = false;
         let startX = 0, startY = 0;
 
         document.addEventListener('dragstart', function(e) { e.preventDefault(); });
@@ -1086,7 +1172,7 @@ body.is-dragging *,
                 if (e.touches.length === 1) {
                     isTouchPanning = true;
                     touchStartX = e.touches[0].clientX - panX;
-                    touchStartY = e.touches[0].clientY - panY;
+                    touchStartY = e.touches[0].clientY - touchStartY;
                 }
             }, { passive: true });
 
@@ -1105,14 +1191,36 @@ body.is-dragging *,
             });
         }
 
+        document.addEventListener('click', function(e) {
+            if (isDragged) return;
+
+            const card = e.target.closest('.card-kupt-node, .card-instruktur-node, .card-penyelia-node, .card-asp');
+            if (card) {
+                const imgEl = card.querySelector('img.so-avatar');
+                if (imgEl) {
+                    openLightbox({
+                        imgSrc: imgEl.src,
+                        nama: card.dataset.nama || '',
+                        nipp: card.dataset.nipp || '',
+                        ttl: card.dataset.ttl || '-',
+                        jabatan: card.dataset.jabatan || '',
+                        pendidikan: card.dataset.pendidikan || '-',
+                        mulaiKerja: card.dataset.mulaiKerja || '-',
+                        tingkat: card.dataset.tingkat || '-',
+                        expired: card.dataset.expired || '-',
+                        noAsp: card.dataset.noAsp || '-'
+                    });
+                }
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             muatStrukturOrganisasi().then(function() {
-                setTimeout(setInitialCenterPosition, 100);
+                setTimeout(setInitialCenterPosition, 150);
             });
         });
 
         window.addEventListener('resize', setInitialCenterPosition);
-        updateTransform();
     })();
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -1122,6 +1230,9 @@ body.is-dragging *,
         if (btnToggle && sidebar) {
             btnToggle.addEventListener("click", function() {
                 sidebar.classList.toggle("collapsed");
+                setTimeout(function() {
+                    window.dispatchEvent(new Event('resize'));
+                }, 250);
             });
         }
     });
