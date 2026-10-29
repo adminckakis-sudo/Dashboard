@@ -1084,7 +1084,7 @@ body.is-dragging *,
         const maxScale = 2.5;
         const step = 0.15;
 
-        // FUNGSI RESET POSITION & ZOOM (KEMBALI KE SEMULA 100%)
+// FUNGSI RESET POSITION & ZOOM (KEMBALI KE SEMULA 100%)
         function setInitialCenterPosition() {
             if (!wrapper || !viewport) return;
 
@@ -1123,6 +1123,7 @@ body.is-dragging *,
         document.addEventListener('dragstart', function(e) { e.preventDefault(); });
 
         if (viewport) {
+            // MOUSE DRAGGING (DESKTOP)
             viewport.addEventListener('mousedown', function(e) {
                 if (e.target.closest('button, a, input, select, textarea, .zoom-controls-widget, .so-lightbox-overlay')) return;
                 if (e.button !== 0) return;
@@ -1161,8 +1162,9 @@ body.is-dragging *,
             }
 
             window.addEventListener('mouseup', stopDragging);
-            window.addEventListener('mouseleave', stopDragging);
+            window.mouseleave && window.addEventListener('mouseleave', stopDragging);
 
+            // TOUCH PANNING (MOBILE) - DIPERBAIKI
             let isTouchPanning = false;
             let touchStartX = 0, touchStartY = 0;
 
@@ -1171,8 +1173,9 @@ body.is-dragging *,
 
                 if (e.touches.length === 1) {
                     isTouchPanning = true;
+                    // PERBAIKAN: Gunakan panY untuk menghitung offset Y awal
                     touchStartX = e.touches[0].clientX - panX;
-                    touchStartY = e.touches[0].clientY - touchStartY;
+                    touchStartY = e.touches[0].clientY - panY; 
                 }
             }, { passive: true });
 
