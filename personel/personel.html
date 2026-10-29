@@ -731,6 +731,24 @@
 
             <!-- CONTAINER CARD JABATAN -->
             <section class="dashboard-content">
+
+                <!-- BAR PENCARIAN GLOBAL / KESELURUHAN DATA -->
+                <div style="background-color: var(--surface-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 24px; box-shadow: var(--shadow-subtle);">
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 260px; position: relative;">
+                            <input type="text" id="globalSearchInput" onkeyup="if(event.key==='Enter') searchAllPersonel()" placeholder="Cari Personel (Nama, NIPP, atau Jabatan)..." style="width: 100%; padding: 10px 14px 10px 38px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.88rem; outline: none;">
+                            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem;"></i>
+                        </div>
+                        <button class="btn btn-primary" onclick="searchAllPersonel()" style="flex: 0 0 auto; padding: 10px 20px;">
+                            <i class="fa-solid fa-filter"></i> Cari Personel
+                        </button>
+                    </div>
+                </div>
+
+                <div class="jabatan-grid">
+
+            <!-- CONTAINER CARD JABATAN -->
+            <section class="dashboard-content">
                 <div class="jabatan-grid">
 
                     <!-- 1. KUPT CREW KA -->
@@ -765,7 +783,7 @@
                                 <i class="fa-solid fa-users"></i> Data Personel (2)
                             </button>
                         </div>
-                    </div>
+                    </div>  
 
                     <!-- 3. PENYELIA DINAS -->
                     <div class="jabatan-card">
@@ -854,7 +872,7 @@
                 <button class="modal-close-btn" onclick="closeModal('personelModal')">&times;</button>
             </div>
             <div class="modal-search-wrapper">
-                <input type="text" id="personelSearchInput" onkeyup="filterPersonelTable()" placeholder="Cari berdasarkan NIPP, Nama, Jabatan, atau Tempat Lahir...">
+                <input type="text" id="personelSearchInput" onkeyup="filterPersonelTable()" placeholder="Cari berdasarkan NIPP atau Nama...">
             </div>
             <div class="modal-body">
                 <div class="table-responsive-wrapper">
@@ -1157,14 +1175,18 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
+// 1. PENCARIAN DI DALAM MODAL (HANYA NAMA DAN NIPP)
         function filterPersonelTable() {
-            const query = document.getElementById('personelSearchInput').value.toLowerCase();
+            const query = document.getElementById('personelSearchInput').value.toLowerCase().trim();
             const rows = document.querySelectorAll('#personelTableBody tr');
             let visibleCount = 0;
 
             rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                if (text.includes(query)) {
+                // Mengambil sel Nama (sel index 1) dan NIPP (sel index 2)
+                const nameCell = row.cells[1] ? row.cells[1].innerText.toLowerCase() : '';
+                const nippCell = row.cells[2] ? row.cells[2].innerText.toLowerCase() : '';
+
+                if (nameCell.includes(query) || nippCell.includes(query)) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -1173,6 +1195,90 @@
             });
 
             document.getElementById('personelCountInfo').innerText = `Menampilkan ${visibleCount} personel`;
+        }
+
+        // 2. PENCARIAN KESELURUHAN DATA DI LUAR (NAMA, NIPP, DAN JABATAN)
+        async function searchAllPersonel() {
+            const query = document.getElementById('globalSearchInput').value.toLowerCase().trim();
+            
+            document.getElementById('personelModalTitle').innerText = query ? `Hasil Pencarian: "${query}"` : 'Seluruh Data Personel';
+            document.getElementById('personelSearchInput').value = '';
+            
+            const tableBody = document.getElementById('personelTableBody');
+            tableBody.innerHTML = `<tr><td colspan="8" class="cell-center">Memuat data pencarian...</td></tr>`;
+            document.getElementById('personelModal').style.display = 'flex';
+
+            try {
+                const res = await fetch(APPS_SCRIPT_URL);
+                const result = await res.json();
+
+                if (result.result !== "success" || !result.data) {
+                    tableBody.innerHTML = `<tr><td colspan="8" class="cell-center" style="color:red;">Gagal mengambil data dari Google Sheets.</td></tr>`;
+                    return;
+                }
+
+                const listDatabase = result.data["Database"] || [];
+                const listSertifikasi = result.data["Sertifikasi"] || [];
+
+                const certMap = {};
+                listSertifikasi.forEach(cert => {
+                    const nippClean = cleanNipp(cert.NIPP || cert.Nip);
+                    if (nippClean) {
+                        certMap[nippClean] = cert["Tanggal Expired"] || cert["Berlaku sd."] || cert["Berlaku s/d"] || "-";
+                    }
+                });
+
+                // Filter Keseluruhan Data berdasarkan Nama, NIPP, atau Jabatan
+                const filtered = listDatabase.filter(p => {
+                    const nama = String(p.NAMA || p.Nama || "").toLowerCase();
+                    const nipp = cleanNipp(p.NIPP || p.NIP).toLowerCase();
+                    const jabatan = String(p.Jabatan || p.JABATAN || "").toLowerCase();
+
+                    return nama.includes(query) || nipp.includes(query) || jabatan.includes(query);
+                });
+
+                if (filtered.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="8" class="cell-center">Data personel tidak ditemukan.</td></tr>`;
+                    document.getElementById('personelCountInfo').innerText = "Menampilkan 0 personel";
+                    return;
+                }
+
+                let html = '';
+                filtered.forEach((p, index) => {
+                    const nipp = cleanNipp(p.NIPP || p.NIP);
+                    const nama = cleanVal(p.NAMA || p.Nama);
+                    const ttl = cleanVal(p["Tempat, Tanggal Lahir"] || p.TTL);
+                    const jabatan = cleanVal(p.Jabatan || p.JABATAN);
+                    const pendidikan = cleanVal(p["Pendidikan yang Diakui"] || p.Pendidikan);
+                    const mulaiBekerja = cleanVal(p["Mulai Bekerja"] || p.TMT);
+                    const expSertifikasi = certMap[nipp] || "-";
+
+                    html += `
+                        <tr>
+                            <td class="cell-center">${index + 1}</td>
+                            <td>
+                                <div class="user-profile-cell">
+                                    ${renderPersonelAvatar(nipp, nama)}
+                                    <strong>${nama}</strong>
+                                </div>
+                            </td>
+                            <td>${nipp || '-'}</td>
+                            <td>${ttl}</td>
+                            <td>${jabatan}</td>
+                            <td>${pendidikan}</td>
+                            <td>${mulaiBekerja}</td>
+                            <td class="cell-center">${getCertStatusBadge(expSertifikasi)}</td>
+                        </tr>
+                    `;
+                });
+
+                tableBody.innerHTML = html;
+                document.getElementById('personelCountInfo').innerText = `Menampilkan ${filtered.length} personel`;
+
+            } catch (err) {
+                console.error("Error fetching database:", err);
+                tableBody.innerHTML = `<tr><td colspan="8" class="cell-center" style="color:red;">Terjadi kesalahan sistem saat memuat data.</td></tr>`;
+            }
         }
 
         // Close modal saat menekan tombol ESC
