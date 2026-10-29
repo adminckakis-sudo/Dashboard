@@ -99,72 +99,85 @@
                     </div>
                 </div>
 
-                <!-- KPI Widgets Grid -->
-                <div class="widgets-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                    <div class="widget-card widget-hadir" onclick="openDetailModal('Semua')" style="cursor: pointer;">
-                        <div class="widget-top">
-                            <div class="widget-icon-wrapper"><i class="fa-solid fa-certificate"></i></div>
-                            <span class="widget-status-tag">Total</span>
-                        </div>
-                        <div class="widget-body">
-                            <span class="widget-label">Total Sertifikasi</span>
-                            <div class="widget-val-row">
-                                <span id="stat-total" class="widget-val">0</span>
-                                <span class="widget-unit">Berkas</span>
-                            </div>
+            <!-- KPI Widgets Grid (Diperbarui mengikuti tampilan dashboard-cuti.html) -->
+            <div class="widgets-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                
+                <!-- TOTAL SERTIFIKASI -->
+                <a href="javascript:void(0)" class="widget-card widget-hadir" onclick="openDetailModal('Semua')">
+                    <div class="widget-top">
+                        <span class="widget-status-tag">Total</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">TOTAL SERTIFIKASI</span>
+                        <div class="widget-val-row">
+                            <span id="stat-total" class="widget-val">0</span>
+                            <span class="widget-unit">Berkas</span>
                         </div>
                     </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail &rarr;</span>
+                    </div>
+                </a>
 
-                    <div class="widget-card widget-cert-aktif" onclick="openDetailModal('Aktif')" style="cursor: pointer;">
-                        <div class="widget-top">
-                            <div class="widget-icon-wrapper"><i class="fa-solid fa-circle-check"></i></div>
-                            <span class="widget-status-tag">Aktif</span>
-                        </div>
-                        <div class="widget-body">
-                            <span class="widget-label">Status Aktif</span>
-                            <div class="widget-val-row">
-                                <span id="stat-aktif" class="widget-val">0</span>
-                                <span class="widget-unit">Personel</span>
-                            </div>
+                <!-- STATUS AKTIF -->
+                <a href="javascript:void(0)" class="widget-card widget-cert-aktif" onclick="openDetailModal('Aktif')">
+                    <div class="widget-top">
+                        <span class="widget-status-tag">Aktif</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">STATUS AKTIF</span>
+                        <div class="widget-val-row">
+                            <span id="stat-aktif" class="widget-val">0</span>
+                            <span class="widget-unit">Personel</span>
                         </div>
                     </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail &rarr;</span>
+                    </div>
+                </a>
 
-                    <div class="widget-card widget-cert-warning" onclick="openDetailModal('Segera Habis')" style="cursor: pointer;">
-                        <div class="widget-top">
-                            <div class="widget-icon-wrapper"><i class="fa-solid fa-clock"></i></div>
-                            <span class="widget-status-tag">Perhatian</span>
-                        </div>
-                        <div class="widget-body">
-                            <span class="widget-label">Segera Habis (&lt; 1 Thn)</span>
-                            <div class="widget-val-row">
-                                <span id="stat-warning" class="widget-val">0</span>
-                                <span class="widget-unit">Personel</span>
-                            </div>
+                <!-- SEGERA HABIS -->
+                <a href="javascript:void(0)" class="widget-card widget-cert-warning" onclick="openDetailModal('Segera Habis')">
+                    <div class="widget-top">
+                        <span class="widget-status-tag">Perhatian</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">SEGERA HABIS (&lt; 1 THN)</span>
+                        <div class="widget-val-row">
+                            <span id="stat-warning" class="widget-val">0</span>
+                            <span class="widget-unit">Personel</span>
                         </div>
                     </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail &rarr;</span>
+                    </div>
+                </a>
 
-                    <div class="widget-card widget-cert-expired" onclick="openDetailModal('Kedaluwarsa')" style="cursor: pointer;">
-                        <div class="widget-top">
-                            <div class="widget-icon-wrapper"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                            <span class="widget-status-tag">Expired</span>
-                        </div>
-                        <div class="widget-body">
-                            <span class="widget-label">Kedaluwarsa</span>
-                            <div class="widget-val-row">
-                                <span id="stat-expired" class="widget-val">0</span>
-                                <span class="widget-unit">Personel</span>
-                            </div>
+                <!-- KEDALUWARSA -->
+                <a href="javascript:void(0)" class="widget-card widget-cert-expired" onclick="openDetailModal('Kedaluwarsa')">
+                    <div class="widget-top">
+                        <span class="widget-status-tag">Expired</span>
+                    </div>
+                    <div class="widget-body">
+                        <span class="widget-label">KEDALUWARSA</span>
+                        <div class="widget-val-row">
+                            <span id="stat-expired" class="widget-val">0</span>
+                            <span class="widget-unit">Personel</span>
                         </div>
                     </div>
-                </div>
+                    <div class="widget-footer-action">
+                        <span>Lihat detail &rarr;</span>
+                    </div>
+                </a>
 
+            </div>
                 <!-- GRID KARTU SEBARAN SEGMENTED BAR MINIMALIS -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px;">
                     
                     <!-- TINGKAT SERTIFIKASI -->
                     <div class="section-bulanan-card" style="padding: 20px 22px; background: #fff; border-radius: 10px; border: 1px solid var(--border-color, #e2e8f0);">
                         <h3 style="font-size: 0.95rem; font-weight: 700; color: #121d42; margin-bottom: 16px; text-transform: uppercase;">
-                            <i class="fa-solid fa-layer-group" style="color: var(--kai-orange, #f06400); margin-right: 8px;"></i> Tingkat Sertifikasi ASP
+                            <i style="color: var(--kai-orange, #f06400); margin-right: 8px;"></i> Tingkat Sertifikasi ASP
                         </h3>
                         
                         <div id="seg-bar-tingkat" style="display: flex; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; background: #e2e8f0; margin-bottom: 16px;">
@@ -178,7 +191,7 @@
                     <!-- PROYEKSI EXPIRED -->
                     <div class="section-bulanan-card" style="padding: 20px 22px; background: #fff; border-radius: 10px; border: 1px solid var(--border-color, #e2e8f0);">
                         <h3 style="font-size: 0.95rem; font-weight: 700; color: #121d42; margin-bottom: 16px; text-transform: uppercase;">
-                            <i class="fa-solid fa-calendar-days" style="color: var(--kai-orange, #f06400); margin-right: 8px;"></i> Expired Sertifikasi ASP
+                            <i style="color: var(--kai-orange, #f06400); margin-right: 8px;"></i> Expired Sertifikasi ASP
                         </h3>
                         
                         <div id="seg-bar-expired" style="display: flex; width: 100%; height: 12px; border-radius: 6px; overflow: hidden; background: #e2e8f0; margin-bottom: 16px;">
@@ -199,13 +212,11 @@
                         </div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <div class="select-wrapper">
-                                <select id="filterJabatan">
-                                    <option value="">Semua Jabatan</option>
-                                    <option value="Penyelia Instruktur">Penyelia Instruktur</option>
-                                    <option value="Penyelia Dinasan">Penyelia Dinasan</option>
-                                    <option value="Masinis Madya">Masinis Madya</option>
-                                    <option value="Masinis Muda">Masinis Muda</option>
-                                    <option value="Masinis Pertama">Masinis Pertama</option>
+                                <select id="filterTingkat">
+                                    <option value="">Semua Tingkat</option>
+                                    <option value="Madya">Madya</option>
+                                    <option value="Muda">Muda</option>
+                                    <option value="Pertama">Pertama</option>
                                 </select>
                             </div>
                             <div class="select-wrapper">
@@ -214,6 +225,12 @@
                                     <option value="Aktif">Aktif</option>
                                     <option value="Segera Habis">Segera Habis</option>
                                     <option value="Kedaluwarsa">Kedaluwarsa</option>
+                                </select>
+                            </div>
+                            <!-- TAMBAHAN: FILTER TAHUN EXPIRED -->
+                            <div class="select-wrapper">
+                                <select id="filterTahun">
+                                    <option value="">Semua Tahun Expired</option>
                                 </select>
                             </div>
                         </div>
@@ -316,316 +333,360 @@
         </div>
     </div>
 
-    <script>
-        const btnToggle = document.getElementById('btn-toggle-menu');
-        const sidebar = document.getElementById('app-sidebar');
-        btnToggle?.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
+<script>
+    const btnToggle = document.getElementById('btn-toggle-menu');
+    const sidebar = document.getElementById('app-sidebar');
+    btnToggle?.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+    });
+
+    const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
+    const GID = "392940711";
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
+
+    let rawData = [];
+
+    async function fetchSpreadsheetData() {
+        try {
+            const response = await fetch(CSV_URL);
+            const csvText = await response.text();
+            const rows = parseCSV(csvText);
+            
+            rawData = rows.slice(1).map((row, index) => {
+                if (!row || row.length === 0 || !row[1]) return null;
+                return {
+                    no: index + 1,
+                    nama: row[1] ? row[1].trim() : '',
+                    nipp: row[2] ? row[2].trim() : '',
+                    jabatan: row[3] ? row[3].trim() : '',
+                    tingkat: row[4] ? row[4].trim() : '',
+                    exp: row[5] ? formatDateToISO(row[5].trim()) : ''
+                };
+            }).filter(item => item && item.nama !== '');
+
+            // Isi pilihan tahun pada dropdown
+            populateYearFilter();
+
+            renderTable();
+        } catch (error) {
+            console.error("Gagal memuat data dari Spreadsheet:", error);
+            document.getElementById('tableBody').innerHTML = `
+                <tr>
+                    <td colspan="8" class="loading-state" style="color: #ef4444;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Gagal memuat data dari Spreadsheet.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    // FUNGSI MEMUAT TAHUN SECARA DINAMIS (HANYA ANGKA TAHUN)
+    function populateYearFilter() {
+        const filterTahunSelect = document.getElementById('filterTahun');
+        if (!filterTahunSelect) return;
+
+        const years = new Set();
+        rawData.forEach(item => {
+            if (item.exp) {
+                const match = item.exp.match(/\b(20\d{2})\b/);
+                if (match) {
+                    years.add(match[1]);
+                }
+            }
         });
 
-        const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
-        const GID = "392940711";
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
+        const sortedYears = Array.from(years).sort((a, b) => parseInt(a) - parseInt(b));
 
-        let rawData = [];
+        filterTahunSelect.innerHTML = '<option value="">Semua Tahun</option>';
+        sortedYears.forEach(yr => {
+            filterTahunSelect.innerHTML += `<option value="${yr}">${yr}</option>`;
+        });
+    }
 
-        async function fetchSpreadsheetData() {
-            try {
-                const response = await fetch(CSV_URL);
-                const csvText = await response.text();
-                const rows = parseCSV(csvText);
-                
-                rawData = rows.slice(1).map((row, index) => {
-                    if (!row || row.length === 0 || !row[1]) return null;
-                    return {
-                        no: index + 1,
-                        nama: row[1] ? row[1].trim() : '',
-                        nipp: row[2] ? row[2].trim() : '',
-                        jabatan: row[3] ? row[3].trim() : '',
-                        tingkat: row[4] ? row[4].trim() : '',
-                        exp: row[5] ? formatDateToISO(row[5].trim()) : ''
-                    };
-                }).filter(item => item && item.nama !== '');
+    // FUNGSI UTAMA RENDER TABEL
+    function renderTable() {
+        const tableBody = document.getElementById('tableBody');
+        const searchVal = document.getElementById('searchInput').value.toLowerCase();
+        const filterJab = document.getElementById('filterTingkat').value;
+        const filterStat = document.getElementById('filterStatus').value;
+        const filterThn = document.getElementById('filterTahun') ? document.getElementById('filterTahun').value : '';
 
-                renderTable();
-            } catch (error) {
-                console.error("Gagal memuat data dari Spreadsheet:", error);
-                document.getElementById('tableBody').innerHTML = `
-                    <tr>
-                        <td colspan="8" class="loading-state" style="color: #ef4444;">
-                            <i class="fa-solid fa-triangle-exclamation"></i> Gagal memuat data dari Spreadsheet.
+        tableBody.innerHTML = '';
+
+        let countTotal = 0, countAktif = 0, countWarning = 0, countExpired = 0;
+
+        rawData.forEach((item, index) => {
+            const statusObj = calculateStatus(item.exp);
+            
+            countTotal++;
+            if (statusObj.label === 'Aktif') countAktif++;
+            if (statusObj.label === 'Segera Habis') countWarning++;
+            if (statusObj.label === 'Kedaluwarsa') countExpired++;
+
+            const matchSearch = item.nama.toLowerCase().includes(searchVal) || item.nipp.includes(searchVal);
+            const matchTingkat = filterJab === '' || item.tingkat.toLowerCase() === filterJab.toLowerCase();
+            const matchStatus = filterStat === '' || statusObj.label === filterStat;
+
+            // Logika Pemfilteran Tahun
+            let matchTahun = true;
+            if (filterThn !== '') {
+                if (item.exp) {
+                    const match = item.exp.match(/\b(20\d{2})\b/);
+                    const itemYear = match ? match[1] : '';
+                    matchTahun = (itemYear === filterThn);
+                } else {
+                    matchTahun = false;
+                }
+            }
+
+            if (matchSearch && matchTingkat && matchStatus && matchTahun) {
+                const formattedDate = item.exp ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+
+                const row = `
+                    <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
+                        <td class="cell-center" style="color: var(--text-muted); font-size: 0.78rem;">${index + 1}</td>
+                        <td style="font-weight: 600;">${item.nama}</td>
+                        <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
+                        <td>${item.tingkat}</td>
+                        <td class="cell-center"><span style="padding: 2px 8px; background: var(--surface-subtle); border-radius: 4px; font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border-color);">${item.tingkat || '-'}</span></td>
+                        <td class="cell-center" style="font-weight: 500;">${formattedDate}</td>
+                        <td class="cell-center">
+                            <span class="badge-status ${statusObj.class}">
+                                ${statusObj.label}
+                            </span>
+                        </td>
+                        <td class="cell-center">
+                            <button type="button" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="event.stopPropagation(); viewCertificate('${item.nipp}', '${item.nama}')">
+                                <i class="fa-solid fa-file-image"></i> Lihat
+                            </button>
                         </td>
                     </tr>
                 `;
+                tableBody.innerHTML += row;
             }
-        }
+        });
 
-        function parseCSV(text) {
-            const lines = text.split('\n');
-            return lines.map(line => {
-                const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                if (!matches) return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1'));
-                return matches.map(cell => cell.replace(/^"(.*)"$/, '$1'));
-            });
-        }
+        document.getElementById('stat-total').innerText = countTotal;
+        document.getElementById('stat-aktif').innerText = countAktif;
+        document.getElementById('stat-warning').innerText = countWarning;
+        document.getElementById('stat-expired').innerText = countExpired;
 
-        function formatDateToISO(dateStr) {
-            if (!dateStr || dateStr === '-') return '';
-            if (dateStr.includes('-')) return dateStr; 
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                const day = parts[0].padStart(2, '0');
-                const month = parts[1].padStart(2, '0');
-                const year = parts[2];
-                return `${year}-${month}-${day}`;
+        renderSegmentedCharts();
+    }
+
+    function parseCSV(text) {
+        const lines = text.split('\n');
+        return lines.map(line => {
+            const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+            if (!matches) return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1'));
+            return matches.map(cell => cell.replace(/^"(.*)"$/, '$1'));
+        });
+    }
+
+    function formatDateToISO(dateStr) {
+        if (!dateStr || dateStr === '-') return '';
+        if (dateStr.includes('-')) return dateStr; 
+        const parts = dateStr.split('/');
+        if (parts.length === 3) {
+            const day = parts[0].padStart(2, '0');
+            const month = parts[1].padStart(2, '0');
+            const year = parts[2];
+            return `${year}-${month}-${day}`;
+        }
+        return dateStr;
+    }
+
+    function calculateStatus(expDateStr) {
+        if (!expDateStr) return { label: 'Aktif', class: 'badge-status-aktif' };
+        const today = new Date('2026-10-21');
+        const expDate = new Date(expDateStr);
+        const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+        if (diffDays < 0) return { label: 'Kedaluwarsa', class: 'badge-status-expired' };
+        else if (diffDays <= 365) return { label: 'Segera Habis', class: 'badge-status-warning' };
+        else return { label: 'Aktif', class: 'badge-status-aktif' };
+    }
+
+    function renderSegmentedCharts() {
+        const totalData = rawData.length;
+        if (totalData === 0) return;
+
+        const countTingkat = { 'Madya': 0, 'Muda': 0, 'Pertama': 0 };
+        const colorTingkat = { 'Madya': '#0284c7', 'Muda': '#f06400', 'Pertama': '#10b981' };
+
+        const countExpired = { 'Tahun 2027': 0, 'Tahun 2028': 0, 'Tahun 2029': 0, 'Tahun 2030+': 0 };
+        const colorExpired = { 'Tahun 2027': '#eab308', 'Tahun 2028': '#3b82f6', 'Tahun 2029': '#6366f1', 'Tahun 2030+': '#10b981' };
+
+        rawData.forEach(item => {
+            const t = (item.tingkat || '').trim();
+            if (countTingkat.hasOwnProperty(t)) countTingkat[t]++;
+
+            if (item.exp) {
+                const yr = new Date(item.exp).getFullYear();
+                if (yr === 2027) countExpired['Tahun 2027']++;
+                else if (yr === 2028) countExpired['Tahun 2028']++;
+                else if (yr === 2029) countExpired['Tahun 2029']++;
+                else if (yr >= 2030) countExpired['Tahun 2030+']++;
             }
-            return dateStr;
-        }
+        });
 
-        function calculateStatus(expDateStr) {
-            if (!expDateStr) return { label: 'Aktif', class: 'badge-status-aktif' };
-            const today = new Date('2026-10-21');
-            const expDate = new Date(expDateStr);
-            const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+        const barTingkat = document.getElementById('seg-bar-tingkat');
+        const legendTingkat = document.getElementById('seg-legend-tingkat');
+        barTingkat.innerHTML = '';
+        legendTingkat.innerHTML = '';
 
-            if (diffDays < 0) return { label: 'Kedaluwarsa', class: 'badge-status-expired' };
-            else if (diffDays <= 365) return { label: 'Segera Habis', class: 'badge-status-warning' };
-            else return { label: 'Aktif', class: 'badge-status-aktif' };
-        }
+        Object.keys(countTingkat).forEach(k => {
+            const val = countTingkat[k];
+            const pct = Math.round((val / totalData) * 100) || 0;
+            if (val > 0) {
+                barTingkat.innerHTML += `<div style="width: ${pct}%; background: ${colorTingkat[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
+                legendTingkat.innerHTML += `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: ${colorTingkat[k]}; display: inline-block;"></span>
+                        <span style="color: #334155; font-weight: 600;">${k}: <b style="color: #0f172a; font-size: 0.9rem;">${val}</b> <span style="color: #64748b; font-weight: 500;">(${pct}%)</span></span>
+                    </div>`;
+            }
+        });
 
-        function renderSegmentedCharts() {
-            const totalData = rawData.length;
-            if (totalData === 0) return;
+        const barExpired = document.getElementById('seg-bar-expired');
+        const legendExpired = document.getElementById('seg-legend-expired');
+        barExpired.innerHTML = '';
+        legendExpired.innerHTML = '';
 
-            const countTingkat = { 'Madya': 0, 'Muda': 0, 'Pertama': 0 };
-            const colorTingkat = { 'Madya': '#0284c7', 'Muda': '#f06400', 'Pertama': '#10b981' };
+        Object.keys(countExpired).forEach(k => {
+            const val = countExpired[k];
+            const pct = Math.round((val / totalData) * 100) || 0;
+            if (val > 0) {
+                barExpired.innerHTML += `<div style="width: ${pct}%; background: ${colorExpired[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
+                legendExpired.innerHTML += `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 10px; height: 10px; border-radius: 50%; background: ${colorExpired[k]}; display: inline-block;"></span>
+                        <span style="color: #334155; font-weight: 600;">${k}: <b style="color: #0f172a; font-size: 0.9rem;">${val}</b> <span style="color: #64748b; font-weight: 500;">(${pct}%)</span></span>
+                    </div>`;
+            }
+        });
+    }
 
-            const countExpired = { 'Tahun 2027': 0, 'Tahun 2028': 0, 'Tahun 2029': 0, 'Tahun 2030+': 0 };
-            const colorExpired = { 'Tahun 2027': '#eab308', 'Tahun 2028': '#3b82f6', 'Tahun 2029': '#6366f1', 'Tahun 2030+': '#10b981' };
+    let activeModalFilterStatus = 'Semua';
 
-            rawData.forEach(item => {
-                const t = (item.tingkat || '').trim();
-                if (countTingkat.hasOwnProperty(t)) countTingkat[t]++;
+    function openDetailModal(statusType) {
+        activeModalFilterStatus = statusType;
+        document.getElementById('modalTitle').innerText = statusType === 'Semua' ? 'Detail Seluruh Sertifikasi' : `Daftar Sertifikasi Status: ${statusType}`;
+        document.getElementById('modalSearchInput').value = '';
+        document.getElementById('detailModal').style.display = 'flex';
+        renderModalTable();
+    }
 
-                if (item.exp) {
-                    const yr = new Date(item.exp).getFullYear();
-                    if (yr === 2027) countExpired['Tahun 2027']++;
-                    else if (yr === 2028) countExpired['Tahun 2028']++;
-                    else if (yr === 2029) countExpired['Tahun 2029']++;
-                    else if (yr >= 2030) countExpired['Tahun 2030+']++;
-                }
-            });
+    function closeDetailModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
 
-            // Render Segment Bar Tingkat
-            const barTingkat = document.getElementById('seg-bar-tingkat');
-            const legendTingkat = document.getElementById('seg-legend-tingkat');
-            barTingkat.innerHTML = '';
-            legendTingkat.innerHTML = '';
+    function renderModalTable() {
+        const modalBody = document.getElementById('modalTableBody');
+        const searchVal = document.getElementById('modalSearchInput').value.toLowerCase();
+        modalBody.innerHTML = '';
+        let renderedCount = 0;
 
-            Object.keys(countTingkat).forEach(k => {
-                const val = countTingkat[k];
-                const pct = Math.round((val / totalData) * 100) || 0;
-                if (val > 0) {
-                    barTingkat.innerHTML += `<div style="width: ${pct}%; background: ${colorTingkat[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
-                    legendTingkat.innerHTML += `
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="width: 10px; height: 10px; border-radius: 50%; background: ${colorTingkat[k]}; display: inline-block;"></span>
-                            <span style="color: #334155; font-weight: 600;">${k}: <b style="color: #0f172a; font-size: 0.9rem;">${val}</b> <span style="color: #64748b; font-weight: 500;">(${pct}%)</span></span>
-                        </div>`;
-                }
-            });
+        rawData.forEach((item, index) => {
+            const statusObj = calculateStatus(item.exp);
+            const matchStatus = activeModalFilterStatus === 'Semua' || statusObj.label === activeModalFilterStatus;
+            const matchSearch = item.nama.toLowerCase().includes(searchVal) || item.nipp.includes(searchVal);
 
-            // Render Segment Bar Expired
-            const barExpired = document.getElementById('seg-bar-expired');
-            const legendExpired = document.getElementById('seg-legend-expired');
-            barExpired.innerHTML = '';
-            legendExpired.innerHTML = '';
+            if (matchStatus && matchSearch) {
+                renderedCount++;
+                const formattedDate = item.exp ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
 
-            Object.keys(countExpired).forEach(k => {
-                const val = countExpired[k];
-                const pct = Math.round((val / totalData) * 100) || 0;
-                if (val > 0) {
-                    barExpired.innerHTML += `<div style="width: ${pct}%; background: ${colorExpired[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
-                    legendExpired.innerHTML += `
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="width: 10px; height: 10px; border-radius: 50%; background: ${colorExpired[k]}; display: inline-block;"></span>
-                            <span style="color: #334155; font-weight: 600;">${k}: <b style="color: #0f172a; font-size: 0.9rem;">${val}</b> <span style="color: #64748b; font-weight: 500;">(${pct}%)</span></span>
-                        </div>`;
-                }
-            });
-        }
+                const row = `
+                    <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
+                        <td class="cell-center">${renderedCount}</td>
+                        <td style="font-weight: 600;">${item.nama}</td>
+                        <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
+                        <td>${item.tingkat}</td>
+                        <td class="cell-center">${item.tingkat || '-'}</td>
+                        <td class="cell-center">${formattedDate}</td>
+                        <td class="cell-center">
+                            <span class="badge-status ${statusObj.class}">
+                                ${statusObj.label}
+                            </span>
+                        </td>
+                        <td class="cell-center">
+                            <button type="button" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="event.stopPropagation(); viewCertificate('${item.nipp}', '${item.nama}')">
+                                <i class="fa-solid fa-file-image"></i> Lihat
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                modalBody.innerHTML += row;
+            }
+        });
 
-        function renderTable() {
-            const tableBody = document.getElementById('tableBody');
-            const searchVal = document.getElementById('searchInput').value.toLowerCase();
-            const filterJab = document.getElementById('filterJabatan').value;
-            const filterStat = document.getElementById('filterStatus').value;
+        document.getElementById('modalCountInfo').innerText = `Menampilkan ${renderedCount} Personel`;
+    }
 
-            tableBody.innerHTML = '';
+    function viewCertificate(nipp, nama) {
+        const certModal = document.getElementById('certModal');
+        const certImage = document.getElementById('certImage');
+        const certLoader = document.getElementById('certLoader');
+        const certError = document.getElementById('certError');
+        const certModalTitle = document.getElementById('certModalTitle');
+        const certModalMeta = document.getElementById('certModalMeta');
 
-            let countTotal = 0, countAktif = 0, countWarning = 0, countExpired = 0;
+        certModalTitle.innerText = `Sertifikat: ${nama}`;
+        certModalMeta.innerText = `NIPP: ${nipp}`;
+        
+        certImage.style.display = 'none';
+        certError.style.display = 'none';
+        certLoader.style.display = 'block';
+        certModal.style.display = 'flex';
 
-            rawData.forEach((item, index) => {
-                const statusObj = calculateStatus(item.exp);
-                
-                countTotal++;
-                if (statusObj.label === 'Aktif') countAktif++;
-                if (statusObj.label === 'Segera Habis') countWarning++;
-                if (statusObj.label === 'Kedaluwarsa') countExpired++;
+        const pngUrl = `../assets/asp/${nipp}.png`;
+        const jpgUrl = `../assets/asp/${nipp}.jpg`;
 
-                const matchSearch = item.nama.toLowerCase().includes(searchVal) || item.nipp.includes(searchVal);
-                const matchJabatan = filterJab === '' || item.jabatan.toLowerCase() === filterJab.toLowerCase();
-                const matchStatus = filterStat === '' || statusObj.label === filterStat;
-
-                if (matchSearch && matchJabatan && matchStatus) {
-                    const formattedDate = item.exp ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
-
-                    const row = `
-                        <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
-                            <td class="cell-center" style="color: var(--text-muted); font-size: 0.78rem;">${index + 1}</td>
-                            <td style="font-weight: 600;">${item.nama}</td>
-                            <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
-                            <td>${item.jabatan}</td>
-                            <td class="cell-center"><span style="padding: 2px 8px; background: var(--surface-subtle); border-radius: 4px; font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border-color);">${item.tingkat || '-'}</span></td>
-                            <td class="cell-center" style="font-weight: 500;">${formattedDate}</td>
-                            <td class="cell-center">
-                                <span class="badge-status ${statusObj.class}">
-                                    ${statusObj.label}
-                                </span>
-                            </td>
-                            <td class="cell-center">
-                                <button type="button" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="event.stopPropagation(); viewCertificate('${item.nipp}', '${item.nama}')">
-                                    <i class="fa-solid fa-file-image"></i> Lihat
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                }
-            });
-
-            document.getElementById('stat-total').innerText = countTotal;
-            document.getElementById('stat-aktif').innerText = countAktif;
-            document.getElementById('stat-warning').innerText = countWarning;
-            document.getElementById('stat-expired').innerText = countExpired;
-
-            renderSegmentedCharts();
-        }
-
-        let activeModalFilterStatus = 'Semua';
-
-        function openDetailModal(statusType) {
-            activeModalFilterStatus = statusType;
-            document.getElementById('modalTitle').innerText = statusType === 'Semua' ? 'Detail Seluruh Sertifikasi' : `Daftar Sertifikasi Status: ${statusType}`;
-            document.getElementById('modalSearchInput').value = '';
-            document.getElementById('detailModal').style.display = 'flex';
-            renderModalTable();
-        }
-
-        function closeDetailModal() {
-            document.getElementById('detailModal').style.display = 'none';
-        }
-
-        function renderModalTable() {
-            const modalBody = document.getElementById('modalTableBody');
-            const searchVal = document.getElementById('modalSearchInput').value.toLowerCase();
-            modalBody.innerHTML = '';
-            let renderedCount = 0;
-
-            rawData.forEach((item, index) => {
-                const statusObj = calculateStatus(item.exp);
-                const matchStatus = activeModalFilterStatus === 'Semua' || statusObj.label === activeModalFilterStatus;
-                const matchSearch = item.nama.toLowerCase().includes(searchVal) || item.nipp.includes(searchVal);
-
-                if (matchStatus && matchSearch) {
-                    renderedCount++;
-                    const formattedDate = item.exp ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
-
-                    const row = `
-                        <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
-                            <td class="cell-center">${renderedCount}</td>
-                            <td style="font-weight: 600;">${item.nama}</td>
-                            <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
-                            <td>${item.jabatan}</td>
-                            <td class="cell-center">${item.tingkat || '-'}</td>
-                            <td class="cell-center">${formattedDate}</td>
-                            <td class="cell-center">
-                                <span class="badge-status ${statusObj.class}">
-                                    ${statusObj.label}
-                                </span>
-                            </td>
-                            <td class="cell-center">
-                                <button type="button" class="btn btn-primary" style="padding: 4px 10px; font-size: 0.75rem;" onclick="event.stopPropagation(); viewCertificate('${item.nipp}', '${item.nama}')">
-                                    <i class="fa-solid fa-file-image"></i> Lihat
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    modalBody.innerHTML += row;
-                }
-            });
-
-            document.getElementById('modalCountInfo').innerText = `Menampilkan ${renderedCount} Personel`;
-        }
-
-        function viewCertificate(nipp, nama) {
-            const certModal = document.getElementById('certModal');
-            const certImage = document.getElementById('certImage');
-            const certLoader = document.getElementById('certLoader');
-            const certError = document.getElementById('certError');
-            const certModalTitle = document.getElementById('certModalTitle');
-            const certModalMeta = document.getElementById('certModalMeta');
-
-            certModalTitle.innerText = `Sertifikat: ${nama}`;
-            certModalMeta.innerText = `NIPP: ${nipp}`;
-            
-            certImage.style.display = 'none';
-            certError.style.display = 'none';
-            certLoader.style.display = 'block';
-            certModal.style.display = 'flex';
-
-            const pngUrl = `../assets/asp/${nipp}.png`;
-            const jpgUrl = `../assets/asp/${nipp}.jpg`;
-
-            const imgTester = new Image();
-            imgTester.onload = function() {
-                certImage.src = pngUrl;
+        const imgTester = new Image();
+        imgTester.onload = function() {
+            certImage.src = pngUrl;
+            certLoader.style.display = 'none';
+            certImage.style.display = 'block';
+        };
+        imgTester.onerror = function() {
+            const imgTesterJpg = new Image();
+            imgTesterJpg.onload = function() {
+                certImage.src = jpgUrl;
                 certLoader.style.display = 'none';
                 certImage.style.display = 'block';
             };
-            imgTester.onerror = function() {
-                const imgTesterJpg = new Image();
-                imgTesterJpg.onload = function() {
-                    certImage.src = jpgUrl;
-                    certLoader.style.display = 'none';
-                    certImage.style.display = 'block';
-                };
-                imgTesterJpg.onerror = function() {
-                    certLoader.style.display = 'none';
-                    document.getElementById('certErrorText').innerHTML = `Berkas <code>${nipp}.png</code> atau <code>${nipp}.jpg</code> tidak ditemukan di folder <code>assets/asp/</code>`;
-                    certError.style.display = 'block';
-                };
-                imgTesterJpg.src = jpgUrl;
+            imgTesterJpg.onerror = function() {
+                certLoader.style.display = 'none';
+                document.getElementById('certErrorText').innerHTML = `Berkas <code>${nipp}.png</code> atau <code>${nipp}.jpg</code> tidak ditemukan di folder <code>assets/asp/</code>`;
+                certError.style.display = 'block';
             };
-            imgTester.src = pngUrl;
+            imgTesterJpg.src = jpgUrl;
+        };
+        imgTester.src = pngUrl;
+    }
+
+    function closeCertModal() {
+        document.getElementById('certModal').style.display = 'none';
+    }
+
+    // LISTENER KEJADIAN (EVENT LISTENERS)
+    document.getElementById('searchInput').addEventListener('input', renderTable);
+    document.getElementById('filterTingkat').addEventListener('change', renderTable);
+    document.getElementById('filterStatus').addEventListener('change', renderTable);
+    
+    const filterTahunEl = document.getElementById('filterTahun');
+    if (filterTahunEl) {
+        filterTahunEl.addEventListener('change', renderTable);
+    }
+
+    fetchSpreadsheetData();
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' || event.key === 'Esc') {
+            closeDetailModal();
+            closeCertModal();
         }
-
-        function closeCertModal() {
-            document.getElementById('certModal').style.display = 'none';
-        }
-
-        document.getElementById('searchInput').addEventListener('input', renderTable);
-        document.getElementById('filterJabatan').addEventListener('change', renderTable);
-        document.getElementById('filterStatus').addEventListener('change', renderTable);
-
-        fetchSpreadsheetData();
-
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' || event.key === 'Esc') {
-                closeDetailModal();
-                closeCertModal();
-            }
-        });
-    </script>
+    });
+</script>
 </body>
 </html>
