@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cetak Laporan Dinas Harian - UPT Crew KA Kisaran</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <!-- SWEETALERT2 POP-UP LIBRARY -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      background-color: #f1f5f9;
+      font-family: 'Montserrat', sans-serif;
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* KONTROL AREA FILTER & PROFIL TOPBAR */
+    .filter-card-container {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+
+    .filter-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .filter-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .btn-action-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-preview {
+      background-color: #1C2A5F;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-print {
+      background-color: #F06400;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-preview:hover { background-color: #121d42; }
+    .btn-print:hover { background-color: #d95800; }
+
+    /* TOPBAR PROFIL PENYELIA */
+    .topbar-profile-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .topbar-profile-info {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+
+    .topbar-penyelia-nama {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .topbar-penyelia-meta {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .topbar-penyelia-jabatan {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #ff9d5c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .topbar-penyelia-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--kai-orange, #F06400);
+      background-color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .btn-topbar-logout {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      margin-left: 4px;
+    }
+
+    .btn-topbar-logout:hover {
+      background: rgba(239, 68, 68, 0.9);
+      color: #ffffff;
+    }
+
+    /* TAB PEMILIH LAPORAN CETAK */
+    .print-tab-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .print-tab-btn {
+      background: #e2e8f0;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .print-tab-btn.active {
+      background: #1C2A5F;
+      color: #ffffff;
+      border-color: #1C2A5F;
+      box-shadow: 0 4px 12px rgba(28, 42, 95, 0.25);
+    }
+
+    /* SECTION TAMPILAN KERTAS */
+    .print-section {
+      display: none;
+    }
+
+    .print-section.active {
+      display: block;
+    }
+
+    /* LAYOUT KERTAS CETAK (LANDSCAPE) */
+    .print-paper {
+      background: #ffffff;
+      width: 297mm;
+      min-height: 210mm;
+      margin: 0 auto 40px auto;
+      padding: 15mm 15mm;
+      box-sizing: border-box;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      border: 1px solid #e2e8f0;
+    }
+
+    /* HEADER CETAK */
+    .print-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .print-header h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .print-header h3 {
+      margin: 2px 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+    }
+
+    .print-header h4 {
+      margin: 2px 0 8px 0;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+    }
+
+    .print-meta-date {
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #000;
+      margin-bottom: 6px;
+    }
+
+    /* TABEL LAPORAN */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #000;
+    }
+
+    .report-table th {
+      border: 1px solid #000;
+      padding: 6px 4px;
+      text-align: center;
+      vertical-align: middle;
+      background-color: #f1f5f9;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .report-table td {
+      border: 1px solid #000;
+      padding: 2px 5px;
+      height: 32px; /* Diberi ruang pas untuk 2 baris teks */
+      text-align: center;
+      vertical-align: middle;
+      font-size: 9px;
+    }
+
+    .text-left { text-align: left !important; }
+
+    /* AWAK KA & KEDUDUKAN 2 BARIS */
+    .double-row-box {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      justify-content: center;
+      gap: 4px;
+      font-size: 9px;
+      height: 100%;
+    }
+
+    .double-row-item {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.1;
+    }
+
+    /* AREA 3 TANDA TANGAN PENYELIA DINAS */
+    .signature-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 35px;
+      gap: 20px;
+      page-break-inside: avoid;
+    }
+
+    .signature-column {
+      flex: 1;
+      text-align: center;
+    }
+
+    .signature-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+      margin-bottom: 65px;
+    }
+
+    .signature-name {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #000;
+      text-decoration: underline;
+      margin: 0;
+    }
+
+    .signature-nipp {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #000;
+      margin-top: 2px;
+    }
+
+    /* KONTROL MEDIA PRINT */
+    @media print {
+      body {
+        background: #ffffff;
+      }
+
+      .top-header,
+      .app-sidebar,
+      .filter-card-container,
+      .print-tab-container,
+      .no-print {
+        display: none !important;
+      }
+
+      .app-layout-wrapper,
+      .app-main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .print-section {
+        display: none !important;
+      }
+
+      .print-section.active {
+        display: block !important;
+      }
+
+      .print-paper {
+        border: none !important;
+        box-shadow: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP HEADER -->
+  <header class="top-header no-print" role="banner">
+    <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;" title="Buka/Tutup Menu">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <div class="brand-affiliation">
+          <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+        </div> 
+      </div>
+
+      <!-- SISI KANAN TOPBAR (PROFIL PENYELIA) -->
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+        <div class="topbar-profile-container">
+          <div class="topbar-profile-info">
+            <span id="penyeliaNama" class="topbar-penyelia-nama">--</span>
+            <span id="penyeliaNipp" class="topbar-penyelia-meta">NIPP. --</span>
+            <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
+          </div>
+          <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto Penyelia" class="topbar-penyelia-avatar">
+          
+          <button type="button" class="btn-topbar-logout" onclick="handleLogout()" title="Keluar dari Aplikasi">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Keluar
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout-wrapper">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+      <div>
+        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+        
+        <nav style="display: flex; flex-direction: column; gap: 16px;">
+          <a href="../index.html" class="sidebar-item" title="Homepage">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="sidebar-text">Homepage</span>
+          </a>
+
+          <a href="./assesment.html" class="sidebar-item" title="Laporan Dinas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="#1C2A5F" stroke="#1C2A5F"></rect>
+              <path d="M9 14l2 2 4-4" stroke="#F06400" stroke-width="2.5"></path>
+            </svg>
+            <span class="sidebar-text">Laporan Dinas</span>
+          </a>
+
+          <a href="./cetak-laporan.html" class="sidebar-item active" title="Cetak Laporan">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Laporan</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="app-main-content">
+      
+      <!-- FILTER TANGGAL -->
+      <div class="filter-card-container no-print">
+        <div class="filter-card">
+          <div class="filter-group">
+            <label for="inputTanggalCetak" class="filter-label">Pilih Tanggal Dinas:</label>
+            <input type="date" id="inputTanggalCetak" class="filter-input">
+          </div>
+
+          <div class="btn-action-group">
+            <button type="button" class="btn-preview" onclick="loadDataByDate()">
+              Tampilkan Data
+            </button>
+            <button type="button" class="btn-print" onclick="window.print()">
+              Cetak / PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PEMILIH FORMAT CETAK -->
+      <div class="print-tab-container no-print">
+        <button type="button" class="print-tab-btn active" id="tabBtnAwal" onclick="switchPrintTab('awal')">Cetak Form Awal Dinas</button>
+        <button type="button" class="print-tab-btn" id="tabBtnAkhir" onclick="switchPrintTab('akhir')">Cetak Form Akhir Dinas</button>
+      </div>
+
+      <!-- ================= 1. KERTAS CETAK FORM AWAL DINAS ================= -->
+      <div class="print-section active" id="sectionPrintAwal">
+        <div class="print-paper">
+          <div class="print-header">
+            <h2>PT. KERETA API INDONESIA (PERSERO)</h2>
+            <h3>DIVRE 1 SUMATERA UTARA</h3>
+            <h4>UPT CREW KA KELAS C KISARAN</h4>
+            <h4>FORM AWAL DINAS MASINIS DAN ASISTEN MASINIS</h4>
+          </div>
+
+          <div class="print-meta-date">
+            TANGGAL: <span class="labelTanggalDisplay">05-11-2026</span>
+          </div>
+
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 10%;">NO KA</th>
+                <th style="width: 28%;">AWAK KA</th>
+                <th style="width: 18%;">KEDUDUKAN UPT CREW</th>
+                <th style="width: 15%;">NO LOKOMOTIF</th>
+                <th style="width: 11%;">TONASE</th>
+                <th style="width: 18%;">KETERANGAN</th>
+              </tr>
+            </thead>
+            <tbody id="tablePrintBodyAwal">
+              <tr>
+                <td colspan="6" style="padding: 20px;">Memuat data awal dinas...</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- AREA 3 PENYELIA DINAS -->
+          <div class="signature-container">
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
+              <p class="signature-name" id="namaPenyeliaPagiAwal">-</p>
+              <p class="signature-nipp" id="nippPenyeliaPagiAwal">NIPP. -</p>
+            </div>
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS SIANG (5)</div>
+              <p class="signature-name" id="namaPenyeliaSiangAwal">-</p>
+              <p class="signature-nipp" id="nippPenyeliaSiangAwal">NIPP. -</p>
+            </div>
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS MALAM (6)</div>
+              <p class="signature-name" id="namaPenyeliaMalamAwal">-</p>
+              <p class="signature-nipp" id="nippPenyeliaMalamAwal">NIPP. -</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. KERTAS CETAK FORM AKHIR DINAS ================= -->
+      <div class="print-section" id="sectionPrintAkhir">
+        <div class="print-paper">
+          <div class="print-header">
+            <h2>PT. KERETA API INDONESIA (PERSERO)</h2>
+            <h3>DIVRE 1 SUMATERA UTARA</h3>
+            <h4>UPT CREW KA KELAS C KISARAN</h4>
+            <h4>FORM AKHIR DINAS MASINIS DAN ASISTEN MASINIS</h4>
+          </div>
+
+          <div class="print-meta-date">
+            TANGGAL: <span class="labelTanggalDisplay">05-11-2026</span>
+          </div>
+
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th style="width: 8%;">NO KA</th>
+                <th style="width: 14%;">NO LOKOMOTIF</th>
+                <th style="width: 10%;">JAM DATANG</th>
+                <th style="width: 10%;">LAMBAT (MENIT)</th>
+                <th style="width: 25%;">AWAK KA</th>
+                <th style="width: 11%;">KEDUDUKAN UPT CREW</th>
+                <th style="width: 11%;">KEJADIAN SELAMA DI LINTAS</th>
+                <th style="width: 11%;">KETERANGAN</th>
+              </tr>
+            </thead>
+            <tbody id="tablePrintBodyAkhir">
+              <tr>
+                <td colspan="8" style="padding: 20px;">Memuat data akhir dinas...</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- AREA 3 PENYELIA DINAS -->
+          <div class="signature-container">
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
+              <p class="signature-name" id="namaPenyeliaPagiAkhir">-</p>
+              <p class="signature-nipp" id="nippPenyeliaPagiAkhir">NIPP. -</p>
+            </div>
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS SIANG (5)</div>
+              <p class="signature-name" id="namaPenyeliaSiangAkhir">-</p>
+              <p class="signature-nipp" id="nippPenyeliaSiangAkhir">NIPP. -</p>
+            </div>
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS MALAM (6)</div>
+              <p class="signature-name" id="namaPenyeliaMalamAkhir">-</p>
+              <p class="signature-nipp" id="nippPenyeliaMalamAkhir">NIPP. -</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+    let activePrintMode = 'awal';
+
+    // PROTEKSI LOGIN & PROFIL PENYELIA
+    const loggedInNama = localStorage.getItem("loggedInUserNama");
+    const loggedInNipp = localStorage.getItem("loggedInUserNipp");
+    const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
+
+    if (!loggedInNama || !loggedInNipp) {
+      Swal.fire({
+        title: 'Akses Ditolak!',
+        text: 'Anda harus login sebagai Penyelia terlebih dahulu.',
+        icon: 'warning',
+        confirmButtonColor: '#1C2A5F',
+        allowOutsideClick: false
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+
+// FUNGSI KONFIRMASI LOGOUT DENGAN SWEETALERT2
+    function handleLogout() {
+      Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: 'Apakah Anda yakin ingin keluar dari sistem?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.clear();
+          
+          Swal.fire({
+            title: 'Berhasil Keluar',
+            text: 'Mengalihkan ke halaman login...',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = "login.html";
+          });
+        }
+      });
+    }
+    function formatTanggalDisplay(dateString) {
+      if (!dateString) return "-";
+      const parts = dateString.split("-");
+      if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+      return dateString;
+    }
+
+    function switchPrintTab(mode) {
+      activePrintMode = mode;
+      document.getElementById("tabBtnAwal").classList.toggle("active", mode === 'awal');
+      document.getElementById("tabBtnAkhir").classList.toggle("active", mode === 'akhir');
+      document.getElementById("sectionPrintAwal").classList.toggle("active", mode === 'awal');
+      document.getElementById("sectionPrintAkhir").classList.toggle("active", mode === 'akhir');
+      loadDataByDate();
+    }
+
+    async function loadDataByDate() {
+      const inputDate = document.getElementById("inputTanggalCetak").value;
+      if (!inputDate) {
+        Swal.fire("Peringatan", "Silakan pilih tanggal dinas terlebih dahulu!", "warning");
+        return;
+      }
+
+      const formattedDisplayDate = formatTanggalDisplay(inputDate);
+      document.querySelectorAll(".labelTanggalDisplay").forEach(el => el.textContent = formattedDisplayDate);
+
+      if (activePrintMode === 'awal') {
+        await loadAwalDinasData(inputDate, formattedDisplayDate);
+      } else {
+        await loadAkhirDinasData(inputDate, formattedDisplayDate);
+      }
+    }
+
+    // Load Data Form Awal Dinas (Masinis & Asisten terpisah barisnya dengan kedudukan masing-masing)
+    async function loadAwalDinasData(inputDate, formattedDisplayDate) {
+      const tbody = document.getElementById("tablePrintBodyAwal");
+      tbody.innerHTML = `<tr><td colspan="6" style="padding: 20px;">Memuat data awal dinas tanggal ${formattedDisplayDate}...</td></tr>`;
+
+      try {
+        const response = await fetch(`${API_URL}?action=getCetakAwalDinasData&tanggal=${encodeURIComponent(inputDate)}`);
+        const result = await response.json();
+
+        if (result.status === "success" || result.result === "success") {
+          let reportList = Array.isArray(result.data) ? result.data : [];
+
+          if (reportList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="padding: 20px; color: #64748b;">Tidak ada data awal dinas pada tanggal ${formattedDisplayDate}.</td></tr>`;
+          } else {
+            let html = "";
+            reportList.forEach(item => {
+              const masinis = item.masinis || "-";
+              const asisten = item.asistenMasinis || "-";
+              
+              // Pisahkan kedudukan jika disimpan dalam format "KEDUDUKAN_MASINIS / KEDUDUKAN_ASISTEN"
+              let kedMasinis = item.kedudukan || "-";
+              let kedAsisten = item.kedudukan || "-";
+              if (item.kedudukan && item.kedudukan.includes(" / ")) {
+                const parts = item.kedudukan.split(" / ");
+                kedMasinis = parts[0] || "-";
+                kedAsisten = parts[1] || "-";
+              }
+
+              html += `
+                <tr>
+                  <td>${item.noKa || '-'}</td>
+                  <td>
+                    <div class="double-row-box">
+                      <div class="double-row-item">${masinis}</div>
+                      <div class="double-row-item">${asisten}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="double-row-box">
+                      <div class="double-row-item">${kedMasinis}</div>
+                      <div class="double-row-item">${kedAsisten}</div>
+                    </div>
+                  </td>
+                  <td>${item.noLokomotif || '-'}</td>
+                  <td>${item.tonase || '0'}</td>
+                  <td class="text-left">${item.keterangan || '-'}</td>
+                </tr>
+              `;
+            });
+
+            const remainingRows = 8 - reportList.length;
+            for (let i = 0; i < remainingRows; i++) {
+              html += `<tr><td style="height:32px;"></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+            }
+            tbody.innerHTML = html;
+          }
+
+          const penyeliaData = result.penyelia || {};
+          document.getElementById("namaPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nama || "-";
+          document.getElementById("nippPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nipp ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
+          document.getElementById("namaPenyeliaSiangAwal").textContent = penyeliaData.siang?.nama || "-";
+          document.getElementById("nippPenyeliaSiangAwal").textContent = penyeliaData.siang?.nipp ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
+          document.getElementById("namaPenyeliaMalamAwal").textContent = penyeliaData.malam?.nama || "-";
+          document.getElementById("nippPenyeliaMalamAwal").textContent = penyeliaData.malam?.nipp ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
+
+        } else {
+          Swal.fire("Gagal", result.message || "Gagal memuat data awal dinas.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Gagal terhubung ke server.", "error");
+      }
+    }
+
+    // Load Data Form Akhir Dinas
+    async function loadAkhirDinasData(inputDate, formattedDisplayDate) {
+      const tbody = document.getElementById("tablePrintBodyAkhir");
+      tbody.innerHTML = `<tr><td colspan="8" style="padding: 20px;">Memuat data akhir dinas tanggal ${formattedDisplayDate}...</td></tr>`;
+
+      try {
+        const response = await fetch(`${API_URL}?action=getCetakLaporanData&tanggal=${encodeURIComponent(inputDate)}`);
+        const result = await response.json();
+
+        if (result.status === "success" || result.result === "success") {
+          let reportList = Array.isArray(result.data) ? result.data : [];
+
+          if (reportList.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="padding: 20px; color: #64748b;">Tidak ada data akhir dinas pada tanggal ${formattedDisplayDate}.</td></tr>`;
+          } else {
+            let html = "";
+            reportList.forEach(item => {
+              const masinis = item.masinis || "-";
+              const asisten = item.asistenMasinis || "-";
+
+              let kedMasinis = item.kedudukan || "-";
+              let kedAsisten = item.kedudukan || "-";
+              if (item.kedudukan && item.kedudukan.includes(" / ")) {
+                const parts = item.kedudukan.split(" / ");
+                kedMasinis = parts[0] || "-";
+                kedAsisten = parts[1] || "-";
+              }
+
+              html += `
+                <tr>
+                  <td>${item.noKa || '-'}</td>
+                  <td>${item.noLokomotif || '-'}</td>
+                  <td>${item.jamDatang || '-'}</td>
+                  <td>${item.lambat || '0'}</td>
+                  <td>
+                    <div class="double-row-box">
+                      <div class="double-row-item">${masinis}</div>
+                      <div class="double-row-item">${asisten}</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="double-row-box">
+                      <div class="double-row-item">${kedMasinis}</div>
+                      <div class="double-row-item">${kedAsisten}</div>
+                    </div>
+                  </td>
+                  <td class="text-left">${item.kejadian || '-'}</td>
+                  <td class="text-left">${item.keterangan || '-'}</td>
+                </tr>
+              `;
+            });
+
+            const remainingRows = 8 - reportList.length;
+            for (let i = 0; i < remainingRows; i++) {
+              html += `<tr><td style="height:32px;"></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+            }
+            tbody.innerHTML = html;
+          }
+
+          const penyeliaData = result.penyelia || {};
+          document.getElementById("namaPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nama || "-";
+          document.getElementById("nippPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nipp ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
+          document.getElementById("namaPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nama || "-";
+          document.getElementById("nippPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nipp ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
+          document.getElementById("namaPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nama || "-";
+          document.getElementById("nippPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nipp ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
+
+        } else {
+          Swal.fire("Gagal", result.message || "Gagal memuat data akhir dinas.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Gagal terhubung ke server.", "error");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+
+      const imgEl = document.getElementById("penyeliaFoto");
+      if (loggedInNipp) {
+        const cleanNipp = String(loggedInNipp).trim();
+        const jpgPath = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
+        const pngPath = `../assets/struktur-organisasi/${cleanNipp}.png`;
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
+
+        imgEl.src = jpgPath;
+        imgEl.onerror = function() {
+          if (this.src.endsWith(".jpg")) {
+            this.src = pngPath;
+          } else {
+            this.src = defaultAvatar;
+          }
+        };
+      }
+
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("inputTanggalCetak").value = today;
+      loadDataByDate();
+    });
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar) {
+        sidebar.classList.toggle('collapsed');
+      }
+    }
+  </script>
+</body>
+</html>
