@@ -97,7 +97,7 @@
       font-weight: 800;
       color: #ffffff;
       text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      margin-bottom: 1px;
+      margin-bottom: 6px;
       text-align: center;
     }
 
@@ -105,7 +105,7 @@
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 5px;
+      margin-bottom: 12px;
     }
 
     .form-tab-btn {
@@ -172,7 +172,7 @@
       margin-bottom: 6px;
     }
 
-    .form-input {
+    .form-input, .form-select {
       width: 100%;
       padding: 8px 12px;
       border: 1px solid var(--border-color);
@@ -182,7 +182,7 @@
       color: var(--text-primary);
     }
 
-    .form-input:focus {
+    .form-input:focus, .form-select:focus {
       outline: none;
       border-color: var(--kai-orange);
       box-shadow: 0 0 0 3px rgba(240, 100, 0, 0.15);
@@ -268,7 +268,7 @@
   </header>
 
   <div class="app-layout-wrapper">
-<aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+    <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
       <div>
         <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
         
@@ -306,7 +306,7 @@
 
         <h1 class="page-title-outer">Portal Laporan Dinas</h1>
 
-        <!-- TAB SWITCHER (TETAP DI SATU SITES) -->
+        <!-- TAB SWITCHER -->
         <div class="form-tab-container">
           <button type="button" class="form-tab-btn" id="btnTabAwal" onclick="switchForm('awal')">Form Awal Dinas</button>
           <button type="button" class="form-tab-btn active" id="btnTabAkhir" onclick="switchForm('akhir')">Form Akhir Dinas</button>
@@ -331,22 +331,32 @@
               <div class="form-grid-row">
                 <div class="form-grid-col">
                   <label class="form-label">Masinis</label>
-                  <select id="masinisAwal" placeholder="Cari Masinis..."></select>
+                  <select id="masinisAwal" placeholder="Cari atau Ketik NAMA - NIPP..."></select>
                 </div>
                 <div class="form-grid-col">
                   <label class="form-label">Kedudukan Masinis</label>
-                  <input type="text" id="kedudukanMasinisAwal" class="form-input readonly-input" readonly>
+                  <select id="kedudukanMasinisAwal" class="form-select">
+                    <option value="">Pilih Kedudukan...</option>
+                    <option value="UPT CREW KA KIS">UPT CREW KA KIS</option>
+                    <option value="UPT CREW KA TBI">UPT CREW KA TBI</option>
+                    <option value="UPT CREW KA MDN">UPT CREW KA MDN</option>
+                  </select>
                 </div>
               </div>
 
               <div class="form-grid-row">
                 <div class="form-grid-col">
                   <label class="form-label">Asisten Masinis</label>
-                  <select id="asistenMasinisAwal" placeholder="Cari Asisten..."></select>
+                  <select id="asistenMasinisAwal" placeholder="Cari atau Ketik NAMA - NIPP..."></select>
                 </div>
                 <div class="form-grid-col">
                   <label class="form-label">Kedudukan Asisten Masinis</label>
-                  <input type="text" id="kedudukanAsistenAwal" class="form-input readonly-input" readonly>
+                  <select id="kedudukanAsistenAwal" class="form-select">
+                    <option value="">Pilih Kedudukan...</option>
+                    <option value="UPT CREW KA KIS">UPT CREW KA KIS</option>
+                    <option value="UPT CREW KA TBI">UPT CREW KA TBI</option>
+                    <option value="UPT CREW KA MDN">UPT CREW KA MDN</option>
+                  </select>
                 </div>
               </div>
 
@@ -396,22 +406,32 @@
               <div class="form-grid-row">
                 <div class="form-grid-col">
                   <label class="form-label">Masinis</label>
-                  <select id="masinis" placeholder="Cari Masinis..."></select>
+                  <select id="masinis" placeholder="Cari atau Ketik NAMA - NIPP..."></select>
                 </div>
                 <div class="form-grid-col">
                   <label class="form-label">Kedudukan Masinis</label>
-                  <input type="text" id="kedudukanMasinis" class="form-input readonly-input" readonly>
+                  <select id="kedudukanMasinis" class="form-select">
+                    <option value="">Pilih Kedudukan...</option>
+                    <option value="UPT CREW KA KIS">UPT CREW KA KIS</option>
+                    <option value="UPT CREW KA TBI">UPT CREW KA TBI</option>
+                    <option value="UPT CREW KA MDN">UPT CREW KA MDN</option>
+                  </select>
                 </div>
               </div>
 
               <div class="form-grid-row">
                 <div class="form-grid-col">
                   <label class="form-label">Asisten Masinis</label>
-                  <select id="asistenMasinis" placeholder="Cari Asisten..."></select>
+                  <select id="asistenMasinis" placeholder="Cari atau Ketik NAMA - NIPP..."></select>
                 </div>
                 <div class="form-grid-col">
-                  <label class="form-label">Kedudukan Asisten</label>
-                  <input type="text" id="kedudukanAsisten" class="form-input readonly-input" readonly>
+                  <label class="form-label">Kedudukan Asisten Masinis</label>
+                  <select id="kedudukanAsisten" class="form-select">
+                    <option value="">Pilih Kedudukan...</option>
+                    <option value="UPT CREW KA KIS">UPT CREW KA KIS</option>
+                    <option value="UPT CREW KA TBI">UPT CREW KA TBI</option>
+                    <option value="UPT CREW KA MDN">UPT CREW KA MDN</option>
+                  </select>
                 </div>
               </div>
 
@@ -447,7 +467,6 @@
       });
     }
 
-// FUNGSI KONFIRMASI LOGOUT DENGAN SWEETALERT2
     function handleLogout() {
       Swal.fire({
         title: 'Konfirmasi Logout',
@@ -461,7 +480,6 @@
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.clear();
-          
           Swal.fire({
             title: 'Berhasil Keluar',
             text: 'Mengalihkan ke halaman login...',
@@ -486,36 +504,9 @@
       document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
       document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
       document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
-    });
-
-    const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
-    let crewKedudukanMap = {};
-
-    async function loadInitialData() {
-      try {
-        const res = await fetch(API_URL + "?action=getFormDinasData");
-        const data = await res.json();
-        
-        if (data.status === "success" || data.result === "success") {
-          const crewOptions = (data.crew || []).map(item => ({ value: item, text: item }));
-          crewKedudukanMap = data.crewDetails || {};
-
-          new TomSelect("#masinis", { options: crewOptions, placeholder: "Cari Masinis..." }).on('change', v => document.getElementById("kedudukanMasinis").value = crewKedudukanMap[v] || "");
-          new TomSelect("#asistenMasinis", { options: crewOptions, placeholder: "Cari Asisten..." }).on('change', v => document.getElementById("kedudukanAsisten").value = crewKedudukanMap[v] || "");
-          new TomSelect("#masinisAwal", { options: crewOptions, placeholder: "Cari Masinis..." }).on('change', v => document.getElementById("kedudukanMasinisAwal").value = crewKedudukanMap[v] || "");
-          new TomSelect("#asistenMasinisAwal", { options: crewOptions, placeholder: "Cari Asisten..." }).on('change', v => document.getElementById("kedudukanAsistenAwal").value = crewKedudukanMap[v] || "");
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
-      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
-      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
 
       const imgEl = document.getElementById("penyeliaFoto");
-      if (loggedInNipp) {
+      if (imgEl && loggedInNipp) {
         const cleanNipp = String(loggedInNipp).trim();
         const jpgPath = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
         const pngPath = `../assets/struktur-organisasi/${cleanNipp}.png`;
@@ -530,7 +521,57 @@ document.addEventListener("DOMContentLoaded", function() {
           }
         };
       }
+
+      loadInitialData();
     });
+
+    const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+    let crewKedudukanMap = {};
+
+    async function loadInitialData() {
+      try {
+        const res = await fetch(API_URL + "?action=getFormDinasData");
+        const data = await res.json();
+        
+        if (data.status === "success" || data.result === "success") {
+          const crewOptions = (data.crew || []).map(item => ({ value: item, text: item }));
+          crewKedudukanMap = data.crewDetails || {};
+
+          // Helper konfigurasi TomSelect dengan fitur create manual (format NAMA - NIPP)
+          const tsConfig = {
+            options: crewOptions,
+            create: function(input) {
+              const cleanInput = input.trim().toUpperCase();
+              return { value: cleanInput, text: cleanInput };
+            },
+            placeholder: "Cari atau Ketik NAMA - NIPP..."
+          };
+
+          const tsMasinis = new TomSelect("#masinis", tsConfig);
+          tsMasinis.on('change', v => {
+            if (crewKedudukanMap[v]) document.getElementById("kedudukanMasinis").value = crewKedudukanMap[v];
+          });
+
+          const tsAsisten = new TomSelect("#asistenMasinis", tsConfig);
+          tsAsisten.on('change', v => {
+            if (crewKedudukanMap[v]) document.getElementById("kedudukanAsisten").value = crewKedudukanMap[v];
+          });
+
+          const tsMasinisAwal = new TomSelect("#masinisAwal", tsConfig);
+          tsMasinisAwal.on('change', v => {
+            if (crewKedudukanMap[v]) document.getElementById("kedudukanMasinisAwal").value = crewKedudukanMap[v];
+          });
+
+          const tsAsistenAwal = new TomSelect("#asistenMasinisAwal", tsConfig);
+          tsAsistenAwal.on('change', v => {
+            if (crewKedudukanMap[v]) document.getElementById("kedudukanAsistenAwal").value = crewKedudukanMap[v];
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     // Submit Awal Dinas
     document.getElementById("formAwalDinas").addEventListener("submit", async function(e) {
       e.preventDefault();
@@ -550,15 +591,23 @@ document.addEventListener("DOMContentLoaded", function() {
         penyeliaNipp: loggedInNipp
       };
 
-      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-      const result = await res.json();
-      if (result.status === "success") {
-        Swal.fire('Berhasil', 'Data Awal Dinas tersimpan.', 'success');
-        document.getElementById("formAwalDinas").reset();
-      } else {
-        Swal.fire('Gagal', result.message, 'error');
+      try {
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+        if (result.status === "success") {
+          Swal.fire('Berhasil', 'Data Awal Dinas tersimpan.', 'success');
+          document.getElementById("formAwalDinas").reset();
+          document.getElementById("kedudukanMasinisAwal").value = "";
+          document.getElementById("kedudukanAsistenAwal").value = "";
+        } else {
+          Swal.fire('Gagal', result.message, 'error');
+        }
+      } catch (err) {
+        Swal.fire('Kesalahan Jaringan', 'Gagal terhubung ke server.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Kirim Laporan Awal Dinas";
       }
-      btn.disabled = false; btn.innerText = "Kirim Laporan Awal Dinas";
     });
 
     // Submit Akhir Dinas
@@ -582,19 +631,28 @@ document.addEventListener("DOMContentLoaded", function() {
         penyeliaNipp: loggedInNipp
       };
 
-      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
-      const result = await res.json();
-      if (result.status === "success") {
-        Swal.fire('Berhasil', 'Data Akhir Dinas tersimpan.', 'success');
-        document.getElementById("formAkhirDinas").reset();
-      } else {
-        Swal.fire('Gagal', result.message, 'error');
+      try {
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+        if (result.status === "success") {
+          Swal.fire('Berhasil', 'Data Akhir Dinas tersimpan.', 'success');
+          document.getElementById("formAkhirDinas").reset();
+          document.getElementById("kedudukanMasinis").value = "";
+          document.getElementById("kedudukanAsisten").value = "";
+        } else {
+          Swal.fire('Gagal', result.message, 'error');
+        }
+      } catch (err) {
+        Swal.fire('Kesalahan Jaringan', 'Gagal terhubung ke server.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Kirim Laporan Akhir Dinas";
       }
-      btn.disabled = false; btn.innerText = "Kirim Laporan Akhir Dinas";
     });
 
-    window.onload = loadInitialData;
-    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+    function toggleSidebar() { 
+      document.getElementById('app-sidebar').classList.toggle('collapsed'); 
+    }
   </script>
 </body>
 </html>
