@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Laporan Dinas - UPT Crew KA Kisaran</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      background-image: linear-gradient(135deg, rgba(18, 29, 66, 0.88) 0%, rgba(28, 42, 95, 0.82) 100%), url('../assets/images/assesment.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    .topbar-profile-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .topbar-profile-info {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+
+    .topbar-penyelia-nama {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .topbar-penyelia-meta {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .topbar-penyelia-jabatan {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #ff9d5c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .topbar-penyelia-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--kai-orange, #F06400);
+      background-color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .btn-topbar-logout {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      margin-left: 4px;
+    }
+
+    .btn-topbar-logout:hover {
+      background: rgba(239, 68, 68, 0.9);
+      color: #ffffff;
+    }
+
+    .form-page-container {
+      max-width: 860px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    .page-title-outer {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 1px;
+      text-align: center;
+    }
+
+    .form-tab-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .form-tab-btn {
+      background: rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-tab-btn:hover {
+      background: rgba(240, 100, 0, 0.3);
+      color: #ffffff;
+      border-color: var(--kai-orange);
+    }
+
+    .form-tab-btn.active {
+      background: var(--kai-orange, #F06400);
+      color: #ffffff;
+      border-color: var(--kai-orange);
+      box-shadow: 0 4px 12px rgba(240, 100, 0, 0.35);
+    }
+
+    .form-section {
+      display: none;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-card {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25) !important;
+      border-radius: var(--radius-md);
+      padding: 26px 30px;
+    }
+
+    .form-grid-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .form-grid-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      background-color: var(--surface-card);
+      color: var(--text-primary);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--kai-orange);
+      box-shadow: 0 0 0 3px rgba(240, 100, 0, 0.15);
+    }
+
+    .readonly-input {
+      background-color: var(--surface-subtle) !important;
+      color: var(--text-muted) !important;
+      cursor: not-allowed;
+    }
+
+    .uppercase-input {
+      text-transform: uppercase;
+    }
+
+    .ts-control {
+      padding: 4px 10px !important;
+      border-radius: var(--radius-sm) !important;
+      min-height: 38px !important;
+      font-size: 0.85rem !important;
+    }
+
+    .btn-submit-kai {
+      width: 100%;
+      background-color: var(--kai-blue);
+      color: var(--text-white);
+      border: none;
+      padding: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-submit-kai:hover {
+      background-color: var(--kai-blue-dark);
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      color: #cbd5e1;
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.86rem;
+    }
+
+    .sidebar-item:hover, .sidebar-item.active {
+      color: #ffffff;
+      background: rgba(240, 100, 0, 0.25);
+      border: 1px solid rgba(240, 100, 0, 0.45);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-header" role="banner">
+    <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+      </div>
+
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+        <div class="topbar-profile-container">
+          <div class="topbar-profile-info">
+            <span id="penyeliaNama" class="topbar-penyelia-nama">--</span>
+            <span id="penyeliaNipp" class="topbar-penyelia-meta">NIPP. --</span>
+            <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
+          </div>
+          <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto" class="topbar-penyelia-avatar">
+          <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout-wrapper">
+<aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+      <div>
+        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+        
+        <nav style="display: flex; flex-direction: column; gap: 16px;">
+          <a href="../index.html" class="sidebar-item" title="Homepage">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="sidebar-text">Homepage</span>
+          </a>
+
+          <a href="./assesment.html" class="sidebar-item active" title="Laporan Dinas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="#1C2A5F" stroke="#1C2A5F"></rect>
+              <path d="M9 14l2 2 4-4" stroke="#F06400" stroke-width="2.5"></path>
+            </svg>
+            <span class="sidebar-text">Laporan Dinas</span>
+          </a>
+
+          <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Laporan</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="app-main-content">
+      <div class="dashboard-content form-page-container">
+
+        <h1 class="page-title-outer">Portal Laporan Dinas</h1>
+
+        <!-- TAB SWITCHER (TETAP DI SATU SITES) -->
+        <div class="form-tab-container">
+          <button type="button" class="form-tab-btn" id="btnTabAwal" onclick="switchForm('awal')">Form Awal Dinas</button>
+          <button type="button" class="form-tab-btn active" id="btnTabAkhir" onclick="switchForm('akhir')">Form Akhir Dinas</button>
+        </div>
+
+        <!-- FORM AWAL DINAS -->
+        <div id="sectionAwalDinas" class="form-section">
+          <div class="form-card">
+            <form id="formAwalDinas">
+              <h3 style="margin-top:0; margin-bottom:16px; font-size:1.1rem; color:var(--kai-blue);">Input Data Awal Dinas</h3>
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">No. KA</label>
+                  <input type="text" id="noKaAwal" class="form-input uppercase-input" placeholder="U99" required>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">No. Lokomotif</label>
+                  <input type="text" id="noLokomotifAwal" class="form-input uppercase-input" placeholder="CC2017704" required>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Masinis</label>
+                  <select id="masinisAwal" placeholder="Cari Masinis..."></select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Kedudukan Masinis</label>
+                  <input type="text" id="kedudukanMasinisAwal" class="form-input readonly-input" readonly>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Asisten Masinis</label>
+                  <select id="asistenMasinisAwal" placeholder="Cari Asisten..."></select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Kedudukan Asisten Masinis</label>
+                  <input type="text" id="kedudukanAsistenAwal" class="form-input readonly-input" readonly>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Tonase</label>
+                  <input type="text" id="tonaseAwal" class="form-input" placeholder="350" required>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Keterangan</label>
+                  <input type="text" id="keteranganAwal" class="form-input" placeholder="-">
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit-kai" id="btnSubmitAwal">Kirim Laporan Awal Dinas</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- FORM AKHIR DINAS -->
+        <div id="sectionAkhirDinas" class="form-section active">
+          <div class="form-card">
+            <form id="formAkhirDinas">
+              <h3 style="margin-top:0; margin-bottom:16px; font-size:1.1rem; color:var(--kai-blue);">Input Data Akhir Dinas</h3>
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">No. KA</label>
+                  <input type="text" id="noKa" class="form-input uppercase-input" placeholder="U99" required>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">No. Lokomotif</label>
+                  <input type="text" id="noLokomotif" class="form-input uppercase-input" placeholder="CC2017704" required>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Jam Datang (WIB)</label>
+                  <input type="text" id="jamDatang" class="form-input" placeholder="2237" required>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Lambat (Menit)</label>
+                  <input type="text" id="lambat" class="form-input" value="0" required>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Masinis</label>
+                  <select id="masinis" placeholder="Cari Masinis..."></select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Kedudukan Masinis</label>
+                  <input type="text" id="kedudukanMasinis" class="form-input readonly-input" readonly>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Asisten Masinis</label>
+                  <select id="asistenMasinis" placeholder="Cari Asisten..."></select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Kedudukan Asisten</label>
+                  <input type="text" id="kedudukanAsisten" class="form-input readonly-input" readonly>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Kejadian Selama Perjalanan</label>
+                  <textarea id="kejadian" class="form-input" rows="2">-</textarea>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Keterangan Tambahan</label>
+                  <input type="text" id="keterangan" class="form-input" placeholder="-">
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit-kai" id="btnSubmit">Kirim Laporan Akhir Dinas</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+  <script>
+    const loggedInNama = localStorage.getItem("loggedInUserNama");
+    const loggedInNipp = localStorage.getItem("loggedInUserNipp");
+    const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
+
+    if (!loggedInNama || !loggedInNipp) {
+      Swal.fire({ title: 'Akses Ditolak!', text: 'Login terlebih dahulu.', icon: 'warning', confirmButtonColor: '#1C2A5F' }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+
+// FUNGSI KONFIRMASI LOGOUT DENGAN SWEETALERT2
+    function handleLogout() {
+      Swal.fire({
+        title: 'Konfirmasi Logout',
+        text: 'Apakah Anda yakin ingin keluar dari sistem?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.clear();
+          
+          Swal.fire({
+            title: 'Berhasil Keluar',
+            text: 'Mengalihkan ke halaman login...',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = "login.html";
+          });
+        }
+      });
+    }
+
+    function switchForm(type) {
+      document.getElementById("btnTabAwal").classList.toggle("active", type === 'awal');
+      document.getElementById("btnTabAkhir").classList.toggle("active", type === 'akhir');
+      document.getElementById("sectionAwalDinas").classList.toggle("active", type === 'awal');
+      document.getElementById("sectionAkhirDinas").classList.toggle("active", type === 'akhir');
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+    });
+
+    const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+    let crewKedudukanMap = {};
+
+    async function loadInitialData() {
+      try {
+        const res = await fetch(API_URL + "?action=getFormDinasData");
+        const data = await res.json();
+        
+        if (data.status === "success" || data.result === "success") {
+          const crewOptions = (data.crew || []).map(item => ({ value: item, text: item }));
+          crewKedudukanMap = data.crewDetails || {};
+
+          new TomSelect("#masinis", { options: crewOptions, placeholder: "Cari Masinis..." }).on('change', v => document.getElementById("kedudukanMasinis").value = crewKedudukanMap[v] || "");
+          new TomSelect("#asistenMasinis", { options: crewOptions, placeholder: "Cari Asisten..." }).on('change', v => document.getElementById("kedudukanAsisten").value = crewKedudukanMap[v] || "");
+          new TomSelect("#masinisAwal", { options: crewOptions, placeholder: "Cari Masinis..." }).on('change', v => document.getElementById("kedudukanMasinisAwal").value = crewKedudukanMap[v] || "");
+          new TomSelect("#asistenMasinisAwal", { options: crewOptions, placeholder: "Cari Asisten..." }).on('change', v => document.getElementById("kedudukanAsistenAwal").value = crewKedudukanMap[v] || "");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+
+      const imgEl = document.getElementById("penyeliaFoto");
+      if (loggedInNipp) {
+        const cleanNipp = String(loggedInNipp).trim();
+        const jpgPath = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
+        const pngPath = `../assets/struktur-organisasi/${cleanNipp}.png`;
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
+
+        imgEl.src = jpgPath;
+        imgEl.onerror = function() {
+          if (this.src.endsWith(".jpg")) {
+            this.src = pngPath;
+          } else {
+            this.src = defaultAvatar;
+          }
+        };
+      }
+    });
+    // Submit Awal Dinas
+    document.getElementById("formAwalDinas").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmitAwal");
+      btn.disabled = true; btn.innerText = "Menyimpan...";
+
+      const payload = {
+        action: "submitFormAwalDinas",
+        noKa: document.getElementById("noKaAwal").value,
+        noLokomotif: document.getElementById("noLokomotifAwal").value,
+        masinis: document.getElementById("masinisAwal").value || "-",
+        asistenMasinis: document.getElementById("asistenMasinisAwal").value || "-",
+        kedudukan: (document.getElementById("kedudukanMasinisAwal").value || "-") + " / " + (document.getElementById("kedudukanAsistenAwal").value || "-"),
+        tonase: document.getElementById("tonaseAwal").value || "0",
+        keterangan: document.getElementById("keteranganAwal").value || "-",
+        penyelia: loggedInNama,
+        penyeliaNipp: loggedInNipp
+      };
+
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+      const result = await res.json();
+      if (result.status === "success") {
+        Swal.fire('Berhasil', 'Data Awal Dinas tersimpan.', 'success');
+        document.getElementById("formAwalDinas").reset();
+      } else {
+        Swal.fire('Gagal', result.message, 'error');
+      }
+      btn.disabled = false; btn.innerText = "Kirim Laporan Awal Dinas";
+    });
+
+    // Submit Akhir Dinas
+    document.getElementById("formAkhirDinas").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true; btn.innerText = "Menyimpan...";
+
+      const payload = {
+        action: "submitFormAkhirDinas",
+        noKa: document.getElementById("noKa").value,
+        noLokomotif: document.getElementById("noLokomotif").value,
+        jamDatang: document.getElementById("jamDatang").value,
+        lambat: document.getElementById("lambat").value,
+        masinis: document.getElementById("masinis").value || "-",
+        asistenMasinis: document.getElementById("asistenMasinis").value || "-",
+        kedudukan: (document.getElementById("kedudukanMasinis").value || "-") + " / " + (document.getElementById("kedudukanAsisten").value || "-"),
+        kejadian: document.getElementById("kejadian").value || "-",
+        keterangan: document.getElementById("keterangan").value || "-",
+        penyelia: loggedInNama,
+        penyeliaNipp: loggedInNipp
+      };
+
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+      const result = await res.json();
+      if (result.status === "success") {
+        Swal.fire('Berhasil', 'Data Akhir Dinas tersimpan.', 'success');
+        document.getElementById("formAkhirDinas").reset();
+      } else {
+        Swal.fire('Gagal', result.message, 'error');
+      }
+      btn.disabled = false; btn.innerText = "Kirim Laporan Akhir Dinas";
+    });
+
+    window.onload = loadInitialData;
+    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+  </script>
+</body>
+</html>
