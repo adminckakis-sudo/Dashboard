@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Penyelia - UPT Crew KA Kisaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <!-- SWEETALERT2 POP-UP LIBRARY -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      background-image: linear-gradient(135deg, rgba(18, 29, 66, 0.9) 0%, rgba(28, 42, 95, 0.85) 100%), url('../assets/images/assesment.jpg');
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      padding: 32px 28px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+    .login-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--kai-blue, #1C2A5F);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .login-subtitle {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: #334155; }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; }
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: var(--kai-blue, #1C2A5F);
+      color: white;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s ease;
+    }
+    .btn-login:hover { background: #121d42; }
+    .btn-login:disabled { background: #94a3b8; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-title">LAPORAN DINAS AWAK KA</div>
+  <div class="login-subtitle">UPT CREW KA KELAS C KISARAN</div>
+
+  <form id="loginForm">
+    <div class="form-group">
+      <input type="text" id="nippInput" class="form-input" placeholder="Masukkan NIPP Anda" required autocomplete="off">
+    </div>
+    <button type="submit" class="btn-login" id="btnLogin">Masuk</button>
+  </form>
+</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById("btnLogin");
+    const nipp = document.getElementById("nippInput").value.trim();
+
+    if (!nipp) {
+      Swal.fire({
+        title: 'Peringatan',
+        text: 'Masukkan NIPP Anda terlebih dahulu!',
+        icon: 'warning',
+        confirmButtonColor: '#1C2A5F'
+      });
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = "Verifikasi NIPP...";
+
+    try {
+      const res = await fetch(`${API_URL}?action=loginPenyelia&nipp=${encodeURIComponent(nipp)}`);
+      const data = await res.json();
+
+      if (data.status === "success") {
+        // Simpan data penyelia ke LocalStorage
+        localStorage.setItem("loggedInUserNipp", data.user.nipp);
+        localStorage.setItem("loggedInUserNama", data.user.nama);
+        localStorage.setItem("loggedInUserJabatan", data.user.jabatan);
+
+        // SWEETALERT2 POP-UP SELAMAT DATANG BERHASIL
+        Swal.fire({
+          title: 'Login Berhasil!',
+          text: `Selamat datang, ${data.user.nama} (${data.user.jabatan})`,
+          icon: 'success',
+          timer: 1800,
+          showConfirmButton: false
+        }).then(() => {
+          window.location.href = "./assesment.html"; // Redirect ke halaman form
+        });
+      } else {
+        // SWEETALERT2 POP-UP NIPP TIDAK DITEMUKAN / ERROR
+        Swal.fire({
+          title: 'Akses Ditolak',
+          text: data.message || 'NIPP tidak terdaftar sebagai Penyelia!',
+          icon: 'error',
+          confirmButtonColor: '#1C2A5F'
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      // SWEETALERT2 POP-UP ERROR KONEKSI
+      Swal.fire({
+        title: 'Kesalahan Jaringan',
+        text: 'Gagal melakukan verifikasi ke server. Periksa koneksi internet Anda.',
+        icon: 'error',
+        confirmButtonColor: '#1C2A5F'
+      });
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Masuk Aplikasi";
+    }
+  });
+</script>
+</body>
+</html>
