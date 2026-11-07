@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TV Overview &bull; UPT Crew KA Kelas C Kisaran</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="./css/style.css">
+    
+    <style>
+        :root {
+            --tv-bg: #070d1b;
+            --tv-card-bg: #111c38;
+            --tv-border: rgba(255, 255, 255, 0.12);
+            --kai-orange: #ff6600;
+            --kai-blue: #003366;
+        }
+
+        body {
+            background-color: var(--tv-bg);
+            color: #f8fafc;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .tv-wrapper {
+            max-width: 1560px;
+            margin: 0 auto;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header Modern & Kontras Tinggi */
+        .tv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--tv-card-bg);
+            border: 1px solid var(--tv-border);
+            border-bottom: 5px solid var(--kai-orange);
+            padding: 24px 36px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .tv-brand-subtitle {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--kai-orange);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .tv-title {
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        /* Kotak Jam & Tanggal Kontras */
+        .tv-clock-box {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            background: rgba(7, 13, 27, 0.9);
+            padding: 12px 22px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .tv-time {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ff8533;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 1px;
+        }
+
+        .tv-date {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-top: 2px;
+        }
+
+        /* Grid Utama */
+        .tv-overview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 24px;
+        }
+
+        .tv-card-box {
+            background: var(--tv-card-bg);
+            border: 1px solid var(--tv-border);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tv-card-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid var(--tv-border);
+            padding-bottom: 14px;
+        }
+
+        .stats-mini-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        /* Bagian Embed O.241 Terintegrasi */
+        .tv-embed-container {
+            background: var(--tv-card-bg);
+            border: 1px solid var(--tv-border);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .embed-wrapper {
+            width: 100%;
+            height: 480px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--tv-border);
+            background: #ffffff;
+        }
+
+        .tv-footer-info {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #94a3b8;
+            font-weight: 600;
+            padding-top: 18px;
+            border-top: 1px solid var(--tv-border);
+            margin-top: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .tv-overview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="tv-wrapper">
+        <!-- Header Utama -->
+        <header class="tv-header">
+            <div>
+                <div class="tv-brand-subtitle">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</div>
+                <h1 class="tv-title"><i  style="color: var(--kai-orange); margin-right: 10px;"></i> DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
+            </div>
+            <div class="tv-clock-box">
+                <div id="live-time" class="tv-time">00:00:00</div>
+                <div id="live-date" class="tv-date">Memuat tanggal...</div>
+            </div>
+        </header>
+
+        <!-- Grid Statistik & Presensi -->
+        <div class="tv-overview-grid">
+            <!-- Kolom Kiri: Ringkasan Personel & Jabatan -->
+            <div class="tv-card-box">
+                <div>
+                    <h2 class="tv-card-title"><i  style="color: var(--kai-orange);"></i> Ringkasan Personel & Jabatan</h2>
+                    <div class="stats-mini-grid">
+                        <div class="stat-item highlight">
+                            <span class="stat-label">Total Personel</span>
+                            <div class="stat-number" id="val-asp">0</div>
+                            <span style="font-size: 0.75rem; color: #cbd5e1;">Pegawai Aktif</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Masinis Madya</span>
+                            <div class="stat-number" id="val-madya">0</div>
+                            <span style="font-size: 0.75rem; color: #94a3b8;">Pegawai</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Masinis Muda</span>
+                            <div class="stat-number" id="val-muda">0</div>
+                            <span style="font-size: 0.75rem; color: #94a3b8;">Pegawai</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Masinis Pertama</span>
+                            <div class="stat-number" id="val-pertama">0</div>
+                            <span style="font-size: 0.75rem; color: #94a3b8;">Pegawai</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 24px; background: rgba(0, 51, 102, 0.35); padding: 18px; border-radius: 8px; border-left: 4px solid var(--kai-orange); border: 1px solid rgba(255,255,255,0.05);">
+                    <p style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.6; margin: 0;">
+                        <i  style="color: var(--kai-orange); margin-right: 6px;"></i> 
+                        Unit Pelaksana Teknis (UPT) Crew KA Kelas C Kisaran berkomitmen penuh menjaga keandalan, keselamatan, dan ketepatan dinasan Awak Sarana Perkeretaapian di wilayah Divre I Sumatera Utara.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Laporan Presensi Hari Ini -->
+            <div class="tv-card-box">
+                <div>
+                    <h2 class="tv-card-title"><i  style="color: var(--kai-orange);"></i> Laporan Presensi Hari Ini</h2>
+                    
+                    <div class="widgets-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
+                        <!-- Hadir -->
+                        <div class="widget-card widget-hadir" style="min-height: auto; padding: 14px 16px;">
+                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Hadir</span></div>
+                            <div class="widget-body">
+                                <span class="widget-label" style="font-size: 0.75rem;">ASP HADIR HARI INI</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-hadir" style="font-size: 1.5rem;">0</span>
+                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cuti Tahunan -->
+                        <div class="widget-card widget-cuti" style="min-height: auto; padding: 14px 16px;">
+                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Cuti</span></div>
+                            <div class="widget-body">
+                                <span class="widget-label" style="font-size: 0.75rem;">CUTI TAHUNAN (CT)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-cuti" style="font-size: 1.5rem;">0</span>
+                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cuti Sakit -->
+                        <div class="widget-card widget-sakit" style="min-height: auto; padding: 14px 16px;">
+                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Sakit</span></div>
+                            <div class="widget-body">
+                                <span class="widget-label" style="font-size: 0.75rem;">CUTI SAKIT (CSK)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-sakit" style="font-size: 1.5rem;">0</span>
+                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Izin / CP -->
+                        <div class="widget-card widget-penting" style="min-height: auto; padding: 14px 16px;">
+                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Izin / CP</span></div>
+                            <div class="widget-body">
+                                <span class="widget-label" style="font-size: 0.75rem;">CUTI PENTING (ITMB/CP)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-itmb" style="font-size: 1.5rem;">0</span>
+                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TMS -->
+                        <div class="widget-card widget-tms" style="min-height: auto; padding: 14px 16px;">
+                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">TMS</span></div>
+                            <div class="widget-body">
+                                <span class="widget-label" style="font-size: 0.75rem;">TIDAK MEMENUHI SYARAT</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-tms" style="font-size: 1.5rem;">0</span>
+                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mangkir -->
+                        <div class="widget-card widget-mangkir" style="min-height: auto; padding: 14px 16px;">
+                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Mangkir</span></div>
+                            <div class="widget-body">
+                                <span class="widget-label" style="font-size: 0.75rem;">MANGKIR / TANPA KET.</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-mangkir" style="font-size: 1.5rem;">0</span>
+                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kartu Tambahan: Monitoring Data O.241 -->
+<!-- Kartu Tambahan: Monitoring Data O.241 (Tanpa Error & Full Tampil) -->
+        <div class="tv-embed-container" style="width: 100%;">
+            <h2 class="tv-card-title"><i  style="color: var(--kai-orange);"></i> Jadwal Dinasan Awak KA</h2>
+            <div class="embed-wrapper" style="width: 100%; height: 850px; overflow: hidden; background: #ffffff; position: relative;">
+                <iframe src="https://docs.google.com/spreadsheets/d/17NCZGMupZmGeVJywA5DF-3TI2vMtRr8c/htmlembed?widget=true&headers=false&chrome=false" 
+                        style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+<!-- Footer Info dengan Tombol Homepage -->
+        <div class="tv-footer-info" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
+            <span style="color: #94a3b8; font-size: 0.9rem;">
+                Data disinkronkan secara otomatis dari Sistem Database UPT Crew KA Kisaran &bull; Layar Monitoring Otomatis
+            </span>
+            <a href="./index.html" style="background: rgba(255, 102, 0, 0.15); border: 1px solid var(--kai-orange); color: var(--kai-orange); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease;">
+                <i ></i> Homepage
+            </a>
+        </div>
+    </div>
+
+    <!-- Skrip Utama -->
+    <script src="./js/main.js"></script>
+    <script>
+        // Auto-scroll halus untuk layar TV monitoring panjang
+        function initAutoScroll() {
+            let scrollDirection = 1;
+            let scrollSpeed = 1;
+            let delay = 40;
+
+            setInterval(() => {
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                if (maxScroll <= 0) return;
+
+                window.scrollBy(0, scrollSpeed * scrollDirection);
+
+                if (window.scrollY >= maxScroll - 2) {
+                    setTimeout(() => { scrollDirection = -1; }, 4000);
+                } else if (window.scrollY <= 0) {
+                    setTimeout(() => { scrollDirection = 1; }, 3000);
+                }
+            }, delay);
+        }
+
+        setTimeout(initAutoScroll, 4000);
+
+        // Penampil Waktu & Tanggal Real-Time yang Kontras
+        function updateLiveClock() {
+            const now = new Date();
+            const dateEl = document.getElementById('live-date');
+            const timeEl = document.getElementById('live-time');
+            
+            if(dateEl) {
+                dateEl.innerText = now.toLocaleDateString('id-ID', { 
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                });
+            }
+            if(timeEl) {
+                timeEl.innerText = now.toLocaleTimeString('id-ID');
+            }
+        }
+        setInterval(updateLiveClock, 1000);
+        updateLiveClock();
+    </script>
+</body>
+</html>
