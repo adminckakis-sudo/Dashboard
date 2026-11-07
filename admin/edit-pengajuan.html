@@ -31,9 +31,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Eksport auth ke window agar bisa dipanggil saat mengambil ID token
         window.auth = auth;
-
         setPersistence(auth, browserLocalPersistence);
 
         const TIMEOUT_LIMIT = 15 * 60 * 1000;
@@ -468,7 +466,6 @@
             { key: 'terimaSmartCard', chk: 'chkTerimaSmartCard', date: 'dateTerimaSmartCard', container: 'containerTerimaSmartCard' }
         ];
 
-        // FUNGSI UTAMA PENGIRIMAN DATA LOGGER KE SPREADSHEET (SHEET DATALOGGER)
         async function sendLogToSpreadsheet(nipp, nama, actionText) {
             try {
                 const token = window.auth?.currentUser ? await window.auth.currentUser.getIdToken() : "";
@@ -491,7 +488,6 @@
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify(payload)
                 });
-                console.log("Log aktivitas berhasil dikirim ke Spreadsheet.");
             } catch (error) {
                 console.error("Gagal mengirim log ke Spreadsheet:", error);
             }
@@ -510,6 +506,7 @@
                     
                     var namaVal = (c[1] && c[1].v !== null && c[1].v !== undefined) ? String(c[1].v).trim() : '';
                     var nippVal = (c[2] && c[2].v !== null && c[2].v !== undefined) ? String(c[2].v).trim() : '';
+                    var jabatanVal = (c[3] && c[3].v !== null && c[3].v !== undefined) ? String(c[3].v).trim() : '';
                     var tingkatVal = (c[4] && c[4].v !== null && c[4].v !== undefined) ? String(c[4].v).trim() : '';
                     
                     var expVal = (c[5] && c[5].v !== null && c[5].v !== undefined) ? c[5].v : null;
@@ -518,6 +515,7 @@
                     return {
                         nama: namaVal,
                         nipp: nippVal,
+                        jabatan: jabatanVal,
                         tingkat: tingkatVal,
                         expDateObj: expDateObj,
                         expDateStr: (c[5] && c[5].f) ? c[5].f : (expDateObj ? formatDateISOToVerbose(expDateObj) : '-')
@@ -680,7 +678,6 @@
                 cancelButtonText: 'Batal'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    // CATAT LOG KE SPREADSHEET
                     await sendLogToSpreadsheet(item.nipp, item.nama, 'Menghapus Usulan Pengajuan Sertifikasi');
 
                     pengajuanList.splice(index, 1);
@@ -833,6 +830,8 @@
             var addNippAlert = document.getElementById('addNippAlert');
             var btnSubmitAdd = document.getElementById('btnSubmitAddPengajuan');
 
+            var matchedPegawai = null;
+
             addNippInput?.addEventListener('input', function() {
                 var typedNipp = this.value.trim();
                 addNippAlert.style.display = 'none';
@@ -841,16 +840,17 @@
                     addNamaInput.value = '';
                     addTingkatSelect.value = 'PERTAMA';
                     btnSubmitAdd.disabled = true;
+                    matchedPegawai = null;
                     return;
                 }
 
-                var matched = rawData.find(function(item) { 
+                matchedPegawai = rawData.find(function(item) { 
                     return String(item.nipp).replace(/\s+/g, '') === String(typedNipp).replace(/\s+/g, ''); 
                 });
 
-                if (matched) {
-                    addNamaInput.value = matched.nama;
-                    var valTingkat = matched.tingkat ? matched.tingkat.toUpperCase() : 'PERTAMA';
+                if (matchedPegawai) {
+                    addNamaInput.value = matchedPegawai.nama;
+                    var valTingkat = matchedPegawai.tingkat ? matchedPegawai.tingkat.toUpperCase() : 'PERTAMA';
                     if (['PERTAMA', 'MUDA', 'MADYA'].includes(valTingkat)) {
                         addTingkatSelect.value = valTingkat;
                     } else {
@@ -866,13 +866,14 @@
                 }
             });
 
-            // SIMPAN PENGAJUAN BARU + CATAT DATA LOGGER KE SPREADSHEET
+            // SIMPAN PENGAJUAN BARU + SINKRONISASI KE SHEET 'Progress Pengajuan'
             document.getElementById('formTambahPengajuan')?.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
                 var newEntry = {
                     nama: addNamaInput.value,
                     nipp: addNippInput.value.trim(),
+                    jabatan: matchedPegawai ? matchedPegawai.jabatan : "-",
                     tingkat: addTingkatSelect.value,
                     refresh: false,
                     diajukan: false,
@@ -885,12 +886,38 @@
                 pengajuanList.push(newEntry);
                 localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
 
-                // CATAT LOG KE SPREADSHEET
                 await sendLogToSpreadsheet(newEntry.nipp, newEntry.nama, 'Menambahkan Usulan Pengajuan Sertifikasi Baru (' + newEntry.tingkat + ')');
+
+                try {
+                    const idToken = window.auth?.currentUser ? await window.auth.currentUser.getIdToken(true) : "";
+                    await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({
+                            authToken: idToken,
+                            action: "saveProgress",
+                            jenis: "BARU",
+                            nipp: newEntry.nipp,
+                            nama: newEntry.nama,
+                            jabatan: newEntry.jabatan,
+                            tingkat: newEntry.tingkat,
+                            expLama: "-",
+                            refresh: false,
+                            diajukan: false,
+                            disetujuiMT: false,
+                            ujiSertifikasi: false,
+                            hasil: "PROSES",
+                            terimaSmartCard: false,
+                            expBaru: ""
+                        })
+                    });
+                } catch (err) {
+                    console.error("Gagal sinkronisasi tambah data ke Spreadsheet:", err);
+                }
 
                 Swal.fire({
                     title: 'Berhasil!',
-                    text: 'Pengajuan baru berhasil disimpan dan dicatat di Data Logger.',
+                    text: 'Pengajuan baru berhasil disimpan dan disinkronkan ke Spreadsheet.',
                     icon: 'success',
                     confirmButtonColor: '#f06400'
                 });
@@ -916,7 +943,7 @@
                 }
             });
 
-            // UPDATE PROGRESS + CATAT DATA LOGGER KE SPREADSHEET
+            // UPDATE PROGRESS + SINKRONISASI KE SHEET 'Progress Pengajuan'
             var formUpdate = document.getElementById('formUpdateProgress');
             if (formUpdate) {
                 formUpdate.addEventListener('submit', async function(e) {
@@ -962,54 +989,47 @@
                                 var diffTime = newExpDateObj.getTime() - today.getTime();
                                 item.diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
                             }
-
-                            const idToken = await window.auth.currentUser.getIdToken(true);
-
-                            const res = await fetch(WEB_APP_URL, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'text/plain' },
-                                body: JSON.stringify({
-                                    authToken: idToken,
-                                    actionType: activeTab === 'BARU' ? "UPDATE_PROGRESS" : "UPDATE_PERPANJANGAN",
-                                    nipp: item.nipp,
-                                    nama: item.nama,
-                                    tingkat: item.tingkat,
-                                    expDate: expDateVal
-                                })
-                            });
-
-                            const responseData = await res.json();
-
-                            if (responseData.result === "success") {
-                                // CATAT LOG KE SPREADSHEET
-                                await sendLogToSpreadsheet(item.nipp, item.nama, 'Menyelesaikan Seluruh Tahapan ' + activeTab + ' Sertifikasi (Exp: ' + expDateVal + ')');
-
-                                Swal.fire({
-                                    title: 'Proses Selesai!',
-                                    text: 'Masa berlaku terbaru telah di-update dan data berhasil disinkronkan ke Google Spreadsheet.',
-                                    icon: 'success',
-                                    confirmButtonColor: '#f06400'
-                                });
-                            } else {
-                                throw new Error(responseData.message || "Gagal sinkronisasi data.");
-                            }
-                        } else {
-                            // CATAT LOG KE SPREADSHEET UNTUK PROGRESS BERJALAN
-                            await sendLogToSpreadsheet(item.nipp, item.nama, 'Memperbarui Progress ' + activeTab + ' Sertifikasi');
-
-                            Swal.fire({
-                                title: 'Progress Diperbarui!',
-                                text: 'Perubahan disimpan dan riwayat telah dicatat ke Data Logger.',
-                                icon: 'info',
-                                confirmButtonColor: '#f06400'
-                            });
                         }
+
+                        const idToken = window.auth?.currentUser ? await window.auth.currentUser.getIdToken(true) : "";
+
+                        // Kirim data update langsung ke backend Google Apps Script (sheet Progress Pengajuan)
+                        await fetch(WEB_APP_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain' },
+                            body: JSON.stringify({
+                                authToken: idToken,
+                                action: "saveProgress",
+                                jenis: activeTab,
+                                nipp: item.nipp,
+                                nama: item.nama,
+                                jabatan: item.jabatan || "-",
+                                tingkat: item.tingkat,
+                                expLama: item.expDateStr || "-",
+                                refresh: item.refresh,
+                                diajukan: item.diajukan,
+                                disetujuiMT: item.disetujuiMT,
+                                ujiSertifikasi: item.ujiSertifikasi,
+                                hasil: (item.disetujuiMT && item.ujiSertifikasi) ? "LULUS" : "PROSES",
+                                terimaSmartCard: item.terimaSmartCard,
+                                expBaru: expDateVal || item.smartCardExpDate || ""
+                            })
+                        });
+
+                        await sendLogToSpreadsheet(item.nipp, item.nama, 'Memperbarui Progress ' + activeTab + ' Sertifikasi');
 
                         if (activeTab === 'BARU') {
                             localStorage.setItem('pengajuanBaruList', JSON.stringify(pengajuanList));
                         } else {
                             localStorage.setItem('perpanjanganList', JSON.stringify(perpanjanganList));
                         }
+
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: 'Progress tahapan berhasil disimpan dan diseragamkan ke Spreadsheet.',
+                            icon: 'success',
+                            confirmButtonColor: '#f06400'
+                        });
 
                         closeModal();
                         loadData();
