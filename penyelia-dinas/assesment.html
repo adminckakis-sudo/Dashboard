@@ -253,7 +253,8 @@
         <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
       </div>
 
-      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 12px;">
+        <!-- KONTAINER PROFIL PENYELIA -->
         <div class="topbar-profile-container">
           <div class="topbar-profile-info">
             <span id="penyeliaNama" class="topbar-penyelia-nama">--</span>
@@ -261,8 +262,19 @@
             <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
           </div>
           <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto" class="topbar-penyelia-avatar">
-          <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
         </div>
+
+        <!-- TOMBOL EDIT DATA (POSISI SESUAI TANDA) -->
+        <a href="./edit.html" style="background: rgba(240, 100, 0, 0.25); color: #ff9d5c; border: 1px solid rgba(240, 100, 0, 0.5); padding: 7px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: all 0.2s;" onmouseover="this.style.background='rgba(240,100,0,0.8)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(240,100,0,0.25)'; this.style.color='#ff9d5c';" title="Buka Halaman Edit Data">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Edit Data
+        </a>
+
+        <!-- TOMBOL KELUAR -->
+        <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
       </div>
     </div>
   </header>
