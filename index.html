@@ -232,6 +232,26 @@
         .login-item:hover {
             background-color: #d95700;
         }
+        .btn-tv-monitor {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 11px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-tv-monitor:hover {
+            background: var(--kai-orange, #f06400);
+            border-color: var(--kai-orange, #f06400);
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -263,6 +283,10 @@
                 </button>
                 <div id="user-popup" class="user-popup"></div>
             </div>
+            <a href="./tv-dashboard.html" class="btn-tv-monitor" title="Buka TV Overview Monitoring">
+                    <i class="fa-solid fa-tv" style="color: #ffffff;"></i>
+                    
+                </a>
         </div>
     </div>
 </header>
