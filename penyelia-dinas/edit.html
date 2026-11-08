@@ -55,7 +55,7 @@
 
     /* LAYOUT UTAMA */
     .form-page-container {
-      max-width: 1250px;
+      max-width: 1350px;
       margin: 24px auto;
       padding: 0 16px;
     }
@@ -123,19 +123,33 @@
     }
     .btn-load:hover { background-color: #121d42; }
 
-    /* KARTU & TABEL DATA */
+    /* KARTU & TABEL GAYA SPREADSHEET */
     .table-card {
-      background-color: rgba(255, 255, 255, 0.98);
-      border-radius: 12px;
-      padding: 24px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 16px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    }
+
+    .spreadsheet-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.78rem;
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 8px;
     }
 
     .table-responsive {
       width: 100%;
       overflow-x: auto;
-      border-radius: 8px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #cbd5e1;
+      background-color: #f8fafc;
+      max-height: 65vh;
+      overflow-y: auto;
     }
 
     .edit-table {
@@ -143,64 +157,75 @@
       border-collapse: collapse;
       font-size: 0.8rem;
       white-space: nowrap;
+      background-color: #ffffff;
     }
+    
+    /* Header mirip Google Sheets / Excel (abu-abu terang dengan border tegas) */
     .edit-table th {
-      background-color: #1C2A5F;
-      color: white;
-      padding: 12px 10px;
+      background-color: #f1f5f9;
+      color: #334155;
+      padding: 10px 8px;
       text-align: center;
       font-weight: 700;
-      letter-spacing: 0.5px;
-      border-bottom: 2px solid #0f172a;
+      border: 1px solid #cbd5e1;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
+
     .edit-table td {
-      border-bottom: 1px solid #e2e8f0;
-      border-right: 1px solid #f1f5f9;
-      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      padding: 4px;
       text-align: center;
       vertical-align: middle;
       background-color: #ffffff;
     }
+    
     .edit-table tr:hover td {
       background-color: #f8fafc;
     }
 
+    /* Sel Input mirip Spreadsheet */
     .edit-input {
       width: 100%;
-      min-width: 120px;
-      padding: 7px 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      min-width: 130px;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 0px;
       font-size: 0.8rem;
       font-family: inherit;
       box-sizing: border-box;
-      background-color: #f8fafc;
-      transition: all 0.2s;
+      background-color: transparent;
+      transition: all 0.1s;
     }
+    
     .edit-input:focus {
       background-color: #ffffff;
-      border-color: var(--kai-orange, #F06400);
+      border: 2px solid #1a73e8 !important; /* Biru ala Google Sheets */
       outline: none;
-      box-shadow: 0 0 0 3px rgba(240, 100, 0, 0.12);
+      box-shadow: 0 1px 3px rgba(26, 115, 232, 0.3);
+      z-index: 5;
+      position: relative;
     }
 
     .action-cell {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       justify-content: center;
       align-items: center;
+      padding: 4px 8px;
     }
 
     .btn-action-row {
-      padding: 7px 12px;
+      padding: 6px 10px;
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       font-weight: 700;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       transition: opacity 0.2s;
     }
     .btn-action-row:hover { opacity: 0.85; }
@@ -263,7 +288,6 @@
             <span class="sidebar-text">Laporan Dinas</span>
           </a>
 
-
           <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -296,8 +320,12 @@
           <button type="button" class="btn-load" onclick="loadEditData()">Tampilkan Data</button>
         </div>
 
-        <!-- TABEL DATA INTERAKTIF -->
+        <!-- TABEL DATA GAYA SPREADSHEET -->
         <div class="table-card">
+          <div class="spreadsheet-info-bar">
+            <span>💡 <strong>Tips:</strong> Klik sel untuk mengedit langsung. Tekan tombol <kbd style="background:#e2e8f0; padding:2px 5px; border-radius:3px;">Enter</kbd> atau navigasi panah keyboard untuk berpindah antar sel. Jangan lupa klik <strong>Simpan</strong> pada baris terkait setelah selesai mengubah.</span>
+            <span id="rowCountInfo">Total Baris: 0</span>
+          </div>
           <div class="table-responsive">
             <table class="edit-table" id="editTable">
               <thead>
@@ -358,6 +386,7 @@
 
       const headerRow = document.getElementById("tableHeaderRow");
       const tbody = document.getElementById("tableBodyRow");
+      document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
       tbody.innerHTML = `<tr><td colspan="10" style="padding: 30px; color: #64748b;">Memuat data tanggal ${tanggal}...</td></tr>`;
 
       try {
@@ -366,6 +395,8 @@
 
         if (result.status === "success") {
           const rows = result.data || [];
+          document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
+          
           if (rows.length === 0) {
             headerRow.innerHTML = `<th>Informasi</th>`;
             tbody.innerHTML = `<tr><td colspan="6" style="padding: 30px; color: #64748b; font-weight: 500;">Tidak ada data laporan ditemukan pada tanggal tersebut.</td></tr>`;
@@ -375,33 +406,66 @@
           const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
           let thHtml = "";
           keys.forEach(k => { thHtml += `<th>${k}</th>`; });
-          thHtml += `<th style="width: 140px;">Aksi</th>`;
+          thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
           headerRow.innerHTML = thHtml;
 
           let trHtml = "";
-          rows.forEach((row) => {
+          rows.forEach((row, rowIndex) => {
             trHtml += `<tr data-rowindex="${row._rowIndex}">`;
-            keys.forEach(k => {
+            keys.forEach((k, colIndex) => {
               const val = row[k] !== undefined ? row[k] : '';
-              const isReadOnly = (k.toLowerCase() === 'no' || k.toLowerCase() === 'tanggal') ? 'readonly style="background:#e2e8f0; color:#475569; font-weight:bold; cursor:not-allowed;"' : '';
-              trHtml += `<td><input type="text" class="edit-input" data-key="${k}" value="${val}" ${isReadOnly}></td>`;
+              const isReadOnly = (k.toLowerCase() === 'no' || k.toLowerCase() === 'tanggal') ? 'readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;"' : '';
+              trHtml += `<td><input type="text" class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}" value="${val}" ${isReadOnly}></td>`;
             });
             trHtml += `
               <td>
                 <div class="action-cell">
-                  <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">Simpan</button>
-                  <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">Hapus</button>
+                  <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
+                  <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
                 </div>
               </td>
             `;
             trHtml += `</tr>`;
           });
           tbody.innerHTML = trHtml;
+          initSpreadsheetKeyboardNav();
         }
       } catch (err) {
         console.error(err);
+        document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
         Swal.fire("Error", "Gagal memuat data dari server.", "error");
       }
+    }
+
+    // Fungsi Navigasi Keyboard ala Spreadsheet (Panah Atas/Bawah/Kiri/Kanan & Enter)
+    function initSpreadsheetKeyboardNav() {
+      const inputs = document.querySelectorAll(".edit-input:not([readonly])");
+      inputs.forEach(input => {
+        input.addEventListener("keydown", function(e) {
+          const r = parseInt(this.getAttribute("data-row"));
+          const c = parseInt(this.getAttribute("data-col"));
+          
+          let targetInput = null;
+          if (e.key === "ArrowDown" || e.key === "Enter") {
+            e.preventDefault();
+            targetInput = document.querySelector(`.edit-input[data-row="${r + 1}"][data-col="${c}"]`);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            targetInput = document.querySelector(`.edit-input[data-row="${r - 1}"][data-col="${c}"]`);
+          } else if (e.key === "ArrowRight") {
+            // Pindah kanan jika kursor di akhir teks atau input pendek
+            targetInput = document.querySelector(`.edit-input[data-row="${r}"][data-col="${c + 1}"]`);
+          } else if (e.key === "ArrowLeft") {
+            // Pindah kiri
+            targetInput = document.querySelector(`.edit-input[data-row="${r}"][data-col="${c - 1}"]`);
+          }
+
+          if (targetInput) {
+            targetInput.focus();
+            targetInput.select();
+          }
+        });
+      });
     }
 
     async function saveRow(btn) {
@@ -414,7 +478,9 @@
         rowData[input.getAttribute("data-key")] = input.value;
       });
 
-      btn.disabled = true; btn.textContent = "Proses...";
+      const originalText = btn.innerHTML;
+      btn.disabled = true; 
+      btn.innerHTML = "⏳ Menyimpan...";
 
       try {
         const res = await fetch(API_URL, {
@@ -435,7 +501,8 @@
       } catch (err) {
         Swal.fire('Error', 'Gagal terhubung ke server.', 'error');
       } finally {
-        btn.disabled = false; btn.textContent = "Simpan";
+        btn.disabled = false; 
+        btn.innerHTML = originalText;
       }
     }
 
