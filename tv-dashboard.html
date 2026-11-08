@@ -8,108 +8,109 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="./css/style.css">
     
     <style>
         :root {
-            --tv-bg: #070d1b;
-            --tv-card-bg: #111c38;
-            --tv-border: rgba(255, 255, 255, 0.12);
-            --kai-orange: #ff6600;
-            --kai-blue: #003366;
+            --bg-deep: #030712;
+            --card-bg: #0b132b;
+            --border-line: rgba(255, 255, 255, 0.08);
+            --accent-orange: #ff6600;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            background-color: var(--tv-bg);
-            color: #f8fafc;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
-            margin: 0;
-            padding: 0;
             overflow-x: hidden;
             overflow-y: auto;
         }
 
         .tv-wrapper {
-            max-width: 1560px;
+            max-width: 1750px;
             margin: 0 auto;
-            padding: 28px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
 
-        /* Header Modern & Kontras Tinggi */
+        /* HEADER UTAMA */
         .tv-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--tv-card-bg);
-            border: 1px solid var(--tv-border);
-            border-bottom: 5px solid var(--kai-orange);
-            padding: 24px 36px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-line);
+            border-bottom: 4px solid var(--accent-orange);
+            padding: 20px 32px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
         .tv-brand-subtitle {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 700;
-            color: var(--kai-orange);
+            color: var(--accent-orange);
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .tv-title {
-            font-size: 2.1rem;
+            font-size: 1.9rem;
             font-weight: 900;
             color: #ffffff;
-            margin: 0;
             letter-spacing: -0.5px;
         }
 
-        /* Kotak Jam & Tanggal Kontras */
+        /* CLOCK BOX */
         .tv-clock-box {
             text-align: right;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            background: rgba(7, 13, 27, 0.9);
-            padding: 12px 22px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+            background: rgba(3, 7, 18, 0.9);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .tv-time {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 900;
             color: #ff8533;
             line-height: 1.1;
             font-variant-numeric: tabular-nums;
-            letter-spacing: 1px;
         }
 
         .tv-date {
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: #e2e8f0;
+            color: #cbd5e1;
             margin-top: 2px;
         }
 
-        /* Grid Utama */
-        .tv-overview-grid {
+        /* GRID UTAMA */
+        .tv-top-grid {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 24px;
+            grid-template-columns: 1.1fr 1.3fr 1fr;
+            gap: 20px;
         }
 
         .tv-card-box {
-            background: var(--tv-card-bg);
-            border: 1px solid var(--tv-border);
+            background: var(--card-bg);
+            border: 1px solid var(--border-line);
             border-radius: 12px;
-            padding: 30px;
+            padding: 24px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
@@ -117,54 +118,267 @@
         }
 
         .tv-card-title {
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 22px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-line);
+            padding-bottom: 12px;
+        }
+
+        .tv-card-title span {
             display: flex;
             align-items: center;
             gap: 12px;
-            border-bottom: 2px solid var(--tv-border);
-            padding-bottom: 14px;
         }
 
+        .card-link-arrow {
+            font-size: 0.85rem;
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: opacity 0.2s;
+        }
+
+        .card-link-arrow:hover {
+            opacity: 0.8;
+        }
+
+        /* MINI STATS GRID */
         .stats-mini-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            gap: 12px;
         }
 
-        /* Bagian Embed O.241 Terintegrasi */
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-line);
+            padding: 14px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .stat-box.highlight {
+            background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), rgba(11, 19, 43, 0.8));
+            border-color: rgba(255, 102, 0, 0.4);
+        }
+
+        .stat-label-custom {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-number-custom {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .stat-sub-text {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+            display: block;
+        }
+
+        /* WIDGETS PRESENSI GRID */
+        .custom-widgets-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .custom-widget-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-line);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .custom-widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .custom-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-hadir { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-cuti { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+        .badge-sakit { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-izin { background: rgba(139, 92, 246, 0.2); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.4); }
+        .badge-tms { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+        .badge-mangkir { background: rgba(220, 38, 38, 0.2); color: #fca5a5; border: 1px solid rgba(220, 38, 38, 0.4); }
+
+        .custom-widget-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+
+        .custom-widget-val-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .custom-widget-val {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .custom-widget-unit {
+            font-size: 0.7rem;
+            color: var(--text-sub);
+        }
+
+        /* PEGAWAI TERBAIK CARD */
+        .eotm-card-tv {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-line);
+            border-radius: 10px;
+            padding: 20px;
+            height: 100%;
+            box-sizing: border-box;
+            justify-content: center;
+        }
+
+        .eotm-badge-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 14px;
+        }
+
+        .eotm-avatar {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--accent-orange);
+            box-shadow: 0 4px 15px rgba(255, 102, 0, 0.3);
+        }
+
+        .eotm-trophy-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--accent-orange);
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--card-bg);
+            font-size: 0.9rem;
+        }
+
+        .eotm-tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--accent-orange);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .eotm-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+        }
+
+        .eotm-role {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* EMBED O.241 CONTAINER */
         .tv-embed-container {
-            background: var(--tv-card-bg);
-            border: 1px solid var(--tv-border);
+            background: var(--card-bg);
+            border: 1px solid var(--border-line);
             border-radius: 12px;
-            padding: 30px;
+            padding: 24px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .embed-wrapper {
             width: 100%;
-            height: 480px;
+            height: 750px;
             border-radius: 8px;
             overflow: hidden;
-            border: 1px solid var(--tv-border);
+            border: 1px solid var(--border-line);
             background: #ffffff;
         }
 
+        /* FOOTER */
         .tv-footer-info {
-            text-align: center;
-            font-size: 0.95rem;
-            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-line);
+            padding: 16px 28px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: var(--text-sub);
             font-weight: 600;
-            padding-top: 18px;
-            border-top: 1px solid var(--tv-border);
-            margin-top: 10px;
-            letter-spacing: 0.5px;
         }
 
-        @media screen and (max-width: 1024px) {
-            .tv-overview-grid {
+        .tv-home-btn {
+            background: rgba(255, 102, 0, 0.15);
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tv-home-btn:hover {
+            background: var(--accent-orange);
+            color: #ffffff;
+        }
+
+        @media screen and (max-width: 1200px) {
+            .tv-top-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -177,7 +391,7 @@
         <header class="tv-header">
             <div>
                 <div class="tv-brand-subtitle">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</div>
-                <h1 class="tv-title"><i  style="color: var(--kai-orange); margin-right: 10px;"></i> DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
+                <h1 class="tv-title"><i  style="color: var(--accent-orange); margin-right: 10px;"></i> DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
             </div>
             <div class="tv-clock-box">
                 <div id="live-time" class="tv-time">00:00:00</div>
@@ -185,149 +399,176 @@
             </div>
         </header>
 
-        <!-- Grid Statistik & Presensi -->
-        <div class="tv-overview-grid">
-            <!-- Kolom Kiri: Ringkasan Personel & Jabatan -->
+        <!-- Grid Atas (3 Kolom Seimbang) -->
+        <div class="tv-top-grid">
+            <!-- Kolom 1: Ringkasan Personel & Jabatan -->
             <div class="tv-card-box">
                 <div>
-                    <h2 class="tv-card-title"><i  style="color: var(--kai-orange);"></i> Ringkasan Personel & Jabatan</h2>
+                    <h2 class="tv-card-title">
+                        <span><i  style="color: var(--accent-orange);"></i> Ringkasan Personel</span>
+                        <a href="./personel/personel.html" class="card-link-arrow">Selengkapnya &rarr;</a>
+                    </h2>
                     <div class="stats-mini-grid">
-                        <div class="stat-item highlight">
-                            <span class="stat-label">Total Personel</span>
-                            <div class="stat-number" id="val-asp">0</div>
-                            <span style="font-size: 0.75rem; color: #cbd5e1;">Pegawai Aktif</span>
+                        <div class="stat-box highlight">
+                            <span class="stat-label-custom">Total Personel</span>
+                            <div class="stat-number-custom" id="val-asp">0</div>
+                            <span class="stat-sub-text">Pegawai Aktif</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Masinis Madya</span>
-                            <div class="stat-number" id="val-madya">0</div>
-                            <span style="font-size: 0.75rem; color: #94a3b8;">Pegawai</span>
+                        <div class="stat-box">
+                            <span class="stat-label-custom">Masinis Madya</span>
+                            <div class="stat-number-custom" id="val-madya">0</div>
+                            <span class="stat-sub-text">Pegawai</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Masinis Muda</span>
-                            <div class="stat-number" id="val-muda">0</div>
-                            <span style="font-size: 0.75rem; color: #94a3b8;">Pegawai</span>
+                        <div class="stat-box">
+                            <span class="stat-label-custom">Masinis Muda</span>
+                            <div class="stat-number-custom" id="val-muda">0</div>
+                            <span class="stat-sub-text">Pegawai</span>
                         </div>
-                        <div class="stat-item">
-                            <span class="stat-label">Masinis Pertama</span>
-                            <div class="stat-number" id="val-pertama">0</div>
-                            <span style="font-size: 0.75rem; color: #94a3b8;">Pegawai</span>
+                        <div class="stat-box">
+                            <span class="stat-label-custom">Masinis Pertama</span>
+                            <div class="stat-number-custom" id="val-pertama">0</div>
+                            <span class="stat-sub-text">Pegawai</span>
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 24px; background: rgba(0, 51, 102, 0.35); padding: 18px; border-radius: 8px; border-left: 4px solid var(--kai-orange); border: 1px solid rgba(255,255,255,0.05);">
-                    <p style="font-size: 0.92rem; color: #cbd5e1; line-height: 1.6; margin: 0;">
-                        <i  style="color: var(--kai-orange); margin-right: 6px;"></i> 
-                        Unit Pelaksana Teknis (UPT) Crew KA Kelas C Kisaran berkomitmen penuh menjaga keandalan, keselamatan, dan ketepatan dinasan Awak Sarana Perkeretaapian di wilayah Divre I Sumatera Utara.
-                    </p>
+            </div>
+
+            <!-- Kolom 2: Laporan Presensi Hari Ini -->
+            <div class="tv-card-box">
+                <div>
+                    <h2 class="tv-card-title">
+                        <span><i style="color: var(--accent-orange);"></i> Laporan Presensi</span>
+                        <a href="./cuti/dashboard-cuti.html" class="card-link-arrow">Selengkapnya &rarr;</a>
+                    </h2>
+                    <div class="custom-widgets-grid">
+                        <!-- Hadir -->
+                        <div class="custom-widget-card">
+                            <div class="custom-widget-header"><span class="custom-badge badge-hadir">Hadir</span></div>
+                            <div>
+                                <span class="custom-widget-label">ASP HADIR</span>
+                                <div class="custom-widget-val-row">
+                                    <span class="custom-widget-val" id="val-hadir">0</span>
+                                    <span class="custom-widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Cuti Tahunan -->
+                        <div class="custom-widget-card">
+                            <div class="custom-widget-header"><span class="custom-badge badge-cuti">Cuti</span></div>
+                            <div>
+                                <span class="custom-widget-label">CUTI TAHUNAN</span>
+                                <div class="custom-widget-val-row">
+                                    <span class="custom-widget-val" id="val-cuti">0</span>
+                                    <span class="custom-widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Cuti Sakit -->
+                        <div class="custom-widget-card">
+                            <div class="custom-widget-header"><span class="custom-badge badge-sakit">Sakit</span></div>
+                            <div>
+                                <span class="custom-widget-label">CUTI SAKIT</span>
+                                <div class="custom-widget-val-row">
+                                    <span class="custom-widget-val" id="val-sakit">0</span>
+                                    <span class="custom-widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Izin / CP -->
+                        <div class="custom-widget-card">
+                            <div class="custom-widget-header"><span class="custom-badge badge-izin">Izin / CP</span></div>
+                            <div>
+                                <span class="custom-widget-label">CUTI PENTING</span>
+                                <div class="custom-widget-val-row">
+                                    <span class="custom-widget-val" id="val-itmb">0</span>
+                                    <span class="custom-widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- TMS -->
+                        <div class="custom-widget-card">
+                            <div class="custom-widget-header"><span class="custom-badge badge-tms">TMS</span></div>
+                            <div>
+                                <span class="custom-widget-label">TIDAK MEMENUHI</span>
+                                <div class="custom-widget-val-row">
+                                    <span class="custom-widget-val" id="val-tms">0</span>
+                                    <span class="custom-widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Mangkir -->
+                        <div class="custom-widget-card">
+                            <div class="custom-widget-header"><span class="custom-badge badge-mangkir">Mangkir</span></div>
+                            <div>
+                                <span class="custom-widget-label">TANPA KET.</span>
+                                <div class="custom-widget-val-row">
+                                    <span class="custom-widget-val" id="val-mangkir">0</span>
+                                    <span class="custom-widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Kolom Kanan: Laporan Presensi Hari Ini -->
+            <!-- Kolom 3: Pegawai Terbaik Bulan Ini -->
             <div class="tv-card-box">
-                <div>
-                    <h2 class="tv-card-title"><i  style="color: var(--kai-orange);"></i> Laporan Presensi Hari Ini</h2>
-                    
-                    <div class="widgets-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;">
-                        <!-- Hadir -->
-                        <div class="widget-card widget-hadir" style="min-height: auto; padding: 14px 16px;">
-                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Hadir</span></div>
-                            <div class="widget-body">
-                                <span class="widget-label" style="font-size: 0.75rem;">ASP HADIR HARI INI</span>
-                                <div class="widget-val-row">
-                                    <span class="widget-val" id="val-hadir" style="font-size: 1.5rem;">0</span>
-                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
-                                </div>
-                            </div>
+                <h2 class="tv-card-title">
+                    <span><i  style="color: var(--accent-orange);"></i> Pegawai Terbaik</span>
+                </h2>
+                <div class="eotm-card-tv">
+                    <div class="eotm-badge-wrapper">
+                        <img id="eotmAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%230b132b'/></svg>" alt="Pegawai Terbaik" class="eotm-avatar">
+                        <div class="eotm-trophy-icon">
+                            <i class="fa-solid fa-trophy"></i>
                         </div>
-
-                        <!-- Cuti Tahunan -->
-                        <div class="widget-card widget-cuti" style="min-height: auto; padding: 14px 16px;">
-                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Cuti</span></div>
-                            <div class="widget-body">
-                                <span class="widget-label" style="font-size: 0.75rem;">CUTI TAHUNAN (CT)</span>
-                                <div class="widget-val-row">
-                                    <span class="widget-val" id="val-cuti" style="font-size: 1.5rem;">0</span>
-                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cuti Sakit -->
-                        <div class="widget-card widget-sakit" style="min-height: auto; padding: 14px 16px;">
-                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Sakit</span></div>
-                            <div class="widget-body">
-                                <span class="widget-label" style="font-size: 0.75rem;">CUTI SAKIT (CSK)</span>
-                                <div class="widget-val-row">
-                                    <span class="widget-val" id="val-sakit" style="font-size: 1.5rem;">0</span>
-                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Izin / CP -->
-                        <div class="widget-card widget-penting" style="min-height: auto; padding: 14px 16px;">
-                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Izin / CP</span></div>
-                            <div class="widget-body">
-                                <span class="widget-label" style="font-size: 0.75rem;">CUTI PENTING (ITMB/CP)</span>
-                                <div class="widget-val-row">
-                                    <span class="widget-val" id="val-itmb" style="font-size: 1.5rem;">0</span>
-                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TMS -->
-                        <div class="widget-card widget-tms" style="min-height: auto; padding: 14px 16px;">
-                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">TMS</span></div>
-                            <div class="widget-body">
-                                <span class="widget-label" style="font-size: 0.75rem;">TIDAK MEMENUHI SYARAT</span>
-                                <div class="widget-val-row">
-                                    <span class="widget-val" id="val-tms" style="font-size: 1.5rem;">0</span>
-                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Mangkir -->
-                        <div class="widget-card widget-mangkir" style="min-height: auto; padding: 14px 16px;">
-                            <div class="widget-top" style="margin-bottom: 6px;"><span class="widget-status-tag">Mangkir</span></div>
-                            <div class="widget-body">
-                                <span class="widget-label" style="font-size: 0.75rem;">MANGKIR / TANPA KET.</span>
-                                <div class="widget-val-row">
-                                    <span class="widget-val" id="val-mangkir" style="font-size: 1.5rem;">0</span>
-                                    <span class="widget-unit" style="font-size: 0.75rem;">Pegawai</span>
-                                </div>
-                            </div>
-                        </div>
+                    </div>
+                    <div>
+                        <span class="eotm-tag">BULAN INI</span>
+                        <h3 id="eotmName" class="eotm-name">Memuat Data...</h3>
+                        <p id="eotmRole" class="eotm-role">-</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Kartu Tambahan: Monitoring Data O.241 -->
-<!-- Kartu Tambahan: Monitoring Data O.241 (Tanpa Error & Full Tampil) -->
-        <div class="tv-embed-container" style="width: 100%;">
-            <h2 class="tv-card-title"><i  style="color: var(--kai-orange);"></i> Jadwal Dinasan Awak KA</h2>
-            <div class="embed-wrapper" style="width: 100%; height: 850px; overflow: hidden; background: #ffffff; position: relative;">
+        <!-- WIDGET TENTANG KAMI -->
+        <div class="tv-card-box" style="padding: 28px 32px;">
+            <h2 class="tv-card-title">
+                <span><i  style="color: var(--accent-orange);"></i> Tentang Kami</span>
+            </h2>
+            <p style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 16px;">
+                UPT Crew KA Kelas C Kisaran adalah Unit Pelaksana Teknis yang berada di wilayah Divisi Regional I Sumatera Utara (DIVRE I SU) yang memiliki wewenang dan bertanggung jawab dalam penugasan Masinis dan Asisten Masinis untuk dinas Kereta Api, Langsir, atau dinas cadangan di Stasiun awal pemberangkatan Kereta Api atau di Stasiun pergantian Awak KA.
+            </p>
+            <div>
+                <a href="./personel/struktur-organisasi.html" style="color: var(--accent-orange); text-decoration: none; font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
+                    Struktur Organisasi &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Kartu Utama Bawah: Jadwal Dinasan Awak KA (O.241) -->
+        <div class="tv-embed-container">
+            <h2 class="tv-card-title">
+                <span><i  style="color: var(--accent-orange);"></i> Jadwal Dinasan Awak  KA (O.241)</span>
+            </h2>
+            <div class="embed-wrapper">
                 <iframe src="https://docs.google.com/spreadsheets/d/17NCZGMupZmGeVJywA5DF-3TI2vMtRr8c/htmlembed?widget=true&headers=false&chrome=false" 
                         style="width: 100%; height: 100%; border: none;">
                 </iframe>
             </div>
         </div>
 
-        <!-- Footer Info -->
-<!-- Footer Info dengan Tombol Homepage -->
-        <div class="tv-footer-info" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
-            <span style="color: #94a3b8; font-size: 0.9rem;">
-                Data disinkronkan secara otomatis dari Sistem Database UPT Crew KA Kisaran &bull; Layar Monitoring Otomatis
-            </span>
-            <a href="./index.html" style="background: rgba(255, 102, 0, 0.15); border: 1px solid var(--kai-orange); color: var(--kai-orange); padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease;">
-                <i ></i> Homepage
+        <!-- Footer Info & Tombol Homepage -->
+        <div class="tv-footer-info">
+            <span>Data disinkronkan secara otomatis dari Sistem Database UPT Crew KA Kisaran &bull; Layar Monitoring Otomatis</span>
+            <a href="./index.html" class="tv-home-btn">
+                <i class="fa-solid fa-house"></i> Homepage
             </a>
         </div>
     </div>
 
-    <!-- Skrip Utama -->
+    <!-- Skrip Utama & Fungsionalitas -->
     <script src="./js/main.js"></script>
     <script>
         // Auto-scroll halus untuk layar TV monitoring panjang
@@ -343,16 +584,16 @@
                 window.scrollBy(0, scrollSpeed * scrollDirection);
 
                 if (window.scrollY >= maxScroll - 2) {
-                    setTimeout(() => { scrollDirection = -1; }, 4000);
+                    setTimeout(() => { scrollDirection = -1; }, 5000);
                 } else if (window.scrollY <= 0) {
-                    setTimeout(() => { scrollDirection = 1; }, 3000);
+                    setTimeout(() => { scrollDirection = 1; }, 4000);
                 }
             }, delay);
         }
 
         setTimeout(initAutoScroll, 4000);
 
-        // Penampil Waktu & Tanggal Real-Time yang Kontras
+        // Penampil Waktu & Tanggal Real-Time
         function updateLiveClock() {
             const now = new Date();
             const dateEl = document.getElementById('live-date');
@@ -369,6 +610,93 @@
         }
         setInterval(updateLiveClock, 1000);
         updateLiveClock();
+
+        // Pengambilan Data Pegawai Terbaik (EOTM)
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+
+        function cleanNipp(val) {
+            if (!val) return "";
+            return String(val).replace(/\D/g, "").trim();
+        }
+
+        function generateInitialsAvatarSvg(nama) {
+            const words = (nama || 'Pegawai').trim().split(/\s+/);
+            const initials = words.length >= 2 
+                ? (words[0][0] + words[1][0]).toUpperCase() 
+                : (words[0].substring(0, 2)).toUpperCase();
+            
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="#0b132b"/>
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#ff6600" stroke-width="3"/>
+                <text x="50" y="58" font-family="'Montserrat', sans-serif" font-size="30" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+            </svg>`;
+            return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+        }
+
+        async function loadEotmHomepage() {
+            const eotmAvatar = document.getElementById("eotmAvatar");
+            const eotmName = document.getElementById("eotmName");
+            const eotmRole = document.getElementById("eotmRole");
+
+            try {
+                const resEotm = await fetch(`${APPS_SCRIPT_URL}?action=getEotm`);
+                const eotmResult = await resEotm.json();
+
+                if (eotmResult.result !== "success" || !eotmResult.nipp) {
+                    if (eotmName) eotmName.innerText = "Belum Ada Data";
+                    if (eotmRole) eotmRole.innerText = "-";
+                    if (eotmAvatar) eotmAvatar.src = generateInitialsAvatarSvg("Pegawai");
+                    return;
+                }
+
+                const nippClean = cleanNipp(eotmResult.nipp);
+
+                const resAll = await fetch(APPS_SCRIPT_URL);
+                const allData = await resAll.json();
+
+                let namaFound = "Pegawai Terbaik";
+                let jabatanFound = "Masinis";
+
+                if (allData.result === "success" && allData.data) {
+                    const listDatabase = allData.data["Database"] || Object.values(allData.data)[0] || [];
+                    const matchPegawai = listDatabase.find(j => cleanNipp(j.NIPP || j.NIP) === nippClean);
+
+                    if (matchPegawai) {
+                        namaFound = matchPegawai.NAMA || matchPegawai.Nama || namaFound;
+                        jabatanFound = (matchPegawai.Jabatan || matchPegawai.JABATAN || jabatanFound).trim();
+                    }
+                }
+
+                if (eotmName) eotmName.innerText = namaFound;
+                if (eotmRole) eotmRole.innerText = `NIPP. ${nippClean} • ${jabatanFound}`;
+
+                if (eotmAvatar) {
+                    const pngPath = `./assets/struktur-organisasi/${nippClean}.png`;
+                    const jpgPath = `./assets/struktur-organisasi/${nippClean}.jpg`;
+                    const svgFallback = generateInitialsAvatarSvg(namaFound);
+
+                    eotmAvatar.onerror = function() {
+                        if (!this.dataset.triedJpg) {
+                            this.dataset.triedJpg = "true";
+                            this.src = jpgPath;
+                        } else {
+                            this.onerror = null;
+                            this.src = svgFallback;
+                        }
+                    };
+                    eotmAvatar.src = pngPath;
+                }
+
+            } catch (err) {
+                console.error("Gagal memuat EOTM:", err);
+                if (eotmName) eotmName.innerText = "Gagal Memuat Data";
+                if (eotmAvatar) eotmAvatar.src = generateInitialsAvatarSvg("Pegawai");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadEotmHomepage();
+        });
     </script>
 </body>
 </html>
