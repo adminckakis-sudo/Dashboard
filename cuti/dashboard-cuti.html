@@ -43,13 +43,13 @@
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         <span class="sidebar-text">Homepage</span>
                     </a>
-                    <a href="../personel/personel.html" class="sidebar-item" title="Homepage">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                    <a href="../personel/personel.html" class="sidebar-item" title="Personel">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
                         <span class="sidebar-text">Personel</span>
                     </a>
                     
@@ -67,6 +67,7 @@
                         </a>
                         <a href="./cetak-pdf.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Cetak PDF</span>
+                        </a>
                         <a href="https://docs.google.com/spreadsheets/d/1MG0IcvbKuIy2t7JIOp3FgShbjy5tLRxD/edit?gid=1442494186#gid=1442494186" target="_blank" rel="noopener noreferrer" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 500; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Buku Cuti</span>
                         </a>                        
@@ -132,119 +133,142 @@
                 </section>
 
                 <!-- SECTION 2: LAPORAN KEHADIRAN HARIAN -->
- <!-- SECTION 2: LAPORAN KEHADIRAN HARIAN (SECONDARY WIDGETS) -->
-<section class="dashboard-section" id="section-laporan-harian">
-    <div class="section-header">
-        <h2 class="section-title">Laporan Presensi Hari Ini</h2>
-    </div>
+                <section class="dashboard-section" id="section-laporan-harian">
+                    <div class="section-header">
+                        <h2 class="section-title">Laporan Presensi Hari Ini</h2>
+                    </div>
 
-    <div class="widgets-grid">
-        <a href="javascript:void(0)" id="tabel-hadir" class="widget-card widget-hadir">
-            <div class="widget-top">
-                <span class="widget-status-tag">Hadir</span>
-            </div>
-            <div class="widget-body">
-                <span class="widget-label">ASP HADIR HARI INI</span>
-                <div class="widget-val-row">
-                    <span class="widget-val" id="val-hadir">0</span>
-                    <span class="widget-unit">Pegawai</span>
-                </div>
-            </div>
-            <div class="widget-footer-action">
-                <span>Lihat detail &rarr;</span>
-            </div>
-        </a>
+                    <div class="widgets-grid">
+                        <a href="javascript:void(0)" id="tabel-hadir" class="widget-card widget-hadir">
+                            <div class="widget-top">
+                                <span class="widget-status-tag">Hadir</span>
+                            </div>
+                            <div class="widget-body">
+                                <span class="widget-label">ASP HADIR HARI INI</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-hadir">0</span>
+                                    <span class="widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                            <div class="widget-footer-action">
+                                <span>Lihat detail &rarr;</span>
+                            </div>
+                        </a>
 
-        <a href="javascript:void(0)" id="tabel-cuti" class="widget-card widget-cuti">
-            <div class="widget-top">
-                <span class="widget-status-tag">Cuti</span>
-            </div>
-            <div class="widget-body">
-                <span class="widget-label">CUTI TAHUNAN (CT)</span>
-                <div class="widget-val-row">
-                    <span class="widget-val" id="val-cuti">0</span>
-                    <span class="widget-unit">Pegawai</span>
-                </div>
-            </div>
-            <div class="widget-footer-action">
-                <span>Lihat detail &rarr;</span>
-            </div>
-        </a>
+                        <a href="javascript:void(0)" id="tabel-cuti" class="widget-card widget-cuti">
+                            <div class="widget-top">
+                                <span class="widget-status-tag">Cuti</span>
+                            </div>
+                            <div class="widget-body">
+                                <span class="widget-label">CUTI TAHUNAN (CT)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-cuti">0</span>
+                                    <span class="widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                            <div class="widget-footer-action">
+                                <span>Lihat detail &rarr;</span>
+                            </div>
+                        </a>
 
-        <a href="javascript:void(0)" id="tabel-sakit" class="widget-card widget-sakit">
-            <div class="widget-top">
-                <span class="widget-status-tag">Sakit</span>
-            </div>
-            <div class="widget-body">
-                <span class="widget-label">CUTI SAKIT (CSK)</span>
-                <div class="widget-val-row">
-                    <span class="widget-val" id="val-sakit">0</span>
-                    <span class="widget-unit">Pegawai</span>
-                </div>
-            </div>
-            <div class="widget-footer-action">
-                <span>Lihat detail &rarr;</span>
-            </div>
-        </a>
+                        <a href="javascript:void(0)" id="tabel-sakit" class="widget-card widget-sakit">
+                            <div class="widget-top">
+                                <span class="widget-status-tag">Sakit</span>
+                            </div>
+                            <div class="widget-body">
+                                <span class="widget-label">CUTI SAKIT (CSK)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-sakit">0</span>
+                                    <span class="widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                            <div class="widget-footer-action">
+                                <span>Lihat detail &rarr;</span>
+                            </div>
+                        </a>
 
-        <a href="javascript:void(0)" id="tabel-itmb" class="widget-card widget-penting">
-            <div class="widget-top">
-                <span class="widget-status-tag">Izin / CP</span>
-            </div>
-            <div class="widget-body">
-                <span class="widget-label">CUTI PENTING (ITMB/CP)</span>
-                <div class="widget-val-row">
-                    <span class="widget-val" id="val-itmb">0</span>
-                    <span class="widget-unit">Pegawai</span>
-                </div>
-            </div>
-            <div class="widget-footer-action">
-                <span>Lihat detail &rarr;</span>
-            </div>
-        </a>
+                        <a href="javascript:void(0)" id="tabel-itmb" class="widget-card widget-penting">
+                            <div class="widget-top">
+                                <span class="widget-status-tag">Izin / CP</span>
+                            </div>
+                            <div class="widget-body">
+                                <span class="widget-label">CUTI PENTING (ITMB/CP)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-itmb">0</span>
+                                    <span class="widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                            <div class="widget-footer-action">
+                                <span>Lihat detail &rarr;</span>
+                            </div>
+                        </a>
 
-        <a href="javascript:void(0)" id="tabel-tms" class="widget-card widget-tms">
-            <div class="widget-top">
-                <span class="widget-status-tag">TMS</span>
-            </div>
-            <div class="widget-body">
-                <span class="widget-label">TIDAK MEMENUHI SYARAT (TMS)</span>
-                <div class="widget-val-row">
-                    <span class="widget-val" id="val-tms">0</span>
-                    <span class="widget-unit">Pegawai</span>
-                </div>
-            </div>
-            <div class="widget-footer-action">
-                <span>Lihat detail &rarr;</span>
-            </div>
-        </a>
+                        <a href="javascript:void(0)" id="tabel-tms" class="widget-card widget-tms">
+                            <div class="widget-top">
+                                <span class="widget-status-tag">TMS</span>
+                            </div>
+                            <div class="widget-body">
+                                <span class="widget-label">TIDAK MEMENUHI SYARAT (TMS)</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-tms">0</span>
+                                    <span class="widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                            <div class="widget-footer-action">
+                                <span>Lihat detail &rarr;</span>
+                            </div>
+                        </a>
 
-        <a href="javascript:void(0)" id="tabel-mangkir" class="widget-card widget-mangkir">
-            <div class="widget-top">
-                <span class="widget-status-tag">Mangkir</span>
-            </div>
-            <div class="widget-body">
-                <span class="widget-label">MANGKIR / TANPA KETERANGAN</span>
-                <div class="widget-val-row">
-                    <span class="widget-val" id="val-mangkir">0</span>
-                    <span class="widget-unit">Pegawai</span>
-                </div>
-            </div>
-            <div class="widget-footer-action">
-                <span>Lihat detail &rarr;</span>
-            </div>
-        </a>
-    </div>
-</section>
+                        <a href="javascript:void(0)" id="tabel-mangkir" class="widget-card widget-mangkir">
+                            <div class="widget-top">
+                                <span class="widget-status-tag">Mangkir</span>
+                            </div>
+                            <div class="widget-body">
+                                <span class="widget-label">MANGKIR / TANPA KETERANGAN</span>
+                                <div class="widget-val-row">
+                                    <span class="widget-val" id="val-mangkir">0</span>
+                                    <span class="widget-unit">Pegawai</span>
+                                </div>
+                            </div>
+                            <div class="widget-footer-action">
+                                <span>Lihat detail &rarr;</span>
+                            </div>
+                        </a>
+                    </div>
+                </section>
 
-                <!-- SECTION 3: TREN CUTI -->
+                <!-- SECTION 3: TREN CUTI (DENGAN 4 WIDGET KARTU STATISTIK) -->
                 <section class="dashboard-section" id="section-tren-cuti">
                     <div class="section-header"><h2 class="section-title">Tren Cuti Tahunan</h2></div>
                     <div class="tren-cuti-card">
                         <div class="tren-stats-summary-grid">
-                            <div class="stat-box"><span class="stat-box-label">Total Cuti Setahun</span><div class="stat-box-val-row"><span class="stat-box-val" id="val-total-cuti-tahun">0</span><span class="stat-box-unit">Hari</span></div></div>
-                            <div class="stat-box"><span class="stat-box-label">Rata-rata / Bulan</span><div class="stat-box-val-row"><span class="stat-box-val" id="val-rata-cuti-bulan">0</span><span class="stat-box-unit">Hari / Bulan</span></div></div>
-                            <div class="stat-box"><span class="stat-box-label">Bulan Puncak Cuti</span><div class="stat-box-val-row"><span class="stat-box-val highlight-peak" id="val-puncak-cuti">-</span></div></div>
+                            <div class="stat-box">
+                                <span class="stat-box-label">Total Cuti Setahun</span>
+                                <div class="stat-box-val-row">
+                                    <span class="stat-box-val" id="val-total-cuti-tahun">0</span>
+                                    <span class="stat-box-unit">Hari</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-box-label">Rata-rata Hari / Bulan</span>
+                                <div class="stat-box-val-row">
+                                    <span class="stat-box-val" id="val-rata-cuti-bulan">0</span>
+                                    <span class="stat-box-unit">Hari / Bulan</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-box-label">Rata-rata Pegawai / Bulan</span>
+                                <div class="stat-box-val-row">
+                                    <span class="stat-box-val" id="val-stat-avg-pegawai-bulan">0</span>
+                                    <span class="stat-box-unit">Orang / Bulan</span>
+                                </div>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-box-label">Bulan Puncak Cuti</span>
+                                <div class="stat-box-val-row">
+                                    <span class="stat-box-val highlight-peak" id="val-puncak-cuti">-</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="line-chart-container">
                             <svg id="tren-line-chart" viewBox="0 0 840 260" preserveAspectRatio="xMidYMid meet"></svg>
@@ -349,8 +373,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 return;
             }
 
-            // Asumsi dataPegawai adalah array berisi { nama: "...", nipp: "...", jabatan: "..." }
-            // Jika data diambil dari spreadsheet/API, sesuaikan variabel array datanya.
             const filteredResults = typeof dataPegawai !== "undefined" 
                 ? dataPegawai.filter(p => p.nama.toLowerCase().includes(query) || p.nipp.includes(query))
                 : [];
@@ -372,7 +394,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        // Sembunyikan hasil pencarian jika klik di luar area input
         document.addEventListener("click", function(e) {
             if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
                 searchResults.style.display = "none";
@@ -390,7 +411,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
             }
         });
-        
     </script>
     <script src="../js/main.js"></script>
 </body>
