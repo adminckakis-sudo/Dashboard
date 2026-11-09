@@ -611,7 +611,6 @@
       });
     }
 
-// FUNGSI KONFIRMASI LOGOUT DENGAN SWEETALERT2
     function handleLogout() {
       Swal.fire({
         title: 'Konfirmasi Logout',
@@ -625,7 +624,6 @@
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.clear();
-          
           Swal.fire({
             title: 'Berhasil Keluar',
             text: 'Mengalihkan ke halaman login...',
@@ -638,6 +636,7 @@
         }
       });
     }
+
     function formatTanggalDisplay(dateString) {
       if (!dateString) return "-";
       const parts = dateString.split("-");
@@ -673,7 +672,7 @@
       }
     }
 
-    // Load Data Form Awal Dinas (Masinis & Asisten terpisah barisnya dengan kedudukan masing-masing)
+    // Load Data Form Awal Dinas
     async function loadAwalDinasData(inputDate, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAwal");
       tbody.innerHTML = `<tr><td colspan="6" style="padding: 20px;">Memuat data awal dinas tanggal ${formattedDisplayDate}...</td></tr>`;
@@ -693,7 +692,6 @@
               const masinis = item.masinis || "-";
               const asisten = item.asistenMasinis || "-";
               
-              // Pisahkan kedudukan jika disimpan dalam format "KEDUDUKAN_MASINIS / KEDUDUKAN_ASISTEN"
               let kedMasinis = item.kedudukan || "-";
               let kedAsisten = item.kedudukan || "-";
               if (item.kedudukan && item.kedudukan.includes(" / ")) {
@@ -733,11 +731,11 @@
 
           const penyeliaData = result.penyelia || {};
           document.getElementById("namaPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nama || "-";
-          document.getElementById("nippPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nipp ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
+          document.getElementById("nippPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nipp && penyeliaData.pagi.nipp !== "-" ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
           document.getElementById("namaPenyeliaSiangAwal").textContent = penyeliaData.siang?.nama || "-";
-          document.getElementById("nippPenyeliaSiangAwal").textContent = penyeliaData.siang?.nipp ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
+          document.getElementById("nippPenyeliaSiangAwal").textContent = penyeliaData.siang?.nipp && penyeliaData.siang.nipp !== "-" ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
           document.getElementById("namaPenyeliaMalamAwal").textContent = penyeliaData.malam?.nama || "-";
-          document.getElementById("nippPenyeliaMalamAwal").textContent = penyeliaData.malam?.nipp ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
+          document.getElementById("nippPenyeliaMalamAwal").textContent = penyeliaData.malam?.nipp && penyeliaData.malam.nipp !== "-" ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
 
         } else {
           Swal.fire("Gagal", result.message || "Gagal memuat data awal dinas.", "error");
@@ -809,11 +807,11 @@
 
           const penyeliaData = result.penyelia || {};
           document.getElementById("namaPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nama || "-";
-          document.getElementById("nippPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nipp ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
+          document.getElementById("nippPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nipp && penyeliaData.pagi.nipp !== "-" ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
           document.getElementById("namaPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nama || "-";
-          document.getElementById("nippPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nipp ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
+          document.getElementById("nippPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nipp && penyeliaData.siang.nipp !== "-" ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
           document.getElementById("namaPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nama || "-";
-          document.getElementById("nippPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nipp ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
+          document.getElementById("nippPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nipp && penyeliaData.malam.nipp !== "-" ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
 
         } else {
           Swal.fire("Gagal", result.message || "Gagal memuat data akhir dinas.", "error");
