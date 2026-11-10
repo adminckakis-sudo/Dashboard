@@ -492,8 +492,11 @@ async function loadEditData() {
         return;
       }
       
-      const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
-
+      const keys = Object.keys(rows[0]).filter(k => {
+        const cleanKey = k.toLowerCase().replace(/[^a-z0-9]/g, "");
+        return k !== '_rowIndex' && cleanKey !== 'waktuinput';
+      });
+      
       let customWidths = [];
       if (activeEditType === 'awal') {
         customWidths = [50, 70, 80, 90, 260, 260, 200, 60, 150, 100, 80];
@@ -895,7 +898,10 @@ async function loadEditData() {
         return;
       }
       
-      const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
+      const keys = Object.keys(rows[0]).filter(k => {
+        const cleanKey = k.toLowerCase().replace(/[^a-z0-9]/g, "");
+        return k !== '_rowIndex' && cleanKey !== 'waktuinput';
+      });
 
       let customWidths = [];
       if (activeEditType === 'awal') {
