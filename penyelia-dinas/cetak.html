@@ -11,6 +11,10 @@
   <!-- SWEETALERT2 POP-UP LIBRARY -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <!-- FLATPICKR UNTUK FORMAT TANGGAL dd/mm/yyyy -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
   <style>
     body {
       background-color: #f1f5f9;
@@ -20,11 +24,11 @@
       padding: 0;
     }
 
-    /* KONTROL AREA FILTER & PROFIL TOPBAR */
     .filter-card-container {
-      max-width: 1100px;
+      max-width: 100%;
       margin: 20px auto;
       padding: 0 16px;
+      box-sizing: border-box;
     }
 
     .filter-card {
@@ -57,6 +61,8 @@
       border-radius: 6px;
       font-size: 0.85rem;
       font-family: inherit;
+      background-color: #ffffff;
+      cursor: pointer;
     }
 
     .btn-action-group {
@@ -95,7 +101,6 @@
     .btn-preview:hover { background-color: #121d42; }
     .btn-print:hover { background-color: #d95800; }
 
-    /* TOPBAR PROFIL PENYELIA */
     .topbar-profile-container {
       display: flex;
       align-items: center;
@@ -157,12 +162,8 @@
       margin-left: 4px;
     }
 
-    .btn-topbar-logout:hover {
-      background: rgba(239, 68, 68, 0.9);
-      color: #ffffff;
-    }
+    .btn-topbar-logout:hover { background: rgba(239, 68, 68, 0.9); color: #ffffff; }
 
-    /* TAB PEMILIH LAPORAN CETAK */
     .print-tab-container {
       display: flex;
       justify-content: center;
@@ -189,19 +190,18 @@
       box-shadow: 0 4px 12px rgba(28, 42, 95, 0.25);
     }
 
-    /* SECTION TAMPILAN KERTAS */
     .print-section {
       display: none;
+      width: 100%;
     }
 
     .print-section.active {
       display: block;
     }
 
-    /* LAYOUT KERTAS CETAK (LANDSCAPE) */
     .print-paper {
       background: #ffffff;
-      width: 297mm;
+      width: 100% !important;
       min-height: 210mm;
       margin: 0 auto 40px auto;
       padding: 15mm 15mm;
@@ -210,7 +210,6 @@
       border: 1px solid #e2e8f0;
     }
 
-    /* HEADER CETAK */
     .print-header {
       text-align: center;
       margin-bottom: 12px;
@@ -249,11 +248,11 @@
       margin-bottom: 6px;
     }
 
-    /* TABEL LAPORAN */
     .report-table {
-      width: 100%;
+      width: 100% !important;
       border-collapse: collapse;
       color: #000;
+      table-layout: auto;
     }
 
     .report-table th {
@@ -270,7 +269,7 @@
     .report-table td {
       border: 1px solid #000;
       padding: 2px 5px;
-      height: 32px; /* Diberi ruang pas untuk 2 baris teks */
+      height: 32px;
       text-align: center;
       vertical-align: middle;
       font-size: 9px;
@@ -278,7 +277,6 @@
 
     .text-left { text-align: left !important; }
 
-    /* AWAK KA & KEDUDUKAN 2 BARIS */
     .double-row-box {
       display: flex;
       flex-direction: column;
@@ -296,7 +294,6 @@
       line-height: 1.1;
     }
 
-    /* AREA 3 TANDA TANGAN PENYELIA DINAS */
     .signature-container {
       display: flex;
       justify-content: space-between;
@@ -333,68 +330,30 @@
       margin-top: 2px;
     }
 
-    /* KONTROL MEDIA PRINT */
     @media print {
-      body {
-        background: #ffffff;
-      }
-
-      .top-header,
-      .app-sidebar,
-      .filter-card-container,
-      .print-tab-container,
-      .no-print {
-        display: none !important;
-      }
-
-      .app-layout-wrapper,
-      .app-main-content {
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-
-      .print-section {
-        display: none !important;
-      }
-
-      .print-section.active {
-        display: block !important;
-      }
-
-      .print-paper {
-        border: none !important;
-        box-shadow: none !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      @page {
-        size: A4 landscape;
-        margin: 10mm;
-      }
+      body { background: #ffffff; }
+      .top-header, .app-sidebar, .filter-card-container, .print-tab-container, .no-print { display: none !important; }
+      .app-layout-wrapper, .app-main-content { padding: 0 !important; margin: 0 !important; }
+      .print-section { display: none !important; }
+      .print-section.active { display: block !important; }
+      .print-paper { border: none !important; box-shadow: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      @page { size: A4 landscape; margin: 10mm; }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP HEADER -->
   <header class="top-header no-print" role="banner">
     <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
       <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
-        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;" title="Buka/Tutup Menu">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
+        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
         <div class="brand-affiliation">
           <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
         </div> 
       </div>
 
-      <!-- SISI KANAN TOPBAR (PROFIL PENYELIA) -->
       <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
         <div class="topbar-profile-container">
           <div class="topbar-profile-info">
@@ -403,22 +362,13 @@
             <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
           </div>
           <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto Penyelia" class="topbar-penyelia-avatar">
-          
-          <button type="button" class="btn-topbar-logout" onclick="handleLogout()" title="Keluar dari Aplikasi">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-            Keluar
-          </button>
+          <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
         </div>
       </div>
     </div>
   </header>
 
   <div class="app-layout-wrapper">
-    <!-- SIDEBAR -->
     <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
       <div>
         <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
@@ -451,35 +401,28 @@
         </nav>
       </div>
     </aside>
-
     <main class="app-main-content">
       
-      <!-- FILTER TANGGAL -->
       <div class="filter-card-container no-print">
         <div class="filter-card">
           <div class="filter-group">
             <label for="inputTanggalCetak" class="filter-label">Pilih Tanggal Dinas:</label>
-            <input type="date" id="inputTanggalCetak" class="filter-input">
+            <input type="text" id="inputTanggalCetak" class="filter-input" placeholder="dd/mm/yyyy" readonly>
           </div>
 
           <div class="btn-action-group">
-            <button type="button" class="btn-preview" onclick="loadDataByDate()">
-              Tampilkan Data
-            </button>
-            <button type="button" class="btn-print" onclick="window.print()">
-              Cetak / PDF
-            </button>
+            <button type="button" class="btn-preview" onclick="loadDataByDate()">Tampilkan Data</button>
+            <button type="button" class="btn-print" onclick="window.print()">Cetak / PDF</button>
           </div>
         </div>
       </div>
 
-      <!-- TAB PEMILIH FORMAT CETAK -->
       <div class="print-tab-container no-print">
         <button type="button" class="print-tab-btn active" id="tabBtnAwal" onclick="switchPrintTab('awal')">Cetak Form Awal Dinas</button>
         <button type="button" class="print-tab-btn" id="tabBtnAkhir" onclick="switchPrintTab('akhir')">Cetak Form Akhir Dinas</button>
       </div>
 
-      <!-- ================= 1. KERTAS CETAK FORM AWAL DINAS ================= -->
+      <!-- FORM AWAL DINAS -->
       <div class="print-section active" id="sectionPrintAwal">
         <div class="print-paper">
           <div class="print-header">
@@ -490,7 +433,7 @@
           </div>
 
           <div class="print-meta-date">
-            TANGGAL: <span class="labelTanggalDisplay">05-11-2026</span>
+            TANGGAL: <span class="labelTanggalDisplay">--/--/----</span>
           </div>
 
           <table class="report-table">
@@ -505,13 +448,10 @@
               </tr>
             </thead>
             <tbody id="tablePrintBodyAwal">
-              <tr>
-                <td colspan="6" style="padding: 20px;">Memuat data awal dinas...</td>
-              </tr>
+              <tr><td colspan="6" style="padding: 20px;">Memuat data awal dinas...</td></tr>
             </tbody>
           </table>
 
-          <!-- AREA 3 PENYELIA DINAS -->
           <div class="signature-container">
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
@@ -532,7 +472,7 @@
         </div>
       </div>
 
-      <!-- ================= 2. KERTAS CETAK FORM AKHIR DINAS ================= -->
+      <!-- FORM AKHIR DINAS -->
       <div class="print-section" id="sectionPrintAkhir">
         <div class="print-paper">
           <div class="print-header">
@@ -543,7 +483,7 @@
           </div>
 
           <div class="print-meta-date">
-            TANGGAL: <span class="labelTanggalDisplay">05-11-2026</span>
+            TANGGAL: <span class="labelTanggalDisplay">--/--/----</span>
           </div>
 
           <table class="report-table">
@@ -560,13 +500,10 @@
               </tr>
             </thead>
             <tbody id="tablePrintBodyAkhir">
-              <tr>
-                <td colspan="8" style="padding: 20px;">Memuat data akhir dinas...</td>
-              </tr>
+              <tr><td colspan="8" style="padding: 20px;">Memuat data akhir dinas...</td></tr>
             </tbody>
           </table>
 
-          <!-- AREA 3 PENYELIA DINAS -->
           <div class="signature-container">
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
@@ -591,59 +528,53 @@
   </div>
 
   <script>
+    // FUNGSI HELPER CONVERT DATE KE YYYY-MM-DD
+    function formatDateToYMD(dateVal) {
+      if (!dateVal) return "";
+      if (dateVal instanceof Date) {
+        var yyyy = dateVal.getFullYear();
+        var mm = String(dateVal.getMonth() + 1).padStart(2, '0');
+        var dd = String(dateVal.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+      }
+      var cleanStr = String(dateVal).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(cleanStr)) return cleanStr;
+      var parts = cleanStr.split("/");
+      if (parts.length === 3) {
+        var p1 = parts[0].padStart(2, '0');
+        var p2 = parts[1].padStart(2, '0');
+        var year = parts[2];
+        if (parseInt(p1, 10) > 12) return `${year}-${p2}-${p1}`;
+        return `${year}-${p2}-${p1}`;
+      }
+      var d = new Date(cleanStr);
+      if (!isNaN(d.getTime())) {
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+      return cleanStr;
+    }
+
     const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
     let activePrintMode = 'awal';
+    let flatpickrInstance = null;
 
-    // PROTEKSI LOGIN & PROFIL PENYELIA
     const loggedInNama = localStorage.getItem("loggedInUserNama");
     const loggedInNipp = localStorage.getItem("loggedInUserNipp");
     const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
 
     if (!loggedInNama || !loggedInNipp) {
       Swal.fire({
-        title: 'Akses Ditolak!',
-        text: 'Anda harus login sebagai Penyelia terlebih dahulu.',
-        icon: 'warning',
-        confirmButtonColor: '#1C2A5F',
-        allowOutsideClick: false
-      }).then(() => {
-        window.location.href = "login.html";
-      });
+        title: 'Akses Ditolak!', text: 'Anda harus login terlebih dahulu.', icon: 'warning', confirmButtonColor: '#1C2A5F'
+      }).then(() => { window.location.href = "login.html"; });
     }
 
     function handleLogout() {
       Swal.fire({
-        title: 'Konfirmasi Logout',
-        text: 'Apakah Anda yakin ingin keluar dari sistem?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Logout',
-        cancelButtonText: 'Batal'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          localStorage.clear();
-          Swal.fire({
-            title: 'Berhasil Keluar',
-            text: 'Mengalihkan ke halaman login...',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          }).then(() => {
-            window.location.href = "login.html";
-          });
-        }
-      });
-    }
-
-    function formatTanggalDisplay(dateString) {
-      if (!dateString) return "-";
-      const parts = dateString.split("-");
-      if (parts.length === 3) {
-        return `${parts[2]}-${parts[1]}-${parts[0]}`;
-      }
-      return dateString;
+        title: 'Logout', text: 'Yakin keluar?', icon: 'question', showCancelButton: true, confirmButtonColor: '#ef4444'
+      }).then((res) => { if (res.isConfirmed) { localStorage.clear(); window.location.href = "login.html"; } });
     }
 
     function switchPrintTab(mode) {
@@ -656,29 +587,29 @@
     }
 
     async function loadDataByDate() {
-      const inputDate = document.getElementById("inputTanggalCetak").value;
-      if (!inputDate) {
-        Swal.fire("Peringatan", "Silakan pilih tanggal dinas terlebih dahulu!", "warning");
+      const tanggalYMD = flatpickrInstance ? flatpickrInstance.formatDate(flatpickrInstance.selectedDates[0], "Y-m-d") : "";
+      const tanggalDisplay = document.getElementById("inputTanggalCetak").value;
+
+      if (!tanggalYMD) {
+        Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
         return;
       }
 
-      const formattedDisplayDate = formatTanggalDisplay(inputDate);
-      document.querySelectorAll(".labelTanggalDisplay").forEach(el => el.textContent = formattedDisplayDate);
+      document.querySelectorAll(".labelTanggalDisplay").forEach(el => el.textContent = tanggalDisplay);
 
       if (activePrintMode === 'awal') {
-        await loadAwalDinasData(inputDate, formattedDisplayDate);
+        await loadAwalDinasData(tanggalYMD, tanggalDisplay);
       } else {
-        await loadAkhirDinasData(inputDate, formattedDisplayDate);
+        await loadAkhirDinasData(tanggalYMD, tanggalDisplay);
       }
     }
 
-    // Load Data Form Awal Dinas
-    async function loadAwalDinasData(inputDate, formattedDisplayDate) {
+    async function loadAwalDinasData(tanggalYMD, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAwal");
       tbody.innerHTML = `<tr><td colspan="6" style="padding: 20px;">Memuat data awal dinas tanggal ${formattedDisplayDate}...</td></tr>`;
 
       try {
-        const response = await fetch(`${API_URL}?action=getCetakAwalDinasData&tanggal=${encodeURIComponent(inputDate)}`);
+        const response = await fetch(`${API_URL}?action=getCetakAwalDinasData&tanggal=${encodeURIComponent(tanggalYMD)}`);
         const result = await response.json();
 
         if (result.status === "success" || result.result === "success") {
@@ -691,7 +622,6 @@
             reportList.forEach(item => {
               const masinis = item.masinis || "-";
               const asisten = item.asistenMasinis || "-";
-              
               let kedMasinis = item.kedudukan || "-";
               let kedAsisten = item.kedudukan || "-";
               if (item.kedudukan && item.kedudukan.includes(" / ")) {
@@ -703,18 +633,8 @@
               html += `
                 <tr>
                   <td>${item.noKa || '-'}</td>
-                  <td>
-                    <div class="double-row-box">
-                      <div class="double-row-item">${masinis}</div>
-                      <div class="double-row-item">${asisten}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="double-row-box">
-                      <div class="double-row-item">${kedMasinis}</div>
-                      <div class="double-row-item">${kedAsisten}</div>
-                    </div>
-                  </td>
+                  <td><div class="double-row-box"><div class="double-row-item">${masinis}</div><div class="double-row-item">${asisten}</div></div></td>
+                  <td><div class="double-row-box"><div class="double-row-item">${kedMasinis}</div><div class="double-row-item">${kedAsisten}</div></div></td>
                   <td>${item.noLokomotif || '-'}</td>
                   <td>${item.tonase || '0'}</td>
                   <td class="text-left">${item.keterangan || '-'}</td>
@@ -738,7 +658,7 @@
           document.getElementById("nippPenyeliaMalamAwal").textContent = penyeliaData.malam?.nipp && penyeliaData.malam.nipp !== "-" ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
 
         } else {
-          Swal.fire("Gagal", result.message || "Gagal memuat data awal dinas.", "error");
+          Swal.fire("Gagal", result.message || "Gagal memuat data.", "error");
         }
       } catch (err) {
         console.error(err);
@@ -746,13 +666,12 @@
       }
     }
 
-    // Load Data Form Akhir Dinas
-    async function loadAkhirDinasData(inputDate, formattedDisplayDate) {
+    async function loadAkhirDinasData(tanggalYMD, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAkhir");
       tbody.innerHTML = `<tr><td colspan="8" style="padding: 20px;">Memuat data akhir dinas tanggal ${formattedDisplayDate}...</td></tr>`;
 
       try {
-        const response = await fetch(`${API_URL}?action=getCetakLaporanData&tanggal=${encodeURIComponent(inputDate)}`);
+        const response = await fetch(`${API_URL}?action=getCetakLaporanData&tanggal=${encodeURIComponent(tanggalYMD)}`);
         const result = await response.json();
 
         if (result.status === "success" || result.result === "success") {
@@ -765,7 +684,6 @@
             reportList.forEach(item => {
               const masinis = item.masinis || "-";
               const asisten = item.asistenMasinis || "-";
-
               let kedMasinis = item.kedudukan || "-";
               let kedAsisten = item.kedudukan || "-";
               if (item.kedudukan && item.kedudukan.includes(" / ")) {
@@ -780,18 +698,8 @@
                   <td>${item.noLokomotif || '-'}</td>
                   <td>${item.jamDatang || '-'}</td>
                   <td>${item.lambat || '0'}</td>
-                  <td>
-                    <div class="double-row-box">
-                      <div class="double-row-item">${masinis}</div>
-                      <div class="double-row-item">${asisten}</div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="double-row-box">
-                      <div class="double-row-item">${kedMasinis}</div>
-                      <div class="double-row-item">${kedAsisten}</div>
-                    </div>
-                  </td>
+                  <td><div class="double-row-box"><div class="double-row-item">${masinis}</div><div class="double-row-item">${asisten}</div></div></td>
+                  <td><div class="double-row-box"><div class="double-row-item">${kedMasinis}</div><div class="double-row-item">${kedAsisten}</div></div></td>
                   <td class="text-left">${item.kejadian || '-'}</td>
                   <td class="text-left">${item.keterangan || '-'}</td>
                 </tr>
@@ -814,7 +722,7 @@
           document.getElementById("nippPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nipp && penyeliaData.malam.nipp !== "-" ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
 
         } else {
-          Swal.fire("Gagal", result.message || "Gagal memuat data akhir dinas.", "error");
+          Swal.fire("Gagal", result.message || "Gagal memuat data.", "error");
         }
       } catch (err) {
         console.error(err);
@@ -827,33 +735,31 @@
       document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
       document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
 
+      flatpickrInstance = flatpickr("#inputTanggalCetak", {
+        dateFormat: "d/m/Y",
+        defaultDate: new Date(),
+        allowInput: false
+      });
+
       const imgEl = document.getElementById("penyeliaFoto");
       if (loggedInNipp) {
         const cleanNipp = String(loggedInNipp).trim();
-        const jpgPath = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
-        const pngPath = `../assets/struktur-organisasi/${cleanNipp}.png`;
-        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
-
-        imgEl.src = jpgPath;
+        imgEl.src = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
         imgEl.onerror = function() {
           if (this.src.endsWith(".jpg")) {
-            this.src = pngPath;
+            this.src = `../assets/struktur-organisasi/${cleanNipp}.png`;
           } else {
-            this.src = defaultAvatar;
+            this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
           }
         };
       }
 
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("inputTanggalCetak").value = today;
       loadDataByDate();
     });
 
     function toggleSidebar() {
       const sidebar = document.getElementById('app-sidebar');
-      if (sidebar) {
-        sidebar.classList.toggle('collapsed');
-      }
+      if (sidebar) sidebar.classList.toggle('collapsed');
     }
   </script>
 </body>
