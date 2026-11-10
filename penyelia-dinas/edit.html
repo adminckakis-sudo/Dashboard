@@ -6,20 +6,31 @@
   <title>Edit & Kelola Laporan Dinas - UPT Crew KA Kisaran</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- TOM-SELECT CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+  <!-- FLATPICKR UNTUK FORMAT TANGGAL dd/mm/yyyy -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background-image: linear-gradient(135deg, rgba(18, 29, 66, 0.9) 0%, rgba(28, 42, 95, 0.85) 100%), url('../assets/images/assesment.jpg');
+      background-image: linear-gradient(135deg, rgba(18, 29, 66, 0.92) 0%, rgba(28, 42, 95, 0.88) 100%), url('../assets/images/assesment.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
       background-repeat: no-repeat;
       font-family: 'Montserrat', sans-serif;
       color: #0f172a;
-      margin: 0;
-      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* TOPBAR PROFIL */
@@ -53,10 +64,20 @@
     }
     .btn-topbar-logout:hover { background: rgba(239, 68, 68, 0.9); color: #ffffff; }
 
+    .app-layout-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+    }
+
+    .app-main-content {
+      flex: 1;
+      padding-bottom: 40px;
+    }
+
     /* LAYOUT UTAMA */
     .form-page-container {
-      max-width: 1350px;
-      margin: 24px auto;
+      max-width: 100%;
+      margin: 20px auto;
       padding: 0 16px;
     }
 
@@ -147,9 +168,10 @@
       width: 100%;
       overflow-x: auto;
       border: 1px solid #cbd5e1;
-      background-color: #f8fafc;
-      max-height: 65vh;
+      background-color: #ffffff;
+      max-height: 70vh;
       overflow-y: auto;
+      position: relative;
     }
 
     .edit-table {
@@ -161,7 +183,6 @@
       background-color: #ffffff;
     }
     
-    /* Header mirip Google Sheets / Excel (abu-abu terang dengan border tegas) */
     .edit-table th {
       background-color: #f1f5f9;
       color: #334155;
@@ -180,6 +201,7 @@
       text-align: center;
       vertical-align: middle;
       background-color: #ffffff;
+      position: relative;
     }
     
     .edit-table tr:hover td {
@@ -189,27 +211,46 @@
     /* Sel Input mirip Spreadsheet */
     .edit-input {
       width: 100%;
-      padding: 8px 10px;
-      border: 1px solid transparent;
-      border-radius: 0px;
-      font-size: 0.8rem;
+      padding: 6px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 0.78rem;
       font-family: inherit;
       box-sizing: border-box;
-      background-color: transparent;
+      background-color: #ffffff;
       transition: all 0.1s;
       white-space: pre-wrap;
       word-wrap: break-word;
       resize: none;
-      overflow: hidden;
+      min-height: 36px;
     }
     
     .edit-input:focus {
       background-color: #ffffff;
-      border: 2px solid #1a73e8 !important; /* Biru ala Google Sheets */
+      border: 2px solid #1a73e8 !important;
       outline: none;
       box-shadow: 0 1px 3px rgba(26, 115, 232, 0.3);
       z-index: 5;
-      position: relative;
+    }
+
+    /* PENYESUAIAN TOMSELECT DALAM TABEL EDIT */
+    .ts-wrapper {
+      width: 100% !important;
+      min-width: 100% !important;
+    }
+    .ts-control {
+      padding: 4px 8px !important;
+      border-radius: 4px !important;
+      min-height: 36px !important;
+      font-size: 0.78rem !important;
+      text-align: left !important;
+      border: 1px solid #cbd5e1 !important;
+    }
+    .ts-dropdown {
+      z-index: 9999 !important;
+      font-size: 0.78rem !important;
+      text-align: left !important;
+      position: absolute !important;
     }
 
     .action-cell {
@@ -270,7 +311,6 @@
   </header>
 
   <div class="app-layout-wrapper">
-    <!-- SIDEBAR -->
     <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
       <div>
         <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
@@ -319,15 +359,22 @@
         <div class="filter-card">
           <div class="filter-group">
             <label class="filter-label">Pilih Tanggal Dinas:</label>
-            <input type="date" id="inputTanggalEdit" class="filter-input">
+            <input type="text" id="inputTanggalEdit" class="filter-input">
           </div>
-          <button type="button" class="btn-load" onclick="loadEditData()">Tampilkan Data</button>
+          
+          <!-- GRUP TOMBOL SEJAJAR -->
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button type="button" class="btn-load" onclick="loadEditData()">Tampilkan Data</button>
+            <button type="button" class="btn-save-all" id="btnSaveAll" onclick="saveAllRows()" style="background-color: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: background 0.2s;">
+              Simpan Seluruh Perubahan
+            </button>
+          </div>
         </div>
 
         <!-- TABEL DATA GAYA SPREADSHEET -->
         <div class="table-card">
           <div class="spreadsheet-info-bar">
-            <span>💡 <strong>Tips:</strong> Klik sel untuk mengedit langsung. Tekan tombol <kbd style="background:#e2e8f0; padding:2px 5px; border-radius:3px;">Enter</kbd> untuk menyimpan. Jangan lupa klik <strong>Simpan</strong> pada baris terkait setelah selesai mengubah.</span>
+            <span>💡 <strong>Tips:</strong> Cari/pilih nama Masinis & Asisten Masinis untuk otomatis memperbarui Kedudukan. Tekan <strong>Simpan</strong> pada baris setelah mengubah.</span>
             <span id="rowCountInfo">Total Baris: 0</span>
           </div>
           <div class="table-responsive">
@@ -340,7 +387,7 @@
               </thead>
               <tbody id="tableBodyRow">
                 <tr>
-                  <td colspan="10" style="padding: 30px; color: #64748b; font-weight: 500;">Silakan pilih tanggal dan klik "Tampilkan Data".</td>
+                  <td colspan="12" style="padding: 30px; color: #64748b; font-weight: 500;">Silakan pilih tanggal dan klik "Tampilkan Data".</td>
                 </tr>
               </tbody>
             </table>
@@ -351,6 +398,8 @@
     </main>
   </div>
 
+  <!-- SCRIPT TOM-SELECT -->
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
   <script>
     const loggedInNama = localStorage.getItem("loggedInUserNama");
     const loggedInNipp = localStorage.getItem("loggedInUserNipp");
@@ -374,6 +423,24 @@
 
     let activeEditType = 'awal';
     const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+    
+    let crewOptions = [];
+    let crewKedudukanMap = {};
+    const optionKedudukanList = ["UPT CREW KA KIS", "UPT CREW KA TBI", "UPT CREW KA MDN"];
+
+    // Ambil Data Crew & Kedudukan dari API
+    async function loadCrewData() {
+      try {
+        const res = await fetch(API_URL + "?action=getFormDinasData");
+        const data = await res.json();
+        if (data.status === "success" || data.result === "success") {
+          crewOptions = (data.crew || []).map(item => ({ value: item, text: item }));
+          crewKedudukanMap = data.crewDetails || {};
+        }
+      } catch (err) {
+        console.error("Gagal memuat master data crew:", err);
+      }
+    }
 
     function switchEditTab(type) {
       activeEditType = type;
@@ -382,98 +449,181 @@
       loadEditData();
     }
 
-    async function loadEditData() {
-      const tanggal = document.getElementById("inputTanggalEdit").value;
-      if (!tanggal) {
-        Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
+async function loadEditData() {
+  // 1. Ambil instance tanggal dari Flatpickr (Format YYYY-MM-DD untuk backend)
+  let tanggalYMD = "";
+  if (flatpickrEditInstance && flatpickrEditInstance.selectedDates.length > 0) {
+    tanggalYMD = flatpickrEditInstance.formatDate(flatpickrEditInstance.selectedDates[0], "Y-m-d");
+  } else {
+    // Fallback jika diketik manual atau Flatpickr belum siap
+    const rawVal = document.getElementById("inputTanggalEdit").value.trim();
+    const parts = rawVal.split("/");
+    if (parts.length === 3) {
+      tanggalYMD = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    } else {
+      tanggalYMD = rawVal;
+    }
+  }
+
+  const formattedDisplayDate = document.getElementById("inputTanggalEdit").value;
+
+  if (!tanggalYMD) {
+    Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
+    return;
+  }
+
+  const headerRow = document.getElementById("tableHeaderRow");
+  const tbody = document.getElementById("tableBodyRow");
+  document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
+  tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b;">Memuat data tanggal ${formattedDisplayDate}...</td></tr>`;
+
+  try {
+    // Kirim tanggalYMD (YYYY-MM-DD) ke backend API Apps Script
+    const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggalYMD)}&tipe=${activeEditType}`);
+    const result = await res.json();
+
+    if (result.status === "success") {
+      const rows = result.data || [];
+      document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
+      
+      if (rows.length === 0) {
+        headerRow.innerHTML = `<th>Informasi</th>`;
+        tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b; font-weight: 500;">Tidak ada data laporan ditemukan pada tanggal ${formattedDisplayDate}.</td></tr>`;
         return;
       }
+      
+      const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
 
-      const headerRow = document.getElementById("tableHeaderRow");
-      const tbody = document.getElementById("tableBodyRow");
-      document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
-      tbody.innerHTML = `<tr><td colspan="10" style="padding: 30px; color: #64748b;">Memuat data tanggal ${tanggal}...</td></tr>`;
+      let customWidths = [];
+      if (activeEditType === 'awal') {
+        customWidths = [50, 70, 80, 90, 260, 260, 200, 60, 150, 100, 80];
+      } else {
+        customWidths = [50, 70, 80, 90, 60, 70, 260, 260, 200, 160, 150, 100, 80];
+      }
 
-      try {
-        const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggal)}&tipe=${activeEditType}`);
-        const result = await res.json();
+      let colgroupHtml = "";
+      keys.forEach((k, idx) => {
+        const w = customWidths[idx] || 130; 
+        colgroupHtml += `<col style="width: ${w}px;">`;
+      });
+      colgroupHtml += `<col style="width: 140px;">`;
+      document.getElementById("tableColgroup").innerHTML = colgroupHtml;
 
-        if (result.status === "success") {
-          const rows = result.data || [];
-          document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
-          
-          if (rows.length === 0) {
-            headerRow.innerHTML = `<th>Informasi</th>`;
-            tbody.innerHTML = `<tr><td colspan="6" style="padding: 30px; color: #64748b; font-weight: 500;">Tidak ada data laporan ditemukan pada tanggal tersebut.</td></tr>`;
-            return;
-          }
-          
-const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
+      let thHtml = "";
+      keys.forEach(k => { thHtml += `<th>${k}</th>`; });
+      thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
+      headerRow.innerHTML = thHtml;
 
-          // Tentukan lebar kolom terpisah berdasarkan tab yang aktif
-          let customWidths = [];
-          if (activeEditType === 'awal') {
-            // Lebar untuk 11 kolom Form Awal Dinas
-            customWidths = [50, 70, 80, 90, 280, 280, 180, 50, 150, 100, 80];
-          } else {
-            // Lebar untuk 12 kolom Form Akhir Dinas
-            customWidths = [50, 70, 80, 90, 60, 70, 280, 280, 180, 160, 150, 100, 80];
-          }
+      let trHtml = "";
+      rows.forEach((row, rowIndex) => {
+        trHtml += `<tr data-rowindex="${row._rowIndex}">`;
+        keys.forEach((k, colIndex) => {
+          const val = row[k] !== undefined ? row[k] : '';
+          const cleanKey = k.toLowerCase().replace(/[^a-z]/g, "");
+          const isReadOnly = (cleanKey === 'no' || cleanKey === 'tanggal');
 
-          let colgroupHtml = "";
-          keys.forEach((k, idx) => {
-            const w = customWidths[idx] || 130; 
-            colgroupHtml += `<col style="width: ${w}px;">`;
-          });
-          colgroupHtml += `<col style="width: 140px;">`; // Untuk kolom aksi cepat
-          document.getElementById("tableColgroup").innerHTML = colgroupHtml;          // ---------------------------------------------------------
+          if (isReadOnly) {
+            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}" readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;">${val}</textarea></td>`;
+          } else if (cleanKey === 'masinis' || cleanKey.includes('asistenmasinis') || cleanKey.includes('asisten')) {
+            trHtml += `<td><select class="ts-crew-edit" data-key="${k}" data-row="${rowIndex}"><option value="${val}">${val}</option></select></td>`;
+          } else if (cleanKey === 'kedudukan') {
+            let parts = String(val).split(" / ");
+            let kedM = parts[0] ? parts[0].trim() : "UPT CREW KA KIS";
+            let kedA = parts[1] ? parts[1].trim() : kedM;
 
-          let thHtml = "";
-          keys.forEach(k => { thHtml += `<th>${k}</th>`; });
-          thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
-          headerRow.innerHTML = thHtml;
-
-          let trHtml = "";
-          rows.forEach((row, rowIndex) => {
-            trHtml += `<tr data-rowindex="${row._rowIndex}">`;
-            keys.forEach((k, colIndex) => {
-              const val = row[k] !== undefined ? row[k] : '';
-              const isReadOnly = (k.toLowerCase() === 'no' || k.toLowerCase() === 'tanggal') ? 'readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;"' : '';
-              trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}" ${isReadOnly}>${val}</textarea></td>`;
-            });
             trHtml += `
               <td>
-                <div class="action-cell">
-                  <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
-                  <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
+                <div style="display:flex; flex-direction:column; gap:4px; padding:2px;">
+                  <select class="edit-select ked-masinis-select" data-key="${k}" data-role="masinis" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
+                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedM ? 'selected' : ''}>${opt}</option>`).join('')}
+                  </select>
+                  <select class="edit-select ked-asisten-select" data-key="${k}" data-role="asisten" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
+                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedA ? 'selected' : ''}>${opt}</option>`).join('')}
+                  </select>
                 </div>
               </td>
             `;
-            trHtml += `</tr>`;
-          });
-          tbody.innerHTML = trHtml;
-          initSpreadsheetKeyboardNav();
-        }
-      } catch (err) {
-        console.error(err);
-        document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
-        Swal.fire("Error", "Gagal memuat data dari server.", "error");
-      }
+          } else {
+            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}">${val}</textarea></td>`;
+          }
+        });
+
+        trHtml += `
+          <td>
+            <div class="action-cell">
+              <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
+              <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
+            </div>
+          </td>
+        `;
+        trHtml += `</tr>`;
+      });
+      tbody.innerHTML = trHtml;
+
+      initTableTomSelects();
+      initSpreadsheetKeyboardNav();
+    } else {
+      Swal.fire("Gagal", result.message || "Gagal mengambil data.", "error");
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
+    Swal.fire("Error", "Gagal memuat data dari server.", "error");
+  }
+}
+
+// Inisialisasi TomSelect di setiap sel Masinis & Asisten Masinis (Support Input Manual)
+function initTableTomSelects() {
+  const tsElements = document.querySelectorAll(".ts-crew-edit");
+  tsElements.forEach(el => {
+    const keyName = el.getAttribute("data-key").toLowerCase().replace(/[^a-z]/g, "");
+    const tr = el.closest("tr");
+    const currentValue = el.value ? el.value.trim() : "";
+
+    let currentOptions = [...crewOptions];
+    if (currentValue && !currentOptions.some(o => o.value === currentValue)) {
+      currentOptions.unshift({ value: currentValue, text: currentValue });
     }
 
-    // Fungsi Navigasi Keyboard ala Spreadsheet (Panah Atas/Bawah/Kiri/Kanan & Enter)
-      function initSpreadsheetKeyboardNav() {
+    const ts = new TomSelect(el, {
+      options: currentOptions,
+      items: currentValue ? [currentValue] : [],
+      // FITUR INPUT MANUAL (PERSIS ASSESMENT.HTML)
+      create: function(input) {
+        const cleanInput = input.trim().toUpperCase();
+        return { value: cleanInput, text: cleanInput };
+      },
+      createFilter: function(input) {
+        return input.trim().length > 0;
+      },
+      placeholder: "Cari atau Ketik NAMA - NIPP..."
+    });
+
+    // Sinkronisasi Kedudukan saat nama crew dipilih atau diketik
+    ts.on('change', function(val) {
+      const matchedKedudukan = crewKedudukanMap[val];
+      if (matchedKedudukan) {
+        if (keyName === 'masinis') {
+          const selKedM = tr.querySelector(".ked-masinis-select");
+          if (selKedM) selKedM.value = matchedKedudukan;
+        } else if (keyName.includes('asisten')) {
+          const selKedA = tr.querySelector(".ked-asisten-select");
+          if (selKedA) selKedA.value = matchedKedudukan;
+        }
+      }
+    });
+  });
+}
+
+    function initSpreadsheetKeyboardNav() {
       const inputs = document.querySelectorAll(".edit-input:not([readonly])");
       inputs.forEach(input => {
         input.addEventListener("keydown", function(e) {
           if (e.key === "Enter") {
             e.preventDefault();
-            // Temukan tombol simpan (💾 Simpan) pada baris yang sama lalu jalankan
             const tr = this.closest("tr");
             const saveBtn = tr.querySelector(".btn-save-row");
-            if (saveBtn) {
-              saveBtn.click();
-            }
+            if (saveBtn) saveBtn.click();
           }
         });
       });
@@ -482,12 +632,29 @@ const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
     async function saveRow(btn) {
       const tr = btn.closest("tr");
       const rowIndex = tr.getAttribute("data-rowindex");
-      const inputs = tr.querySelectorAll(".edit-input");
       
       let rowData = {};
+
+      // 1. Ambil input standar/textarea
+      const inputs = tr.querySelectorAll(".edit-input");
       inputs.forEach(input => {
         rowData[input.getAttribute("data-key")] = input.value;
       });
+
+      // 2. Ambil nilai TomSelect Masinis & Asisten Masinis
+      const tsElements = tr.querySelectorAll(".ts-crew-edit");
+      tsElements.forEach(selectEl => {
+        const key = selectEl.getAttribute("data-key");
+        rowData[key] = selectEl.value || "-";
+      });
+
+      // 3. Gabungkan Kedudukan Masinis & Asisten Masinis (Format: KedMasinis / KedAsisten)
+      const selKedM = tr.querySelector(".ked-masinis-select");
+      const selKedA = tr.querySelector(".ked-asisten-select");
+      if (selKedM && selKedA) {
+        const keyKed = selKedM.getAttribute("data-key");
+        rowData[keyKed] = `${selKedM.value} / ${selKedA.value}`;
+      }
 
       const originalText = btn.innerHTML;
       btn.disabled = true; 
@@ -555,7 +722,7 @@ const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
       }
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", async function() {
       document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
       document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
       document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
@@ -575,13 +742,237 @@ const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
           }
         };
       }
+
+      await loadCrewData();
     });
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
-    // Fungsi agar tinggi textarea otomatis menyesuaikan isi teks
-function autoResizeTextarea(el) {
-  el.style.height = 'auto';
-  el.style.height = (el.scrollHeight + 2) + 'px';
+
+    async function saveAllRows() {
+  const tbody = document.getElementById("tableBodyRow");
+  const trList = tbody.querySelectorAll("tr[data-rowindex]");
+
+  if (trList.length === 0) {
+    Swal.fire("Peringatan", "Tidak ada data yang dapat disimpan.", "warning");
+    return;
+  }
+
+  const btnSaveAll = document.getElementById("btnSaveAll");
+  const originalText = btnSaveAll.innerHTML;
+  btnSaveAll.disabled = true;
+  btnSaveAll.innerHTML = "⏳ Menyimpan Semua...";
+
+  let successCount = 0;
+  let failCount = 0;
+
+  // Melakukan perulangan untuk setiap baris di tabel
+  for (const tr of trList) {
+    const rowIndex = tr.getAttribute("data-rowindex");
+    let rowData = {};
+
+    // 1. Ambil input teks/textarea
+    const inputs = tr.querySelectorAll(".edit-input");
+    inputs.forEach(input => {
+      rowData[input.getAttribute("data-key")] = input.value;
+    });
+
+    // 2. Ambil nilai dari TomSelect (Masinis & Asisten)
+    const tsElements = tr.querySelectorAll(".ts-crew-edit");
+    tsElements.forEach(selectEl => {
+      const key = selectEl.getAttribute("data-key");
+      rowData[key] = selectEl.value || "-";
+    });
+
+    // 3. Ambil nilai Kedudukan
+    const selKedM = tr.querySelector(".ked-masinis-select");
+    const selKedA = tr.querySelector(".ked-asisten-select");
+    if (selKedM && selKedA) {
+      const keyKed = selKedM.getAttribute("data-key");
+      rowData[keyKed] = `${selKedM.value} / ${selKedA.value}`;
+    }
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "updateFormDinas",
+          tipe: activeEditType,
+          rowIndex: rowIndex,
+          data: rowData
+        })
+      });
+      const result = await res.json();
+      if (result.status === "success") {
+        successCount++;
+      } else {
+        failCount++;
+      }
+    } catch (err) {
+      failCount++;
+    }
+  }
+
+  btnSaveAll.disabled = false;
+  btnSaveAll.innerHTML = originalText;
+
+  if (failCount === 0) {
+    Swal.fire("Berhasil", `Seluruh perubahan (${successCount} baris) berhasil disimpan!`, "success");
+  } else {
+    Swal.fire("Selesai dengan Catatan", `Tersimpan: ${successCount} baris, Gagal: ${failCount} baris.`, "warning");
+  }
+}
+
+let flatpickrEditInstance = null;
+
+document.addEventListener("DOMContentLoaded", async function() {
+  document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+  document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+  document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+
+  // Inisialisasi Flatpickr format dd/mm/yyyy
+  flatpickrEditInstance = flatpickr("#inputTanggalEdit", {
+    dateFormat: "d/m/Y",
+    defaultDate: new Date(),
+    allowInput: false
+  });
+
+  const imgEl = document.getElementById("penyeliaFoto");
+  if (imgEl && loggedInNipp) {
+    const cleanNipp = String(loggedInNipp).trim();
+    imgEl.src = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
+    imgEl.onerror = function() {
+      if (this.src.endsWith(".jpg")) {
+        this.src = `../assets/struktur-organisasi/${cleanNipp}.png`;
+      } else {
+        this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
+      }
+    };
+  }
+
+  await loadCrewData();
+});
+
+async function loadEditData() {
+  let tanggalYMD = "";
+
+  // 1. Ambil format YYYY-MM-DD langsung dari instance Flatpickr
+  if (typeof flatpickrEditInstance !== "undefined" && flatpickrEditInstance && flatpickrEditInstance.selectedDates.length > 0) {
+    tanggalYMD = flatpickrEditInstance.formatDate(flatpickrEditInstance.selectedDates[0], "Y-m-d");
+  } else {
+    // Fallback manual memecah string dd/mm/yyyy -> yyyy-mm-dd
+    const rawVal = document.getElementById("inputTanggalEdit").value.trim();
+    const parts = rawVal.split("/");
+    if (parts.length === 3) {
+      tanggalYMD = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+    } else {
+      tanggalYMD = rawVal;
+    }
+  }
+
+  const formattedDisplayDate = document.getElementById("inputTanggalEdit").value;
+
+  if (!tanggalYMD) {
+    Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
+    return;
+  }
+
+  const headerRow = document.getElementById("tableHeaderRow");
+  const tbody = document.getElementById("tableBodyRow");
+  document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
+  tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b;">Memuat data tanggal ${formattedDisplayDate}...</td></tr>`;
+
+  try {
+    const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggalYMD)}&tipe=${activeEditType}`);
+    const result = await res.json();
+
+    if (result.status === "success") {
+      const rows = result.data || [];
+      document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
+      
+      if (rows.length === 0) {
+        headerRow.innerHTML = `<th>Informasi</th>`;
+        tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b; font-weight: 500;">Tidak ada data laporan ditemukan pada tanggal ${formattedDisplayDate}.</td></tr>`;
+        return;
+      }
+      
+      const keys = Object.keys(rows[0]).filter(k => k !== '_rowIndex');
+
+      let customWidths = [];
+      if (activeEditType === 'awal') {
+        customWidths = [50, 70, 80, 90, 260, 260, 200, 60, 150, 100, 80];
+      } else {
+        customWidths = [50, 70, 80, 90, 60, 70, 260, 260, 200, 160, 150, 100, 80];
+      }
+
+      let colgroupHtml = "";
+      keys.forEach((k, idx) => {
+        const w = customWidths[idx] || 130; 
+        colgroupHtml += `<col style="width: ${w}px;">`;
+      });
+      colgroupHtml += `<col style="width: 140px;">`;
+      document.getElementById("tableColgroup").innerHTML = colgroupHtml;
+
+      let thHtml = "";
+      keys.forEach(k => { thHtml += `<th>${k}</th>`; });
+      thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
+      headerRow.innerHTML = thHtml;
+
+      let trHtml = "";
+      rows.forEach((row, rowIndex) => {
+        trHtml += `<tr data-rowindex="${row._rowIndex}">`;
+        keys.forEach((k, colIndex) => {
+          const val = row[k] !== undefined ? row[k] : '';
+          const cleanKey = k.toLowerCase().replace(/[^a-z]/g, "");
+          const isReadOnly = (cleanKey === 'no' || cleanKey === 'tanggal');
+
+          if (isReadOnly) {
+            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}" readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;">${val}</textarea></td>`;
+          } else if (cleanKey === 'masinis' || cleanKey.includes('asistenmasinis') || cleanKey.includes('asisten')) {
+            trHtml += `<td><select class="ts-crew-edit" data-key="${k}" data-row="${rowIndex}"><option value="${val}">${val}</option></select></td>`;
+          } else if (cleanKey === 'kedudukan') {
+            let parts = String(val).split(" / ");
+            let kedM = parts[0] ? parts[0].trim() : "UPT CREW KA KIS";
+            let kedA = parts[1] ? parts[1].trim() : kedM;
+
+            trHtml += `
+              <td>
+                <div style="display:flex; flex-direction:column; gap:4px; padding:2px;">
+                  <select class="edit-select ked-masinis-select" data-key="${k}" data-role="masinis" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
+                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedM ? 'selected' : ''}>${opt}</option>`).join('')}
+                  </select>
+                  <select class="edit-select ked-asisten-select" data-key="${k}" data-role="asisten" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
+                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedA ? 'selected' : ''}>${opt}</option>`).join('')}
+                  </select>
+                </div>
+              </td>
+            `;
+          } else {
+            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}">${val}</textarea></td>`;
+          }
+        });
+
+        trHtml += `
+          <td>
+            <div class="action-cell">
+              <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
+              <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
+            </div>
+          </td>
+        `;
+        trHtml += `</tr>`;
+      });
+      tbody.innerHTML = trHtml;
+
+      initTableTomSelects();
+      initSpreadsheetKeyboardNav();
+    } else {
+      Swal.fire("Gagal", result.message || "Gagal mengambil data.", "error");
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
+    Swal.fire("Error", "Gagal memuat data dari server.", "error");
+  }
 }
   </script>
 </body>
