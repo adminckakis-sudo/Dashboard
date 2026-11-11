@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cetak Report G43 - UPT Crew KA Kisaran</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Flatpickr CSS & JS (Format dd/mm/yyyy) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
+  
+  <style>
+    body {
+      background-image: linear-gradient(135deg, rgba(18, 29, 66, 0.9) 0%, rgba(28, 42, 95, 0.85) 100%), url('../assets/images/assesment.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      font-family: 'Montserrat', sans-serif;
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+    }
+
+    .topbar-profile-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .topbar-profile-info { display: flex; flex-direction: column; text-align: right; }
+    .topbar-penyelia-nama { font-size: 0.85rem; font-weight: 800; color: #ffffff; line-height: 1.2; }
+    .topbar-penyelia-meta { font-size: 0.72rem; color: #cbd5e1; font-weight: 600; }
+    .topbar-penyelia-jabatan { font-size: 0.65rem; font-weight: 700; color: #ff9d5c; text-transform: uppercase; letter-spacing: 0.5px; }
+    .topbar-penyelia-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--kai-orange, #F06400); background-color: #ffffff; flex-shrink: 0; }
+
+    .btn-topbar-logout {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      margin-left: 4px;
+    }
+    .btn-topbar-logout:hover { background: rgba(239, 68, 68, 0.9); color: #ffffff; }
+
+    .form-page-container {
+      max-width: 1450px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    .page-title-outer {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .filter-card {
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      flex-wrap: wrap;
+    }
+
+    .filter-group { display: flex; align-items: center; gap: 12px; }
+    .filter-label { font-size: 0.85rem; font-weight: 700; color: #334155; }
+    .filter-input { padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; font-family: inherit; outline: none; }
+    .filter-input:focus { border-color: var(--kai-orange, #F06400); box-shadow: 0 0 0 3px rgba(240, 100, 0, 0.15); }
+    
+    .btn-load {
+      background-color: #1C2A5F;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-load:hover { background-color: #121d42; }
+
+    .btn-action-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-sync {
+      background-color: #059669;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-sync:hover { background-color: #047857; }
+
+    .btn-edit-link {
+      background-color: #1C2A5F;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-edit-link:hover { background-color: #2b3e82; }
+
+    .btn-print-link {
+      background-color: var(--kai-orange, #F06400);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-print-link:hover { background-color: #d95800; }
+
+    .table-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    }
+
+    .table-header-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1C2A5F;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .table-header-sub {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1C2A5F;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    .view-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      background-color: #ffffff;
+    }
+
+    .view-table th {
+      background-color: #1C2A5F;
+      color: #ffffff;
+      padding: 8px 10px;
+      text-align: center;
+      font-weight: 700;
+      border: 1px solid #2d3e75;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    .view-table td {
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
+      text-align: center;
+      vertical-align: middle;
+      color: #1e293b;
+    }
+
+    /* Status Premi Colors */
+    .status-sudah {
+      background-color: #fef9c3 !important;
+      color: #ca8a04 !important;
+      font-weight: 700;
+    }
+
+    .status-terkirim {
+      background-color: #dcfce7 !important;
+      color: #15803d !important;
+      font-weight: 700;
+    }
+
+    .sidebar-item {
+      display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+      color: #cbd5e1; text-decoration: none; border-radius: var(--radius-sm, 6px); font-weight: 600; font-size: 0.86rem;
+    }
+    .sidebar-item:hover, .sidebar-item.active { color: #ffffff; background: rgba(240, 100, 0, 0.25); border: 1px solid rgba(240, 100, 0, 0.45); }
+
+    /* CSS Khusus Cetak / Simpan Ke PDF */
+    @media print {
+      body { background: #ffffff !important; }
+      .top-header, .app-sidebar, .filter-card, .page-title-outer, .no-print { display: none !important; }
+      .form-page-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
+      .table-card { box-shadow: none !important; padding: 0 !important; }
+      .view-table th { background-color: #1C2A5F !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .status-sudah { background-color: #fef9c3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .status-terkirim { background-color: #dcfce7 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-header" role="banner">
+    <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+      </div>
+
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+        <div class="topbar-profile-container">
+          <div class="topbar-profile-info">
+            <span id="penyeliaNama" class="topbar-penyelia-nama">--</span>
+            <span id="penyeliaNipp" class="topbar-penyelia-meta">NIPP. --</span>
+            <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
+          </div>
+          <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto" class="topbar-penyelia-avatar">
+          <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout-wrapper">
+  <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+      <div>
+        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange, #F06400); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+        
+        <nav style="display: flex; flex-direction: column; gap: 16px;">
+          <a href="../index.html" class="sidebar-item" title="Homepage">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="sidebar-text">Homepage</span>
+          </a>
+
+          <a href="./assesment.html" class="sidebar-item" title="Laporan Dinas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="#1C2A5F" stroke="#1C2A5F"></rect>
+              <path d="M9 14l2 2 4-4" stroke="#F06400" stroke-width="2.5"></path>
+            </svg>
+            <span class="sidebar-text">Laporan Dinas</span>
+          </a>
+        <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan Dinas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Laporan Dinas</span>
+          </a>
+
+          <a href="./edit-premi.html" class="sidebar-item active" title="Report G43A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+            <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+            </svg>
+            <span class="sidebar-text">Report G43A</span>
+          </a>
+        <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Report G43A</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="app-main-content">
+      <div class="dashboard-content form-page-container">
+
+        <h1 class="page-title-outer">Cetak Report G43A</h1>
+
+        <div class="filter-card">
+          <div class="filter-group">
+            <label class="filter-label">Tanggal Dinas:</label>
+            <input type="text" id="inputTanggalView" class="filter-input">
+            <button type="button" class="btn-load" onclick="loadViewData()">Tampilkan Data</button>
+          </div>
+          <div class="btn-action-group">
+            <button type="button" class="btn-sync" onclick="handleSyncO241()">Sync Data</button>
+            <!-- BUTTON EDIT DATA PREMI -->
+            <a href="./edit-premi.html" class="btn-edit-link">Edit Data Premi</a>
+            <!-- BUTTON FUNGSI CETAK/PDF (LANGSUNG MEMANGGIL DIALOG PRINT BROWSER) -->
+            <button type="button" class="btn-print-link" onclick="window.print()"> Cetak / PDF</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header-title">
+            LAPORAN PREMI AWAK KA UPT CREW KA KELAS C KISARAN
+          </div>
+          <div class="table-header-sub" id="viewSubPeriode">
+            -
+          </div>
+
+          <div class="table-responsive">
+            <table class="view-table">
+              <thead>
+                <tr>
+                  <th rowspan="2" style="width: 4%;">NO</th>
+                  <th rowspan="2" style="width: 18%;">NAMA CREW</th>
+                  <th rowspan="2" style="width: 10%;">NIPP</th>
+                  <th rowspan="2" style="width: 7%;">JABATAN</th>
+                  <th rowspan="2" style="width: 11%;">NO DINASAN</th>
+                  <th rowspan="2" style="width: 9%;">NO KA</th>
+                  <th rowspan="2" style="width: 11%;">RELASI</th>
+                  <th colspan="2" style="width: 20%;">JUMLAH PREMI</th>
+                  <th rowspan="2" style="width: 10%;">KETERANGAN</th>
+                </tr>
+                <tr>
+                  <th style="width: 10%;">PREMI</th>
+                  <th style="width: 10%;">PREMI</th>
+                </tr>
+              </thead>
+              <tbody id="viewTableBody">
+                <tr>
+                  <td colspan="10" style="padding: 24px; color: #64748b; text-align: center;">
+                    Silakan pilih tanggal dan klik <strong>Tampilkan Data</strong>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+<script>
+    const loggedInNama = localStorage.getItem("loggedInUserNama");
+    const loggedInNipp = localStorage.getItem("loggedInUserNipp");
+    const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
+
+    if (!loggedInNama || !loggedInNipp) {
+      Swal.fire({ title: 'Akses Ditolak!', text: 'Login terlebih dahulu.', icon: 'warning', confirmButtonColor: '#1C2A5F' }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+
+    function handleLogout() {
+      Swal.fire({
+        title: 'Konfirmasi Logout', text: 'Yakin ingin keluar dari sistem?', icon: 'question',
+        showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) { localStorage.clear(); window.location.href = "login.html"; }
+      });
+    }
+
+    const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
+
+    function formatRupiah(val) {
+      const num = Number(val);
+      if (!num || isNaN(num) || num === 0) return "-";
+      return "Rp " + num.toLocaleString("id-ID");
+    }
+
+    function formatTanggalDisplay(dateStr) {
+      if (!dateStr) return "-";
+      
+      const parts = dateStr.split("-");
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const monthIdx = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+
+        const monthNames = [
+          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        return `${day} ${monthNames[monthIdx]} ${year}`;
+      }
+
+      return dateStr;
+    }
+
+    function getStatusColorClass(statusStr) {
+      const s = String(statusStr || "").trim().toLowerCase();
+      if (s === "terkirim") return "status-terkirim";
+      return "status-sudah";
+    }
+
+    async function loadViewData() {
+      const tanggal = document.getElementById("inputTanggalView").value;
+      if (!tanggal) {
+        Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
+        return;
+      }
+
+      document.getElementById("viewSubPeriode").textContent = formatTanggalDisplay(tanggal);
+      const tbody = document.getElementById("viewTableBody");
+      tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #64748b; text-align: center;">Memuat data dinasan tanggal ${tanggal}...</td></tr>`;
+
+      try {
+        const res = await fetch(`${API_URL}?action=getDinasan&tanggal=${encodeURIComponent(tanggal)}`);
+        const result = await res.json();
+
+        if (result.status === "success" && Array.isArray(result.data)) {
+          const rawData = result.data;
+          
+          if (rawData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #64748b; font-weight: 500; text-align: center;">Tidak ada data dinasan ditemukan untuk tanggal ${tanggal}.</td></tr>`;
+            return;
+          }
+
+          renderTable(rawData, "viewTableBody");
+        } else {
+          tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #ef4444; text-align: center;">Gagal mengambil data dari server.</td></tr>`;
+        }
+      } catch (err) {
+        console.error("Error loading data:", err);
+        tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #ef4444; text-align: center;">Terjadi kesalahan koneksi server.</td></tr>`;
+      }
+    }
+
+    function renderTable(rawData, tbodyId) {
+      const tbody = document.getElementById(tbodyId);
+      if (!rawData || rawData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; text-align: center;">Tidak ada data.</td></tr>`;
+        return;
+      }
+
+      const grouped = {};
+      const orderList = [];
+
+      rawData.forEach(item => {
+        const key = item.no_dinasan || item.no_urut;
+        if (!grouped[key]) {
+          grouped[key] = { mas: null, asmas: null, key: key, no_urut: item.no_urut };
+          orderList.push(key);
+        }
+        if (String(item.posisi).toUpperCase() === "ATAS" || String(item.jabatan).toUpperCase() === "MAS") {
+          grouped[key].mas = item;
+        } else {
+          grouped[key].asmas = item;
+        }
+      });
+
+      let trHtml = "";
+      let rowCounter = 1;
+
+      orderList.forEach(key => {
+        const g = grouped[key];
+        const mas = g.mas || {};
+        const asmas = g.asmas || {};
+        const noDinas = g.key;
+        
+        const ketDisp = mas.keterangan || asmas.keterangan || "Sudah Diinput";
+        const colorClass = getStatusColorClass(ketDisp);
+
+        // Baris 1: MAS (ATAS)
+        trHtml += `
+          <tr>
+            <td rowspan="2" style="text-align: center; vertical-align: middle; font-weight: 800;">${rowCounter}</td>
+            <td style="text-align: left; font-weight: 700;">${mas.nama || '-'}</td>
+            <td style="text-align: center;">${mas.nipp || '-'}</td>
+            <td style="text-align: center; font-weight: 700;">MAS</td>
+            <td rowspan="2" style="text-align: center; vertical-align: middle; font-weight: 800; color: #1C2A5F;">${noDinas}</td>
+            <td style="text-align: center; font-weight: 700;">${mas.no_ka || '-'}</td>
+            <td style="text-align: center;">${mas.relasi || '-'}</td>
+            <td class="${colorClass}" style="text-align: right;">${formatRupiah(mas.premi_1)}</td>
+            <td class="${colorClass}" style="text-align: right;">${formatRupiah(mas.premi_2)}</td>
+            <td rowspan="2" class="${colorClass}" style="text-align: center; vertical-align: middle;">${ketDisp}</td>
+          </tr>
+        `;
+
+        // Baris 2: ASMAS (BAWAH)
+        trHtml += `
+          <tr>
+            <td style="text-align: left; font-weight: 700;">${asmas.nama || '-'}</td>
+            <td style="text-align: center;">${asmas.nipp || '-'}</td>
+            <td style="text-align: center; font-weight: 700;">ASMAS</td>
+            <td style="text-align: center; font-weight: 700;">${asmas.no_ka || '-'}</td>
+            <td style="text-align: center;">${asmas.relasi || '-'}</td>
+            <td class="${colorClass}" style="text-align: right;">${formatRupiah(asmas.premi_1)}</td>
+            <td class="${colorClass}" style="text-align: right;">${formatRupiah(asmas.premi_2)}</td>
+          </tr>
+        `;
+
+        rowCounter++;
+      });
+
+      tbody.innerHTML = trHtml;
+    }
+
+    async function handleSyncO241() {
+      Swal.fire({
+        title: 'Menyinkronkan Seluruh Tanggal...',
+        text: 'Update Data.',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "syncO241" })
+        });
+        const result = await res.json();
+
+        if (result.status === "success") {
+          await Swal.fire("Berhasil", result.message, "success");
+          loadViewData();
+        } else {
+          Swal.fire("Peringatan", result.message, "warning");
+        }
+      } catch (err) {
+        console.error("Sync error:", err);
+        Swal.fire("Error", "Gagal melakukan sinkronisasi server.", "error");
+      }
+    }
+
+    let fpTanggal;
+
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+
+      fpTanggal = flatpickr("#inputTanggalView", {
+        locale: "id",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d/m/Y",
+        defaultDate: new Date(),
+        onChange: function() {
+          loadViewData();
+        }
+      });
+
+      const imgEl = document.getElementById("penyeliaFoto");
+      if (imgEl && loggedInNipp) {
+        const cleanNipp = String(loggedInNipp).trim();
+        imgEl.src = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
+        imgEl.onerror = function() {
+          if (this.src.endsWith(".jpg")) {
+            this.src = `../assets/struktur-organisasi/${cleanNipp}.png`;
+          } else {
+            this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
+          }
+        };
+      }
+
+      loadViewData();
+    });
+
+    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+  </script>
+</body>
+</html>
