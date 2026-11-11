@@ -369,9 +369,9 @@
   </header>
 
   <div class="app-layout-wrapper">
-    <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+  <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
       <div>
-        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange, #F06400); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
         
         <nav style="display: flex; flex-direction: column; gap: 16px;">
           <a href="../index.html" class="sidebar-item" title="Homepage">
@@ -389,14 +389,30 @@
             </svg>
             <span class="sidebar-text">Laporan Dinas</span>
           </a>
-
-          <a href="./cetak-laporan.html" class="sidebar-item active" title="Cetak Laporan">
+        <a href="./cetak.html" class="sidebar-item active" title="Cetak Laporan Dinas">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
               <rect x="6" y="14" width="12" height="8"></rect>
             </svg>
-            <span class="sidebar-text">Cetak Laporan</span>
+            <span class="sidebar-text">Cetak Laporan Dinas</span>
+          </a>
+
+          <a href="./edit-premi.html" class="sidebar-item " title="Report G43A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+            <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+            </svg>
+            <span class="sidebar-text">Report G43A</span>
+          </a>
+        <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Report G43A</span>
           </a>
         </nav>
       </div>
@@ -528,35 +544,6 @@
   </div>
 
   <script>
-    // FUNGSI HELPER CONVERT DATE KE YYYY-MM-DD
-    function formatDateToYMD(dateVal) {
-      if (!dateVal) return "";
-      if (dateVal instanceof Date) {
-        var yyyy = dateVal.getFullYear();
-        var mm = String(dateVal.getMonth() + 1).padStart(2, '0');
-        var dd = String(dateVal.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-      }
-      var cleanStr = String(dateVal).trim();
-      if (/^\d{4}-\d{2}-\d{2}$/.test(cleanStr)) return cleanStr;
-      var parts = cleanStr.split("/");
-      if (parts.length === 3) {
-        var p1 = parts[0].padStart(2, '0');
-        var p2 = parts[1].padStart(2, '0');
-        var year = parts[2];
-        if (parseInt(p1, 10) > 12) return `${year}-${p2}-${p1}`;
-        return `${year}-${p2}-${p1}`;
-      }
-      var d = new Date(cleanStr);
-      if (!isNaN(d.getTime())) {
-        var y = d.getFullYear();
-        var m = String(d.getMonth() + 1).padStart(2, '0');
-        var day = String(d.getDate()).padStart(2, '0');
-        return `${y}-${m}-${day}`;
-      }
-      return cleanStr;
-    }
-
     const API_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
     let activePrintMode = 'awal';
     let flatpickrInstance = null;
@@ -587,7 +574,17 @@
     }
 
     async function loadDataByDate() {
-      const tanggalYMD = flatpickrInstance ? flatpickrInstance.formatDate(flatpickrInstance.selectedDates[0], "Y-m-d") : "";
+      let tanggalYMD = "";
+      if (flatpickrInstance && flatpickrInstance.selectedDates.length > 0) {
+        tanggalYMD = flatpickrInstance.formatDate(flatpickrInstance.selectedDates[0], "Y-m-d");
+      } else {
+        const rawVal = document.getElementById("inputTanggalCetak").value.trim();
+        const parts = rawVal.split("/");
+        if (parts.length === 3) {
+          tanggalYMD = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+      }
+
       const tanggalDisplay = document.getElementById("inputTanggalCetak").value;
 
       if (!tanggalYMD) {
