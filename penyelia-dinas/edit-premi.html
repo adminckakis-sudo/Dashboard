@@ -95,6 +95,21 @@
     .modal-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
     .modal-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; outline: none; }
     .modal-input:focus { border-color: #F06400; box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15); }
+  
+    
+    .btn-sync {
+      background-color: #059669;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-sync:hover { background-color: #047857; }
+
   </style>
 </head>
 <body>
@@ -186,6 +201,7 @@
             <button type="button" class="btn-load" onclick="loadEditData()">Muat Data</button>
           </div>
           <div class="action-buttons">
+            <button type="button" class="btn-sync" onclick="handleSyncO241()">Sync Data</button>
             <button type="button" class="btn-save-all" onclick="saveAllRows()"> Simpan Semua Perubahan</button>
             <button type="button" class="btn-add-dinasan" onclick="openModalTambahDinasan()"> Tambah Dinasan Baru</button>
           </div>
@@ -197,9 +213,9 @@
               <thead>
                 <tr>
                   <th style="width: 3%;">NO</th>
-                  <th style="width: 9%;">NO DINASAN</th>
+                  <th style="width: 9%;">KODE DINASAN</th>
                   <th style="width: 6%;">JABATAN</th>
-                  <th style="width: 20%;">NAMA CREW</th>
+                  <th style="width: 20%;">NAMA ASP</th>
                   <th style="width: 9%;">NIPP</th>
                   <th style="width: 7%;">NO KA</th>
                   <th style="width: 8%;">RELASI</th>
@@ -768,6 +784,34 @@
     });
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
-  </script>
+
+async function handleSyncO241() {
+  Swal.fire({
+    title: 'Menyinkronkan Seluruh Tanggal...',
+    text: 'Update Data.',
+    allowOutsideClick: false,
+    didOpen: () => { Swal.showLoading(); }
+  });
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "syncO241" })
+    });
+    const result = await res.json();
+
+    if (result.status === "success") {
+      await Swal.fire("Berhasil", result.message, "success");
+      loadEditData(); // <--- DIPERBAIKI (Gunakan loadEditData)
+    } else {
+      Swal.fire("Peringatan", result.message, "warning");
+    }
+  } catch (err) {
+    console.error("Sync error:", err);
+    Swal.fire("Error", "Gagal melakukan sinkronisasi server.", "error");
+  }
+}
+
+ </script>
 </body>
 </html>
