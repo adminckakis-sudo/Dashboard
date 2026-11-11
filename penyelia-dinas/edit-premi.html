@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Premi & Dinasan - UPT Crew KA Kisaran</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Flatpickr CSS & JS (Format dd/mm/yyyy) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
+
+  <!-- Tom Select CSS & JS -->
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
+  <style>
+    body {
+      background-image: linear-gradient(135deg, rgba(18, 29, 66, 0.9) 0%, rgba(28, 42, 95, 0.85) 100%), url('../assets/images/assesment.jpg');
+      background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;
+      font-family: 'Montserrat', sans-serif; color: #0f172a; margin: 0; padding: 0;
+    }
+
+    .topbar-profile-container {
+      display: flex; align-items: center; gap: 12px; padding-left: 16px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .topbar-profile-info { display: flex; flex-direction: column; text-align: right; }
+    .topbar-penyelia-nama { font-size: 0.85rem; font-weight: 800; color: #ffffff; line-height: 1.2; }
+    .topbar-penyelia-meta { font-size: 0.72rem; color: #cbd5e1; font-weight: 600; }
+    .topbar-penyelia-jabatan { font-size: 0.65rem; font-weight: 700; color: #ff9d5c; text-transform: uppercase; letter-spacing: 0.5px; }
+    .topbar-penyelia-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--kai-orange, #F06400); background-color: #ffffff; flex-shrink: 0; }
+
+    .btn-topbar-logout {
+      background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.5);
+      padding: 6px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 4px; transition: all 0.2s ease; margin-left: 4px;
+    }
+    .btn-topbar-logout:hover { background: rgba(239, 68, 68, 0.9); color: #ffffff; }
+
+    .form-page-container { max-width: 1450px; margin: 24px auto; padding: 0 16px; }
+    .page-title-outer { font-size: 1.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-bottom: 16px; text-align: center; }
+
+    .filter-card {
+      background: rgba(255, 255, 255, 0.98); border-radius: 12px; padding: 18px 24px; margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); flex-wrap: wrap;
+    }
+
+    .filter-group { display: flex; align-items: center; gap: 12px; }
+    .filter-label { font-size: 0.85rem; font-weight: 700; color: #334155; }
+    .filter-input { padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; font-family: inherit; outline: none; background-color: #fff; cursor: pointer; }
+
+    .action-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .btn-load { background-color: #1C2A5F; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .btn-add-dinasan { background-color: #059669; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-add-dinasan:hover { background-color: #047857; }
+    
+    .btn-save-all { background-color: #d97706; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-save-all:hover { background-color: #b45309; }
+
+    .table-card { background-color: #ffffff; border-radius: 12px; padding: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.25); }
+    .table-responsive { width: 100%; overflow-x: auto; border: 1px solid #cbd5e1; border-radius: 8px; }
+
+    .edit-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; background-color: #ffffff; }
+    .edit-table th { background-color: #1C2A5F; color: #ffffff; padding: 10px; text-align: center; font-weight: 700; border: 1px solid #2d3e75; font-size: 0.75rem; text-transform: uppercase; }
+    .edit-table td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; vertical-align: middle; }
+
+    .input-cell { width: 92%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit; font-size: 0.8rem; text-align: center; }
+    .input-cell:focus { border-color: #F06400; outline: none; box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15); }
+    .input-uppercase { text-transform: uppercase; }
+    .input-rupiah { text-align: right; font-weight: 700; transition: all 0.3s ease; }
+
+    /* Class Warna 2 Status Premi */
+    .status-sudah { background-color: #fef9c3 !important; color: #ca8a04 !important; border-color: #fde047 !important; }
+    .status-terkirim { background-color: #dcfce7 !important; color: #15803d !important; border-color: #86efac !important; }
+
+    .select-status { padding: 6px; border-radius: 4px; font-weight: 700; font-size: 0.78rem; outline: none; cursor: pointer; }
+
+    .btn-save-row { background-color: #1C2A5F; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; cursor: pointer; }
+    .btn-save-row:hover { background-color: #F06400; }
+
+    .ts-control { border-radius: 4px !important; padding: 4px 6px !important; font-size: 0.8rem !important; border-color: #cbd5e1 !important; text-transform: uppercase; min-height: 32px !important; }
+    .ts-dropdown { font-size: 0.8rem; text-align: left; z-index: 99999 !important; }
+
+    .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #cbd5e1; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.86rem; }
+    .sidebar-item:hover, .sidebar-item.active { color: #ffffff; background: rgba(240, 100, 0, 0.25); border: 1px solid rgba(240, 100, 0, 0.45); }
+
+    .swal2-popup-custom { overflow-x: hidden !important; padding: 1.5rem !important; }
+    .modal-form-grid { display: flex; flex-direction: column; gap: 12px; text-align: left; font-size: 0.85rem; width: 100%; box-sizing: border-box; }
+    .modal-row { display: flex; gap: 12px; width: 100%; }
+    .modal-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .modal-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; outline: none; }
+    .modal-input:focus { border-color: #F06400; box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER DENGAN PROFIL DAN TOMBOL LOGOUT SEPERTI DI PREMI.HTML -->
+  <header class="top-header" role="banner">
+    <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+      </div>
+
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+        <div class="topbar-profile-container">
+          <div class="topbar-profile-info">
+            <span id="penyeliaNama" class="topbar-penyelia-nama">--</span>
+            <span id="penyeliaNipp" class="topbar-penyelia-meta">NIPP. --</span>
+            <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
+          </div>
+          <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto" class="topbar-penyelia-avatar">
+          <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-layout-wrapper">
+    <!-- SIDEBAR PERSIS DENGAN OPSI CETAK/PDF SEPERTI DI PREMI.HTML -->
+  <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+      <div>
+        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange, #F06400); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+        
+        <nav style="display: flex; flex-direction: column; gap: 16px;">
+          <a href="../index.html" class="sidebar-item" title="Homepage">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="sidebar-text">Homepage</span>
+          </a>
+
+          <a href="./assesment.html" class="sidebar-item" title="Laporan Dinas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="#1C2A5F" stroke="#1C2A5F"></rect>
+              <path d="M9 14l2 2 4-4" stroke="#F06400" stroke-width="2.5"></path>
+            </svg>
+            <span class="sidebar-text">Laporan Dinas</span>
+          </a>
+        <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan Dinas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Laporan Dinas</span>
+          </a>
+
+          <a href="./edit-premi.html" class="sidebar-item active" title="Report G43A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+            <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+            </svg>
+            <span class="sidebar-text">Report G43A</span>
+          </a>
+        <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Report G43A</span>
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="app-main-content">
+      <div class="form-page-container">
+
+        <h1 class="page-title-outer">Report G43</h1>
+
+        <div class="filter-card">
+          <div class="filter-group">
+            <label class="filter-label">Tanggal Dinas:</label>
+            <input type="text" id="inputTanggalEdit" class="filter-input">
+            <button type="button" class="btn-load" onclick="loadEditData()">Muat Data</button>
+          </div>
+          <div class="action-buttons">
+            <button type="button" class="btn-save-all" onclick="saveAllRows()"> Simpan Semua Perubahan</button>
+            <button type="button" class="btn-add-dinasan" onclick="openModalTambahDinasan()"> Tambah Dinasan Baru</button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-responsive">
+            <table class="edit-table">
+              <thead>
+                <tr>
+                  <th style="width: 3%;">NO</th>
+                  <th style="width: 9%;">NO DINASAN</th>
+                  <th style="width: 6%;">JABATAN</th>
+                  <th style="width: 20%;">NAMA CREW</th>
+                  <th style="width: 9%;">NIPP</th>
+                  <th style="width: 7%;">NO KA</th>
+                  <th style="width: 8%;">RELASI</th>
+                  <th style="width: 10%;">PREMI 1</th>
+                  <th style="width: 10%;">PREMI 2</th>
+                  <th style="width: 13%;">STATUS PREMI</th>
+                  <th style="width: 5%;">SIMPAN</th>
+                </tr>
+              </thead>
+              <tbody id="editTableBody">
+                <tr>
+                  <td colspan="11" style="padding: 24px; color: #64748b; text-align: center;">
+                    Pilih tanggal dinas dan klik <strong>Muat Data</strong>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+<script>
+    const loggedInNama = localStorage.getItem("loggedInUserNama");
+    const loggedInNipp = localStorage.getItem("loggedInUserNipp");
+    const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
+
+    if (!loggedInNama || !loggedInNipp) {
+      Swal.fire({ title: 'Akses Ditolak!', text: 'Login terlebih dahulu.', icon: 'warning', confirmButtonColor: '#1C2A5F' }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+
+    function handleLogout() {
+      Swal.fire({
+        title: 'Konfirmasi Logout', text: 'Yakin ingin keluar dari sistem?', icon: 'question',
+        showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Logout', cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) { localStorage.clear(); window.location.href = "login.html"; }
+      });
+    }
+
+    const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
+
+    let MASTER_CREW_KISARAN = [];
+    let DYNAMIC_DINASAN_MAP = {};
+    let tomSelectInstances = {};
+
+    async function fetchMasterCrew() {
+      try {
+        const res = await fetch(`${API_URL}?action=getCrewKisaran`);
+        const result = await res.json();
+        if (result.status === "success" && Array.isArray(result.data)) {
+          MASTER_CREW_KISARAN = result.data;
+        }
+      } catch (err) {
+        console.error("Gagal mengambil master data crew:", err);
+      }
+    }
+
+    async function fetchMasterDinasan() {
+      try {
+        const res = await fetch(`${API_URL}?action=getMasterDinasan`);
+        const result = await res.json();
+
+        if (result.status === "success" && result.data) {
+          DYNAMIC_DINASAN_MAP = {};
+          const masterPairs = result.data;
+
+          Object.keys(masterPairs).forEach(noDinas => {
+            const item = masterPairs[noDinas];
+
+            if (item.atas) {
+              const keyAtas = `${noDinas}_MAS`;
+              const kaStr = item.atas.ka || "-";
+              const ketStr = item.keterangan || "Dinasan";
+              DYNAMIC_DINASAN_MAP[keyAtas] = {
+                no_dinasan: noDinas,
+                nama_display: `${noDinas} - ${kaStr} - ${ketStr} (MAS)`,
+                ka: kaStr,
+                relasi: item.atas.relasi || "",
+                p1: item.atas.p1 || 0,
+                p2: item.atas.p2 || 0,
+                jab: "MAS"
+              };
+            }
+
+            if (item.bawah) {
+              const keyBawah = `${noDinas}_ASMAS`;
+              const kaStr = item.bawah.ka || "-";
+              const ketStr = item.keterangan || "Dinasan";
+              DYNAMIC_DINASAN_MAP[keyBawah] = {
+                no_dinasan: noDinas,
+                nama_display: `${noDinas} - ${kaStr} - ${ketStr} (ASMAS)`,
+                ka: kaStr,
+                relasi: item.bawah.relasi || "",
+                p1: item.bawah.p1 || 0,
+                p2: item.bawah.p2 || 0,
+                jab: "ASMAS"
+              };
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Gagal mengambil master dinasan dinamis:", err);
+      }
+    }
+
+    function formatRupiahInput(val) {
+      if (!val && val !== 0) return "";
+      const num = String(val).replace(/\D/g, "");
+      if (!num) return "";
+      return "Rp " + Number(num).toLocaleString("id-ID");
+    }
+
+    function cleanRupiahToNumber(val) {
+      if (!val) return 0;
+      return Number(String(val).replace(/\D/g, "")) || 0;
+    }
+
+    function getStatusColorClass(statusStr) {
+      const s = String(statusStr || "").trim().toLowerCase();
+      if (s === "terkirim") return "status-terkirim";
+      return "status-sudah";
+    }
+
+    function updateRowStatusColor(idx, statusVal) {
+      const p1El = document.getElementById(`ed_p1_${idx}`);
+      const p2El = document.getElementById(`ed_p2_${idx}`);
+      const selectEl = document.getElementById(`ed_status_${idx}`);
+
+      const colorClass = getStatusColorClass(statusVal);
+
+      [p1El, p2El, selectEl].forEach(el => {
+        if (el) {
+          el.classList.remove("status-sudah", "status-terkirim");
+          el.classList.add(colorClass);
+        }
+      });
+    }
+
+    let loadedCurrentData = [];
+
+    async function loadEditData() {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      if (!tanggal) {
+        Swal.fire("Peringatan", "Pilih tanggal terlebih dahulu!", "warning");
+        return;
+      }
+
+      Object.keys(tomSelectInstances).forEach(k => {
+        if (tomSelectInstances[k]) tomSelectInstances[k].destroy();
+      });
+      tomSelectInstances = {};
+
+      const tbody = document.getElementById("editTableBody");
+      tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; text-align: center; color: #64748b;">Memuat data...</td></tr>`;
+
+      try {
+        const res = await fetch(`${API_URL}?action=getDinasan&tanggal=${encodeURIComponent(tanggal)}`);
+        const result = await res.json();
+
+        if (result.status === "success" && Array.isArray(result.data)) {
+          loadedCurrentData = result.data;
+          renderEditTable(loadedCurrentData);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; color: #ef4444; text-align: center;">Gagal memuat data.</td></tr>`;
+        }
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; color: #ef4444; text-align: center;">Kesalahan server.</td></tr>`;
+      }
+    }
+
+    function renderEditTable(dataList) {
+      const tbody = document.getElementById("editTableBody");
+      if (dataList.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; text-align: center;">Tidak ada data dinasan. Silakan klik " Tambah Dinasan Baru".</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      dataList.forEach((item, idx) => {
+        const p1Formatted = formatRupiahInput(item.premi_1);
+        const p2Formatted = formatRupiahInput(item.premi_2);
+        const currentStatus = item.keterangan === "Terkirim" ? "Terkirim" : "Sudah Diinput";
+        const colorClass = getStatusColorClass(currentStatus);
+
+        html += `
+          <tr>
+            <td style="font-weight:700;">${idx + 1}</td>
+            <td><input type="text" class="input-cell input-uppercase" id="ed_nodinas_${idx}" value="${item.no_dinasan || ''}"></td>
+            <td style="font-weight:700;">${item.jabatan || 'MAS'}</td>
+            <td><select id="ed_nama_${idx}"></select></td>
+            <td><input type="text" class="input-cell" id="ed_nipp_${idx}" value="${item.nipp || ''}"></td>
+            <td><input type="text" class="input-cell input-uppercase" id="ed_noka_${idx}" value="${item.no_ka || ''}"></td>
+            <td><input type="text" class="input-cell input-uppercase" id="ed_relasi_${idx}" value="${item.relasi || ''}"></td>
+            
+            <td><input type="text" class="input-cell input-rupiah ${colorClass}" id="ed_p1_${idx}" value="${p1Formatted}" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)"></td>
+            <td><input type="text" class="input-cell input-rupiah ${colorClass}" id="ed_p2_${idx}" value="${p2Formatted}" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)"></td>
+            
+            <td>
+              <select id="ed_status_${idx}" class="select-status ${colorClass}" onchange="updateRowStatusColor(${idx}, this.value)">
+                <option value="Sudah Diinput" ${currentStatus === "Sudah Diinput" ? "selected" : ""}>Sudah Diinput</option>
+                <option value="Terkirim" ${currentStatus === "Terkirim" ? "selected" : ""}> Terkirim</option>
+              </select>
+            </td>
+
+            <td><button type="button" class="btn-save-row" onclick="saveSingleRow(${idx})">💾</button></td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+
+      dataList.forEach((item, idx) => {
+        initTomSelectRow(idx, item.nama || "");
+      });
+    }
+
+    function initTomSelectRow(idx, initialNama) {
+      const selectEl = document.getElementById(`ed_nama_${idx}`);
+      if (!selectEl) return;
+
+      const options = MASTER_CREW_KISARAN.map(c => ({
+        value: c.nama,
+        text: `${c.nama} (${c.nipp})`,
+        nipp: c.nipp
+      }));
+
+      if (initialNama && !options.some(o => o.value.toUpperCase() === initialNama.toUpperCase())) {
+        options.unshift({ value: initialNama, text: initialNama, nipp: "" });
+      }
+
+      tomSelectInstances[idx] = new TomSelect(selectEl, {
+        options: options,
+        create: true,
+        createOnBlur: true,
+        maxItems: 1,
+        items: initialNama ? [initialNama] : [],
+        placeholder: "Cari Nama...",
+        onChange: function(val) {
+          const nippInput = document.getElementById(`ed_nipp_${idx}`);
+          const found = MASTER_CREW_KISARAN.find(c => c.nama.toUpperCase() === String(val).toUpperCase());
+          if (found && nippInput) {
+            nippInput.value = found.nipp;
+          }
+        }
+      });
+    }
+
+    function getRowPayload(idx) {
+      const namaVal = tomSelectInstances[idx] ? tomSelectInstances[idx].getValue() : "";
+      const statusVal = document.getElementById(`ed_status_${idx}`).value;
+      const jabatanVal = loadedCurrentData[idx] ? loadedCurrentData[idx].jabatan : "MAS";
+      const isMas = jabatanVal === "MAS";
+
+      const dataCrew = {
+        nama: String(namaVal).toUpperCase(),
+        nipp: document.getElementById(`ed_nipp_${idx}`).value,
+        no_ka: document.getElementById(`ed_noka_${idx}`).value,
+        relasi: document.getElementById(`ed_relasi_${idx}`).value,
+        premi_1: cleanRupiahToNumber(document.getElementById(`ed_p1_${idx}`).value),
+        premi_2: cleanRupiahToNumber(document.getElementById(`ed_p2_${idx}`).value)
+      };
+
+      return {
+        no_dinasan: document.getElementById(`ed_nodinas_${idx}`).value,
+        keterangan: statusVal,
+        mas: isMas ? dataCrew : null,
+        asmas: !isMas ? dataCrew : null
+      };
+    }
+
+    async function saveSingleRow(idx) {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      const itemPayload = getRowPayload(idx);
+
+      Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "saveDinasanManual", tanggal: tanggal, data: [itemPayload] })
+        });
+        const result = await res.json();
+
+        if (result.status === "success") {
+          Swal.fire("Berhasil", "Data baris berhasil diperbarui!", "success");
+          loadEditData();
+        } else {
+          Swal.fire("Gagal", result.message, "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Gagal menyimpan ke server.", "error");
+      }
+    }
+
+    async function saveAllRows() {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      if (!tanggal) {
+        Swal.fire("Peringatan", "Pilih tanggal terlebih dahulu!", "warning");
+        return;
+      }
+
+      if (loadedCurrentData.length === 0) {
+        Swal.fire("Informasi", "Tidak ada data yang dapat disimpan.", "info");
+        return;
+      }
+
+      const allPayloads = [];
+      for (let i = 0; i < loadedCurrentData.length; i++) {
+        allPayloads.push(getRowPayload(i));
+      }
+
+      Swal.fire({ title: 'Menyimpan Semua Perubahan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "saveDinasanManual", tanggal: tanggal, data: allPayloads })
+        });
+        const result = await res.json();
+
+        if (result.status === "success") {
+          Swal.fire("Berhasil", `Seluruh data dinasan (${allPayloads.length} baris) berhasil disimpan!`, "success");
+          loadEditData();
+        } else {
+          Swal.fire("Gagal", result.message, "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Gagal menyimpan semua perubahan ke server.", "error");
+      }
+    }
+
+    function openModalTambahDinasan() {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      if (!tanggal) {
+        Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
+        return;
+      }
+
+      let mdTomSelectNama = null;
+      let mdTomSelectPreset = null;
+
+      Swal.fire({
+        title: 'Tambah Dinasan Baru',
+        width: '560px',
+        customClass: { popup: 'swal2-popup-custom' },
+        html: `
+          <div class="modal-form-grid">
+            <div class="modal-col">
+              <label style="font-weight:700;">Pilihan Dinasan Preset (Cari No KA / No Dinasan):</label>
+              <select id="mdPresetSelect" style="width:100%;"></select>
+            </div>
+
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">No Dinasan:</label>
+                <input type="text" id="mdNoDinasan" class="modal-input input-uppercase" placeholder="Contoh: 16">
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Jabatan Crew:</label>
+                <select id="mdJabatan" class="modal-input">
+                  <option value="MAS">MASINIS (MAS)</option>
+                  <option value="ASMAS">ASISTEN MASINIS (ASMAS)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="modal-col">
+              <label style="font-weight:700;">Nama Crew (Cari / Ketik):</label>
+              <select id="mdNamaSelect" style="width:100%;"></select>
+            </div>
+
+            <div class="modal-col">
+              <label style="font-weight:700;">NIPP Crew :</label>
+              <input type="text" id="mdNipp" class="modal-input" placeholder="NIPP">
+            </div>
+
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">No KA:</label>
+                <input type="text" id="mdNoKa" class="modal-input input-uppercase" placeholder="LANGSIR / SEREP / U52">
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Relasi:</label>
+                <input type="text" id="mdRelasi" class="modal-input input-uppercase" placeholder="KIS / RAP">
+              </div>
+            </div>
+
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">Premi 1 (Rp):</label>
+                <input type="text" id="mdP1" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Premi 2 (Rp):</label>
+                <input type="text" id="mdP2" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+              </div>
+            </div>
+
+            <div class="modal-col">
+              <label style="font-weight:700;">Status Premi Awal:</label>
+              <select id="mdStatusSelect" class="modal-input">
+                <option value="Sudah Diinput" selected>Sudah Diinput</option>
+                <option value="Terkirim">Terkirim</option>
+              </select>
+            </div>
+          </div>
+        `,
+        didOpen: () => {
+          const presetSelectEl = document.getElementById("mdPresetSelect");
+          const presetOptions = [{ value: "", text: "-- Input Data Manual --" }];
+
+          Object.keys(DYNAMIC_DINASAN_MAP).forEach(k => {
+            const item = DYNAMIC_DINASAN_MAP[k];
+            presetOptions.push({
+              value: k,
+              text: item.nama_display,
+              no_dinasan: item.no_dinasan,
+              ka: item.ka
+            });
+          });
+
+          mdTomSelectPreset = new TomSelect(presetSelectEl, {
+            options: presetOptions,
+            maxItems: 1,
+            dropdownParent: 'body',
+            placeholder: "Cari No KA / No Dinasan...",
+            searchField: ['text', 'no_dinasan', 'ka'],
+            onChange: function(val) {
+              handleModalPresetChange(val);
+            }
+          });
+
+          const mdSelectEl = document.getElementById("mdNamaSelect");
+          const crewOptions = MASTER_CREW_KISARAN.map(c => ({
+            value: c.nama,
+            text: `${c.nama} (${c.nipp})`,
+            nipp: c.nipp
+          }));
+
+          mdTomSelectNama = new TomSelect(mdSelectEl, {
+            options: crewOptions,
+            create: true,
+            maxItems: 1,
+            dropdownParent: 'body',
+            placeholder: "Ketik / Pilih Nama Pegawai...",
+            onChange: function(val) {
+              const nippEl = document.getElementById("mdNipp");
+              const found = MASTER_CREW_KISARAN.find(c => c.nama.toUpperCase() === String(val).toUpperCase());
+              if (found && nippEl) {
+                nippEl.value = found.nipp;
+              }
+            }
+          });
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Simpan Dinasan Baru',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        preConfirm: () => {
+          const nama = mdTomSelectNama ? mdTomSelectNama.getValue() : "";
+          const noDinasan = document.getElementById('mdNoDinasan').value.trim();
+          if (!nama || !noDinasan) {
+            Swal.showValidationMessage('No Dinasan dan Nama Crew wajib diisi!');
+            return false;
+          }
+          return {
+            no_dinasan: noDinasan,
+            jabatan: document.getElementById('mdJabatan').value,
+            nama: String(nama).toUpperCase(),
+            nipp: document.getElementById('mdNipp').value.trim(),
+            no_ka: document.getElementById('mdNoKa').value.trim().toUpperCase(),
+            relasi: document.getElementById('mdRelasi').value.trim().toUpperCase(),
+            premi_1: cleanRupiahToNumber(document.getElementById('mdP1').value),
+            premi_2: cleanRupiahToNumber(document.getElementById('mdP2').value),
+            status: document.getElementById('mdStatusSelect').value
+          };
+        }
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const val = result.value;
+          const isMas = val.jabatan === "MAS";
+
+          const newDinasanPayload = {
+            no_dinasan: val.no_dinasan,
+            keterangan: val.status,
+            is_extra: true,
+            mas: isMas ? val : null,
+            asmas: !isMas ? val : null
+          };
+
+          Swal.fire({ title: 'Menambahkan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+          try {
+            const res = await fetch(API_URL, {
+              method: "POST",
+              body: JSON.stringify({ action: "saveDinasanManual", tanggal: tanggal, data: [newDinasanPayload] })
+            });
+            const resJson = await res.json();
+
+            if (resJson.status === "success") {
+              await Swal.fire("Berhasil", "Dinasan baru berhasil ditambahkan!", "success");
+              loadEditData();
+            } else {
+              Swal.fire("Gagal", resJson.message, "error");
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire("Error", "Gagal menyimpan ke database.", "error");
+          }
+        }
+      });
+    }
+
+    function handleModalPresetChange(presetKey) {
+      if (!presetKey || !DYNAMIC_DINASAN_MAP[presetKey]) return;
+
+      const p = DYNAMIC_DINASAN_MAP[presetKey];
+      document.getElementById('mdNoDinasan').value = p.no_dinasan;
+      document.getElementById('mdJabatan').value = p.jab;
+      document.getElementById('mdNoKa').value = p.ka;
+      document.getElementById('mdRelasi').value = p.relasi;
+      document.getElementById('mdP1').value = formatRupiahInput(p.p1);
+      document.getElementById('mdP2').value = formatRupiahInput(p.p2);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      // SINKRONISASI DATA PROFIL USER DARI LOCALSTORAGE
+      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+
+      const imgEl = document.getElementById("penyeliaFoto");
+      if (imgEl && loggedInNipp) {
+        const cleanNipp = String(loggedInNipp).trim();
+        imgEl.src = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
+        imgEl.onerror = function() {
+          if (this.src.endsWith(".jpg")) {
+            this.src = `../assets/struktur-organisasi/${cleanNipp}.png`;
+          } else {
+            this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
+          }
+        };
+      }
+
+      Promise.all([fetchMasterCrew(), fetchMasterDinasan()]);
+
+      flatpickr("#inputTanggalEdit", {
+        locale: "id",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d/m/Y",
+        defaultDate: new Date(),
+        onChange: function() { loadEditData(); }
+      });
+
+      loadEditData();
+    });
+
+    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+  </script>
+</body>
+</html>
