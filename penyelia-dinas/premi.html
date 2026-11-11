@@ -155,7 +155,7 @@
 
     .table-card {
       background-color: #ffffff;
-      border-radius: 12px;
+      border-radius: 0px;
       padding: 24px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.25);
     }
@@ -163,7 +163,7 @@
     .table-header-title {
       font-size: 1.1rem;
       font-weight: 800;
-      color: #1C2A5F;
+      color: #000000;
       text-align: center;
       text-transform: uppercase;
       margin-bottom: 4px;
@@ -172,7 +172,7 @@
     .table-header-sub {
       font-size: 0.85rem;
       font-weight: 700;
-      color: #1C2A5F;
+      color: #000000;
       text-align: center;
       text-transform: uppercase;
       margin-bottom: 20px;
@@ -182,36 +182,49 @@
       width: 100%;
       overflow-x: auto;
       border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      border-radius: 0px;
     }
 
     .view-table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: collapse;
       font-size: 0.82rem;
       background-color: #ffffff;
     }
 
     .view-table th {
-      background-color: #1C2A5F;
-      color: #ffffff;
-      padding: 8px 10px;
+      background-color: #ffffff;
+      color: #000000;
+      padding: 1px 10px;
       text-align: center;
-      font-weight: 700;
-      border: 1px solid #2d3e75;
+      font-weight: 800;
+      border: 1px solid #000000;
       text-transform: uppercase;
-      font-size: 0.75rem;
+      font-size: 10px;
     }
 
     .view-table td {
-      border: 1px solid #cbd5e1;
-      padding: 7px 10px;
+      border: 1px solid #000000;
+      padding: 1px 10px;
       text-align: center;
       vertical-align: middle;
-      color: #1e293b;
+      color: #000000;
+      font-weight: 400 !important;
+      font-size: 8px;
     }
 
-    /* Status Premi Colors */
+        .view-table th, .view-table td {
+      overflow: hidden;        /* Mencegah teks meluap keluar sel jika kolom terlalu sempit */
+      text-overflow: ellipsis; /* Menampilkan titik-titik (...) jika teks terlalu panjang */
+      white-space: nowrap;     /* Mencegah teks turun ke bawah jika diinginkan satu baris */
+      white-space: normal !important;      /* Mengizinkan teks berpindah baris (bukan nowrap) */
+      word-wrap: break-word !important;    /* Memotong kata yang sangat panjang jika perlu */
+      overflow-wrap: break-word !important;/* Memastikan kata panjang tidak meluap keluar sel */
+      word-break: break-word !important;   /* Menjaga agar batas sel tetap rapi */
+    }
+
+    /* STATUS PREMI COLORS (TETAP DIPERTAHANKAN SAAT DISPLAY & CETAK) */
     .status-sudah {
       background-color: #fef9c3 !important;
       color: #ca8a04 !important;
@@ -230,15 +243,42 @@
     }
     .sidebar-item:hover, .sidebar-item.active { color: #ffffff; background: rgba(240, 100, 0, 0.25); border: 1px solid rgba(240, 100, 0, 0.45); }
 
-    /* CSS Khusus Cetak / Simpan Ke PDF */
+    /* STYLE LAPORAN RESMI HITAM PUTIH KOTAK TIPIS SAAT CETAK */
     @media print {
-      body { background: #ffffff !important; }
+      body { background: #ffffff !important; color: #000000 !important; }
       .top-header, .app-sidebar, .filter-card, .page-title-outer, .no-print { display: none !important; }
       .form-page-container { margin: 0 !important; padding: 0 !important; max-width: 100% !important; }
-      .table-card { box-shadow: none !important; padding: 0 !important; }
-      .view-table th { background-color: #1C2A5F !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .status-sudah { background-color: #fef9c3 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .status-terkirim { background-color: #dcfce7 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .table-card { box-shadow: none !important; padding: 0 !important; border: none !important; }
+      .table-responsive { border: none !important; }
+      
+      .view-table { border: 1.5px solid #000000 !important; }
+      .view-table th { 
+        background-color: #ffffff !important; 
+        color: #000000 !important; 
+        border: 1px solid #000000 !important;
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact; 
+      }
+      .view-table td { 
+        border: 1px solid #000000 !important; 
+        color: #000000 !important;
+      }
+
+      /* KONDISI WARNA STATUS PREMI TETAP DIPERTANANKAN SAAT PRINT */
+      .status-sudah { 
+        background-color: #fef9c3 !important; 
+        color: #ca8a04 !important;
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact; 
+      }
+      .status-terkirim { 
+        background-color: #dcfce7 !important; 
+        color: #15803d !important;
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact; 
+      }
+
+      @page { size: A4 portrait ; margin: 10mm; }
     }
   </style>
 </head>
@@ -297,7 +337,7 @@
             <span class="sidebar-text">Cetak Laporan Dinas</span>
           </a>
 
-          <a href="./edit-premi.html" class="sidebar-item active" title="Report G43A">
+          <a href="./edit-premi.html" class="sidebar-item " title="Report G43A">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
             <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
@@ -305,7 +345,7 @@
             </svg>
             <span class="sidebar-text">Report G43A</span>
           </a>
-        <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
+        <a href="./premi.html" class="sidebar-item active" title="Cetak Report G43A">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -320,9 +360,9 @@
     <main class="app-main-content">
       <div class="dashboard-content form-page-container">
 
-        <h1 class="page-title-outer">Cetak Report G43A</h1>
+        <h1 class="page-title-outer no-print">Cetak Report G43A</h1>
 
-        <div class="filter-card">
+        <div class="filter-card no-print">
           <div class="filter-group">
             <label class="filter-label">Tanggal Dinas:</label>
             <input type="text" id="inputTanggalView" class="filter-input">
@@ -330,9 +370,7 @@
           </div>
           <div class="btn-action-group">
             <button type="button" class="btn-sync" onclick="handleSyncO241()">Sync Data</button>
-            <!-- BUTTON EDIT DATA PREMI -->
             <a href="./edit-premi.html" class="btn-edit-link">Edit Data Premi</a>
-            <!-- BUTTON FUNGSI CETAK/PDF (LANGSUNG MEMANGGIL DIALOG PRINT BROWSER) -->
             <button type="button" class="btn-print-link" onclick="window.print()"> Cetak / PDF</button>
           </div>
         </div>
@@ -347,23 +385,23 @@
 
           <div class="table-responsive">
             <table class="view-table">
-              <thead>
-                <tr>
-                  <th rowspan="2" style="width: 4%;">NO</th>
-                  <th rowspan="2" style="width: 18%;">NAMA CREW</th>
-                  <th rowspan="2" style="width: 10%;">NIPP</th>
-                  <th rowspan="2" style="width: 7%;">JABATAN</th>
-                  <th rowspan="2" style="width: 11%;">NO DINASAN</th>
-                  <th rowspan="2" style="width: 9%;">NO KA</th>
-                  <th rowspan="2" style="width: 11%;">RELASI</th>
-                  <th colspan="2" style="width: 20%;">JUMLAH PREMI</th>
-                  <th rowspan="2" style="width: 10%;">KETERANGAN</th>
-                </tr>
-                <tr>
-                  <th style="width: 10%;">PREMI</th>
-                  <th style="width: 10%;">PREMI</th>
-                </tr>
-              </thead>
+<thead>
+  <tr>
+    <th rowspan="2" style="width: 6%;">NO</th>
+    <th rowspan="2" style="width: 22%;">NAMA ASP</th>
+    <th rowspan="2" style="width: 8%;">NIPP</th>
+    <th rowspan="2" style="width: 8%;">JBT</th>
+    <th rowspan="2" style="width: 7%;"> </th>
+    <th rowspan="2" style="width: 12%;">NO KA</th>
+    <th rowspan="2" style="width: 9%;">RELASI</th>
+    <th colspan="2" style="width: 20%;">JUMLAH PREMI</th>
+    <th rowspan="2" style="width: 15%;">KETERANGAN</th>
+  </tr>
+  <tr>
+    <th style="width: 10%;">PREMI</th>
+    <th style="width: 10%;">PREMI</th>
+  </tr>
+</thead>
               <tbody id="viewTableBody">
                 <tr>
                   <td colspan="10" style="padding: 24px; color: #64748b; text-align: center;">
@@ -509,7 +547,7 @@
             <td style="text-align: left; font-weight: 700;">${mas.nama || '-'}</td>
             <td style="text-align: center;">${mas.nipp || '-'}</td>
             <td style="text-align: center; font-weight: 700;">MAS</td>
-            <td rowspan="2" style="text-align: center; vertical-align: middle; font-weight: 800; color: #1C2A5F;">${noDinas}</td>
+            <td rowspan="2" style="text-align: center; vertical-align: middle; font-weight: 800; color: #000000;">${noDinas}</td>
             <td style="text-align: center; font-weight: 700;">${mas.no_ka || '-'}</td>
             <td style="text-align: center;">${mas.relasi || '-'}</td>
             <td class="${colorClass}" style="text-align: right;">${formatRupiah(mas.premi_1)}</td>
