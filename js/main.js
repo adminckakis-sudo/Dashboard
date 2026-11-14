@@ -487,124 +487,169 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// 6. TREN CUTI TAHUNAN
+// 6. TREN CUTI TAHUNAN (CHART 1: JUMLAH HARI CUTI | CHART 2: RATA-RATA ORANG CUTI)
+function gambarSvgChartBulanan(svgElement, dataPerBulan, keyNilai, tipe) {
+    if (!svgElement) return;
+
+    const values = dataPerBulan.map(d => d[keyNilai]);
+    const maxVal = Math.max(...values, tipe === 'people' ? 3 : 5);
+
+    const svgWidth = 840;
+    const svgHeight = 245;
+    const paddingTop = 32;
+    const paddingBottom = 38;
+    const paddingX = 46;
+    const usableWidth = svgWidth - (paddingX * 2);
+    const usableHeight = svgHeight - paddingTop - paddingBottom;
+
+    const points = dataPerBulan.map((item, idx) => {
+        const x = paddingX + (idx * (usableWidth / 11));
+        const y = paddingTop + usableHeight - ((item[keyNilai] / maxVal) * usableHeight);
+        return { x, y, val: item[keyNilai], ...item };
+    });
+
+    const pointsString = points.map(p => `${p.x},${p.y}`).join(' ');
+    const firstX = points[0].x;
+    const lastX = points[points.length - 1].x;
+    const bottomY = paddingTop + usableHeight;
+    const areaString = `${firstX},${bottomY} ${pointsString} ${lastX},${bottomY}`;
+
+    const areaClass = tipe === 'people' ? 'chart-area-people' : 'chart-area';
+    const lineClass = tipe === 'people' ? 'chart-line-people' : 'chart-line';
+    const dotClass = tipe === 'people' ? 'chart-dot-people' : 'chart-dot';
+
+    let svgContent = `
+        <line x1="${paddingX}" y1="${paddingTop}" x2="${svgWidth - paddingX}" y2="${paddingTop}" class="chart-grid-line" />
+        <line x1="${paddingX}" y1="${paddingTop + (usableHeight / 2)}" x2="${svgWidth - paddingX}" y2="${paddingTop + (usableHeight / 2)}" class="chart-grid-line" />
+        <line x1="${paddingX}" y1="${bottomY}" x2="${svgWidth - paddingX}" y2="${bottomY}" class="chart-grid-line" />
+
+        <polygon points="${areaString}" class="${areaClass}" />
+        <polyline points="${pointsString}" class="${lineClass}" />
+    `;
+
+    points.forEach(p => {
+        const tooltip = tipe === 'people'
+            ? `${p.namaLengkap}: ${p.pegawaiCuti} orang cuti (${p.cuti} hari)`
+            : `${p.namaLengkap}: ${p.cuti} hari cuti (${p.pegawaiCuti} orang)`;
+
+        svgContent += `
+            <circle cx="${p.x}" cy="${p.y}" r="4.5" class="${dotClass}">
+                <title>${tooltip}</title>
+            </circle>
+            <text x="${p.x}" y="${p.y - 11}" class="chart-text-value">${p.val}</text>
+            <text x="${p.x}" y="${svgHeight - 12}" class="chart-text-month">${p.bulan}</text>
+        `;
+    });
+
+    svgElement.innerHTML = svgContent;
+}
+
 async function muatTrenCutiTahunan() {
-    const svgChart = document.getElementById('tren-line-chart');
-    if (!svgChart) return;
+    const svgChartHari = document.getElementById('tren-line-chart');
+    const svgChartOrang = document.getElementById('tren-orang-cuti-chart');
+    if (!svgChartHari && !svgChartOrang) return;
 
     const elTotalCutiTahun = document.getElementById('val-total-cuti-tahun');
     const elRataCutiBulan = document.getElementById('val-rata-cuti-bulan');
+    const elStatAvgPegawaiBulan = document.getElementById('val-stat-avg-pegawai-bulan');
     const elPuncakCuti = document.getElementById('val-puncak-cuti');
 
-    const fetchPromises = Object.keys(GID_BULAN).map(async (bulanIdxStr) => {
-        const bulanIdx = parseInt(bulanIdxStr, 10);
-        const gid = GID_BULAN[bulanIdx];
-        let cutiBulanIni = 0;
+    const bulanKeys = Object.keys(GID_BULAN).map(k => parseInt(k, 10)).sort((a, b) => a - b);
+    const dataPerBulan = [];
 
-        if (gid) {
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${gid}`;
-                const res = await fetch(url);
-                if (res.ok) {
-                    const text = await res.text();
-                    const rows = text.split('\n');
-                    let processedNipps = new Set();
+    for (let b = 0; b < bulanKeys.length; b += 4) {
+        const batch = bulanKeys.slice(b, b + 4);
+        const batchResults = await Promise.all(batch.map(async (bulanIdx) => {
+            const gid = GID_BULAN[bulanIdx];
+            let cutiBulanIni = 0;
+            let pegawaiCutiBulanIni = 0;
+            let memilikiDataPegawai = false;
 
-                    rows.forEach(baris => {
-                        const kolom = baris.split(',').map(k => k.replace(/"/g, '').trim());
-                        if (kolom.length >= 4) {
-                            const potensiNipp = kolom[2];
-                            if (potensiNipp && !isNaN(potensiNipp) && potensiNipp.length >= 4 && !processedNipps.has(potensiNipp)) {
-                                processedNipps.add(potensiNipp);
+            if (gid) {
+                try {
+                    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/export?format=csv&gid=${gid}`;
+                    const res = await fetch(url);
+                    if (res.ok) {
+                        const text = await res.text();
+                        const rows = text.split('\n');
+                        const processedNipps = new Set();
 
-                                for (let i = 4; i <= 34; i++) {
-                                    if (kolom[i]) {
-                                        const val = kolom[i].toUpperCase();
-                                        if (val === 'CT') cutiBulanIni++;
+                        rows.forEach(baris => {
+                            const trimmed = baris.trim();
+                            if (!trimmed) return;
+                            const kolom = trimmed.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(k => k.replace(/"/g, '').trim());
+
+                            if (kolom.length >= 4) {
+                                const potensiNipp = (kolom[2] || '').replace(/\D/g, '');
+                                if (potensiNipp.length >= 4 && !processedNipps.has(potensiNipp)) {
+                                    processedNipps.add(potensiNipp);
+                                    memilikiDataPegawai = true;
+                                    let adaCuti = false;
+
+                                    for (let i = 4; i <= 34; i++) {
+                                        if (kolom[i]) {
+                                            const val = kolom[i].toUpperCase();
+                                            if (val === 'CT' || val === 'CUTI') {
+                                                cutiBulanIni++;
+                                                adaCuti = true;
+                                            }
+                                        }
                                     }
+
+                                    if (adaCuti) pegawaiCutiBulanIni++;
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+                } catch (err) {
+                    console.warn(`Gagal memuat tren cuti bulan index ${bulanIdx}:`, err);
                 }
-            } catch (err) {
-                console.warn(`Gagal memuat tren cuti bulan index ${bulanIdx}:`, err);
             }
-        }
 
-        return {
-            index: bulanIdx,
-            bulan: NAMA_BULAN_PENDEK[bulanIdx],
-            namaLengkap: NAMA_BULAN_LENGKAP[bulanIdx],
-            cuti: cutiBulanIni
-        };
+            return {
+                index: bulanIdx,
+                bulan: NAMA_BULAN_PENDEK[bulanIdx],
+                namaLengkap: NAMA_BULAN_LENGKAP[bulanIdx],
+                cuti: cutiBulanIni,
+                pegawaiCuti: pegawaiCutiBulanIni,
+                hasData: memilikiDataPegawai
+            };
+        }));
+
+        dataPerBulan.push(...batchResults);
+    }
+
+    dataPerBulan.sort((a, b) => a.index - b.index);
+
+    const bulanAktif = dataPerBulan.filter(d => d.hasData);
+    const jumlahBulanAktif = bulanAktif.length || 12;
+
+    const totalKeseluruhanCuti = dataPerBulan.reduce((sum, item) => sum + item.cuti, 0);
+    const totalPegawaiCuti = dataPerBulan.reduce((sum, item) => sum + item.pegawaiCuti, 0);
+
+    const rataRataHariBulan = parseFloat((totalKeseluruhanCuti / jumlahBulanAktif).toFixed(1));
+    const rataRataOrangBulan = parseFloat((totalPegawaiCuti / jumlahBulanAktif).toFixed(1));
+
+    let bulanPuncak = dataPerBulan[0];
+    dataPerBulan.forEach(d => {
+        if (d.cuti > bulanPuncak.cuti) bulanPuncak = d;
     });
 
-    try {
-        const dataPerBulanUnsorted = await Promise.all(fetchPromises);
-        const dataPerBulan = dataPerBulanUnsorted.sort((a, b) => a.index - b.index);
-
-        const totalKeseluruhanCuti = dataPerBulan.reduce((sum, item) => sum + item.cuti, 0);
-        const maxCuti = Math.max(...dataPerBulan.map(d => d.cuti), 5);
-        const rataRata = (totalKeseluruhanCuti / 12).toFixed(1);
-
-        let bulanPuncak = dataPerBulan[0];
-        dataPerBulan.forEach(d => {
-            if (d.cuti > bulanPuncak.cuti) bulanPuncak = d;
-        });
-
-        if (elTotalCutiTahun) elTotalCutiTahun.textContent = totalKeseluruhanCuti;
-        if (elRataCutiBulan) elRataCutiBulan.textContent = rataRata;
-        if (elPuncakCuti) {
-            elPuncakCuti.textContent = totalKeseluruhanCuti > 0 ? `${bulanPuncak.namaLengkap} (${bulanPuncak.cuti} Hari)` : 'Belum ada data';
-        }
-
-        const svgWidth = 840;
-        const svgHeight = 260;
-        const paddingTop = 35;
-        const paddingBottom = 45;
-        const paddingX = 50;
-        const usableWidth = svgWidth - (paddingX * 2);
-        const usableHeight = svgHeight - paddingTop - paddingBottom;
-
-        const points = dataPerBulan.map((item, idx) => {
-            const x = paddingX + (idx * (usableWidth / 11));
-            const y = paddingTop + usableHeight - ((item.cuti / maxCuti) * usableHeight);
-            return { x, y, ...item };
-        });
-
-        const pointsString = points.map(p => `${p.x},${p.y}`).join(' ');
-        const firstX = points[0].x;
-        const lastX = points[points.length - 1].x;
-        const bottomY = paddingTop + usableHeight;
-        const areaString = `${firstX},${bottomY} ${pointsString} ${lastX},${bottomY}`;
-
-        let svgContent = `
-            <line x1="${paddingX}" y1="${paddingTop}" x2="${svgWidth - paddingX}" y2="${paddingTop}" class="chart-grid-line" />
-            <line x1="${paddingX}" y1="${paddingTop + (usableHeight / 2)}" x2="${svgWidth - paddingX}" y2="${paddingTop + (usableHeight / 2)}" class="chart-grid-line" />
-            <line x1="${paddingX}" y1="${bottomY}" x2="${svgWidth - paddingX}" y2="${bottomY}" class="chart-grid-line" />
-
-            <polygon points="${areaString}" class="chart-area" />
-            <polyline points="${pointsString}" class="chart-line" />
-        `;
-
-        points.forEach(p => {
-            svgContent += `
-                <circle cx="${p.x}" cy="${p.y}" r="4.5" class="chart-dot">
-                    <title>${p.namaLengkap}: ${p.cuti} hari cuti</title>
-                </circle>
-                <text x="${p.x}" y="${p.y - 12}" class="chart-text-value">${p.cuti}</text>
-                <text x="${p.x}" y="${svgHeight - 15}" class="chart-text-month">${p.bulan}</text>
-            `;
-        });
-
-        svgChart.innerHTML = svgContent;
-
-    } catch (error) {
-        console.error("Gagal merender diagram garis:", error);
+    if (elTotalCutiTahun) elTotalCutiTahun.textContent = totalKeseluruhanCuti;
+    if (elRataCutiBulan) elRataCutiBulan.textContent = rataRataHariBulan;
+    if (elStatAvgPegawaiBulan) elStatAvgPegawaiBulan.textContent = rataRataOrangBulan;
+    if (elPuncakCuti) {
+        elPuncakCuti.textContent = totalKeseluruhanCuti > 0
+            ? `${bulanPuncak.namaLengkap} (${bulanPuncak.cuti} Hari / ${bulanPuncak.pegawaiCuti} Org)`
+            : 'Belum ada data';
     }
-}
 
+    // Chart 1: Jumlah Hari Cuti per Bulan
+    gambarSvgChartBulanan(svgChartHari, dataPerBulan, 'cuti', 'days');
+
+    // Chart 2: Jumlah Orang Cuti per Bulan
+    gambarSvgChartBulanan(svgChartOrang, dataPerBulan, 'pegawaiCuti', 'people');
+}
 
 // 7. MODUL MONITORING SISA CUTI TAHUNAN BERDASARKAN NAMA BULAN AKTIF
 function hitungMasaKerja(tanggalMulaiStr) {
