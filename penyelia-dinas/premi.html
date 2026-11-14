@@ -280,6 +280,42 @@
 
       @page { size: A4 portrait ; margin: 10mm; }
     }
+    /* BLOK TANDA TANGAN PENYELIA (SAMA SEPERTI CETAK.HTML) */
+    .signature-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 32px;
+      gap: 20px;
+      page-break-inside: avoid;
+    }
+
+    .signature-column {
+      flex: 1;
+      text-align: center;
+    }
+
+    .signature-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #000000;
+      text-transform: uppercase;
+      margin-bottom: 60px;
+    }
+
+    .signature-name {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #000000;
+      text-decoration: underline;
+      margin: 0;
+    }
+
+    .signature-nipp {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #000000;
+      margin-top: 2px;
+    }
   </style>
 </head>
 <body>
@@ -385,23 +421,23 @@
 
           <div class="table-responsive">
             <table class="view-table">
-<thead>
-  <tr>
-    <th rowspan="2" style="width: 6%;">NO</th>
-    <th rowspan="2" style="width: 22%;">NAMA ASP</th>
-    <th rowspan="2" style="width: 8%;">NIPP</th>
-    <th rowspan="2" style="width: 8%;">JBT</th>
-    <th rowspan="2" style="width: 7%;"> </th>
-    <th rowspan="2" style="width: 12%;">NO KA</th>
-    <th rowspan="2" style="width: 9%;">RELASI</th>
-    <th colspan="2" style="width: 20%;">JUMLAH PREMI</th>
-    <th rowspan="2" style="width: 15%;">KETERANGAN</th>
-  </tr>
-  <tr>
-    <th style="width: 10%;">PREMI</th>
-    <th style="width: 10%;">PREMI</th>
-  </tr>
-</thead>
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="width: 6%;">NO</th>
+                    <th rowspan="2" style="width: 22%;">NAMA ASP</th>
+                    <th rowspan="2" style="width: 8%;">NIPP</th>
+                    <th rowspan="2" style="width: 8%;">JBT</th>
+                    <th rowspan="2" style="width: 7%;"> </th>
+                    <th rowspan="2" style="width: 12%;">NO KA</th>
+                    <th rowspan="2" style="width: 9%;">RELASI</th>
+                    <th colspan="2" style="width: 20%;">JUMLAH PREMI</th>
+                    <th rowspan="2" style="width: 15%;">KETERANGAN</th>
+                  </tr>
+                  <tr>
+                    <th style="width: 10%;">PREMI</th>
+                    <th style="width: 10%;">PREMI</th>
+                  </tr>
+                </thead>
               <tbody id="viewTableBody">
                 <tr>
                   <td colspan="10" style="padding: 24px; color: #64748b; text-align: center;">
@@ -410,6 +446,24 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+          <!-- BLOK TANDA TANGAN PENYELIA DINAS -->
+          <div class="signature-container">
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
+              <p class="signature-name" id="namaPenyeliaPagiPremi">-</p>
+              <p class="signature-nipp" id="nippPenyeliaPagiPremi">NIPP. -</p>
+            </div>
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS SIANG (5)</div>
+              <p class="signature-name" id="namaPenyeliaSiangPremi">-</p>
+              <p class="signature-nipp" id="nippPenyeliaSiangPremi">NIPP. -</p>
+            </div>
+            <div class="signature-column">
+              <div class="signature-title">PENYELIA DINAS MALAM (6)</div>
+              <p class="signature-name" id="namaPenyeliaMalamPremi">-</p>
+              <p class="signature-nipp" id="nippPenyeliaMalamPremi">NIPP. -</p>
+            </div>
           </div>
         </div>
 
@@ -472,6 +526,18 @@
       return "status-sudah";
     }
 
+    function updatePenyeliaSignature(penyeliaData) {
+      const p = penyeliaData || {};
+      document.getElementById("namaPenyeliaPagiPremi").textContent = p.pagi?.nama || "-";
+      document.getElementById("nippPenyeliaPagiPremi").textContent = (p.pagi?.nipp && p.pagi.nipp !== "-") ? `NIPP. ${p.pagi.nipp}` : "NIPP. -";
+
+      document.getElementById("namaPenyeliaSiangPremi").textContent = p.siang?.nama || "-";
+      document.getElementById("nippPenyeliaSiangPremi").textContent = (p.siang?.nipp && p.siang.nipp !== "-") ? `NIPP. ${p.siang.nipp}` : "NIPP. -";
+
+      document.getElementById("namaPenyeliaMalamPremi").textContent = p.malam?.nama || "-";
+      document.getElementById("nippPenyeliaMalamPremi").textContent = (p.malam?.nipp && p.malam.nipp !== "-") ? `NIPP. ${p.malam.nipp}` : "NIPP. -";
+    }
+
     async function loadViewData() {
       const tanggal = document.getElementById("inputTanggalView").value;
       if (!tanggal) {
@@ -482,6 +548,7 @@
       document.getElementById("viewSubPeriode").textContent = formatTanggalDisplay(tanggal);
       const tbody = document.getElementById("viewTableBody");
       tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #64748b; text-align: center;">Memuat data dinasan tanggal ${tanggal}...</td></tr>`;
+      updatePenyeliaSignature(null);
 
       try {
         const res = await fetch(`${API_URL}?action=getDinasan&tanggal=${encodeURIComponent(tanggal)}`);
@@ -489,7 +556,8 @@
 
         if (result.status === "success" && Array.isArray(result.data)) {
           const rawData = result.data;
-          
+          updatePenyeliaSignature(result.penyelia);
+
           if (rawData.length === 0) {
             tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #64748b; font-weight: 500; text-align: center;">Tidak ada data dinasan ditemukan untuk tanggal ${tanggal}.</td></tr>`;
             return;
