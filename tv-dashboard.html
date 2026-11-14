@@ -6,34 +6,28 @@
     <title>TV Overview &bull; UPT Crew KA Kelas C Kisaran</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     
     <style>
         :root {
-            /* KAI Corporate Palette Refined */
-            --kai-dark: #090d16;
-            --kai-surface: #0f1523;
-            --kai-card: #151d30;
-            --kai-border: #212c46;
-            --kai-orange: #ea580c;
-            --kai-orange-soft: rgba(234, 88, 12, 0.1);
+            --kai-dark: #060911;
+            --kai-surface: #0e1422;
+            --kai-card: #161f33;
+            --kai-border: #263352;
+            --kai-orange: #f97316;
+            --kai-orange-soft: rgba(249, 115, 22, 0.15);
 
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
 
-            --status-hadir: #059669;
-            --status-hadir-bg: rgba(5, 150, 105, 0.1);
-            --status-cuti: #0284c7;
-            --status-cuti-bg: rgba(2, 132, 199, 0.1);
-            --status-sakit: #d97706;
-            --status-sakit-bg: rgba(217, 119, 6, 0.1);
-            --status-itmb: #6366f1;
-            --status-itmb-bg: rgba(99, 102, 241, 0.1);
-            --status-tms: #ea580c;
-            --status-tms-bg: rgba(234, 88, 12, 0.1);
-            --status-mangkir: #dc2626;
-            --status-mangkir-bg: rgba(220, 38, 38, 0.1);
+            --status-hadir: #10b981;
+            --status-hadir-bg: rgba(16, 185, 129, 0.15);
+            --status-cuti: #38bdf8;
+            --status-sakit: #fbbf24;
+            --status-itmb: #818cf8;
+            --status-tms: #fb923c;
+            --status-mangkir: #f87171;
         }
 
         * {
@@ -42,22 +36,26 @@
             padding: 0;
         }
 
-        html, body {
+        html {
+            font-size: clamp(16px, 1.05vw, 28px);
+        }
+
+        body {
             background-color: var(--kai-dark);
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         .tv-wrapper {
             width: 100%;
-            max-width: 100%;
             margin: 0 auto;
-            padding: 1,5vw;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1,2vw;
+            gap: 1.25rem;
         }
 
         /* Top Command Header */
@@ -66,70 +64,57 @@
             justify-content: space-between;
             align-items: center;
             background: var(--kai-surface);
-            border: 1px solid var(--kai-border);
-            padding: 20px 28px;
-            border-radius: 12px;
-            gap: 20px;
-        }
-
-        .brand-group {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .brand-badge {
-            background: var(--kai-orange);
-            color: #ffffff;
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            padding: 6px 12px;
-            border-radius: 6px;
+            border: 2px solid var(--kai-border);
+            padding: 1.25rem 1.75rem;
+            border-radius: 16px;
+            gap: 1.5rem;
         }
 
         .brand-titles h1 {
-            font-size: 1.35rem;
+            font-size: 1.85rem;
             font-weight: 800;
             letter-spacing: -0.02em;
             color: #ffffff;
+            line-height: 1.15;
         }
 
         .brand-subtitle {
-            font-size: 0.75rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 800;
             color: var(--kai-orange);
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 0.25rem;
         }
 
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 1rem;
         }
 
         .tv-action-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--kai-border);
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
             color: #ffffff;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 10px 16px;
-            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 0.6rem;
             text-decoration: none;
             transition: all 0.2s ease;
         }
 
-        .tv-action-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
+        .tv-action-btn:hover,
+        .tv-action-btn:focus-visible {
+            background: var(--kai-orange-soft);
             border-color: var(--kai-orange);
+            outline: none;
         }
 
         .tv-action-btn.active {
@@ -141,20 +126,21 @@
         .tv-clock-box {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 1rem;
             background: var(--kai-card);
-            border: 1px solid var(--kai-border);
-            padding: 10px 18px;
-            border-radius: 8px;
+            border: 2px solid var(--kai-border);
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
         }
 
         .clock-pulse {
-            width: 8px;
-            height: 8px;
+            width: 12px;
+            height: 12px;
             background-color: var(--status-hadir);
             border-radius: 50%;
-            box-shadow: 0 0 0 3px var(--status-hadir-bg);
+            box-shadow: 0 0 0 5px var(--status-hadir-bg);
             animation: pulse 2s infinite;
+            flex-shrink: 0;
         }
 
         @keyframes pulse {
@@ -163,7 +149,7 @@
         }
 
         .clock-time {
-            font-size: 1.4rem;
+            font-size: 2rem;
             font-weight: 800;
             font-variant-numeric: tabular-nums;
             color: #ffffff;
@@ -171,39 +157,43 @@
         }
 
         .clock-date {
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            font-weight: 600;
-            margin-top: 2px;
+            font-weight: 700;
+            margin-top: 0.35rem;
         }
 
-        /* Top Layout: Navigasi (Kiri 2 Kolom) & EOTM (Kanan 1 Kolom) */
+        /* Top Layout: Navigasi & EOTM */
         .tv-top-layout {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 1.25rem;
             align-items: stretch;
         }
 
         .tv-quick-nav-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            align-content: start;
+            gap: 0.85rem;
+        }
+
+        .tv-quick-nav-grid .tv-action-btn {
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
         }
 
         /* 2-Column Balanced Grid for KPI */
         .tv-kpi-grid {
             display: grid;
-            grid-template-columns: 1.2fr 1.6fr;
-            gap: 16px;
+            grid-template-columns: 1.15fr 1.5fr;
+            gap: 1.25rem;
         }
 
         .tv-card {
             background: var(--kai-surface);
-            border: 1px solid var(--kai-border);
-            border-radius: 12px;
-            padding: 20px;
+            border: 2px solid var(--kai-border);
+            border-radius: 16px;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -213,121 +203,118 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--kai-border);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1.5px solid var(--kai-border);
         }
 
         .card-title {
-            font-size: 0.85rem;
+            font-size: 1.15rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: #ffffff;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0.65rem;
         }
 
-        .card-tag {
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            letter-spacing: 0.05em;
+        .card-title i {
+            color: var(--kai-orange);
+            font-size: 1.25rem;
         }
 
         /* Card 1: Personel */
         .personnel-main-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .stat-box {
             background: var(--kai-card);
-            border: 1px solid var(--kai-border);
-            padding: 12px;
-            border-radius: 8px;
+            border: 1.5px solid var(--kai-border);
+            padding: 1.15rem 1.25rem;
+            border-radius: 12px;
         }
 
         .stat-box-val {
-            font-size: 1.8rem;
+            font-size: 2.75rem;
             font-weight: 800;
             color: #ffffff;
             font-variant-numeric: tabular-nums;
-            line-height: 1.1;
+            line-height: 1.05;
         }
 
         .stat-box-label {
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
-            margin-top: 2px;
+            margin-top: 0.4rem;
+            line-height: 1.3;
         }
 
         .personnel-subgrid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 0.75rem;
         }
 
         .subchip {
             background: var(--kai-card);
-            border: 1px solid var(--kai-border);
-            padding: 8px;
-            border-radius: 6px;
+            border: 1.5px solid var(--kai-border);
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
         }
 
         .subchip-title {
-            font-size: 0.65rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-muted);
             text-transform: uppercase;
+            line-height: 1.25;
         }
 
         .subchip-val {
-            font-size: 1.1rem;
+            font-size: 1.75rem;
             font-weight: 800;
             color: #ffffff;
             font-variant-numeric: tabular-nums;
-            margin-top: 2px;
+            margin-top: 0.25rem;
         }
 
         /* Card 2: Presensi & Kesiapan */
         .readiness-box {
             background: var(--kai-card);
-            border: 1px solid var(--kai-border);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 14px;
+            border: 1.5px solid var(--kai-border);
+            padding: 1.15rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
         }
 
         .readiness-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-muted);
-            margin-bottom: 8px;
+            margin-bottom: 0.65rem;
         }
 
         .readiness-pct {
             color: var(--status-hadir);
-            font-size: 0.95rem;
+            font-size: 1.5rem;
             font-weight: 800;
         }
 
         .readiness-track {
             width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
             overflow: hidden;
         }
 
@@ -341,66 +328,68 @@
         .presensi-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 0.75rem;
         }
 
         .presensi-chip {
             background: var(--kai-card);
-            border: 1px solid var(--kai-border);
-            padding: 10px;
-            border-radius: 6px;
+            border: 1.5px solid var(--kai-border);
+            padding: 0.9rem 1.1rem;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 0.25rem;
         }
 
         .presensi-badge {
-            font-size: 0.65rem;
+            font-size: 0.88rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
         .presensi-val {
-            font-size: 1.25rem;
+            font-size: 2rem;
             font-weight: 800;
             font-variant-numeric: tabular-nums;
             color: #ffffff;
+            line-height: 1.1;
         }
 
-        .chip-hadir { border-left: 3px solid var(--status-hadir); }
+        .chip-hadir { border-left: 5px solid var(--status-hadir); }
         .chip-hadir .presensi-badge { color: var(--status-hadir); }
-        .chip-cuti { border-left: 3px solid var(--status-cuti); }
+        .chip-cuti { border-left: 5px solid var(--status-cuti); }
         .chip-cuti .presensi-badge { color: var(--status-cuti); }
-        .chip-sakit { border-left: 3px solid var(--status-sakit); }
+        .chip-sakit { border-left: 5px solid var(--status-sakit); }
         .chip-sakit .presensi-badge { color: var(--status-sakit); }
-        .chip-itmb { border-left: 3px solid var(--status-itmb); }
+        .chip-itmb { border-left: 5px solid var(--status-itmb); }
         .chip-itmb .presensi-badge { color: var(--status-itmb); }
-        .chip-tms { border-left: 3px solid var(--status-tms); }
+        .chip-tms { border-left: 5px solid var(--status-tms); }
         .chip-tms .presensi-badge { color: var(--status-tms); }
-        .chip-mangkir { border-left: 3px solid var(--status-mangkir); }
+        .chip-mangkir { border-left: 5px solid var(--status-mangkir); }
         .chip-mangkir .presensi-badge { color: var(--status-mangkir); }
 
         /* Card 3: Pegawai Terbaik */
         .eotm-body {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 1.35rem;
+            padding: 0.5rem 0;
         }
 
         .eotm-avatar-frame {
             position: relative;
-            width: 68px;
-            height: 68px;
+            width: 5.5rem;
+            height: 5.5rem;
             flex-shrink: 0;
         }
 
         .eotm-avatar {
-            width: 68px;
-            height: 68px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--kai-orange);
+            border: 3px solid var(--kai-orange);
             background: var(--kai-card);
         }
 
@@ -410,76 +399,70 @@
             right: -2px;
             background: var(--kai-orange);
             color: #ffffff;
-            width: 22px;
-            height: 22px;
+            width: 1.85rem;
+            height: 1.85rem;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.85rem;
             border: 2px solid var(--kai-surface);
         }
 
         .eotm-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 0.35rem;
             min-width: 0;
         }
 
         .eotm-kicker {
-            font-size: 0.65rem;
+            font-size: 0.85rem;
             font-weight: 800;
             color: var(--kai-orange);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
         }
 
         .eotm-name {
-            font-size: 1rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            line-height: 1.2;
         }
 
         .eotm-role {
-            font-size: 0.75rem;
+            font-size: 1rem;
             color: var(--text-muted);
             font-weight: 600;
         }
 
-        /* Card 4: Profil Unit (Memanjang Satu Layar) */
-        .unit-body {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            font-size: 0.78rem;
+        .eotm-footer-note {
+            font-size: 0.88rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            border-top: 1px solid var(--kai-border);
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
+            font-weight: 600;
         }
 
-        .unit-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .unit-row i {
-            color: var(--kai-orange);
-            margin-top: 3px;
+        /* Card 4: Profil Unit */
+        .unit-body {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            font-weight: 500;
         }
 
         .unit-link {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
+            gap: 0.5rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--kai-orange);
             text-decoration: none;
-            margin-top: 4px;
+            margin-top: 0.85rem;
         }
 
         .unit-link:hover {
@@ -489,12 +472,12 @@
         /* Schedule Section */
         .schedule-section {
             background: var(--kai-surface);
-            border: 1px solid var(--kai-border);
-            border-radius: 12px;
-            padding: 20px;
+            border: 2px solid var(--kai-border);
+            border-radius: 16px;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 1.15rem;
         }
 
         .schedule-header {
@@ -502,64 +485,36 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--kai-border);
-        }
-
-        .schedule-title-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .schedule-badge {
-            background: var(--kai-orange);
-            color: #ffffff;
-            font-size: 0.75rem;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 6px;
+            gap: 1rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1.5px solid var(--kai-border);
         }
 
         .schedule-title {
-            font-size: 1.1rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #ffffff;
-        }
-
-        .schedule-legend {
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 600;
+            gap: 0.65rem;
         }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .schedule-title i {
+            color: var(--kai-orange);
         }
 
         .schedule-actions {
             display: flex;
-            gap: 8px;
+            gap: 0.75rem;
         }
 
         .embed-wrapper {
             width: 100%;
-            height: 700px;
-            border-radius: 8px;
+            height: 75vh;
+            min-height: 650px;
+            border-radius: 10px;
             overflow: hidden;
-            border: 1px solid var(--kai-border);
+            border: 2px solid var(--kai-border);
             background: #ffffff;
         }
 
@@ -569,78 +524,15 @@
             border: 0;
         }
 
-        /* Ticker & Footer */
-        .ticker-container {
-            display: flex;
-            align-items: center;
-            background: var(--kai-surface);
-            border: 1px solid var(--kai-border);
-            border-radius: 8px;
-            overflow: hidden;
-            height: 40px;
-        }
-
-        .ticker-label {
-            background: var(--kai-orange);
-            color: #ffffff;
-            font-size: 0.75rem;
-            font-weight: 800;
-            padding: 0 16px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            flex-shrink: 0;
-        }
-
-        .ticker-content {
-            flex-grow: 1;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .ticker-track {
-            display: inline-block;
-            white-space: nowrap;
-            padding-left: 100%;
-            animation: ticker 40s linear infinite;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .ticker-item {
-            margin-right: 40px;
-        }
-
-        .ticker-item i {
-            color: var(--kai-orange);
-            margin-right: 6px;
-        }
-
-        @keyframes ticker {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
-        }
-
-        .ticker-container:hover .ticker-track {
-            animation-play-state: paused;
-        }
-
+        /* Footer */
         .tv-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
             color: var(--text-muted);
-            padding: 4px 8px;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 16px;
+            padding: 0.35rem 0.5rem;
         }
 
         .footer-link {
@@ -649,17 +541,15 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 0.5rem;
         }
 
         .footer-link:hover {
             color: #ffffff;
         }
 
-        @media (max-width: 1200px) {
-            .tv-top-layout {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 1100px) {
+            .tv-top-layout,
             .tv-kpi-grid {
                 grid-template-columns: 1fr;
             }
@@ -671,11 +561,9 @@
     <div class="tv-wrapper">
         <!-- Header -->
         <header class="tv-header">
-            <div class="brand-group">
-                <div class="brand-titles">
-                    <div class="brand-subtitle">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</div>
-                    <h1>DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
-                </div>
+            <div class="brand-titles">
+                <div class="brand-subtitle">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</div>
+                <h1>DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
             </div>
 
             <div class="header-controls">
@@ -690,59 +578,53 @@
 
         <!-- TOP LAYOUT: KIRI (NAVIGASI 2 KOLOM) & KANAN (PEGAWAI TERBAIK) -->
         <div class="tv-top-layout">
-            
             <!-- Kiri: Grid Navigasi 2 Kolom -->
-            <div class="tv-quick-nav-grid">
-                <a href="./index.html" class="tv-action-btn" style="justify-content: center; padding: 14px;">
-                    <i class="fa-solid fa-house"></i> Homepage
+            <nav class="tv-quick-nav-grid" aria-label="Navigasi Cepat">
+                <a href="./index.html" class="tv-action-btn">
+                    <i ></i> Homepage
                 </a>
-                <a href="./sertifikasi/dashboard-sertifikasi.html class="tv-action-btn" style="justify-content: center; padding: 14px;">
-                    <i class="fa-solid fa-certificate"></i> Dashboard Sertifikasi
+                <a href="./sertifikasi/dashboard-sertifikasi.html" class="tv-action-btn">
+                    <i></i> Dashboard Sertifikasi
                 </a>
-                <a href="./personel/struktur-organisasi.html" class="tv-action-btn" style="justify-content: center; padding: 14px;">
-                    <i class="fa-solid fa-sitemap"></i> Struktur Organisasi
+                <a href="./personel/struktur-organisasi.html" class="tv-action-btn">
+                    <i></i> Struktur Organisasi
                 </a>
-                <a href="./personel/jadwal-dinasan.html" class="tv-action-btn" style="justify-content: center; padding: 14px;">
-                    <i class="fa-solid fa-clock"></i> Jadwal Dinasan
+                <a href="./personel/jadwal-dinasan.html" class="tv-action-btn">
+                    <i ></i> Jadwal Dinasan
                 </a>
-                <a href="./personel/personel.html" class="tv-action-btn" style="justify-content: center; padding: 14px;">
-                    <i class="fa-solid fa-users"></i> Personel
+                <a href="./personel/personel.html" class="tv-action-btn">
+                    <i ></i> Personel
                 </a>
-                <a href="./personel/ibpr.html" class="tv-action-btn" style="justify-content: center; padding: 14px;">
-                    <i class="fa-solid fa-shield-halved"></i> IBPR
+                <a href="./personel/ibpr.html" class="tv-action-btn">
+                    <i></i> IBPR
                 </a>
-                <a href="./cuti/dashboard-cuti.html" class="tv-action-btn" style="justify-content: center; padding: 14px; grid-column: span 2;">
-                    <i class="fa-solid fa-calendar-days"></i> Dashboard Cuti
+                <a href="./cuti/dashboard-cuti.html" class="tv-action-btn" style="grid-column: span 2;">
+                    <i></i> Dashboard Cuti
                 </a>
-            </div>
+            </nav>
 
             <!-- Kanan: Kartu Pegawai Terbaik (EOTM) -->
-            <div class="tv-card" style="margin-bottom: 0; height: 100%;">
+            <div class="tv-card">
                 <div>
                     <div class="card-header">
                         <h2 class="card-title">
-                            <i style="color: var(--kai-orange);"></i>
                             Pegawai Terbaik
                         </h2>
                     </div>
                     <div class="eotm-body">
                         <div class="eotm-avatar-frame">
-                            <img id="eotmAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='68' height='68'><rect width='68' height='68' fill='%23151d30'/></svg>" alt="Pegawai Terbaik" class="eotm-avatar">
+                            <img id="eotmAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='88' height='88'><rect width='88' height='88' fill='%23161f33'/></svg>" alt="Pegawai Terbaik" class="eotm-avatar">
                             <div class="eotm-badge">
                                 <i class="fa-solid fa-trophy"></i>
                             </div>
                         </div>
                         <div class="eotm-info">
-                            <span class="eotm-kicker">Apresiasi Kinerja</span>
                             <h3 id="eotmName" class="eotm-name">Memuat Data...</h3>
                             <p id="eotmRole" class="eotm-role">-</p>
                         </div>
                     </div>
                 </div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); border-top: 1px solid var(--kai-border); padding-top: 10px; margin-top: 10px;">
-                </div>
             </div>
-
         </div>
         
         <!-- KPI Grid (Personel & Presensi) -->
@@ -752,8 +634,7 @@
                 <div>
                     <div class="card-header">
                         <h2 class="card-title">
-                            <i style="color: var(--kai-orange);"></i>
-                            Personel &amp; Awak Sarana
+                            Personel 
                         </h2>
                     </div>
                     <div class="personnel-main-row">
@@ -767,7 +648,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="personnel-subgrid" style="grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                <div class="personnel-subgrid">
                     <div class="subchip">
                         <div class="subchip-title">KUPT</div>
                         <div class="subchip-val" id="val-kupt">1</div>
@@ -800,7 +681,6 @@
                 <div>
                     <div class="card-header">
                         <h2 class="card-title">
-                            <i style="color: var(--kai-orange);"></i>
                             Presensi Hari Ini
                         </h2>
                     </div>
@@ -848,15 +728,11 @@
             <div>
                 <div class="card-header">
                     <h2 class="card-title">
-                        <i style="color: var(--kai-orange);"></i>
                         Profil UPT Crew KA Kelas C Kisaran
                     </h2>
                 </div>
                 <div class="unit-body">
-                    <div class="unit-row">
-                        <i></i>
-                        <span>UPT Crew KA Kelas C Kisaran adalah Unit Pelaksana Teknis yang berada di wilayah Divisi Regional I Sumatera Utara (DIVRE I SU) yang memiliki wewenang dan bertanggung jawab dalam penugasan Masinis dan Asisten Masinis untuk dinas Kereta Api, Langsir, atau dinas cadangan di Stasiun awal pemberangkatan Kereta Api atau di Stasiun pergantian Awak KA.</span>
-                    </div>
+                    UPT Crew KA Kelas C Kisaran adalah Unit Pelaksana Teknis yang berada di wilayah Divisi Regional I Sumatera Utara (DIVRE I SU) yang memiliki wewenang dan bertanggung jawab dalam penugasan Masinis dan Asisten Masinis untuk dinas Kereta Api, Langsir, atau dinas cadangan di Stasiun awal pemberangkatan Kereta Api atau di Stasiun pergantian Awak KA.
                 </div>
             </div>
             <div>
@@ -869,9 +745,9 @@
         <!-- Schedule Section -->
         <section class="schedule-section">
             <div class="schedule-header">
-                <div class="schedule-title-group">
-                    <h2 class="schedule-title">Jadwal Dinasan Awak Sarana Perkeretaapian UPT Crew KA Kisaran</h2>
-                </div>
+                <h2 class="schedule-title">
+                    Jadwal Dinasan Awa KA UPT Crew KA Kisaran
+                </h2>
                 <div class="schedule-actions">
                     <button type="button" id="btn-reload-frame" class="tv-action-btn">
                         <i class="fa-solid fa-rotate-right"></i> Refresh
@@ -889,9 +765,7 @@
         <!-- Footer -->
         <footer class="tv-footer">
             <span>Tersinkronisasi Otomatis Google Sheets</span>
-            <div class="footer-links">
-                <a href="./index.html" class="footer-link"><i class="fa-solid fa-house"></i> Home</a>
-            </div>
+            <a href="./index.html" class="footer-link"><i class="fa-solid fa-house"></i> Home</a>
         </footer>
     </div>
 
@@ -916,43 +790,19 @@
             setInterval(calcReadiness, 3000);
             calcReadiness();
 
-           let scrollActive = true, timer = null, dir = 1, paused = false;
+            let scrollActive = true, timer = null, dir = 1, paused = false;
             function autoScroll() {
                 if (!scrollActive || paused) return;
                 const max = document.documentElement.scrollHeight - window.innerHeight;
                 if (max <= 10) return;
                 window.scrollBy({ top: dir, behavior: 'auto' });
                 if (window.scrollY >= max - 4 && dir === 1) {
-                    paused = true; setTimeout(() => { dir = -1; paused = false; }, 5000); // Menunggu 60 detik di bawah sebelum naik
+                    paused = true; setTimeout(() => { dir = -1; paused = false; }, 5000);
                 } else if (window.scrollY <= 4 && dir === -1) {
-                    paused = true; setTimeout(() => { dir = 1; paused = false; }, 60000); // Menunggu 60 detik di atas sebelum turun kembali
+                    paused = true; setTimeout(() => { dir = 1; paused = false; }, 60000);
                 }
             }
-            // Penundaan awal sebelum scroll pertama kali jalan (misal tetap 2 menit atau 60000 ms)
             setTimeout(() => { timer = setInterval(autoScroll, 50); }, 60000);
-
-            const btnScroll = document.getElementById('btn-toggle-scroll');
-            if (btnScroll) {
-                btnScroll.addEventListener('click', () => {
-                    scrollActive = !scrollActive;
-                    btnScroll.classList.toggle('active', scrollActive);
-                    const iconState = document.getElementById('icon-scroll-state');
-                    const textState = document.getElementById('text-scroll-state');
-                    if (iconState) iconState.className = scrollActive ? 'fa-solid fa-play' : 'fa-solid fa-pause';
-                    if (textState) textState.textContent = scrollActive ? 'Auto-Scroll' : 'Jeda';
-                });
-            }
-
-            const btnFullscreen = document.getElementById('btn-fullscreen');
-            if (btnFullscreen) {
-                btnFullscreen.addEventListener('click', () => {
-                    if (!document.fullscreenElement) {
-                        document.documentElement.requestFullscreen();
-                    } else if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    }
-                });
-            }
 
             document.getElementById('btn-reload-frame').addEventListener('click', () => {
                 const f = document.getElementById('iframe-o241');
@@ -975,10 +825,10 @@
                     ? (words[0][0] + words[1][0]).toUpperCase() 
                     : (words[0].substring(0, 2)).toUpperCase();
                 
-                const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="76" height="76" viewBox="0 0 76 76">
-                    <rect width="76" height="76" fill="#131c35"/>
-                    <circle cx="38" cy="38" r="34" fill="none" stroke="#f06400" stroke-width="2.5"/>
-                    <text x="38" y="44" font-family="'Plus Jakarta Sans', sans-serif" font-size="22" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+                const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 88 88">
+                    <rect width="88" height="88" fill="#161f33"/>
+                    <circle cx="44" cy="44" r="39" fill="none" stroke="#f97316" stroke-width="3"/>
+                    <text x="44" y="52" font-family="'Plus Jakarta Sans', sans-serif" font-size="26" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
                 </svg>`;
                 return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
             }
