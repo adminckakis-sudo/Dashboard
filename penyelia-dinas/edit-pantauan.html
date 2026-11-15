@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Pantauan Lintas & Taspat - UPT Crew KA Kisaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      margin: 0;
+      padding: 20px;
+    }
+    .container { max-width: 1320px; margin: 0 auto; }
+
+    /* HEADER UTAMA */
+    .header-bar {
+      background: #1C2A5F;
+      color: #fff;
+      padding: 18px 24px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 4px 14px rgba(28, 42, 95, 0.2);
+    }
+    .header-bar h2 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+    .header-sub { font-size: 0.8rem; color: #cbd5e1; margin-top: 4px; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn-view {
+      background: #F06400;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      transition: background 0.2s;
+    }
+    .btn-view:hover { background: #d95800; }
+
+    /* SECTION CARD */
+    .section-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+      border: 1px solid #e2e8f0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .section-title {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: #1C2A5F;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-badge {
+      background: #e0e7ff;
+      color: #1C2A5F;
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 800;
+    }
+
+    .info-note {
+      background: #eff6ff;
+      border-left: 4px solid #1C2A5F;
+      padding: 9px 14px;
+      font-size: 0.78rem;
+      color: #1e3a8a;
+      margin-bottom: 14px;
+      border-radius: 4px;
+    }
+
+    /* BUTTONS */
+    .btn-add {
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 7px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-add:hover { background: #15803d; }
+
+    .btn-primary {
+      background: #1C2A5F;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 7px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+    .btn-primary:hover { background: #121d42; }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 7px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .btn-edit {
+      background: #0284c7;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.74rem;
+    }
+    .btn-edit:hover { background: #0369a1; }
+
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.74rem;
+    }
+    .btn-danger:hover { background: #dc2626; }
+
+    /* TABLE */
+    .table-responsive { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 800;
+      color: #1e293b;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+    }
+    .text-center { text-align: center; }
+
+    .badge-open {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-weight: 800;
+      font-size: 0.72rem;
+      display: inline-block;
+    }
+    .badge-closed {
+      background: #dcfce7;
+      color: #15803d;
+      padding: 4px 8px;
+      border-radius: 5px;
+      font-weight: 800;
+      font-size: 0.72rem;
+      display: inline-block;
+    }
+    .badge-lintas {
+      background: #1C2A5F;
+      color: #ffffff;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 0.72rem;
+    }
+
+    .pengumuman-preview {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      white-space: pre-line;
+      min-height: 70px;
+    }
+
+    /* MODAL POPUP FORM TAMBAH / EDIT */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: #ffffff;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 680px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .modal-header h3 { margin: 0; font-size: 1.05rem; color: #1C2A5F; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .form-group { margin-bottom: 12px; }
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .btn-gdrive {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #1C2A5F;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+    .btn-gdrive:hover { background: #F06400; }
+    .btn-gdrive-disabled {
+      background: #e2e8f0;
+      color: #64748b;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- HEADER -->
+  <div class="header-bar">
+    <div>
+      <h2>Kelola Papan Pantauan Lintas &amp; Taspat</h2>
+      <div class="header-sub" id="penyeliaInfoLabel">Penyelia: --</div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" onclick="loadAll()">&#8635; Refresh Data</button>
+      <a href="./pantauan.html" target="_blank" class="btn-view">Buka Layar Penampil &#8599;</a>
+    </div>
+  </div>
+
+  <datalist id="crewDatalist"></datalist>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 1: PANTAUAN KEJADIAN, SARANA & PRASARANA DI LINTAS            -->
+  <!-- ===================================================================== -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">
+        1. Pantauan Kejadian, Kondisi Sarana &amp; Prasarana di Lintas
+        <span class="section-badge" id="countKejadian">0 Data</span>
+      </h3>
+      <button class="btn-add" onclick="openModalKejadian()">+ Tambah Kejadian</button>
+    </div>
+
+    <div class="info-note">
+      <strong>Info Otomatisasi:</strong> Data kejadian yang sudah berganti bulan dan berstatus <strong>CLOSED</strong> akan terhapus otomatis. Data yang masih <strong>OPEN</strong> tetap tampil hingga statusnya diubah menjadi <strong>CLOSED</strong>.
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%;" class="text-center">No</th>
+            <th style="width: 8%;" class="text-center">KA</th>
+            <th style="width: 13%;" class="text-center">Tanggal</th>
+            <th style="width: 21%;">Awak KA (Masinis &amp; Asmas)</th>
+            <th style="width: 26%;">Kejadian</th>
+            <th style="width: 14%;">Tindak Lanjut KUPT</th>
+            <th style="width: 6%;" class="text-center">Status</th>
+            <th style="width: 7%;" class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="listKejadian">
+          <tr><td colspan="8" class="text-center">Memuat seluruh data kejadian...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 2: PANTAUAN TASPAT (KIS-MDN, KIS-RAP, KIS-TNB)                -->
+  <!-- ===================================================================== -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">
+        2. Pantauan Taspat (KIS-MDN, KIS-RAP, KIS-TNB)
+        <span class="section-badge" id="countTaspat">0 Data</span>
+      </h3>
+      <button class="btn-add" onclick="openModalTaspat()">+ Tambah Taspat</button>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 6%;" class="text-center">No</th>
+            <th style="width: 14%;" class="text-center">Lintas</th>
+            <th style="width: 26%;">Petak Jalan</th>
+            <th style="width: 28%;">Letak Kilometer</th>
+            <th style="width: 14%;" class="text-center">Kecepatan</th>
+            <th style="width: 12%;" class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="listTaspat">
+          <tr><td colspan="6" class="text-center">Memuat seluruh data taspat...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 3: LINK GOOGLE DRIVE (DOKUMEN & JADWAL DINASAN)               -->
+  <!-- ===================================================================== -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">
+        3. Link Google Drive (MALKA, WAM, WAD, PPK &amp; Jadwal Dinasan)
+        <span class="section-badge">6 Slot</span>
+      </h3>
+      <button class="btn-add" onclick="openModalDokumen()">+ Tambah / Ubah Link GDrive</button>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 22%;">Kolom Papan</th>
+            <th style="width: 25%;">Label / Nomor Dokumen</th>
+            <th style="width: 41%;">Link Google Drive</th>
+            <th style="width: 12%;" class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="listDokumen">
+          <tr><td colspan="4" class="text-center">Memuat daftar tautan...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 4: PENGUMUMAN PAPAN                                           -->
+  <!-- ===================================================================== -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3 class="section-title">4. Pengumuman Papan</h3>
+      <button class="btn-primary" onclick="openModalPengumuman()">Edit Pengumuman</button>
+    </div>
+    <div class="pengumuman-preview" id="previewPengumuman">-</div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- MODAL 1: TAMBAH / EDIT KEJADIAN                                         -->
+<!-- ======================================================================= -->
+<div class="modal-overlay" id="modalKejadian">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="titleModalKejadian">Tambah Kejadian Lintas</h3>
+      <button class="modal-close" onclick="closeModal('modalKejadian')">&times;</button>
+    </div>
+    <input type="hidden" id="kejRowIndex">
+    <div class="form-grid">
+      <div><label>No KA</label><input type="text" id="kejKa" placeholder="Contoh: U53A"></div>
+      <div><label>Tanggal Kejadian</label><input type="text" id="kejTanggal" placeholder="Pilih tanggal..."></div>
+      <div>
+        <label>Status Keterangan</label>
+        <select id="kejKeterangan">
+          <option value="OPEN">OPEN</option>
+          <option value="CLOSED">CLOSED</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div>
+        <label>Masinis (Orang 1)</label>
+        <input type="text" id="kejMasinis" list="crewDatalist" placeholder="Ketik nama atau NIPP Masinis...">
+      </div>
+      <div>
+        <label>Asisten Masinis (Orang 2)</label>
+        <input type="text" id="kejAsmas" list="crewDatalist" placeholder="Ketik nama atau NIPP Asisten Masinis...">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Uraian Kejadian</label>
+      <textarea id="kejUraian" placeholder="Detail kejadian, KM, petak jalan..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Tindak Lanjut KUPT</label>
+      <textarea id="kejTindak" placeholder="Koordinasi unit terkait"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalKejadian')">Batal</button>
+      <button class="btn-primary" onclick="simpanKejadian()">Simpan Kejadian</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- MODAL 2: TAMBAH / EDIT TASPAT                                           -->
+<!-- ======================================================================= -->
+<div class="modal-overlay" id="modalTaspat">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="titleModalTaspat">Tambah Data Taspat</h3>
+      <button class="modal-close" onclick="closeModal('modalTaspat')">&times;</button>
+    </div>
+    <input type="hidden" id="tasRowIndex">
+    <div class="form-grid">
+      <div>
+        <label>Lintas</label>
+        <select id="tasLintas">
+          <option value="KIS-MDN">KIS-MDN</option>
+          <option value="KIS-RAP">KIS-RAP</option>
+          <option value="KIS-TNB">KIS-TNB</option>
+        </select>
+      </div>
+      <div><label>Petak Jalan</label><input type="text" id="tasPetak" placeholder="Contoh: KIS - BNJ"></div>
+    </div>
+    <div class="form-grid">
+      <div><label>Letak Kilometer</label><input type="text" id="tasKm" placeholder="Contoh: KM 102+400 s.d 103+100"></div>
+      <div><label>Kecepatan</label><input type="text" id="tasKecepatan" placeholder="Contoh: 40 KM/JAM"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalTaspat')">Batal</button>
+      <button class="btn-primary" onclick="simpanTaspat()">Simpan Taspat</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- MODAL 3: TAMBAH / EDIT LINK GOOGLE DRIVE                                -->
+<!-- ======================================================================= -->
+<div class="modal-overlay" id="modalDokumen">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Atur Link Google Drive</h3>
+      <button class="modal-close" onclick="closeModal('modalDokumen')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label>Pilih Kolom Papan</label>
+      <select id="docKategori">
+        <option value="MALKA">MALKA</option>
+        <option value="WAM">WAM</option>
+        <option value="WAD">WAD</option>
+        <option value="PPK">PPK</option>
+        <option value="JADWAL_HARI_INI">JADWAL DINASAN - HARI INI</option>
+        <option value="JADWAL_ESOK_HARI">JADWAL DINASAN - ESOK HARI</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Label / Nomor Dokumen</label>
+      <input type="text" id="docJudul" placeholder="Contoh: MALKA No. 14 / Jadwal 15 Nov">
+    </div>
+    <div class="form-group">
+      <label>URL Google Drive</label>
+      <input type="url" id="docUrl" placeholder="https://drive.google.com/...">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalDokumen')">Batal</button>
+      <button class="btn-primary" onclick="simpanDokumen()">Simpan Link GDrive</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================= -->
+<!-- MODAL 4: EDIT PENGUMUMAN                                                -->
+<!-- ======================================================================= -->
+<div class="modal-overlay" id="modalPengumuman">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Edit Pengumuman Papan</h3>
+      <button class="modal-close" onclick="closeModal('modalPengumuman')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label>Teks Pengumuman</label>
+      <textarea id="cfgPengumuman" style="min-height: 150px;" placeholder="Tulis pengumuman untuk awak KA..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalPengumuman')">Batal</button>
+      <button class="btn-primary" onclick="simpanPengaturan()">Simpan Pengumuman</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
+  let cacheData = {};
+  let fpKejadian = null;
+
+  // Cek Login Penyelia
+  const loggedInNama = localStorage.getItem("loggedInUserNama");
+  const loggedInNipp = localStorage.getItem("loggedInUserNipp");
+  if (!loggedInNama || !loggedInNipp) {
+    Swal.fire({
+      title: 'Akses Ditolak!', text: 'Anda harus login terlebih dahulu.', icon: 'warning', confirmButtonColor: '#1C2A5F'
+    }).then(() => { window.location.href = "login.html"; });
+  } else {
+    document.getElementById("penyeliaInfoLabel").textContent = `Penyelia: ${loggedInNama} (NIPP. ${loggedInNipp})`;
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove("open");
+  }
+
+  // ===========================================================================
+  // LOAD SELURUH DATA KE SEMUA SECTION
+  // ===========================================================================
+  async function loadAll() {
+    try {
+      const res = await fetch(`${API_URL}?action=getPantauanAll`);
+      const json = await res.json();
+      if (json.status !== "success") {
+        Swal.fire("Error Server", json.message || "Gagal memuat data", "error");
+        return;
+      }
+      cacheData = json;
+
+      // Datalist Autocomplete Awak KA
+      if (Array.isArray(json.crewList)) {
+        document.getElementById("crewDatalist").innerHTML = json.crewList
+          .map(name => `<option value="${name}">`)
+          .join("");
+      }
+
+      // 1. RENDER SELURUH KEJADIAN
+      const listKej = json.kejadian || [];
+      document.getElementById("countKejadian").textContent = `${listKej.length} Data`;
+      if (listKej.length === 0) {
+        document.getElementById("listKejadian").innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data kejadian lintas.</td></tr>`;
+      } else {
+        document.getElementById("listKejadian").innerHTML = listKej.map((k, idx) => {
+          const isClose = String(k.KETERANGAN).toUpperCase().includes("CLOSE");
+          return `
+            <tr>
+              <td class="text-center">${idx + 1}</td>
+              <td class="text-center"><strong>${k.KA}</strong></td>
+              <td class="text-center">${k.TANGGAL}</td>
+              <td>
+                <div>${k.MASINIS || '-'}</div>
+                <div style="border-top:1px dashed #cbd5e1; margin-top:4px; padding-top:4px;">${k.ASISTEN_MASINIS || '-'}</div>
+              </td>
+              <td>${String(k.KEJADIAN || '-').replace(/\n/g, "<br>")}</td>
+              <td>${k.TINDAK_LANJUT || '-'}</td>
+              <td class="text-center"><span class="${isClose ? 'badge-closed' : 'badge-open'}">${k.KETERANGAN}</span></td>
+              <td class="text-center" style="white-space:nowrap;">
+                <button class="btn-edit" onclick="openModalKejadian(${idx})">Edit</button>
+                <button class="btn-danger" onclick="hapusData('deleteKejadian', ${k._rowIndex})">Hapus</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // 2. RENDER SELURUH TASPAT
+      const listTas = json.taspat || [];
+      document.getElementById("countTaspat").textContent = `${listTas.length} Data`;
+      if (listTas.length === 0) {
+        document.getElementById("listTaspat").innerHTML = `<tr><td colspan="6" class="text-center">Belum ada data taspat.</td></tr>`;
+      } else {
+        document.getElementById("listTaspat").innerHTML = listTas.map((t, idx) => `
+          <tr>
+            <td class="text-center">${idx + 1}</td>
+            <td class="text-center"><span class="badge-lintas">${t.LINTAS}</span></td>
+            <td>${t.PETAK_JALAN || '-'}</td>
+            <td>${t.LETAK_KM || '-'}</td>
+            <td class="text-center"><strong>${t.KECEPATAN || '-'}</strong></td>
+            <td class="text-center" style="white-space:nowrap;">
+              <button class="btn-edit" onclick="openModalTaspat(${idx})">Edit</button>
+              <button class="btn-danger" onclick="hapusData('deleteTaspat', ${t._rowIndex})">Hapus</button>
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      // 3. RENDER SELURUH SLOT LINK GDRIVE (6 SLOT TETAP)
+      const docMap = {};
+      (json.dokumen || []).forEach(d => { docMap[String(d.KATEGORI).toUpperCase()] = d; });
+
+      const allSlots = [
+        { key: "MALKA", label: "MALKA" },
+        { key: "WAM", label: "WAM" },
+        { key: "WAD", label: "WAD" },
+        { key: "PPK", label: "PPK" },
+        { key: "JADWAL_HARI_INI", label: "JADWAL DINASAN - HARI INI" },
+        { key: "JADWAL_ESOK_HARI", label: "JADWAL DINASAN - ESOK HARI" }
+      ];
+
+document.getElementById("listDokumen").innerHTML = allSlots.map(slot => {
+        const d = docMap[slot.key];
+        const judulVal = d ? d.JUDUL : "-";
+        const btnHtml = (d && d.URL)
+          ? `<a href="${d.URL}" target="_blank" rel="noopener noreferrer" class="btn-gdrive">Buka GDrive &#8599;</a>`
+          : `<span class="btn-gdrive btn-gdrive-disabled">Belum Ada Link</span>`;
+        return `
+          <tr>
+            <td><strong>${slot.label}</strong></td>
+            <td>${judulVal}</td>
+            <td class="text-center">${btnHtml}</td>
+            <td class="text-center">
+              <button class="btn-edit" onclick="openModalDokumen('${slot.key}')">Edit Link</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      // 4. RENDER PENGUMUMAN
+      const pengumumanText = json.pengaturan?.pengumuman || "-";
+      document.getElementById("previewPengumuman").textContent = pengumumanText;
+      document.getElementById("cfgPengumuman").value = pengumumanText === "-" ? "" : pengumumanText;
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function postApi(payload, modalToClose) {
+    Swal.fire({ title: "Menyimpan...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+    try {
+      const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+      const json = await res.json();
+      if (json.status === "success") {
+        if (modalToClose) closeModal(modalToClose);
+        Swal.fire("Berhasil", json.message, "success");
+        loadAll();
+      } else {
+        Swal.fire("Gagal", json.message, "error");
+      }
+    } catch (err) {
+      Swal.fire("Error", "Gagal terhubung ke server.", "error");
+    }
+  }
+
+  // ===========================================================================
+  // HANDLER MODAL & SIMPAN DATA
+  // ===========================================================================
+  function openModalKejadian(idx = null) {
+    if (idx !== null && cacheData.kejadian[idx]) {
+      const k = cacheData.kejadian[idx];
+      document.getElementById("titleModalKejadian").textContent = "Edit Kejadian Lintas";
+      document.getElementById("kejRowIndex").value = k._rowIndex;
+      document.getElementById("kejKa").value = k.KA;
+      document.getElementById("kejTanggal").value = k.TANGGAL;
+      document.getElementById("kejMasinis").value = k.MASINIS || "";
+      document.getElementById("kejAsmas").value = k.ASISTEN_MASINIS || "";
+      document.getElementById("kejUraian").value = k.KEJADIAN;
+      document.getElementById("kejTindak").value = k.TINDAK_LANJUT;
+      document.getElementById("kejKeterangan").value = k.KETERANGAN;
+    } else {
+      document.getElementById("titleModalKejadian").textContent = "Tambah Kejadian Lintas";
+      ["kejRowIndex", "kejKa", "kejMasinis", "kejAsmas", "kejUraian", "kejTindak"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+      document.getElementById("kejKeterangan").value = "OPEN";
+      if (fpKejadian) fpKejadian.setDate(new Date());
+    }
+    document.getElementById("modalKejadian").classList.add("open");
+  }
+
+  function simpanKejadian() {
+    postApi({
+      action: "saveKejadian",
+      rowIndex: document.getElementById("kejRowIndex").value,
+      ka: document.getElementById("kejKa").value,
+      tanggal: document.getElementById("kejTanggal").value,
+      masinis: document.getElementById("kejMasinis").value,
+      asisten_masinis: document.getElementById("kejAsmas").value,
+      kejadian: document.getElementById("kejUraian").value,
+      tindak_lanjut: document.getElementById("kejTindak").value,
+      keterangan: document.getElementById("kejKeterangan").value
+    }, "modalKejadian");
+  }
+
+  function openModalTaspat(idx = null) {
+    if (idx !== null && cacheData.taspat[idx]) {
+      const t = cacheData.taspat[idx];
+      document.getElementById("titleModalTaspat").textContent = "Edit Data Taspat";
+      document.getElementById("tasRowIndex").value = t._rowIndex;
+      document.getElementById("tasLintas").value = t.LINTAS;
+      document.getElementById("tasPetak").value = t.PETAK_JALAN;
+      document.getElementById("tasKm").value = t.LETAK_KM;
+      document.getElementById("tasKecepatan").value = t.KECEPATAN;
+    } else {
+      document.getElementById("titleModalTaspat").textContent = "Tambah Data Taspat";
+      ["tasRowIndex", "tasPetak", "tasKm", "tasKecepatan"].forEach(id => document.getElementById(id).value = "");
+      document.getElementById("tasLintas").value = "KIS-MDN";
+    }
+    document.getElementById("modalTaspat").classList.add("open");
+  }
+
+  function simpanTaspat() {
+    postApi({
+      action: "saveTaspat",
+      rowIndex: document.getElementById("tasRowIndex").value,
+      lintas: document.getElementById("tasLintas").value,
+      petak_jalan: document.getElementById("tasPetak").value,
+      letak_km: document.getElementById("tasKm").value,
+      kecepatan: document.getElementById("tasKecepatan").value
+    }, "modalTaspat");
+  }
+
+  function openModalDokumen(kategori = "MALKA") {
+    document.getElementById("docKategori").value = kategori;
+    const existing = (cacheData.dokumen || []).find(d => String(d.KATEGORI).toUpperCase() === kategori);
+    document.getElementById("docJudul").value = existing ? existing.JUDUL : "";
+    document.getElementById("docUrl").value = existing ? existing.URL : "";
+    document.getElementById("modalDokumen").classList.add("open");
+  }
+
+  function simpanDokumen() {
+    postApi({
+      action: "saveDokumen",
+      kategori: document.getElementById("docKategori").value,
+      judul: document.getElementById("docJudul").value,
+      url: document.getElementById("docUrl").value
+    }, "modalDokumen");
+  }
+
+  function openModalPengumuman() {
+    document.getElementById("modalPengumuman").classList.add("open");
+  }
+
+  function simpanPengaturan() {
+    postApi({
+      action: "savePengaturan",
+      pengumuman: document.getElementById("cfgPengumuman").value
+    }, "modalPengumuman");
+  }
+
+  function hapusData(actionName, rowIndex) {
+    Swal.fire({
+      title: "Hapus data ini?",
+      text: "Data yang dihapus tidak dapat dikembalikan.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      confirmButtonText: "Ya, Hapus"
+    }).then(r => {
+      if (r.isConfirmed) postApi({ action: actionName, rowIndex });
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    fpKejadian = flatpickr("#kejTanggal", {
+      locale: "id",
+      dateFormat: "d F Y",
+      defaultDate: new Date()
+    });
+    loadAll();
+  });
+</script>
+</body>
+</html>
