@@ -110,6 +110,27 @@
     }
     .btn-sync:hover { background-color: #047857; }
 
+    .action-cell-group {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn-delete-row {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-delete-row:hover {
+      background-color: #dc2626;
+    }
+
   </style>
 </head>
 <body>
@@ -185,6 +206,15 @@
             </svg>
             <span class="sidebar-text">Cetak Report G43A</span>
           </a>
+          <a href="./pantauan.html" class="sidebar-item" title="Papan Pantauan">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Contoh path untuk ikon tautan/eksternal -->
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span class="sidebar-text">Papan Pantauan</span>
+          </a>
         </nav>
       </div>
     </aside>
@@ -222,7 +252,7 @@
                   <th style="width: 10%;">PREMI 1</th>
                   <th style="width: 10%;">PREMI 2</th>
                   <th style="width: 13%;">STATUS PREMI</th>
-                  <th style="width: 5%;">SIMPAN</th>
+                  <th style="width: 5%;">AKSI</th>
                 </tr>
               </thead>
               <tbody id="editTableBody">
@@ -427,7 +457,12 @@
               </select>
             </td>
 
-            <td><button type="button" class="btn-save-row" onclick="saveSingleRow(${idx})">💾</button></td>
+<td>
+              <div class="action-cell-group">
+                <button type="button" class="btn-save-row" title="Simpan Baris" onclick="saveSingleRow(${idx})">💾</button>
+                <button type="button" class="btn-delete-row" title="Hapus Baris" onclick="deleteSingleRow(${idx})">🗑️</button>
+              </div>
+            </td>
           </tr>
         `;
       });
@@ -812,6 +847,51 @@ async function handleSyncO241() {
   }
 }
 
+async function deleteSingleRow(idx) {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      const item = loadedCurrentData[idx];
+      if (!item) return;
+
+      const confirmResult = await Swal.fire({
+        title: 'Hapus Dinasan?',
+        html: `Yakin ingin menghapus dinasan <b>${item.no_dinasan}</b> (${item.jabatan} - <b>${item.nama || 'Kosong'}</b>)?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+      });
+
+      if (!confirmResult.isConfirmed) return;
+
+      Swal.fire({ title: 'Menghapus...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "deleteDinasanRow",
+            tanggal: tanggal,
+            no_dinasan: item.no_dinasan,
+            jabatan: item.jabatan,
+            nama: item.nama
+          })
+        });
+        const result = await res.json();
+
+        if (result.status === "success") {
+          Swal.fire("Terhapus!", result.message, "success");
+          loadEditData();
+        } else {
+          Swal.fire("Gagal", result.message, "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Gagal menghapus data di server.", "error");
+      }
+    }
+    
  </script>
 </body>
 </html>
