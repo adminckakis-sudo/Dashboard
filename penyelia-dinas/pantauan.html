@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pantauan Kejadian & Taspat - UPT Crew KA Kisaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #cbd5e1;
+      color: #0f172a;
+      padding: 8px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .board-wrapper {
+      background: #ffffff;
+      border: 3px solid #1e293b;
+      display: grid;
+      grid-template-columns: 72% 28%;
+      grid-template-rows: 1fr auto;
+      flex: 1;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    /* KIRI ATAS: HEADER & TABEL KEJADIAN */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      border-right: 3px solid #1e293b;
+      overflow: hidden;
+    }
+
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 18px;
+      background: #ffffff;
+      border-bottom: 2.5px solid #1e293b;
+      gap: 12px;
+    }
+
+    .header-logo {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .board-title {
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #0f172a;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .table-container {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+    }
+
+    th {
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 800;
+      padding: 8px 6px;
+      border: 1px solid #334155;
+      text-align: center;
+      text-transform: uppercase;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    td {
+      border: 1px solid #475569;
+      padding: 6px 8px;
+      vertical-align: middle;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .text-center { text-align: center; }
+
+    /* AWAK KA 2 ORANG BERSUSUN */
+    .awak-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .awak-item {
+      line-height: 1.25;
+      font-size: 0.73rem;
+    }
+    .awak-divider {
+      border-top: 1px dashed #94a3b8;
+      padding-top: 3px;
+    }
+
+    .status-open {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-weight: 800;
+      text-align: center;
+    }
+    .status-close {
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    /* KANAN ATAS: PANTAUAN TASPAT */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background: #f8fafc;
+    }
+
+    .taspat-header {
+      background: #e2e8f0;
+      font-weight: 800;
+      text-align: center;
+      padding: 15px 8px;
+      font-size: 0.95rem;
+      border-bottom: 2.5px solid #1e293b;
+    }
+
+    .taspat-date {
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      background: #ffffff;
+      border-bottom: 1.5px solid #334155;
+    }
+
+    .lintas-title {
+      background: #1C2A5F;
+      color: #ffffff;
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 4px;
+      border-top: 1px solid #1e293b;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .taspat-table th {
+      background: #f1f5f9;
+      font-size: 0.64rem;
+      padding: 4px;
+      position: static;
+    }
+
+    .taspat-table td {
+      font-size: 0.7rem;
+      padding: 4px;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    /* KIRI BAWAH: PENGUMUMAN + MALKA, WAM, WAD, PPK */
+    .bottom-left {
+      border-top: 3px solid #1e293b;
+      border-right: 3px solid #1e293b;
+      display: grid;
+      grid-template-columns: 44% 14% 14% 14% 14%;
+      min-height: 150px;
+    }
+
+    .bottom-box {
+      border-right: 1.5px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+    }
+    .bottom-box:last-child { border-right: none; }
+
+    .box-header {
+      background: #e2e8f0;
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-align: center;
+      padding: 5px;
+      border-bottom: 1.5px solid #1e293b;
+    }
+
+    .box-body {
+      flex: 1;
+      padding: 8px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .pengumuman-body {
+      align-items: flex-start;
+      justify-content: flex-start;
+      text-align: left;
+      white-space: pre-line;
+      overflow-y: auto;
+      line-height: 1.35;
+    }
+
+    /* KANAN BAWAH: JADWAL DINASAN */
+    .bottom-right {
+      border-top: 3px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .jadwal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+    }
+
+    .jadwal-col {
+      border-right: 1.5px solid #1e293b;
+      display: flex;
+      flex-direction: column;
+    }
+    .jadwal-col:last-child { border-right: none; }
+
+    .sub-header {
+      background: #f1f5f9;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 4px;
+      border-bottom: 1px solid #334155;
+    }
+
+    /* TOMBOL LINK GOOGLE DRIVE (OPEN NEW TAB) */
+    .btn-gdrive {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: #1C2A5F;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    .btn-gdrive:hover { background: #F06400; }
+    .btn-disabled {
+      background: #e2e8f0;
+      color: #64748b;
+      pointer-events: none;
+    }
+
+    .doc-caption {
+      font-size: 0.68rem;
+      color: #1e293b;
+      margin-bottom: 6px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .floating-edit-btn {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      background: #F06400;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      opacity: 0.9;
+      z-index: 99;
+    }
+    .floating-edit-btn:hover { opacity: 1; background: #d95800; }
+  </style>
+</head>
+<body>
+
+  <div class="board-wrapper">
+    <!-- KIRI ATAS: HEADER LOGO & PANTAUAN KEJADIAN -->
+    <div class="left-panel">
+      <div class="board-header">
+        <img src="../assets/images/logo/Danantara.png" alt="Logo Danantara" class="header-logo">
+        <div class="board-title">
+          PANTAUAN KEJADIAN,<br>KONDISI SARANA &amp; PRASARANA DI LINTAS
+        </div>
+        <img src="../assets/images/logo/KAI.png" alt="Logo KAI" class="header-logo">
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 7%;">KA</th>
+              <th style="width: 14%;">TANGGAL</th>
+              <th style="width: 20%;">AWAK KA</th>
+              <th style="width: 31%;">KEJADIAN</th>
+              <th style="width: 18%;">TINDAK LANJUT KUPT</th>
+              <th style="width: 10%;">KETERANGAN</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyKejadian">
+            <tr><td colspan="6" class="text-center" style="padding:20px;">Memuat data pantauan...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KANAN ATAS: PANTAUAN TASPAT -->
+    <div class="right-panel">
+      <div class="taspat-header">PANTAUAN TASPAT</div>
+      <div class="taspat-date">TANGGAL : <span id="lblTanggalHariIni">-</span></div>
+
+      <div class="lintas-title">KIS-MDN</div>
+      <table class="taspat-table">
+        <thead>
+          <tr><th style="width:10%;">NO</th><th style="width:32%;">PETAK JALAN</th><th style="width:33%;">LETAK KILOMETER</th><th style="width:25%;">KECEPATAN</th></tr>
+        </thead>
+        <tbody id="tbodyKisMdn"></tbody>
+      </table>
+
+      <div class="lintas-title">KIS-RAP</div>
+      <table class="taspat-table">
+        <thead>
+          <tr><th style="width:10%;">NO</th><th style="width:32%;">PETAK JALAN</th><th style="width:33%;">LETAK KILOMETER</th><th style="width:25%;">KECEPATAN</th></tr>
+        </thead>
+        <tbody id="tbodyKisRap"></tbody>
+      </table>
+
+      <div class="lintas-title">KIS-TNB</div>
+      <table class="taspat-table">
+        <thead>
+          <tr><th style="width:10%;">NO</th><th style="width:32%;">PETAK JALAN</th><th style="width:33%;">LETAK KILOMETER</th><th style="width:25%;">KECEPATAN</th></tr>
+        </thead>
+        <tbody id="tbodyKisTnb"></tbody>
+      </table>
+    </div>
+
+    <!-- KIRI BAWAH: PENGUMUMAN & TOMBOL LINK GOOGLE DRIVE -->
+    <div class="bottom-left">
+      <div class="bottom-box">
+        <div class="box-header">PENGUMUMAN</div>
+        <div class="box-body pengumuman-body" id="boxPengumuman">-</div>
+      </div>
+
+      <div class="bottom-box">
+        <div class="box-header">MALKA</div>
+        <div class="box-body" id="boxMALKA"></div>
+      </div>
+
+      <div class="bottom-box">
+        <div class="box-header">WAM</div>
+        <div class="box-body" id="boxWAM"></div>
+      </div>
+
+      <div class="bottom-box">
+        <div class="box-header">WAD</div>
+        <div class="box-body" id="boxWAD"></div>
+      </div>
+
+      <div class="bottom-box">
+        <div class="box-header">PPK</div>
+        <div class="box-body" id="boxPPK"></div>
+      </div>
+    </div>
+
+    <!-- KANAN BAWAH: JADWAL DINASAN (BUTTON LINK GDRIVE) -->
+    <div class="bottom-right">
+      <div class="box-header">JADWAL DINASAN MASINIS &amp; ASISTEN MASINIS</div>
+      <div class="jadwal-grid">
+        <div class="jadwal-col">
+          <div class="sub-header">HARI INI</div>
+          <div class="box-body" id="boxJADWAL_HARI_INI"></div>
+        </div>
+        <div class="jadwal-col">
+          <div class="sub-header">ESOK HARI</div>
+          <div class="box-body" id="boxJADWAL_ESOK_HARI"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="./edit-pantauan.html" target="_blank" class="floating-edit-btn">Edit Papan</a>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
+    // Format Tanggal Hari Ini: dd mmmm yyyy (Bahasa Indonesia)
+    function getTanggalHariIniIndo() {
+      const bulanIndo = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      const now = new Date();
+      const dd = String(now.getDate()).padStart(2, "0");
+      const mmmm = bulanIndo[now.getMonth()];
+      const yyyy = now.getFullYear();
+      return `${dd} ${mmmm} ${yyyy}`;
+    }
+
+    function renderDocButton(containerId, docObj) {
+      const el = document.getElementById(containerId);
+      if (!el) return;
+      if (docObj && docObj.URL) {
+        el.innerHTML = `
+          <div class="doc-caption">${docObj.JUDUL || 'File Google Drive'}</div>
+          <a href="${docObj.URL}" target="_blank" rel="noopener noreferrer" class="btn-gdrive">
+            Buka GDrive &#8599;
+          </a>
+        `;
+      } else {
+        el.innerHTML = `<span class="btn-gdrive btn-disabled">Belum Ada Link</span>`;
+      }
+    }
+
+    function renderTaspatRows(tbodyId, list) {
+      const tbody = document.getElementById(tbodyId);
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="color:#94a3b8;">-</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map((item, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${item.PETAK_JALAN || '-'}</td>
+          <td>${item.LETAK_KM || '-'}</td>
+          <td><strong>${item.KECEPATAN || '-'}</strong></td>
+        </tr>
+      `).join("");
+    }
+
+    async function loadBoardData() {
+      // Perbarui tanggal hari ini setiap kali data dimuat
+      document.getElementById("lblTanggalHariIni").textContent = getTanggalHariIniIndo();
+
+      try {
+        const res = await fetch(`${API_URL}?action=getPantauanAll`);
+        const json = await res.json();
+        if (json.status !== "success") {
+                document.getElementById("tbodyKejadian").innerHTML = `
+                    <tr>
+                    <td colspan="6" class="text-center" style="color:#b91c1c; padding:20px;">
+                        Error Server: ${json.message || "Gagal memuat data"}
+                    </td>
+                    </tr>`;
+                return;
+                }
+        // 1. Kejadian (Awak KA 2 Orang: Masinis & Asisten Masinis)
+        const tbodyKej = document.getElementById("tbodyKejadian");
+        if (!json.kejadian || json.kejadian.length === 0) {
+          tbodyKej.innerHTML = `<tr><td colspan="6" class="text-center" style="padding:20px;">Tidak ada data kejadian lintas.</td></tr>`;
+        } else {
+          tbodyKej.innerHTML = json.kejadian.map(k => {
+            const isClose = String(k.KETERANGAN).toUpperCase().includes("CLOSE");
+            const masinis = k.MASINIS || "-";
+            const asmas = k.ASISTEN_MASINIS || "-";
+
+            return `
+              <tr>
+                <td class="text-center"><strong>${k.KA}</strong></td>
+                <td class="text-center">${k.TANGGAL}</td>
+                <td>
+                  <div class="awak-box">
+                    <div class="awak-item">${masinis}</div>
+                    <div class="awak-item awak-divider">${asmas}</div>
+                  </div>
+                </td>
+                <td>${String(k.KEJADIAN).replace(/\n/g, "<br>")}</td>
+                <td>${k.TINDAK_LANJUT}</td>
+                <td class="${isClose ? 'status-close' : 'status-open'}">${k.KETERANGAN}</td>
+              </tr>
+            `;
+          }).join("");
+        }
+
+        // 2. Pengumuman
+        const cfg = json.pengaturan || {};
+        document.getElementById("boxPengumuman").textContent = cfg.pengumuman || "-";
+
+        // 3. Taspat
+        const taspat = json.taspat || [];
+        renderTaspatRows("tbodyKisMdn", taspat.filter(t => t.LINTAS === "KIS-MDN"));
+        renderTaspatRows("tbodyKisRap", taspat.filter(t => t.LINTAS === "KIS-RAP"));
+        renderTaspatRows("tbodyKisTnb", taspat.filter(t => t.LINTAS === "KIS-TNB"));
+
+        // 4. Tombol Link Google Drive (MALKA, WAM, WAD, PPK, Jadwal Hari Ini, Esok Hari)
+        const docMap = {};
+        (json.dokumen || []).forEach(d => { docMap[String(d.KATEGORI).toUpperCase()] = d; });
+
+        ["MALKA", "WAM", "WAD", "PPK", "JADWAL_HARI_INI", "JADWAL_ESOK_HARI"].forEach(kat => {
+          renderDocButton(`box${kat}`, docMap[kat]);
+        });
+
+      } catch (err) {
+        console.error("Gagal memuat papan pantauan:", err);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadBoardData();
+      setInterval(loadBoardData, 60000);
+    });
+  </script>
+</body>
+</html>
