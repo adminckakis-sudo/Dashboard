@@ -316,6 +316,28 @@
       color: #000000;
       margin-top: 2px;
     }
+    .signature-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #000000;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .signature-img-box {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .signature-img {
+      max-height: 58px;
+      max-width: 140px;
+      object-fit: contain;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -457,19 +479,29 @@
             </table>
           </div>
           <!-- BLOK TANDA TANGAN PENYELIA DINAS -->
+<!-- BLOK TANDA TANGAN PENYELIA DINAS -->
           <div class="signature-container">
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaPagiPremi" class="signature-img" alt="TTD Penyelia Pagi">
+              </div>
               <p class="signature-name" id="namaPenyeliaPagiPremi">-</p>
               <p class="signature-nipp" id="nippPenyeliaPagiPremi">NIPP. -</p>
             </div>
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS SIANG (5)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaSiangPremi" class="signature-img" alt="TTD Penyelia Siang">
+              </div>
               <p class="signature-name" id="namaPenyeliaSiangPremi">-</p>
               <p class="signature-nipp" id="nippPenyeliaSiangPremi">NIPP. -</p>
             </div>
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS MALAM (6)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaMalamPremi" class="signature-img" alt="TTD Penyelia Malam">
+              </div>
               <p class="signature-name" id="namaPenyeliaMalamPremi">-</p>
               <p class="signature-nipp" id="nippPenyeliaMalamPremi">NIPP. -</p>
             </div>
@@ -714,6 +746,44 @@
     });
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+    function setSignatureImage(imgId, nipp) {
+      const imgEl = document.getElementById(imgId);
+      if (!imgEl) return;
+
+      const cleanNipp = nipp ? String(nipp).trim() : "";
+      if (!cleanNipp || cleanNipp === "-") {
+        imgEl.style.display = "none";
+        imgEl.removeAttribute("src");
+        return;
+      }
+
+      imgEl.style.display = "block";
+      imgEl.onerror = function() {
+        if (this.src.endsWith(".png")) {
+          this.src = `../assets/tanda_tangan/${cleanNipp}.jpg`;
+        } else {
+          this.style.display = "none";
+          this.onerror = null;
+        }
+      };
+
+      imgEl.src = `../assets/tanda_tangan/${cleanNipp}.png`;
+    }
+
+    function updatePenyeliaSignature(penyeliaData) {
+      const p = penyeliaData || {};
+      document.getElementById("namaPenyeliaPagiPremi").textContent = p.pagi?.nama || "-";
+      document.getElementById("nippPenyeliaPagiPremi").textContent = (p.pagi?.nipp && p.pagi.nipp !== "-") ? `NIPP. ${p.pagi.nipp}` : "NIPP. -";
+      setSignatureImage("ttdPenyeliaPagiPremi", p.pagi?.nipp);
+
+      document.getElementById("namaPenyeliaSiangPremi").textContent = p.siang?.nama || "-";
+      document.getElementById("nippPenyeliaSiangPremi").textContent = (p.siang?.nipp && p.siang.nipp !== "-") ? `NIPP. ${p.siang.nipp}` : "NIPP. -";
+      setSignatureImage("ttdPenyeliaSiangPremi", p.siang?.nipp);
+
+      document.getElementById("namaPenyeliaMalamPremi").textContent = p.malam?.nama || "-";
+      document.getElementById("nippPenyeliaMalamPremi").textContent = (p.malam?.nipp && p.malam.nipp !== "-") ? `NIPP. ${p.malam.nipp}` : "NIPP. -";
+      setSignatureImage("ttdPenyeliaMalamPremi", p.malam?.nipp);
+    }
   </script>
 </body>
 </html>
