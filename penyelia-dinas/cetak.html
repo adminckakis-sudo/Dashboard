@@ -339,6 +339,28 @@
       .print-paper { border: none !important; box-shadow: none !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
       @page { size: A4 landscape; margin: 10mm; }
     }
+    .signature-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #000;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .signature-img-box {
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .signature-img {
+      max-height: 62px;
+      max-width: 140px;
+      object-fit: contain;
+      display: none; /* Disembunyikan default sampai NIPP valid & gambar termuat */
+    }
   </style>
 </head>
 <body>
@@ -480,16 +502,25 @@
           <div class="signature-container">
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaPagiAwal" class="signature-img" alt="TTD Penyelia Pagi">
+              </div>
               <p class="signature-name" id="namaPenyeliaPagiAwal">-</p>
               <p class="signature-nipp" id="nippPenyeliaPagiAwal">NIPP. -</p>
             </div>
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS SIANG (5)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaSiangAwal" class="signature-img" alt="TTD Penyelia Siang">
+              </div>
               <p class="signature-name" id="namaPenyeliaSiangAwal">-</p>
               <p class="signature-nipp" id="nippPenyeliaSiangAwal">NIPP. -</p>
             </div>
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS MALAM (6)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaMalamAwal" class="signature-img" alt="TTD Penyelia Malam">
+              </div>
               <p class="signature-name" id="namaPenyeliaMalamAwal">-</p>
               <p class="signature-nipp" id="nippPenyeliaMalamAwal">NIPP. -</p>
             </div>
@@ -529,22 +560,32 @@
             </tbody>
           </table>
 
-          <div class="signature-container">
+<div class="signature-container">
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS PAGI (4)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaPagiAkhir" class="signature-img" alt="TTD Penyelia Pagi">
+              </div>
               <p class="signature-name" id="namaPenyeliaPagiAkhir">-</p>
               <p class="signature-nipp" id="nippPenyeliaPagiAkhir">NIPP. -</p>
             </div>
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS SIANG (5)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaSiangAkhir" class="signature-img" alt="TTD Penyelia Siang">
+              </div>
               <p class="signature-name" id="namaPenyeliaSiangAkhir">-</p>
               <p class="signature-nipp" id="nippPenyeliaSiangAkhir">NIPP. -</p>
             </div>
             <div class="signature-column">
               <div class="signature-title">PENYELIA DINAS MALAM (6)</div>
+              <div class="signature-img-box">
+                <img id="ttdPenyeliaMalamAkhir" class="signature-img" alt="TTD Penyelia Malam">
+              </div>
               <p class="signature-name" id="namaPenyeliaMalamAkhir">-</p>
               <p class="signature-nipp" id="nippPenyeliaMalamAkhir">NIPP. -</p>
             </div>
+          </div>
           </div>
         </div>
       </div>
@@ -655,14 +696,18 @@
             tbody.innerHTML = html;
           }
 
-          const penyeliaData = result.penyelia || {};
+        const penyeliaData = result.penyelia || {};
           document.getElementById("namaPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nama || "-";
           document.getElementById("nippPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nipp && penyeliaData.pagi.nipp !== "-" ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
+          setSignatureImage("ttdPenyeliaPagiAwal", penyeliaData.pagi?.nipp);
+
           document.getElementById("namaPenyeliaSiangAwal").textContent = penyeliaData.siang?.nama || "-";
           document.getElementById("nippPenyeliaSiangAwal").textContent = penyeliaData.siang?.nipp && penyeliaData.siang.nipp !== "-" ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
+          setSignatureImage("ttdPenyeliaSiangAwal", penyeliaData.siang?.nipp);
+
           document.getElementById("namaPenyeliaMalamAwal").textContent = penyeliaData.malam?.nama || "-";
           document.getElementById("nippPenyeliaMalamAwal").textContent = penyeliaData.malam?.nipp && penyeliaData.malam.nipp !== "-" ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
-
+          setSignatureImage("ttdPenyeliaMalamAwal", penyeliaData.malam?.nipp);
         } else {
           Swal.fire("Gagal", result.message || "Gagal memuat data.", "error");
         }
@@ -719,14 +764,18 @@
             tbody.innerHTML = html;
           }
 
-          const penyeliaData = result.penyelia || {};
+        const penyeliaData = result.penyelia || {};
           document.getElementById("namaPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nama || "-";
           document.getElementById("nippPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nipp && penyeliaData.pagi.nipp !== "-" ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
+          setSignatureImage("ttdPenyeliaPagiAkhir", penyeliaData.pagi?.nipp);
+
           document.getElementById("namaPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nama || "-";
           document.getElementById("nippPenyeliaSiangAkhir").textContent = penyeliaData.siang?.nipp && penyeliaData.siang.nipp !== "-" ? `NIPP. ${penyeliaData.siang.nipp}` : "NIPP. -";
+          setSignatureImage("ttdPenyeliaSiangAkhir", penyeliaData.siang?.nipp);
+
           document.getElementById("namaPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nama || "-";
           document.getElementById("nippPenyeliaMalamAkhir").textContent = penyeliaData.malam?.nipp && penyeliaData.malam.nipp !== "-" ? `NIPP. ${penyeliaData.malam.nipp}` : "NIPP. -";
-
+          setSignatureImage("ttdPenyeliaMalamAkhir", penyeliaData.malam?.nipp);
         } else {
           Swal.fire("Gagal", result.message || "Gagal memuat data.", "error");
         }
@@ -766,6 +815,33 @@
     function toggleSidebar() {
       const sidebar = document.getElementById('app-sidebar');
       if (sidebar) sidebar.classList.toggle('collapsed');
+    }
+    function setSignatureImage(imgId, nipp) {
+      const imgEl = document.getElementById(imgId);
+      if (!imgEl) return;
+
+      const cleanNipp = nipp ? String(nipp).trim() : "";
+      if (!cleanNipp || cleanNipp === "-") {
+        imgEl.style.display = "none";
+        imgEl.removeAttribute("src");
+        return;
+      }
+
+      // Reset handler sebelumnya & tampilkan elemen
+      imgEl.style.display = "block";
+      imgEl.onerror = function() {
+        if (this.src.endsWith(".png")) {
+          // Jika .png tidak ditemukan, coba .jpg
+          this.src = `../assets/tanda_tangan/${cleanNipp}.jpg`;
+        } else {
+          // Jika .jpg juga tidak ditemukan, sembunyikan agar tidak muncul ikon broken image
+          this.style.display = "none";
+          this.onerror = null;
+        }
+      };
+
+      // Prioritaskan .png terlebih dahulu (umumnya tanda tangan berlatar transparan)
+      imgEl.src = `../assets/tanda_tangan/${cleanNipp}.png`;
     }
   </script>
 </body>
