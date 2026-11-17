@@ -404,8 +404,7 @@
     </div>
   </div>
 
-  <a href="./edit-pantauan.html" target="_blank" class="floating-edit-btn">Edit Papan</a>
-
+<a href="./edit-pantauan.html" target="_blank" class="floating-edit-btn" id="btnEditPapan">Edit Papan</a>
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
     // Format Tanggal Hari Ini: dd mmmm yyyy (Bahasa Indonesia)
@@ -523,6 +522,14 @@
       loadBoardData();
       setInterval(loadBoardData, 60000);
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("mode") === "tv") {
+      const btnEdit = document.getElementById("btnEditPapan");
+      if (btnEdit) btnEdit.style.display = "none";
+      document.body.style.padding = "0";
+      document.body.style.background = "#ffffff";
+    }
   </script>
 </body>
 </html>
