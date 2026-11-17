@@ -554,6 +554,26 @@
                 grid-template-columns: 1fr;
             }
         }
+    /* Safety Commitment Section */
+        .commitment-wrapper {
+            width: 100%;
+            background: #ffffff;
+            border: 2px solid var(--kai-border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .commitment-img {
+            width: 100%;
+            max-height: 82vh;
+            object-fit: contain;
+            display: block;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -744,6 +764,19 @@
                 </a>
             </div>
         </div>
+    <!-- 4. Komitmen Keselamatan -->
+        <section class="schedule-section">
+            <div class="schedule-header">
+                <h2 class="schedule-title">
+                    <i></i> Komitmen Keselamatan UPT Crew KA Kelas C Kisaran
+                </h2>
+                <div class="schedule-actions">
+                </div>
+            </div>
+            <div class="commitment-wrapper">
+                <img src="./assets/images/komitmen-keselamatan.jpg" alt="Tanda Tangan Komitmen Keselamatan UPT Crew KA Kisaran" class="commitment-img" loading="lazy">
+            </div>
+        </section>
 
         <!-- Schedule Section -->
         <section class="schedule-section">
@@ -762,6 +795,25 @@
             </div>
             <div class="embed-wrapper">
                 <iframe id="iframe-o241" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR4S_qU3vx9fhHKe48HKShCTWR-AxWbhFTUyYZRgiPxfKb6DmBAt_mOEiBoNO-OXQ/pubhtml?widget=true&headers=false" title="Jadwal O.241"></iframe>
+            </div>
+        </section>
+    <!-- Pantauan Kejadian & Taspat Section -->
+        <section class="schedule-section">
+            <div class="schedule-header">
+                <h2 class="schedule-title">
+                    Pantauan Kejadian, Sarana &amp; Taspat Lintas
+                </h2>
+                <div class="schedule-actions">
+                    <button type="button" id="btn-reload-pantauan" class="tv-action-btn">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                    <a href="./penyelia-dinas/pantauan.html?mode=tv" target="_blank" rel="noopener" class="tv-action-btn">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Penuh
+                    </a>
+                </div>
+            </div>
+            <div class="embed-wrapper" style="height: 82vh; min-height: 700px;">
+                <iframe id="iframe-pantauan" src="./penyelia-dinas/pantauan.html?mode=tv" title="Papan Pantauan Kejadian & Taspat"></iframe>
             </div>
         </section>
 
@@ -908,7 +960,7 @@
             // ==========================================================================
             // G. PEMUATAN DATABASE PERSONEL (KUPT, PENYELIA, & KLASIFIKASI MASINIS)
             // ==========================================================================
-            const DB_CSV_URL = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
+const DB_CSV_URL = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
 
             let countKupt = 1;
             let countInstruktur = 2;
@@ -916,8 +968,9 @@
             let countMadya = 0;
             let countMuda = 0;
             let countPertama = 0;
+            let countAsisten = 0;
 
-            function updatePersonnelTotals() {
+function updatePersonnelTotals() {
                 const elKupt = document.getElementById('val-kupt');
                 const elInst = document.getElementById('val-instruktur');
                 const elPen = document.getElementById('val-penyelia');
@@ -934,18 +987,27 @@
                 if (elMuda) elMuda.textContent = countMuda;
                 if (elPertama) elPertama.textContent = countPertama;
 
-                const aspCount = elAsp ? (parseInt(elAsp.textContent, 10) || 0) : 0;
-                if (elTotal) {
-                    elTotal.textContent = (countKupt + countInstruktur + countPenyelia + countMadya + countMuda + countPertama + (aspCount > 0 ? aspCount : 39));
+                const aspFromCsv = countMadya + countMuda + countPertama + countAsisten;
+                const currentAspDom = elAsp ? (parseInt(elAsp.textContent, 10) || 0) : 0;
+                const totalAsp = aspFromCsv > 0 ? aspFromCsv : (currentAspDom > 0 ? currentAspDom : 39);
+
+                // Cegah infinite loop: hanya update DOM jika nilainya benar-benar berubah
+                if (elAsp && aspFromCsv > 0 && String(elAsp.textContent).trim() !== String(totalAsp)) {
+                    elAsp.textContent = totalAsp;
+                }
+
+                const totalStruktural = countKupt + countInstruktur + countPenyelia;
+                const grandTotal = totalStruktural + totalAsp;
+                if (elTotal && String(elTotal.textContent).trim() !== String(grandTotal)) {
+                    elTotal.textContent = grandTotal;
                 }
             }
-
-            async function loadPersonnelDatabase() {
+async function loadPersonnelDatabase() {
                 try {
                     const res = await fetch(DB_CSV_URL);
                     const text = await res.text();
                     const lines = text.split('\n');
-                    let kupt = 0, inst = 0, pen = 0, madya = 0, muda = 0, pertama = 0;
+                    let kupt = 0, inst = 0, pen = 0, madya = 0, muda = 0, pertama = 0, asisten = 0;
 
                     for (let i = 1; i < lines.length; i++) {
                         const line = lines[i].trim();
@@ -961,6 +1023,7 @@
                                 if (jab.includes('KUPT')) kupt++;
                                 else if (jab.includes('INSTRUKTUR')) inst++;
                                 else if (jab.includes('PENYELIA')) pen++;
+                                else if (jab.includes('ASISTEN')) asisten++;
                                 else if (jab.includes('MADYA')) madya++;
                                 else if (jab.includes('MUDA')) muda++;
                                 else if (jab.includes('PERTAMA')) pertama++;
@@ -971,9 +1034,10 @@
                     if (kupt > 0) countKupt = kupt;
                     if (inst > 0) countInstruktur = inst;
                     if (pen > 0) countPenyelia = pen;
-                    if (madya > 0 || countMadya === 0) countMadya = madya;
-                    if (muda > 0 || countMuda === 0) countMuda = muda;
-                    if (pertama > 0 || countPertama === 0) countPertama = pertama;
+                    countMadya = madya;
+                    countMuda = muda;
+                    countPertama = pertama;
+                    countAsisten = asisten;
 
                     updatePersonnelTotals();
 
@@ -992,6 +1056,13 @@
             loadEotmHomepage();
             loadPersonnelDatabase();
         })();
+
+        document.getElementById('btn-reload-pantauan').addEventListener('click', () => {
+                const f = document.getElementById('iframe-pantauan');
+                const src = f.src;
+                f.src = 'about:blank';
+                setTimeout(() => f.src = src, 100);
+            });
     </script>
 </body>
 </html>
