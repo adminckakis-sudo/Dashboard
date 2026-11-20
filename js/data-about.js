@@ -1,6 +1,15 @@
 // URL ekspor CSV langsung dari Google Sheets (Sheet: Database, gid=1567798541)
 const csvUrl = 'https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541';
 
+function escapeHtml(unsafe) {
+    return String(unsafe ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 // Helper penentu jalur relatif folder assets sesuai lokasi halaman
 function getBasePath() {
     const path = window.location.pathname;
@@ -30,15 +39,18 @@ window.handleAvatarLoadError = function(img, nama, cleanNipp) {
 // Fungsi pembuat elemen tag <img> dengan pembersihan NIPP menyeluruh
 function renderAvatar(nama, nipp, extraClass = '') {
     const cleanNipp = nipp ? String(nipp).replace(/\D/g, '').trim() : '00000';
-    const safeNama = (nama || '').replace(/"/g, '&quot;');
-    const basePath = getBasePath();
+    const rawNama = String(nama || '');
+    const safeNamaAttr = escapeHtml(rawNama);
+    const safeNamaJsAttr = escapeHtml(JSON.stringify(rawNama));
+    const safeExtraClass = escapeHtml(extraClass);
+    const basePath = escapeHtml(getBasePath());
 
     return `
-        <div class="so-avatar-wrapper" data-nama="${safeNama}" data-nipp="${cleanNipp}">
+        <div class="so-avatar-wrapper" data-nama="${safeNamaAttr}" data-nipp="${cleanNipp}">
             <img src="${basePath}${cleanNipp}.png" 
-                 alt="${safeNama}" 
-                 class="so-avatar ${extraClass}"
-                 onerror="handleAvatarLoadError(this, '${safeNama.replace(/'/g, "\\'")}', '${cleanNipp}')">
+                 alt="${safeNamaAttr}" 
+                 class="so-avatar ${safeExtraClass}"
+                 onerror="handleAvatarLoadError(this, ${safeNamaJsAttr}, '${cleanNipp}')">
         </div>
     `;
 }
@@ -88,8 +100,8 @@ async function loadAndRenderSpreadsheetData() {
                             kuptCardEl.innerHTML = `
                                 ${renderAvatar(nama, nippClean)}
                                 <div class="so-role">KUPT CREW KA KELAS C KISARAN</div>
-                                <div class="so-name" id="so-kupt-name">${nama}</div>
-                                <div class="so-nipp" id="so-kupt-nipp">NIPP. ${nippClean}</div>
+                                <div class="so-name" id="so-kupt-name">${escapeHtml(nama)}</div>
+                                <div class="so-nipp" id="so-kupt-nipp">NIPP. ${escapeHtml(nippClean)}</div>
                             `;
                         } else {
                             if (kuptNameEl) kuptNameEl.textContent = nama;
@@ -120,8 +132,8 @@ async function loadAndRenderSpreadsheetData() {
                         ${renderAvatar(p.nama, p.nipp)}
                         <div class="so-info">
                             <div class="so-role">PENYELIA DINAS</div>
-                            <div class="so-name">${p.nama}</div>
-                            <div class="so-nipp">NIPP. ${p.nipp}</div>
+                            <div class="so-name">${escapeHtml(p.nama)}</div>
+                            <div class="so-nipp">NIPP. ${escapeHtml(p.nipp)}</div>
                         </div>
                     </div>
                 `;
@@ -131,7 +143,7 @@ async function loadAndRenderSpreadsheetData() {
         // 2. Render Kolom Instruktur dan Binaan
         if (instrukturWrapper && listInstruktur.length > 0) {
             listInstruktur.forEach((ins) => {
-                const safeNameId = ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                const safeNameId = escapeHtml(ins.nama.toLowerCase().replace(/[^a-z0-9]/g, '-'));
                 const colId = `grid-binaan-${safeNameId}`;
 
                 instrukturWrapper.innerHTML += `
@@ -140,8 +152,8 @@ async function loadAndRenderSpreadsheetData() {
                             ${renderAvatar(ins.nama, ins.nipp)}
                             <div class="so-info">
                                 <div class="so-role">PENYELIA INSTRUKTUR</div>
-                                <div class="so-name">${ins.nama}</div>
-                                <div class="so-nipp">NIPP. ${ins.nipp}</div>
+                                <div class="so-name">${escapeHtml(ins.nama)}</div>
+                                <div class="so-nipp">NIPP. ${escapeHtml(ins.nipp)}</div>
                             </div>
                         </div>
 
@@ -176,9 +188,9 @@ async function loadAndRenderSpreadsheetData() {
                     targetGrid.innerHTML += `
                         <div class="card-asp">
                             ${renderAvatar(m.nama, m.nipp)}
-                            <div class="so-role">${m.jabatan}</div>
-                            <div class="so-name">${m.nama}</div>
-                            <div class="so-nipp">NIPP. ${m.nipp}</div>
+                            <div class="so-role">${escapeHtml(m.jabatan)}</div>
+                            <div class="so-name">${escapeHtml(m.nama)}</div>
+                            <div class="so-nipp">NIPP. ${escapeHtml(m.nipp)}</div>
                         </div>
                     `;
                 }
@@ -200,4 +212,3 @@ async function loadAndRenderSpreadsheetData() {
 }
 
 document.addEventListener("DOMContentLoaded", loadAndRenderSpreadsheetData);
-
