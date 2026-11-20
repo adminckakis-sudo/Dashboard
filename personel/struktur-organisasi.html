@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
     <style>
 /* ==========================================================================
    1. LAYOUT UMUM & KONTAINER CANVAS PAN 2D (NO SCROLLBAR)
@@ -836,15 +835,34 @@ body.is-dragging *,
             }
         };
 
+function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function escapeJsSingleQuote(str) {
+            return String(str ?? '')
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/\r/g, '\\r')
+                .replace(/\n/g, '\\n');
+        }
+
         function createAvatarHtml(nama, nipp, extraClass) {
             extraClass = extraClass || '';
             const cleanNipp = nipp ? String(nipp).replace(/\D/g, '').trim() : '00000';
-            const safeNama = (nama || '').replace(/"/g, '&quot;');
-            const directPngSrc = getBaseAssetsFolder() + cleanNipp + '.png';
+            const safeNamaAttr = escapeHtml(nama || '');
+            const safeNamaJs = escapeJsSingleQuote(nama || '');
+            const safeExtraClass = escapeHtml(extraClass);
+            const directPngSrc = escapeHtml(getBaseAssetsFolder() + cleanNipp + '.png');
 
             return '<div class="so-avatar-wrapper">' +
-                '<img src="' + directPngSrc + '" alt="' + safeNama + '" class="so-avatar ' + extraClass + '" ' +
-                'onerror="handleAvatarLoadError(this, \'' + safeNama.replace(/'/g, "\\'") + '\', \'' + cleanNipp + '\')">' +
+                '<img src="' + directPngSrc + '" alt="' + safeNamaAttr + '" class="so-avatar ' + safeExtraClass + '" ' +
+                'onerror="handleAvatarLoadError(this, \'' + safeNamaJs + '\', \'' + cleanNipp + '\')">' +
                 '</div>';
         }
 
