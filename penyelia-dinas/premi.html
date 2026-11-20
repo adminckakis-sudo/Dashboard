@@ -533,6 +533,31 @@
       });
     }
 
+    // Helper keamanan untuk mencegah DOM-based XSS
+    function escapeHtml(unsafe) {
+      return String(unsafe ?? '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Helper aman untuk menampilkan pesan status di dalam tabel tanpa innerHTML mentah
+    function renderTableStatusMessage(tbody, messageText, color = '#64748b', isBold = false) {
+      tbody.textContent = '';
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 10;
+      td.style.padding = '24px';
+      td.style.color = color;
+      td.style.textAlign = 'center';
+      if (isBold) td.style.fontWeight = '500';
+      td.textContent = messageText;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    }
+
     const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
 
     function formatRupiah(val) {
@@ -567,16 +592,43 @@
       return "status-sudah";
     }
 
+    function setSignatureImage(imgId, nipp) {
+      const imgEl = document.getElementById(imgId);
+      if (!imgEl) return;
+
+      const cleanNipp = nipp ? String(nipp).trim() : "";
+      if (!cleanNipp || cleanNipp === "-") {
+        imgEl.style.display = "none";
+        imgEl.removeAttribute("src");
+        return;
+      }
+
+      imgEl.style.display = "block";
+      imgEl.onerror = function() {
+        if (this.src.endsWith(".png")) {
+          this.src = `../assets/tanda_tangan/${cleanNipp}.jpg`;
+        } else {
+          this.style.display = "none";
+          this.onerror = null;
+        }
+      };
+
+      imgEl.src = `../assets/tanda_tangan/${cleanNipp}.png`;
+    }
+
     function updatePenyeliaSignature(penyeliaData) {
       const p = penyeliaData || {};
       document.getElementById("namaPenyeliaPagiPremi").textContent = p.pagi?.nama || "-";
       document.getElementById("nippPenyeliaPagiPremi").textContent = (p.pagi?.nipp && p.pagi.nipp !== "-") ? `NIPP. ${p.pagi.nipp}` : "NIPP. -";
+      setSignatureImage("ttdPenyeliaPagiPremi", p.pagi?.nipp);
 
       document.getElementById("namaPenyeliaSiangPremi").textContent = p.siang?.nama || "-";
       document.getElementById("nippPenyeliaSiangPremi").textContent = (p.siang?.nipp && p.siang.nipp !== "-") ? `NIPP. ${p.siang.nipp}` : "NIPP. -";
+      setSignatureImage("ttdPenyeliaSiangPremi", p.siang?.nipp);
 
       document.getElementById("namaPenyeliaMalamPremi").textContent = p.malam?.nama || "-";
       document.getElementById("nippPenyeliaMalamPremi").textContent = (p.malam?.nipp && p.malam.nipp !== "-") ? `NIPP. ${p.malam.nipp}` : "NIPP. -";
+      setSignatureImage("ttdPenyeliaMalamPremi", p.malam?.nipp);
     }
 
     async function loadViewData() {
@@ -588,7 +640,7 @@
 
       document.getElementById("viewSubPeriode").textContent = formatTanggalDisplay(tanggal);
       const tbody = document.getElementById("viewTableBody");
-      tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #64748b; text-align: center;">Memuat data dinasan tanggal ${tanggal}...</td></tr>`;
+      renderTableStatusMessage(tbody, `Memuat data dinasan tanggal ${tanggal}...`, '#64748b', false);
       updatePenyeliaSignature(null);
 
       try {
@@ -600,24 +652,24 @@
           updatePenyeliaSignature(result.penyelia);
 
           if (rawData.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #64748b; font-weight: 500; text-align: center;">Tidak ada data dinasan ditemukan untuk tanggal ${tanggal}.</td></tr>`;
+            renderTableStatusMessage(tbody, `Tidak ada data dinasan ditemukan untuk tanggal ${tanggal}.`, '#64748b', true);
             return;
           }
 
           renderTable(rawData, "viewTableBody");
         } else {
-          tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #ef4444; text-align: center;">Gagal mengambil data dari server.</td></tr>`;
+          renderTableStatusMessage(tbody, "Gagal mengambil data dari server.", '#ef4444', false);
         }
       } catch (err) {
         console.error("Error loading data:", err);
-        tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; color: #ef4444; text-align: center;">Terjadi kesalahan koneksi server.</td></tr>`;
+        renderTableStatusMessage(tbody, "Terjadi kesalahan koneksi server.", '#ef4444', false);
       }
     }
 
     function renderTable(rawData, tbodyId) {
       const tbody = document.getElementById(tbodyId);
       if (!rawData || rawData.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="10" style="padding: 24px; text-align: center;">Tidak ada data.</td></tr>`;
+        renderTableStatusMessage(tbody, "Tidak ada data.", '#64748b', false);
         return;
       }
 
@@ -644,37 +696,38 @@
         const g = grouped[key];
         const mas = g.mas || {};
         const asmas = g.asmas || {};
-        const noDinas = g.key;
+        const noDinas = escapeHtml(g.key);
         
         const ketDisp = mas.keterangan || asmas.keterangan || "Sudah Diinput";
+        const safeKetDisp = escapeHtml(ketDisp);
         const colorClass = getStatusColorClass(ketDisp);
 
         // Baris 1: MAS (ATAS)
         trHtml += `
           <tr>
             <td rowspan="2" style="text-align: center; vertical-align: middle; font-weight: 800;">${rowCounter}</td>
-            <td style="text-align: left; font-weight: 700;">${mas.nama || '-'}</td>
-            <td style="text-align: center;">${mas.nipp || '-'}</td>
+            <td style="text-align: left; font-weight: 700;">${escapeHtml(mas.nama || '-')}</td>
+            <td style="text-align: center;">${escapeHtml(mas.nipp || '-')}</td>
             <td style="text-align: center; font-weight: 700;">MAS</td>
             <td rowspan="2" style="text-align: center; vertical-align: middle; font-weight: 800; color: #000000;">${noDinas}</td>
-            <td style="text-align: center; font-weight: 700;">${mas.no_ka || '-'}</td>
-            <td style="text-align: center;">${mas.relasi || '-'}</td>
-            <td class="${colorClass}" style="text-align: right;">${formatRupiah(mas.premi_1)}</td>
-            <td class="${colorClass}" style="text-align: right;">${formatRupiah(mas.premi_2)}</td>
-            <td rowspan="2" class="${colorClass}" style="text-align: center; vertical-align: middle;">${ketDisp}</td>
+            <td style="text-align: center; font-weight: 700;">${escapeHtml(mas.no_ka || '-')}</td>
+            <td style="text-align: center;">${escapeHtml(mas.relasi || '-')}</td>
+            <td class="${colorClass}" style="text-align: right;">${escapeHtml(formatRupiah(mas.premi_1))}</td>
+            <td class="${colorClass}" style="text-align: right;">${escapeHtml(formatRupiah(mas.premi_2))}</td>
+            <td rowspan="2" class="${colorClass}" style="text-align: center; vertical-align: middle;">${safeKetDisp}</td>
           </tr>
         `;
 
         // Baris 2: ASMAS (BAWAH)
         trHtml += `
           <tr>
-            <td style="text-align: left; font-weight: 700;">${asmas.nama || '-'}</td>
-            <td style="text-align: center;">${asmas.nipp || '-'}</td>
+            <td style="text-align: left; font-weight: 700;">${escapeHtml(asmas.nama || '-')}</td>
+            <td style="text-align: center;">${escapeHtml(asmas.nipp || '-')}</td>
             <td style="text-align: center; font-weight: 700;">ASMAS</td>
-            <td style="text-align: center; font-weight: 700;">${asmas.no_ka || '-'}</td>
-            <td style="text-align: center;">${asmas.relasi || '-'}</td>
-            <td class="${colorClass}" style="text-align: right;">${formatRupiah(asmas.premi_1)}</td>
-            <td class="${colorClass}" style="text-align: right;">${formatRupiah(asmas.premi_2)}</td>
+            <td style="text-align: center; font-weight: 700;">${escapeHtml(asmas.no_ka || '-')}</td>
+            <td style="text-align: center;">${escapeHtml(asmas.relasi || '-')}</td>
+            <td class="${colorClass}" style="text-align: right;">${escapeHtml(formatRupiah(asmas.premi_1))}</td>
+            <td class="${colorClass}" style="text-align: right;">${escapeHtml(formatRupiah(asmas.premi_2))}</td>
           </tr>
         `;
 
@@ -746,44 +799,6 @@
     });
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
-    function setSignatureImage(imgId, nipp) {
-      const imgEl = document.getElementById(imgId);
-      if (!imgEl) return;
-
-      const cleanNipp = nipp ? String(nipp).trim() : "";
-      if (!cleanNipp || cleanNipp === "-") {
-        imgEl.style.display = "none";
-        imgEl.removeAttribute("src");
-        return;
-      }
-
-      imgEl.style.display = "block";
-      imgEl.onerror = function() {
-        if (this.src.endsWith(".png")) {
-          this.src = `../assets/tanda_tangan/${cleanNipp}.jpg`;
-        } else {
-          this.style.display = "none";
-          this.onerror = null;
-        }
-      };
-
-      imgEl.src = `../assets/tanda_tangan/${cleanNipp}.png`;
-    }
-
-    function updatePenyeliaSignature(penyeliaData) {
-      const p = penyeliaData || {};
-      document.getElementById("namaPenyeliaPagiPremi").textContent = p.pagi?.nama || "-";
-      document.getElementById("nippPenyeliaPagiPremi").textContent = (p.pagi?.nipp && p.pagi.nipp !== "-") ? `NIPP. ${p.pagi.nipp}` : "NIPP. -";
-      setSignatureImage("ttdPenyeliaPagiPremi", p.pagi?.nipp);
-
-      document.getElementById("namaPenyeliaSiangPremi").textContent = p.siang?.nama || "-";
-      document.getElementById("nippPenyeliaSiangPremi").textContent = (p.siang?.nipp && p.siang.nipp !== "-") ? `NIPP. ${p.siang.nipp}` : "NIPP. -";
-      setSignatureImage("ttdPenyeliaSiangPremi", p.siang?.nipp);
-
-      document.getElementById("namaPenyeliaMalamPremi").textContent = p.malam?.nama || "-";
-      document.getElementById("nippPenyeliaMalamPremi").textContent = (p.malam?.nipp && p.malam.nipp !== "-") ? `NIPP. ${p.malam.nipp}` : "NIPP. -";
-      setSignatureImage("ttdPenyeliaMalamPremi", p.malam?.nipp);
-    }
   </script>
 </body>
 </html>
