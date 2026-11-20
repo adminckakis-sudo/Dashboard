@@ -593,7 +593,7 @@
     </main>
   </div>
 
-  <script>
+<script>
     const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
     let activePrintMode = 'awal';
     let flatpickrInstance = null;
@@ -612,6 +612,29 @@
       Swal.fire({
         title: 'Logout', text: 'Yakin keluar?', icon: 'question', showCancelButton: true, confirmButtonColor: '#ef4444'
       }).then((res) => { if (res.isConfirmed) { localStorage.clear(); window.location.href = "login.html"; } });
+    }
+
+    // Helper keamanan untuk mencegah DOM-based XSS
+    function escapeHtml(unsafe) {
+      return String(unsafe ?? '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Helper aman untuk menampilkan pesan status di dalam tbody tanpa innerHTML mentah
+    function renderPrintStatusRow(tbody, colSpan, messageText, color = '') {
+      tbody.textContent = '';
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = colSpan;
+      td.style.padding = '20px';
+      if (color) td.style.color = color;
+      td.textContent = messageText;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
     }
 
     function switchPrintTab(mode) {
@@ -653,7 +676,7 @@
 
     async function loadAwalDinasData(tanggalYMD, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAwal");
-      tbody.innerHTML = `<tr><td colspan="6" style="padding: 20px;">Memuat data awal dinas tanggal ${formattedDisplayDate}...</td></tr>`;
+      renderPrintStatusRow(tbody, 6, `Memuat data awal dinas tanggal ${formattedDisplayDate}...`);
 
       try {
         const response = await fetch(`${API_URL}?action=getCetakAwalDinasData&tanggal=${encodeURIComponent(tanggalYMD)}`);
@@ -663,12 +686,12 @@
           let reportList = Array.isArray(result.data) ? result.data : [];
 
           if (reportList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="padding: 20px; color: #64748b;">Tidak ada data awal dinas pada tanggal ${formattedDisplayDate}.</td></tr>`;
+            renderPrintStatusRow(tbody, 6, `Tidak ada data awal dinas pada tanggal ${formattedDisplayDate}.`, '#64748b');
           } else {
             let html = "";
             reportList.forEach(item => {
-              const masinis = item.masinis || "-";
-              const asisten = item.asistenMasinis || "-";
+              const masinis = escapeHtml(item.masinis || "-");
+              const asisten = escapeHtml(item.asistenMasinis || "-");
               let kedMasinis = item.kedudukan || "-";
               let kedAsisten = item.kedudukan || "-";
               if (item.kedudukan && item.kedudukan.includes(" / ")) {
@@ -679,12 +702,12 @@
 
               html += `
                 <tr>
-                  <td>${item.noKa || '-'}</td>
+                  <td>${escapeHtml(item.noKa || '-')}</td>
                   <td><div class="double-row-box"><div class="double-row-item">${masinis}</div><div class="double-row-item">${asisten}</div></div></td>
-                  <td><div class="double-row-box"><div class="double-row-item">${kedMasinis}</div><div class="double-row-item">${kedAsisten}</div></div></td>
-                  <td>${item.noLokomotif || '-'}</td>
-                  <td>${item.tonase || '0'}</td>
-                  <td class="text-left">${item.keterangan || '-'}</td>
+                  <td><div class="double-row-box"><div class="double-row-item">${escapeHtml(kedMasinis)}</div><div class="double-row-item">${escapeHtml(kedAsisten)}</div></div></td>
+                  <td>${escapeHtml(item.noLokomotif || '-')}</td>
+                  <td>${escapeHtml(item.tonase || '0')}</td>
+                  <td class="text-left">${escapeHtml(item.keterangan || '-')}</td>
                 </tr>
               `;
             });
@@ -696,7 +719,7 @@
             tbody.innerHTML = html;
           }
 
-        const penyeliaData = result.penyelia || {};
+          const penyeliaData = result.penyelia || {};
           document.getElementById("namaPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nama || "-";
           document.getElementById("nippPenyeliaPagiAwal").textContent = penyeliaData.pagi?.nipp && penyeliaData.pagi.nipp !== "-" ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
           setSignatureImage("ttdPenyeliaPagiAwal", penyeliaData.pagi?.nipp);
@@ -719,7 +742,7 @@
 
     async function loadAkhirDinasData(tanggalYMD, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAkhir");
-      tbody.innerHTML = `<tr><td colspan="8" style="padding: 20px;">Memuat data akhir dinas tanggal ${formattedDisplayDate}...</td></tr>`;
+      renderPrintStatusRow(tbody, 8, `Memuat data akhir dinas tanggal ${formattedDisplayDate}...`);
 
       try {
         const response = await fetch(`${API_URL}?action=getCetakLaporanData&tanggal=${encodeURIComponent(tanggalYMD)}`);
@@ -729,12 +752,12 @@
           let reportList = Array.isArray(result.data) ? result.data : [];
 
           if (reportList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="padding: 20px; color: #64748b;">Tidak ada data akhir dinas pada tanggal ${formattedDisplayDate}.</td></tr>`;
+            renderPrintStatusRow(tbody, 8, `Tidak ada data akhir dinas pada tanggal ${formattedDisplayDate}.`, '#64748b');
           } else {
             let html = "";
             reportList.forEach(item => {
-              const masinis = item.masinis || "-";
-              const asisten = item.asistenMasinis || "-";
+              const masinis = escapeHtml(item.masinis || "-");
+              const asisten = escapeHtml(item.asistenMasinis || "-");
               let kedMasinis = item.kedudukan || "-";
               let kedAsisten = item.kedudukan || "-";
               if (item.kedudukan && item.kedudukan.includes(" / ")) {
@@ -745,14 +768,14 @@
 
               html += `
                 <tr>
-                  <td>${item.noKa || '-'}</td>
-                  <td>${item.noLokomotif || '-'}</td>
-                  <td>${item.jamDatang || '-'}</td>
-                  <td>${item.lambat || '0'}</td>
+                  <td>${escapeHtml(item.noKa || '-')}</td>
+                  <td>${escapeHtml(item.noLokomotif || '-')}</td>
+                  <td>${escapeHtml(item.jamDatang || '-')}</td>
+                  <td>${escapeHtml(item.lambat || '0')}</td>
                   <td><div class="double-row-box"><div class="double-row-item">${masinis}</div><div class="double-row-item">${asisten}</div></div></td>
-                  <td><div class="double-row-box"><div class="double-row-item">${kedMasinis}</div><div class="double-row-item">${kedAsisten}</div></div></td>
-                  <td class="text-left">${item.kejadian || '-'}</td>
-                  <td class="text-left">${item.keterangan || '-'}</td>
+                  <td><div class="double-row-box"><div class="double-row-item">${escapeHtml(kedMasinis)}</div><div class="double-row-item">${escapeHtml(kedAsisten)}</div></div></td>
+                  <td class="text-left">${escapeHtml(item.kejadian || '-')}</td>
+                  <td class="text-left">${escapeHtml(item.keterangan || '-')}</td>
                 </tr>
               `;
             });
@@ -764,7 +787,7 @@
             tbody.innerHTML = html;
           }
 
-        const penyeliaData = result.penyelia || {};
+          const penyeliaData = result.penyelia || {};
           document.getElementById("namaPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nama || "-";
           document.getElementById("nippPenyeliaPagiAkhir").textContent = penyeliaData.pagi?.nipp && penyeliaData.pagi.nipp !== "-" ? `NIPP. ${penyeliaData.pagi.nipp}` : "NIPP. -";
           setSignatureImage("ttdPenyeliaPagiAkhir", penyeliaData.pagi?.nipp);
@@ -816,6 +839,7 @@
       const sidebar = document.getElementById('app-sidebar');
       if (sidebar) sidebar.classList.toggle('collapsed');
     }
+
     function setSignatureImage(imgId, nipp) {
       const imgEl = document.getElementById(imgId);
       if (!imgEl) return;
@@ -827,22 +851,18 @@
         return;
       }
 
-      // Reset handler sebelumnya & tampilkan elemen
       imgEl.style.display = "block";
       imgEl.onerror = function() {
         if (this.src.endsWith(".png")) {
-          // Jika .png tidak ditemukan, coba .jpg
           this.src = `../assets/tanda_tangan/${cleanNipp}.jpg`;
         } else {
-          // Jika .jpg juga tidak ditemukan, sembunyikan agar tidak muncul ikon broken image
           this.style.display = "none";
           this.onerror = null;
         }
       };
 
-      // Prioritaskan .png terlebih dahulu (umumnya tanda tangan berlatar transparan)
       imgEl.src = `../assets/tanda_tangan/${cleanNipp}.png`;
     }
   </script>
-</body>
+  </body>
 </html>
