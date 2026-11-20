@@ -424,6 +424,7 @@
   </div>
 
   <!-- SCRIPT TOM-SELECT -->
+<!-- SCRIPT TOM-SELECT -->
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
   <script>
     const loggedInNama = localStorage.getItem("loggedInUserNama");
@@ -446,7 +447,18 @@
       });
     }
 
+    // Helper keamanan untuk mencegah DOM-based XSS saat membangun HTML string
+    function escapeHtml(unsafe) {
+      return String(unsafe ?? '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     let activeEditType = 'awal';
+    let flatpickrEditInstance = null;
     const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
     
     let crewOptions = [];
@@ -474,174 +486,199 @@
       loadEditData();
     }
 
-async function loadEditData() {
-  // 1. Ambil instance tanggal dari Flatpickr (Format YYYY-MM-DD untuk backend)
-  let tanggalYMD = "";
-  if (flatpickrEditInstance && flatpickrEditInstance.selectedDates.length > 0) {
-    tanggalYMD = flatpickrEditInstance.formatDate(flatpickrEditInstance.selectedDates[0], "Y-m-d");
-  } else {
-    // Fallback jika diketik manual atau Flatpickr belum siap
-    const rawVal = document.getElementById("inputTanggalEdit").value.trim();
-    const parts = rawVal.split("/");
-    if (parts.length === 3) {
-      tanggalYMD = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-    } else {
-      tanggalYMD = rawVal;
+    // Helper aman untuk menampilkan pesan status di dalam tabel tanpa innerHTML mentah
+    function renderTableMessage(tbody, messageText, isBold = false) {
+      tbody.textContent = '';
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 12;
+      td.style.padding = '30px';
+      td.style.color = '#64748b';
+      if (isBold) td.style.fontWeight = '500';
+      td.textContent = messageText;
+      tr.appendChild(td);
+      tbody.appendChild(tr);
     }
-  }
 
-  const formattedDisplayDate = document.getElementById("inputTanggalEdit").value;
+    async function loadEditData() {
+      let tanggalYMD = "";
 
-  if (!tanggalYMD) {
-    Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
-    return;
-  }
+      if (flatpickrEditInstance && flatpickrEditInstance.selectedDates.length > 0) {
+        tanggalYMD = flatpickrEditInstance.formatDate(flatpickrEditInstance.selectedDates[0], "Y-m-d");
+      } else {
+        const rawVal = document.getElementById("inputTanggalEdit").value.trim();
+        const parts = rawVal.split("/");
+        if (parts.length === 3) {
+          tanggalYMD = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        } else {
+          tanggalYMD = rawVal;
+        }
+      }
 
-  const headerRow = document.getElementById("tableHeaderRow");
-  const tbody = document.getElementById("tableBodyRow");
-  document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
-  tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b;">Memuat data tanggal ${formattedDisplayDate}...</td></tr>`;
+      const formattedDisplayDate = document.getElementById("inputTanggalEdit").value;
 
-  try {
-    // Kirim tanggalYMD (YYYY-MM-DD) ke backend API Apps Script
-    const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggalYMD)}&tipe=${activeEditType}`);
-    const result = await res.json();
-
-    if (result.status === "success") {
-      const rows = result.data || [];
-      document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
-      
-      if (rows.length === 0) {
-        headerRow.innerHTML = `<th>Informasi</th>`;
-        tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b; font-weight: 500;">Tidak ada data laporan ditemukan pada tanggal ${formattedDisplayDate}.</td></tr>`;
+      if (!tanggalYMD) {
+        Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
         return;
       }
-      
-      const keys = Object.keys(rows[0]).filter(k => {
-        const cleanKey = k.toLowerCase().replace(/[^a-z0-9]/g, "");
-        return k !== '_rowIndex' && cleanKey !== 'waktuinput';
-      });
-      
-      let customWidths = [];
-      if (activeEditType === 'awal') {
-        customWidths = [50, 70, 80, 90, 260, 260, 200, 60, 150, 100, 80];
-      } else {
-        customWidths = [50, 70, 80, 90, 60, 70, 260, 260, 200, 160, 150, 100, 80];
-      }
 
-      let colgroupHtml = "";
-      keys.forEach((k, idx) => {
-        const w = customWidths[idx] || 130; 
-        colgroupHtml += `<col style="width: ${w}px;">`;
-      });
-      colgroupHtml += `<col style="width: 140px;">`;
-      document.getElementById("tableColgroup").innerHTML = colgroupHtml;
+      const headerRow = document.getElementById("tableHeaderRow");
+      const tbody = document.getElementById("tableBodyRow");
+      document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
+      renderTableMessage(tbody, `Memuat data tanggal ${formattedDisplayDate}...`, false);
 
-      let thHtml = "";
-      keys.forEach(k => { thHtml += `<th>${k}</th>`; });
-      thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
-      headerRow.innerHTML = thHtml;
+      try {
+        const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggalYMD)}&tipe=${encodeURIComponent(activeEditType)}`);
+        const result = await res.json();
 
-      let trHtml = "";
-      rows.forEach((row, rowIndex) => {
-        trHtml += `<tr data-rowindex="${row._rowIndex}">`;
-        keys.forEach((k, colIndex) => {
-          const val = row[k] !== undefined ? row[k] : '';
-          const cleanKey = k.toLowerCase().replace(/[^a-z]/g, "");
-          const isReadOnly = (cleanKey === 'no' || cleanKey === 'tanggal');
+        if (result.status === "success") {
+          const rows = result.data || [];
+          document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
+          
+        if (rows.length === 0) {
+          headerRow.textContent = '';
+          const thInfo = document.createElement('th');
+          thInfo.textContent = 'Informasi';
+          headerRow.appendChild(thInfo);
 
-          if (isReadOnly) {
-            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}" readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;">${val}</textarea></td>`;
-          } else if (cleanKey === 'masinis' || cleanKey.includes('asistenmasinis') || cleanKey.includes('asisten')) {
-            trHtml += `<td><select class="ts-crew-edit" data-key="${k}" data-row="${rowIndex}"><option value="${val}">${val}</option></select></td>`;
-          } else if (cleanKey === 'kedudukan') {
-            let parts = String(val).split(" / ");
-            let kedM = parts[0] ? parts[0].trim() : "UPT CREW KA KIS";
-            let kedA = parts[1] ? parts[1].trim() : kedM;
+          tbody.textContent = '';
+          const trEmpty = document.createElement('tr');
+          const tdEmpty = document.createElement('td');
+          tdEmpty.colSpan = 12;
+          tdEmpty.style.padding = '30px';
+          tdEmpty.style.color = '#64748b';
+          tdEmpty.style.fontWeight = '500';
+          tdEmpty.textContent = `Tidak ada data laporan ditemukan pada tanggal ${formattedDisplayDate}.`;
+          trEmpty.appendChild(tdEmpty);
+          tbody.appendChild(trEmpty);
+          return;
+        }
+          
+          const keys = Object.keys(rows[0]).filter(k => {
+            const cleanKey = k.toLowerCase().replace(/[^a-z0-9]/g, "");
+            return k !== '_rowIndex' && cleanKey !== 'waktuinput';
+          });
+
+          let customWidths = [];
+          if (activeEditType === 'awal') {
+            customWidths = [50, 70, 80, 90, 260, 260, 200, 60, 150, 100, 80];
+          } else {
+            customWidths = [50, 70, 80, 90, 60, 70, 260, 260, 200, 160, 150, 100, 80];
+          }
+
+          let colgroupHtml = "";
+          keys.forEach((k, idx) => {
+            const w = Number(customWidths[idx]) || 130; 
+            colgroupHtml += `<col style="width: ${w}px;">`;
+          });
+          colgroupHtml += `<col style="width: 140px;">`;
+          document.getElementById("tableColgroup").innerHTML = colgroupHtml;
+
+          let thHtml = "";
+          keys.forEach(k => { thHtml += `<th>${escapeHtml(k)}</th>`; });
+          thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
+          headerRow.innerHTML = thHtml;
+
+          let trHtml = "";
+          rows.forEach((row, rowIndex) => {
+            const safeRowIndex = escapeHtml(row._rowIndex);
+            trHtml += `<tr data-rowindex="${safeRowIndex}">`;
+            keys.forEach((k, colIndex) => {
+              const safeKey = escapeHtml(k);
+              const val = row[k] !== undefined ? row[k] : '';
+              const safeVal = escapeHtml(val);
+              const cleanKey = k.toLowerCase().replace(/[^a-z]/g, "");
+              const isReadOnly = (cleanKey === 'no' || cleanKey === 'tanggal');
+
+              if (isReadOnly) {
+                trHtml += `<td><textarea class="edit-input" data-key="${safeKey}" data-row="${rowIndex}" data-col="${colIndex}" readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;">${safeVal}</textarea></td>`;
+              } else if (cleanKey === 'masinis' || cleanKey.includes('asistenmasinis') || cleanKey.includes('asisten')) {
+                trHtml += `<td><select class="ts-crew-edit" data-key="${safeKey}" data-row="${rowIndex}"><option value="${safeVal}">${safeVal}</option></select></td>`;
+              } else if (cleanKey === 'kedudukan') {
+                let parts = String(val).split(" / ");
+                let kedM = parts[0] ? parts[0].trim() : "UPT CREW KA KIS";
+                let kedA = parts[1] ? parts[1].trim() : kedM;
+
+                trHtml += `
+                  <td>
+                    <div style="display:flex; flex-direction:column; gap:4px; padding:2px;">
+                      <select class="edit-select ked-masinis-select" data-key="${safeKey}" data-role="masinis" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
+                        ${optionKedudukanList.map(opt => `<option value="${escapeHtml(opt)}" ${opt === kedM ? 'selected' : ''}>${escapeHtml(opt)}</option>`).join('')}
+                      </select>
+                      <select class="edit-select ked-asisten-select" data-key="${safeKey}" data-role="asisten" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
+                        ${optionKedudukanList.map(opt => `<option value="${escapeHtml(opt)}" ${opt === kedA ? 'selected' : ''}>${escapeHtml(opt)}</option>`).join('')}
+                      </select>
+                    </div>
+                  </td>
+                `;
+              } else {
+                trHtml += `<td><textarea class="edit-input" data-key="${safeKey}" data-row="${rowIndex}" data-col="${colIndex}">${safeVal}</textarea></td>`;
+              }
+            });
 
             trHtml += `
               <td>
-                <div style="display:flex; flex-direction:column; gap:4px; padding:2px;">
-                  <select class="edit-select ked-masinis-select" data-key="${k}" data-role="masinis" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
-                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedM ? 'selected' : ''}>${opt}</option>`).join('')}
-                  </select>
-                  <select class="edit-select ked-asisten-select" data-key="${k}" data-role="asisten" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
-                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedA ? 'selected' : ''}>${opt}</option>`).join('')}
-                  </select>
+                <div class="action-cell">
+                  <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
+                  <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
                 </div>
               </td>
             `;
-          } else {
-            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}">${val}</textarea></td>`;
-          }
+            trHtml += `</tr>`;
+          });
+          tbody.innerHTML = trHtml;
+
+          initTableTomSelects();
+          initSpreadsheetKeyboardNav();
+        } else {
+          Swal.fire("Gagal", result.message || "Gagal mengambil data.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
+        Swal.fire("Error", "Gagal memuat data dari server.", "error");
+      }
+    }
+
+    function initTableTomSelects() {
+      const tsElements = document.querySelectorAll(".ts-crew-edit");
+      tsElements.forEach(el => {
+        const keyName = el.getAttribute("data-key").toLowerCase().replace(/[^a-z]/g, "");
+        const tr = el.closest("tr");
+        const currentValue = el.value ? el.value.trim() : "";
+
+        let currentOptions = [...crewOptions];
+        if (currentValue && !currentOptions.some(o => o.value === currentValue)) {
+          currentOptions.unshift({ value: currentValue, text: currentValue });
+        }
+
+        const ts = new TomSelect(el, {
+          options: currentOptions,
+          items: currentValue ? [currentValue] : [],
+          create: function(input) {
+            const cleanInput = input.trim().toUpperCase();
+            return { value: cleanInput, text: cleanInput };
+          },
+          createFilter: function(input) {
+            return input.trim().length > 0;
+          },
+          placeholder: "Cari atau Ketik NAMA - NIPP..."
         });
 
-        trHtml += `
-          <td>
-            <div class="action-cell">
-              <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
-              <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
-            </div>
-          </td>
-        `;
-        trHtml += `</tr>`;
+        ts.on('change', function(val) {
+          const matchedKedudukan = crewKedudukanMap[val];
+          if (matchedKedudukan) {
+            if (keyName === 'masinis') {
+              const selKedM = tr.querySelector(".ked-masinis-select");
+              if (selKedM) selKedM.value = matchedKedudukan;
+            } else if (keyName.includes('asisten')) {
+              const selKedA = tr.querySelector(".ked-asisten-select");
+              if (selKedA) selKedA.value = matchedKedudukan;
+            }
+          }
+        });
       });
-      tbody.innerHTML = trHtml;
-
-      initTableTomSelects();
-      initSpreadsheetKeyboardNav();
-    } else {
-      Swal.fire("Gagal", result.message || "Gagal mengambil data.", "error");
     }
-  } catch (err) {
-    console.error(err);
-    document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
-    Swal.fire("Error", "Gagal memuat data dari server.", "error");
-  }
-}
-
-// Inisialisasi TomSelect di setiap sel Masinis & Asisten Masinis (Support Input Manual)
-function initTableTomSelects() {
-  const tsElements = document.querySelectorAll(".ts-crew-edit");
-  tsElements.forEach(el => {
-    const keyName = el.getAttribute("data-key").toLowerCase().replace(/[^a-z]/g, "");
-    const tr = el.closest("tr");
-    const currentValue = el.value ? el.value.trim() : "";
-
-    let currentOptions = [...crewOptions];
-    if (currentValue && !currentOptions.some(o => o.value === currentValue)) {
-      currentOptions.unshift({ value: currentValue, text: currentValue });
-    }
-
-    const ts = new TomSelect(el, {
-      options: currentOptions,
-      items: currentValue ? [currentValue] : [],
-      // FITUR INPUT MANUAL (PERSIS ASSESMENT.HTML)
-      create: function(input) {
-        const cleanInput = input.trim().toUpperCase();
-        return { value: cleanInput, text: cleanInput };
-      },
-      createFilter: function(input) {
-        return input.trim().length > 0;
-      },
-      placeholder: "Cari atau Ketik NAMA - NIPP..."
-    });
-
-    // Sinkronisasi Kedudukan saat nama crew dipilih atau diketik
-    ts.on('change', function(val) {
-      const matchedKedudukan = crewKedudukanMap[val];
-      if (matchedKedudukan) {
-        if (keyName === 'masinis') {
-          const selKedM = tr.querySelector(".ked-masinis-select");
-          if (selKedM) selKedM.value = matchedKedudukan;
-        } else if (keyName.includes('asisten')) {
-          const selKedA = tr.querySelector(".ked-asisten-select");
-          if (selKedA) selKedA.value = matchedKedudukan;
-        }
-      }
-    });
-  });
-}
 
     function initSpreadsheetKeyboardNav() {
       const inputs = document.querySelectorAll(".edit-input:not([readonly])");
@@ -660,23 +697,19 @@ function initTableTomSelects() {
     async function saveRow(btn) {
       const tr = btn.closest("tr");
       const rowIndex = tr.getAttribute("data-rowindex");
-      
       let rowData = {};
 
-      // 1. Ambil input standar/textarea
       const inputs = tr.querySelectorAll(".edit-input");
       inputs.forEach(input => {
         rowData[input.getAttribute("data-key")] = input.value;
       });
 
-      // 2. Ambil nilai TomSelect Masinis & Asisten Masinis
       const tsElements = tr.querySelectorAll(".ts-crew-edit");
       tsElements.forEach(selectEl => {
         const key = selectEl.getAttribute("data-key");
         rowData[key] = selectEl.value || "-";
       });
 
-      // 3. Gabungkan Kedudukan Masinis & Asisten Masinis (Format: KedMasinis / KedAsisten)
       const selKedM = tr.querySelector(".ked-masinis-select");
       const selKedA = tr.querySelector(".ked-asisten-select");
       if (selKedM && selKedA) {
@@ -686,7 +719,7 @@ function initTableTomSelects() {
 
       const originalText = btn.innerHTML;
       btn.disabled = true; 
-      btn.innerHTML = "⏳ Menyimpan...";
+      btn.textContent = "⏳ Menyimpan...";
 
       try {
         const res = await fetch(API_URL, {
@@ -750,13 +783,88 @@ function initTableTomSelects() {
       }
     }
 
+    async function saveAllRows() {
+      const tbody = document.getElementById("tableBodyRow");
+      const trList = tbody.querySelectorAll("tr[data-rowindex]");
+
+      if (trList.length === 0) {
+        Swal.fire("Peringatan", "Tidak ada data yang dapat disimpan.", "warning");
+        return;
+      }
+
+      const btnSaveAll = document.getElementById("btnSaveAll");
+      const originalText = btnSaveAll.textContent;
+      btnSaveAll.disabled = true;
+      btnSaveAll.textContent = "⏳ Menyimpan Semua...";
+
+      let successCount = 0;
+      let failCount = 0;
+
+      for (const tr of trList) {
+        const rowIndex = tr.getAttribute("data-rowindex");
+        let rowData = {};
+
+        const inputs = tr.querySelectorAll(".edit-input");
+        inputs.forEach(input => {
+          rowData[input.getAttribute("data-key")] = input.value;
+        });
+
+        const tsElements = tr.querySelectorAll(".ts-crew-edit");
+        tsElements.forEach(selectEl => {
+          const key = selectEl.getAttribute("data-key");
+          rowData[key] = selectEl.value || "-";
+        });
+
+        const selKedM = tr.querySelector(".ked-masinis-select");
+        const selKedA = tr.querySelector(".ked-asisten-select");
+        if (selKedM && selKedA) {
+          const keyKed = selKedM.getAttribute("data-key");
+          rowData[keyKed] = `${selKedM.value} / ${selKedA.value}`;
+        }
+
+        try {
+          const res = await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              action: "updateFormDinas",
+              tipe: activeEditType,
+              rowIndex: rowIndex,
+              data: rowData
+            })
+          });
+          const result = await res.json();
+          if (result.status === "success") {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (err) {
+          failCount++;
+        }
+      }
+
+      btnSaveAll.disabled = false;
+      btnSaveAll.textContent = originalText;
+
+      if (failCount === 0) {
+        Swal.fire("Berhasil", `Seluruh perubahan (${successCount} baris) berhasil disimpan!`, "success");
+      } else {
+        Swal.fire("Selesai dengan Catatan", `Tersimpan: ${successCount} baris, Gagal: ${failCount} baris.`, "warning");
+      }
+    }
+
+    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+
     document.addEventListener("DOMContentLoaded", async function() {
       document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
       document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
       document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
 
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("inputTanggalEdit").value = today;
+      flatpickrEditInstance = flatpickr("#inputTanggalEdit", {
+        dateFormat: "d/m/Y",
+        defaultDate: new Date(),
+        allowInput: false
+      });
 
       const imgEl = document.getElementById("penyeliaFoto");
       if (imgEl && loggedInNipp) {
@@ -773,238 +881,6 @@ function initTableTomSelects() {
 
       await loadCrewData();
     });
-
-    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
-
-    async function saveAllRows() {
-  const tbody = document.getElementById("tableBodyRow");
-  const trList = tbody.querySelectorAll("tr[data-rowindex]");
-
-  if (trList.length === 0) {
-    Swal.fire("Peringatan", "Tidak ada data yang dapat disimpan.", "warning");
-    return;
-  }
-
-  const btnSaveAll = document.getElementById("btnSaveAll");
-  const originalText = btnSaveAll.innerHTML;
-  btnSaveAll.disabled = true;
-  btnSaveAll.innerHTML = "⏳ Menyimpan Semua...";
-
-  let successCount = 0;
-  let failCount = 0;
-
-  // Melakukan perulangan untuk setiap baris di tabel
-  for (const tr of trList) {
-    const rowIndex = tr.getAttribute("data-rowindex");
-    let rowData = {};
-
-    // 1. Ambil input teks/textarea
-    const inputs = tr.querySelectorAll(".edit-input");
-    inputs.forEach(input => {
-      rowData[input.getAttribute("data-key")] = input.value;
-    });
-
-    // 2. Ambil nilai dari TomSelect (Masinis & Asisten)
-    const tsElements = tr.querySelectorAll(".ts-crew-edit");
-    tsElements.forEach(selectEl => {
-      const key = selectEl.getAttribute("data-key");
-      rowData[key] = selectEl.value || "-";
-    });
-
-    // 3. Ambil nilai Kedudukan
-    const selKedM = tr.querySelector(".ked-masinis-select");
-    const selKedA = tr.querySelector(".ked-asisten-select");
-    if (selKedM && selKedA) {
-      const keyKed = selKedM.getAttribute("data-key");
-      rowData[keyKed] = `${selKedM.value} / ${selKedA.value}`;
-    }
-
-    try {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "updateFormDinas",
-          tipe: activeEditType,
-          rowIndex: rowIndex,
-          data: rowData
-        })
-      });
-      const result = await res.json();
-      if (result.status === "success") {
-        successCount++;
-      } else {
-        failCount++;
-      }
-    } catch (err) {
-      failCount++;
-    }
-  }
-
-  btnSaveAll.disabled = false;
-  btnSaveAll.innerHTML = originalText;
-
-  if (failCount === 0) {
-    Swal.fire("Berhasil", `Seluruh perubahan (${successCount} baris) berhasil disimpan!`, "success");
-  } else {
-    Swal.fire("Selesai dengan Catatan", `Tersimpan: ${successCount} baris, Gagal: ${failCount} baris.`, "warning");
-  }
-}
-
-let flatpickrEditInstance = null;
-
-document.addEventListener("DOMContentLoaded", async function() {
-  document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
-  document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
-  document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
-
-  // Inisialisasi Flatpickr format dd/mm/yyyy
-  flatpickrEditInstance = flatpickr("#inputTanggalEdit", {
-    dateFormat: "d/m/Y",
-    defaultDate: new Date(),
-    allowInput: false
-  });
-
-  const imgEl = document.getElementById("penyeliaFoto");
-  if (imgEl && loggedInNipp) {
-    const cleanNipp = String(loggedInNipp).trim();
-    imgEl.src = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
-    imgEl.onerror = function() {
-      if (this.src.endsWith(".jpg")) {
-        this.src = `../assets/struktur-organisasi/${cleanNipp}.png`;
-      } else {
-        this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama)}&background=1C2A5F&color=fff`;
-      }
-    };
-  }
-
-  await loadCrewData();
-});
-
-async function loadEditData() {
-  let tanggalYMD = "";
-
-  // 1. Ambil format YYYY-MM-DD langsung dari instance Flatpickr
-  if (typeof flatpickrEditInstance !== "undefined" && flatpickrEditInstance && flatpickrEditInstance.selectedDates.length > 0) {
-    tanggalYMD = flatpickrEditInstance.formatDate(flatpickrEditInstance.selectedDates[0], "Y-m-d");
-  } else {
-    // Fallback manual memecah string dd/mm/yyyy -> yyyy-mm-dd
-    const rawVal = document.getElementById("inputTanggalEdit").value.trim();
-    const parts = rawVal.split("/");
-    if (parts.length === 3) {
-      tanggalYMD = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-    } else {
-      tanggalYMD = rawVal;
-    }
-  }
-
-  const formattedDisplayDate = document.getElementById("inputTanggalEdit").value;
-
-  if (!tanggalYMD) {
-    Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
-    return;
-  }
-
-  const headerRow = document.getElementById("tableHeaderRow");
-  const tbody = document.getElementById("tableBodyRow");
-  document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
-  tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b;">Memuat data tanggal ${formattedDisplayDate}...</td></tr>`;
-
-  try {
-    const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggalYMD)}&tipe=${activeEditType}`);
-    const result = await res.json();
-
-    if (result.status === "success") {
-      const rows = result.data || [];
-      document.getElementById("rowCountInfo").textContent = `Total Baris: ${rows.length}`;
-      
-      if (rows.length === 0) {
-        headerRow.innerHTML = `<th>Informasi</th>`;
-        tbody.innerHTML = `<tr><td colspan="12" style="padding: 30px; color: #64748b; font-weight: 500;">Tidak ada data laporan ditemukan pada tanggal ${formattedDisplayDate}.</td></tr>`;
-        return;
-      }
-      
-      const keys = Object.keys(rows[0]).filter(k => {
-        const cleanKey = k.toLowerCase().replace(/[^a-z0-9]/g, "");
-        return k !== '_rowIndex' && cleanKey !== 'waktuinput';
-      });
-
-      let customWidths = [];
-      if (activeEditType === 'awal') {
-        customWidths = [50, 70, 80, 90, 260, 260, 200, 60, 150, 100, 80];
-      } else {
-        customWidths = [50, 70, 80, 90, 60, 70, 260, 260, 200, 160, 150, 100, 80];
-      }
-
-      let colgroupHtml = "";
-      keys.forEach((k, idx) => {
-        const w = customWidths[idx] || 130; 
-        colgroupHtml += `<col style="width: ${w}px;">`;
-      });
-      colgroupHtml += `<col style="width: 140px;">`;
-      document.getElementById("tableColgroup").innerHTML = colgroupHtml;
-
-      let thHtml = "";
-      keys.forEach(k => { thHtml += `<th>${k}</th>`; });
-      thHtml += `<th style="width: 140px; background-color: #f1f5f9;">Aksi Cepat</th>`;
-      headerRow.innerHTML = thHtml;
-
-      let trHtml = "";
-      rows.forEach((row, rowIndex) => {
-        trHtml += `<tr data-rowindex="${row._rowIndex}">`;
-        keys.forEach((k, colIndex) => {
-          const val = row[k] !== undefined ? row[k] : '';
-          const cleanKey = k.toLowerCase().replace(/[^a-z]/g, "");
-          const isReadOnly = (cleanKey === 'no' || cleanKey === 'tanggal');
-
-          if (isReadOnly) {
-            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}" readonly style="background:#f1f5f9; color:#64748b; font-weight:bold; cursor:not-allowed;">${val}</textarea></td>`;
-          } else if (cleanKey === 'masinis' || cleanKey.includes('asistenmasinis') || cleanKey.includes('asisten')) {
-            trHtml += `<td><select class="ts-crew-edit" data-key="${k}" data-row="${rowIndex}"><option value="${val}">${val}</option></select></td>`;
-          } else if (cleanKey === 'kedudukan') {
-            let parts = String(val).split(" / ");
-            let kedM = parts[0] ? parts[0].trim() : "UPT CREW KA KIS";
-            let kedA = parts[1] ? parts[1].trim() : kedM;
-
-            trHtml += `
-              <td>
-                <div style="display:flex; flex-direction:column; gap:4px; padding:2px;">
-                  <select class="edit-select ked-masinis-select" data-key="${k}" data-role="masinis" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
-                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedM ? 'selected' : ''}>${opt}</option>`).join('')}
-                  </select>
-                  <select class="edit-select ked-asisten-select" data-key="${k}" data-role="asisten" style="font-size:0.75rem; padding:4px; border:1px solid #cbd5e1; border-radius:3px;">
-                    ${optionKedudukanList.map(opt => `<option value="${opt}" ${opt === kedA ? 'selected' : ''}>${opt}</option>`).join('')}
-                  </select>
-                </div>
-              </td>
-            `;
-          } else {
-            trHtml += `<td><textarea class="edit-input" data-key="${k}" data-row="${rowIndex}" data-col="${colIndex}">${val}</textarea></td>`;
-          }
-        });
-
-        trHtml += `
-          <td>
-            <div class="action-cell">
-              <button type="button" class="btn-action-row btn-save-row" onclick="saveRow(this)">💾 Simpan</button>
-              <button type="button" class="btn-action-row btn-del-row" onclick="deleteRow(this)">🗑️ Hapus</button>
-            </div>
-          </td>
-        `;
-        trHtml += `</tr>`;
-      });
-      tbody.innerHTML = trHtml;
-
-      initTableTomSelects();
-      initSpreadsheetKeyboardNav();
-    } else {
-      Swal.fire("Gagal", result.message || "Gagal mengambil data.", "error");
-    }
-  } catch (err) {
-    console.error(err);
-    document.getElementById("rowCountInfo").textContent = "Total Baris: 0";
-    Swal.fire("Error", "Gagal memuat data dari server.", "error");
-  }
-}
   </script>
 </body>
 </html>
