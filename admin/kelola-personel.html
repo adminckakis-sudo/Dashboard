@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- FIREBASE AUTH & GATEKEEPER -->
@@ -743,21 +742,36 @@
                             rawDatabase = result.data["Database"] || result.data["database"] || [];
                             const sertifikasiList = result.data["Sertifikasi"] || result.data["sertifikasi"] || [];
                             
-                            // PEMETAAN SHEET SERTIFIKASI (GID 392940711)
+                            // PEMETAAN SHEET SERTIFIKASI YANG LEBIH FLEKSIBEL (MEMBERSIHKAN SPASI & HURUF KAPITAL)
                             sertifikasiList.forEach(sItem => {
-                                const sNipp = cleanNipp(sItem["NIPP"] || sItem["Nip"] || sItem["nipp"]);
+                                // Cari key yang merepresentasikan NIPP secara dinamis
+                                let sNipp = "";
+                                Object.keys(sItem).forEach(k => {
+                                    if (k.trim().toUpperCase() === "NIPP") {
+                                        sNipp = cleanNipp(sItem[k]);
+                                    }
+                                });
+
                                 if (sNipp) {
+                                    let nAsp = "", tAsp = "", eAsp = "";
+                                    Object.keys(sItem).forEach(k => {
+                                        let cleanK = k.trim().toUpperCase();
+                                        if (cleanK.includes("NO ASP") || cleanK.includes("SERTIFIKASI")) nAsp = sItem[k];
+                                        if (cleanK.includes("TINGKAT")) tAsp = sItem[k];
+                                        if (cleanK.includes("BERLAKU") || cleanK.includes("EXPIRED")) eAsp = sItem[k];
+                                    });
+
                                     rawSertifikasiMap[sNipp] = {
-                                        noAsp: sItem["No ASP"] || sItem["NO ASP"] || sItem["No Sertifikasi Dirjen"] || "",
-                                        tingkat: sItem["Tingkat"] || sItem["TINGKAT"] || sItem["Tingkat ASP"] || "",
-                                        expAsp: sItem["Berlaku sd."] || sItem["BERLAKU SD"] || sItem["Tanggal Expired"] || sItem["TANGGAL EXPIRED ASP"] || ""
+                                        noAsp: nAsp,
+                                        tingkat: tAsp,
+                                        expAsp: eAsp
                                     };
                                 }
                             });
                         }
                     }
 
-                    // PEMETAAN SHEET DATABASE (GID 1567798541)
+                    // PEMETAAN SHEET DATABASE
                     combinedData = rawDatabase.map(item => {
                         const cNipp = cleanNipp(item["NIPP"] || item["Nip"] || item["nipp"]);
                         const cert = rawSertifikasiMap[cNipp] || {};
@@ -806,7 +820,7 @@
                 Swal.fire("Error Koneksi", error.message, "error");
             }
         }
-
+        
         function renderTable(dataList) {
             const tbody = document.getElementById("tableBody");
             if (dataList.length === 0) {
