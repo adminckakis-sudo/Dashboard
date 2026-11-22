@@ -626,6 +626,22 @@
         console.error(err);
         tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; color: #ef4444; text-align: center;">Kesalahan server.</td></tr>`;
       }
+    if (result.status === "success" && Array.isArray(result.data)) {
+          const seenRows = new Set();
+          loadedCurrentData = result.data.filter(item => {
+            const key = [
+              String(item.no_dinasan || "").trim().toUpperCase(),
+              String(item.posisi || item.jabatan || "").trim().toUpperCase(),
+              String(item.nama || "").trim().toUpperCase(),
+              String(item.nipp || "").trim(),
+              String(item.no_ka || "").trim().toUpperCase()
+            ].join("|");
+            if (seenRows.has(key)) return false;
+            seenRows.add(key);
+            return true;
+          });
+          renderEditTable(loadedCurrentData);
+        }
     }
 
     function renderEditTable(dataList) {
