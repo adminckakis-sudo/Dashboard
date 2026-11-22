@@ -666,6 +666,13 @@
       }
     }
 
+function isStandaloneR(item) {
+      const pos = String(item?.posisi || "").trim().toUpperCase();
+      const jbt = String(item?.jabatan || "").trim().toUpperCase();
+      const noDinas = String(item?.no_dinasan || "").trim().toUpperCase();
+      return pos === "R" || noDinas === "R" || (!jbt && !pos);
+    }
+
     function renderTable(rawData, tbodyId) {
       const tbody = document.getElementById(tbodyId);
       if (!rawData || rawData.length === 0) {
@@ -673,31 +680,62 @@
         return;
       }
 
-      const grouped = {};
-      const orderList = [];
+      const entries = [];
+      const pairMap = {};
 
       rawData.forEach(item => {
-        const key = item.no_dinasan || item.no_urut;
-        if (!grouped[key]) {
-          grouped[key] = { mas: null, asmas: null, key: key, no_urut: item.no_urut };
-          orderList.push(key);
+        if (isStandaloneR(item)) {
+          entries.push({ type: "single", item: item });
+          return;
         }
+
+        const key = item.no_dinasan || item.no_urut;
+        if (!pairMap[key]) {
+          pairMap[key] = { type: "pair", mas: null, asmas: null, key: key, no_urut: item.no_urut };
+          entries.push(pairMap[key]);
+        }
+
         if (String(item.posisi).toUpperCase() === "ATAS" || String(item.jabatan).toUpperCase() === "MAS") {
-          grouped[key].mas = item;
+          pairMap[key].mas = item;
         } else {
-          grouped[key].asmas = item;
+          pairMap[key].asmas = item;
         }
       });
 
       let trHtml = "";
       let rowCounter = 1;
 
-      orderList.forEach(key => {
-        const g = grouped[key];
-        const mas = g.mas || {};
-        const asmas = g.asmas || {};
-        const noDinas = escapeHtml(g.key);
-        
+      entries.forEach(entry => {
+        if (entry.type === "single") {
+          const r = entry.item || {};
+          const noDinas = escapeHtml(r.no_dinasan || "R");
+          const jbtText = escapeHtml(r.jabatan || "");
+          const ketDisp = r.keterangan || "Sudah Diinput";
+          const safeKetDisp = escapeHtml(ketDisp);
+          const colorClass = getStatusColorClass(ketDisp);
+
+          trHtml += `
+            <tr>
+              <td style="text-align: center; vertical-align: middle; font-weight: 800;">${rowCounter}</td>
+              <td style="text-align: left; font-weight: 700;">${escapeHtml(r.nama || '-')}</td>
+              <td style="text-align: center;">${escapeHtml(r.nipp || '-')}</td>
+              <td style="text-align: center; font-weight: 700;">${jbtText}</td>
+              <td style="text-align: center; vertical-align: middle; font-weight: 800; color: #000000;">${noDinas}</td>
+              <td style="text-align: center; font-weight: 700;">${escapeHtml(r.no_ka || '-')}</td>
+              <td style="text-align: center;">${escapeHtml(r.relasi || '-')}</td>
+              <td class="${colorClass}" style="text-align: right;">${escapeHtml(formatRupiah(r.premi_1))}</td>
+              <td class="${colorClass}" style="text-align: right;">${escapeHtml(formatRupiah(r.premi_2))}</td>
+              <td class="${colorClass}" style="text-align: center; vertical-align: middle;">${safeKetDisp}</td>
+            </tr>
+          `;
+          rowCounter++;
+          return;
+        }
+
+        const mas = entry.mas || {};
+        const asmas = entry.asmas || {};
+        const noDinas = escapeHtml(entry.key);
+
         const ketDisp = mas.keterangan || asmas.keterangan || "Sudah Diinput";
         const safeKetDisp = escapeHtml(ketDisp);
         const colorClass = getStatusColorClass(ketDisp);
@@ -736,7 +774,7 @@
 
       tbody.innerHTML = trHtml;
     }
-
+    
     async function handleSyncO241() {
       Swal.fire({
         title: 'Menyinkronkan Seluruh Tanggal...',
