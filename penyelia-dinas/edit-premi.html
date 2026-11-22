@@ -58,6 +58,8 @@
     .btn-load { background-color: #1C2A5F; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
     .btn-add-dinasan { background-color: #059669; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
     .btn-add-dinasan:hover { background-color: #047857; }
+    .btn-add-r { background-color: #1C2A5F; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-add-r:hover { background-color: #121d42; }
     
     .btn-save-all { background-color: #d97706; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
     .btn-save-all:hover { background-color: #b45309; }
@@ -89,14 +91,53 @@
     .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 14px; color: #cbd5e1; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.86rem; }
     .sidebar-item:hover, .sidebar-item.active { color: #ffffff; background: rgba(240, 100, 0, 0.25); border: 1px solid rgba(240, 100, 0, 0.45); }
 
-    .swal2-popup-custom { overflow-x: hidden !important; padding: 1.5rem !important; }
-    .modal-form-grid { display: flex; flex-direction: column; gap: 12px; text-align: left; font-size: 0.85rem; width: 100%; box-sizing: border-box; }
-    .modal-row { display: flex; gap: 12px; width: 100%; }
-    .modal-col { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-    .modal-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; box-sizing: border-box; outline: none; }
+    .swal2-popup-custom {
+      overflow: hidden !important;
+      padding: 1.25rem !important;
+      max-height: 90vh !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    .swal2-popup-custom .swal2-title {
+      flex-shrink: 0;
+      margin-bottom: 10px !important;
+    }
+    .swal2-popup-custom .swal2-html-container {
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      max-height: calc(90vh - 140px) !important;
+      margin: 0 !important;
+      padding: 4px 6px !important;
+    }
+    .swal2-popup-custom .swal2-actions {
+      flex-shrink: 0;
+      margin-top: 12px !important;
+    }
+    .modal-form-grid { display: flex; flex-direction: column; gap: 12px; text-align: left; font-size: 0.84rem; width: 100%; box-sizing: border-box; }
+    .modal-row { display: flex; gap: 10px; width: 100%; flex-wrap: wrap; }
+    .modal-col { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 4px; }
+    .modal-input { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.84rem; box-sizing: border-box; outline: none; }
     .modal-input:focus { border-color: #F06400; box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15); }
-  
-    
+
+    .crew-section-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px;
+      background-color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .crew-section-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #1C2A5F;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+    }
+
     .btn-sync {
       background-color: #059669;
       color: white;
@@ -130,7 +171,6 @@
     .btn-delete-row:hover {
       background-color: #dc2626;
     }
-
   </style>
 </head>
 <body>
@@ -161,7 +201,7 @@
 
   <div class="app-layout-wrapper">
     <!-- SIDEBAR PERSIS DENGAN OPSI CETAK/PDF SEPERTI DI PREMI.HTML -->
-  <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+    <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
       <div>
         <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange, #F06400); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
         
@@ -181,7 +221,7 @@
             </svg>
             <span class="sidebar-text">Laporan Dinas</span>
           </a>
-        <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan Dinas">
+          <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan Dinas">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -192,13 +232,13 @@
 
           <a href="./edit-premi.html" class="sidebar-item active" title="Report G43A">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
-            <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
-            <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
             </svg>
             <span class="sidebar-text">Report G43A</span>
           </a>
-        <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
+          <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 6 2 18 2 18 9"></polyline>
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -208,7 +248,6 @@
           </a>
           <a href="./pantauan.html" class="sidebar-item" title="Papan Pantauan">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <!-- Contoh path untuk ikon tautan/eksternal -->
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
               <polyline points="15 3 21 3 21 9"></polyline>
               <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -232,8 +271,9 @@
           </div>
           <div class="action-buttons">
             <button type="button" class="btn-sync" onclick="handleSyncO241()">Sync Data</button>
-            <button type="button" class="btn-save-all" onclick="saveAllRows()"> Simpan Semua Perubahan</button>
-            <button type="button" class="btn-add-dinasan" onclick="openModalTambahDinasan()"> Tambah Dinasan Baru</button>
+            <button type="button" class="btn-save-all" onclick="saveAllRows()">Simpan Semua Perubahan</button>
+            <button type="button" class="btn-add-dinasan" onclick="openModalTambahDinasan()">Tambah Dinasan Baru</button>
+            <button type="button" class="btn-add-r" onclick="openModalTambahPendinasanR()">Tambah Running</button>
           </div>
         </div>
 
@@ -271,6 +311,18 @@
   </div>
 
 <script>
+    function getInputValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim().toUpperCase() : "";
+    }
+
+    function setInputValue(id, val) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.value = val ?? "";
+      }
+    }
+
     const loggedInNama = localStorage.getItem("loggedInUserNama");
     const loggedInNipp = localStorage.getItem("loggedInUserNipp");
     const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
@@ -293,7 +345,15 @@
 
     const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
 
+    // Daftar kode dinasan yang otomatis memicu Premi 2.
+    // Isi masP2 / asmasP2 dengan nominal spesifik, atau biarkan null agar mengikuti nilai Premi 1.
+    const DINASAN_DUA_PREMI = {
+      "1 A/B": { masP2: null, asmasP2: null },
+      "25 A/B": { masP2: null, asmasP2: null }
+    };
+
     let MASTER_CREW_KISARAN = [];
+    let MASTER_PENYELIA_R = [];
     let DYNAMIC_DINASAN_MAP = {};
     let tomSelectInstances = {};
 
@@ -309,6 +369,90 @@
       }
     }
 
+    async function fetchMasterPenyeliaR() {
+      try {
+        const res = await fetch(`${API_URL}?action=getPenyeliaRList`);
+        const result = await res.json();
+        if (result.status === "success" && Array.isArray(result.data) && result.data.length > 0) {
+          MASTER_PENYELIA_R = result.data;
+          return;
+        }
+      } catch (err) {
+        console.error("Gagal mengambil daftar Penyelia R:", err);
+      }
+
+      MASTER_PENYELIA_R = MASTER_CREW_KISARAN.filter(c => {
+        const jab = String(c.jabatan || "").toUpperCase();
+        return jab.includes("PENYELIA DINAS") || jab.includes("PENYELIA INSTRUKTUR");
+      });
+    }
+
+    function extractRateMas(item) {
+      const candidates = [
+        item?.rate_mas,
+        item?.atas?.rate_mas,
+        item?.mas?.rate_mas,
+        item?.atas?.premi_masinis,
+        item?.atas?.p1,
+        item?.premi_masinis,
+        item?.p1
+      ];
+      for (const c of candidates) {
+        const num = cleanRupiahToNumber(c);
+        if (num > 0) return num;
+      }
+      return 0;
+    }
+
+    function extractSecondRateMas(item) {
+      const candidates = [
+        item?.rate_mas_2,
+        item?.premi_mas_2,
+        item?.premi_masinis_2,
+        item?.atas?.rate_mas_2,
+        item?.atas?.premi_mas_2,
+        item?.atas?.p2,
+        item?.p2
+      ];
+      for (const c of candidates) {
+        const num = cleanRupiahToNumber(c);
+        if (num > 0) return num;
+      }
+      return 0;
+    }
+
+    function extractRateAsmas(item) {
+      const candidates = [
+        item?.rate_asmas,
+        item?.bawah?.rate_asmas,
+        item?.asmas?.rate_asmas,
+        item?.atas?.rate_asmas,
+        item?.bawah?.premi_asmas,
+        item?.bawah?.p1,
+        item?.premi_asmas
+      ];
+      for (const c of candidates) {
+        const num = cleanRupiahToNumber(c);
+        if (num > 0) return num;
+      }
+      return 0;
+    }
+
+    function extractSecondRateAsmas(item) {
+      const candidates = [
+        item?.rate_asmas_2,
+        item?.premi_asmas_2,
+        item?.bawah?.rate_asmas_2,
+        item?.bawah?.premi_asmas_2,
+        item?.bawah?.p2
+      ];
+      for (const c of candidates) {
+        const num = cleanRupiahToNumber(c);
+        if (num > 0) return num;
+      }
+      return 0;
+    }
+
     async function fetchMasterDinasan() {
       try {
         const res = await fetch(`${API_URL}?action=getMasterDinasan`);
@@ -316,45 +460,106 @@
 
         if (result.status === "success" && result.data) {
           DYNAMIC_DINASAN_MAP = {};
-          const masterPairs = result.data;
+          const rawData = result.data;
 
-          Object.keys(masterPairs).forEach(noDinas => {
-            const item = masterPairs[noDinas];
+          const rows = Array.isArray(rawData)
+            ? rawData
+            : Object.keys(rawData).map(k => ({ no_dinasan: k, ...rawData[k] }));
 
-            if (item.atas) {
-              const keyAtas = `${noDinas}_MAS`;
-              const kaStr = item.atas.ka || "-";
-              const ketStr = item.keterangan || "Dinasan";
-              DYNAMIC_DINASAN_MAP[keyAtas] = {
-                no_dinasan: noDinas,
-                nama_display: `${noDinas} - ${kaStr} - ${ketStr} (MAS)`,
-                ka: kaStr,
-                relasi: item.atas.relasi || "",
-                p1: item.atas.p1 || 0,
-                p2: item.atas.p2 || 0,
-                jab: "MAS"
+          const grouped = {};
+
+          rows.forEach(row => {
+            const kode = String(row.no_dinasan ?? row.kode_dinasan ?? "").trim();
+            if (!kode) return;
+
+            if (!grouped[kode]) {
+              grouped[kode] = {
+                no_dinasan: kode,
+                ka_list: [],
+                relasi_list: [],
+                mas_rates: [],
+                asmas_rates: []
               };
             }
 
-            if (item.bawah) {
-              const keyBawah = `${noDinas}_ASMAS`;
-              const kaStr = item.bawah.ka || "-";
-              const ketStr = item.keterangan || "Dinasan";
-              DYNAMIC_DINASAN_MAP[keyBawah] = {
-                no_dinasan: noDinas,
-                nama_display: `${noDinas} - ${kaStr} - ${ketStr} (ASMAS)`,
-                ka: kaStr,
-                relasi: item.bawah.relasi || "",
-                p1: item.bawah.p1 || 0,
-                p2: item.bawah.p2 || 0,
-                jab: "ASMAS"
-              };
+            const kaMas = String(row.no_ka_mas ?? row.atas?.no_ka_mas ?? row.atas?.ka ?? row.ka ?? "").trim();
+            const kaAsmas = String(row.no_ka_asmas ?? row.bawah?.no_ka_asmas ?? row.bawah?.ka ?? "").trim();
+            const relMas = String(row.relasi_mas ?? row.atas?.relasi_mas ?? row.atas?.relasi ?? row.relasi ?? "").trim();
+            const relAsmas = String(row.relasi_asmas ?? row.bawah?.relasi_asmas ?? row.bawah?.relasi ?? "").trim();
+
+            if (kaMas && !grouped[kode].ka_list.includes(kaMas)) {
+              grouped[kode].ka_list.push(kaMas);
             }
+            if (kaAsmas && !grouped[kode].ka_list.includes(kaAsmas)) {
+              grouped[kode].ka_list.push(kaAsmas);
+            }
+
+            if (relMas && !grouped[kode].relasi_list.includes(relMas)) {
+              grouped[kode].relasi_list.push(relMas);
+            }
+            if (relAsmas && !grouped[kode].relasi_list.includes(relAsmas)) {
+              grouped[kode].relasi_list.push(relAsmas);
+            }
+
+            const rateMas1 = extractRateMas(row);
+            const rateMas2 = extractSecondRateMas(row);
+
+            const rateAsmas1 = extractRateAsmas(row);
+            const rateAsmas2 = extractSecondRateAsmas(row);
+
+            if (rateMas1 > 0) grouped[kode].mas_rates.push(rateMas1);
+            if (rateMas2 > 0) grouped[kode].mas_rates.push(rateMas2);
+
+            if (rateAsmas1 > 0) grouped[kode].asmas_rates.push(rateAsmas1);
+            if (rateAsmas2 > 0) grouped[kode].asmas_rates.push(rateAsmas2);
+          });
+
+          Object.keys(grouped).forEach(kode => {
+            const g = grouped[kode];
+            const kaGabung = g.ka_list.filter(Boolean).join(" / ");
+            DYNAMIC_DINASAN_MAP[kode] = {
+              no_dinasan: kode,
+              nama_display: kaGabung ? `${kode} (${kaGabung})` : kode,
+              ka_1: g.ka_list[0] || "",
+              ka_2: g.ka_list[1] || "",
+              relasi: g.relasi_list.join(" / "),
+              mas_p1: g.mas_rates[0] || 0,
+              mas_p2: g.mas_rates[1] || 0,
+              asmas_p1: g.asmas_rates[0] || 0,
+              asmas_p2: g.asmas_rates[1] || 0
+            };
           });
         }
       } catch (err) {
         console.error("Gagal mengambil master dinasan dinamis:", err);
       }
+    }
+
+    function handleModalPresetChange(presetKey) {
+      if (!presetKey || !DYNAMIC_DINASAN_MAP[presetKey]) return;
+
+      const p = DYNAMIC_DINASAN_MAP[presetKey];
+      const kodeUpper = String(p.no_dinasan || "").trim().toUpperCase();
+      const cfgDuaPremi = DINASAN_DUA_PREMI[kodeUpper];
+
+      const finalMasP2 = p.mas_p2 > 0
+        ? p.mas_p2
+        : (cfgDuaPremi ? (cfgDuaPremi.masP2 ?? p.mas_p1) : 0);
+
+      const finalAsmasP2 = p.asmas_p2 > 0
+        ? p.asmas_p2
+        : (cfgDuaPremi ? (cfgDuaPremi.asmasP2 ?? p.asmas_p1) : 0);
+
+      setInputValue("mdNoDinasan", p.no_dinasan);
+      setInputValue("mdNoKa1", p.ka_1);
+      setInputValue("mdNoKa2", p.ka_2);
+      setInputValue("mdRelasi", p.relasi);
+
+      setInputValue("mdMasP1", p.mas_p1 > 0 ? formatRupiahInput(p.mas_p1) : "");
+      setInputValue("mdMasP2", finalMasP2 > 0 ? formatRupiahInput(finalMasP2) : "");
+
+      setInputValue("mdAsmasP1", p.asmas_p1 > 0 ? formatRupiahInput(p.asmas_p1) : "");
+      setInputValue("mdAsmasP2", finalAsmasP2 > 0 ? formatRupiahInput(finalAsmasP2) : "");
     }
 
     function formatRupiahInput(val) {
@@ -426,7 +631,7 @@
     function renderEditTable(dataList) {
       const tbody = document.getElementById("editTableBody");
       if (dataList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; text-align: center;">Tidak ada data dinasan. Silakan klik " Tambah Dinasan Baru".</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; text-align: center;">Tidak ada data dinasan. Silakan klik "Tambah Dinasan Baru" atau "Tambah Pendinasan R".</td></tr>`;
         return;
       }
 
@@ -436,12 +641,14 @@
         const p2Formatted = formatRupiahInput(item.premi_2);
         const currentStatus = item.keterangan === "Terkirim" ? "Terkirim" : "Sudah Diinput";
         const colorClass = getStatusColorClass(currentStatus);
+        const isRowR = String(item.posisi || "").trim().toUpperCase() === "R" || String(item.no_dinasan || "").trim().toUpperCase() === "R";
+        const jabatanDisplay = isRowR ? "" : (item.jabatan || "MAS");
 
         html += `
           <tr>
             <td style="font-weight:700;">${idx + 1}</td>
             <td><input type="text" class="input-cell input-uppercase" id="ed_nodinas_${idx}" value="${item.no_dinasan || ''}"></td>
-            <td style="font-weight:700;">${item.jabatan || 'MAS'}</td>
+            <td style="font-weight:700;" id="ed_jabatan_${idx}">${jabatanDisplay}</td>
             <td><select id="ed_nama_${idx}"></select></td>
             <td><input type="text" class="input-cell" id="ed_nipp_${idx}" value="${item.nipp || ''}"></td>
             <td><input type="text" class="input-cell input-uppercase" id="ed_noka_${idx}" value="${item.no_ka || ''}"></td>
@@ -453,11 +660,11 @@
             <td>
               <select id="ed_status_${idx}" class="select-status ${colorClass}" onchange="updateRowStatusColor(${idx}, this.value)">
                 <option value="Sudah Diinput" ${currentStatus === "Sudah Diinput" ? "selected" : ""}>Sudah Diinput</option>
-                <option value="Terkirim" ${currentStatus === "Terkirim" ? "selected" : ""}> Terkirim</option>
+                <option value="Terkirim" ${currentStatus === "Terkirim" ? "selected" : ""}>Terkirim</option>
               </select>
             </td>
 
-<td>
+            <td>
               <div class="action-cell-group">
                 <button type="button" class="btn-save-row" title="Simpan Baris" onclick="saveSingleRow(${idx})">💾</button>
                 <button type="button" class="btn-delete-row" title="Hapus Baris" onclick="deleteSingleRow(${idx})">🗑️</button>
@@ -508,8 +715,9 @@
     function getRowPayload(idx) {
       const namaVal = tomSelectInstances[idx] ? tomSelectInstances[idx].getValue() : "";
       const statusVal = document.getElementById(`ed_status_${idx}`).value;
-      const jabatanVal = loadedCurrentData[idx] ? loadedCurrentData[idx].jabatan : "MAS";
-      const isMas = jabatanVal === "MAS";
+      const rowItem = loadedCurrentData[idx] || {};
+      const noDinasVal = document.getElementById(`ed_nodinas_${idx}`).value.trim().toUpperCase();
+      const isRowR = String(rowItem.posisi || "").trim().toUpperCase() === "R" || noDinasVal === "R";
 
       const dataCrew = {
         nama: String(namaVal).toUpperCase(),
@@ -520,11 +728,29 @@
         premi_2: cleanRupiahToNumber(document.getElementById(`ed_p2_${idx}`).value)
       };
 
+      if (isRowR) {
+        return {
+          no_dinasan: noDinasVal || "R",
+          keterangan: statusVal,
+          mas: null,
+          asmas: null,
+          r: {
+            ...dataCrew,
+            no_dinasan: noDinasVal || "R",
+            jabatan: ""
+          }
+        };
+      }
+
+      const jabatanVal = rowItem.jabatan || "MAS";
+      const isMas = jabatanVal === "MAS";
+
       return {
-        no_dinasan: document.getElementById(`ed_nodinas_${idx}`).value,
+        no_dinasan: noDinasVal,
         keterangan: statusVal,
         mas: isMas ? dataCrew : null,
-        asmas: !isMas ? dataCrew : null
+        asmas: !isMas ? dataCrew : null,
+        r: null
       };
     }
 
@@ -591,70 +817,129 @@
       }
     }
 
-    function openModalTambahDinasan() {
+    function createCrewTomSelect(selectElId, nippInputId, customList = null, allowCreate = true) {
+      const selectEl = document.getElementById(selectElId);
+      if (!selectEl) return null;
+
+      const sourceList = Array.isArray(customList) ? customList : MASTER_CREW_KISARAN;
+      const crewOptions = sourceList.map(c => ({
+        value: c.nama,
+        text: `${c.nama} (${c.nipp})`,
+        nipp: c.nipp
+      }));
+
+      return new TomSelect(selectEl, {
+        options: crewOptions,
+        create: allowCreate,
+        maxItems: 1,
+        dropdownParent: 'body',
+        placeholder: allowCreate ? "Ketik / Pilih Nama Pegawai..." : "Pilih Penyelia Dinas / Instruktur...",
+        onChange: function(val) {
+          const nippEl = document.getElementById(nippInputId);
+          const found = sourceList.find(c => c.nama.toUpperCase() === String(val).toUpperCase());
+          if (nippEl) {
+            nippEl.value = found ? found.nipp : "";
+          }
+        }
+      });
+    }
+
+    async function openModalTambahDinasan() {
       const tanggal = document.getElementById("inputTanggalEdit").value;
       if (!tanggal) {
         Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
         return;
       }
 
-      let mdTomSelectNama = null;
-      let mdTomSelectPreset = null;
+      if (Object.keys(DYNAMIC_DINASAN_MAP).length === 0) {
+        Swal.fire({ title: 'Memuat Master Dinasan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        await Promise.all([fetchMasterCrew(), fetchMasterDinasan()]);
+        Swal.close();
+      }
+
+      let tsPreset = null;
+      let tsMasNama = null;
+      let tsAsmasNama = null;
 
       Swal.fire({
         title: 'Tambah Dinasan Baru',
-        width: '560px',
+        width: '680px',
         customClass: { popup: 'swal2-popup-custom' },
         html: `
           <div class="modal-form-grid">
-            <div class="modal-col">
-              <label style="font-weight:700;">Pilihan Dinasan Preset (Cari No KA / No Dinasan):</label>
-              <select id="mdPresetSelect" style="width:100%;"></select>
-            </div>
-
             <div class="modal-row">
-              <div class="modal-col">
+              <div class="modal-col" style="flex: 1.4;">
+                <label style="font-weight:700;">Pilihan Dinasan (Kode Dinasan + No KA):</label>
+                <select id="mdPresetSelect" style="width:100%;"></select>
+              </div>
+              <div class="modal-col" style="flex: 1;">
                 <label style="font-weight:700;">No Dinasan:</label>
-                <input type="text" id="mdNoDinasan" class="modal-input input-uppercase" placeholder="Contoh: 16">
+                <input type="text" id="mdNoDinasan" class="modal-input input-uppercase" placeholder="Contoh: 3">
               </div>
-              <div class="modal-col">
-                <label style="font-weight:700;">Jabatan Crew:</label>
-                <select id="mdJabatan" class="modal-input">
-                  <option value="MAS">MASINIS (MAS)</option>
-                  <option value="ASMAS">ASISTEN MASINIS (ASMAS)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="modal-col">
-              <label style="font-weight:700;">Nama Crew (Cari / Ketik):</label>
-              <select id="mdNamaSelect" style="width:100%;"></select>
-            </div>
-
-            <div class="modal-col">
-              <label style="font-weight:700;">NIPP Crew :</label>
-              <input type="text" id="mdNipp" class="modal-input" placeholder="NIPP">
             </div>
 
             <div class="modal-row">
               <div class="modal-col">
-                <label style="font-weight:700;">No KA:</label>
-                <input type="text" id="mdNoKa" class="modal-input input-uppercase" placeholder="LANGSIR / SEREP / U52">
+                <label style="font-weight:700;">No KA 1:</label>
+                <input type="text" id="mdNoKa1" class="modal-input input-uppercase" placeholder="U54">
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">No KA 2 :</label>
+                <input type="text" id="mdNoKa2" class="modal-input input-uppercase" placeholder="U55">
               </div>
               <div class="modal-col">
                 <label style="font-weight:700;">Relasi:</label>
-                <input type="text" id="mdRelasi" class="modal-input input-uppercase" placeholder="KIS / RAP">
+                <input type="text" id="mdRelasi" class="modal-input input-uppercase" placeholder="KIS-RAP / RAP-KIS">
               </div>
             </div>
 
-            <div class="modal-row">
-              <div class="modal-col">
-                <label style="font-weight:700;">Premi 1 (Rp):</label>
-                <input type="text" id="mdP1" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+            <!-- BLOK MASINIS -->
+            <div class="crew-section-box">
+              <div class="crew-section-title">1. Masinis (MAS)</div>
+              <div class="modal-row">
+                <div class="modal-col" style="flex: 1.6;">
+                  <label style="font-weight:700;">Nama Masinis:</label>
+                  <select id="mdMasNamaSelect" style="width:100%;"></select>
+                </div>
+                <div class="modal-col" style="flex: 1;">
+                  <label style="font-weight:700;">NIPP Masinis:</label>
+                  <input type="text" id="mdMasNipp" class="modal-input" placeholder="NIPP">
+                </div>
               </div>
-              <div class="modal-col">
-                <label style="font-weight:700;">Premi 2 (Rp):</label>
-                <input type="text" id="mdP2" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+              <div class="modal-row">
+                <div class="modal-col">
+                  <label style="font-weight:700;">Premi Masinis 1 (Rp):</label>
+                  <input type="text" id="mdMasP1" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+                </div>
+                <div class="modal-col">
+                  <label style="font-weight:700;">Premi Masinis 2 (Rp):</label>
+                  <input type="text" id="mdMasP2" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+                </div>
+              </div>
+            </div>
+
+            <!-- BLOK ASISTEN MASINIS -->
+            <div class="crew-section-box">
+              <div class="crew-section-title">2. Asisten Masinis (ASMAS)</div>
+              <div class="modal-row">
+                <div class="modal-col" style="flex: 1.6;">
+                  <label style="font-weight:700;">Nama Asmas:</label>
+                  <select id="mdAsmasNamaSelect" style="width:100%;"></select>
+                </div>
+                <div class="modal-col" style="flex: 1;">
+                  <label style="font-weight:700;">NIPP Asmas:</label>
+                  <input type="text" id="mdAsmasNipp" class="modal-input" placeholder="NIPP">
+                </div>
+              </div>
+              <div class="modal-row">
+                <div class="modal-col">
+                  <label style="font-weight:700;">Premi Asmas 1 (Rp):</label>
+                  <input type="text" id="mdAsmasP1" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+                </div>
+                <div class="modal-col">
+                  <label style="font-weight:700;">Premi Asmas 2 (Rp):</label>
+                  <input type="text" id="mdAsmasP2" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+                </div>
               </div>
             </div>
 
@@ -669,85 +954,101 @@
         `,
         didOpen: () => {
           const presetSelectEl = document.getElementById("mdPresetSelect");
-          const presetOptions = [{ value: "", text: "-- Input Data Manual --" }];
+          const presetOptions = [{ value: "", text: "-- Input Manual --", no_dinasan: "", ka_1: "", ka_2: "" }];
 
-          Object.keys(DYNAMIC_DINASAN_MAP).forEach(k => {
-            const item = DYNAMIC_DINASAN_MAP[k];
+          Object.keys(DYNAMIC_DINASAN_MAP).forEach(key => {
+            const item = DYNAMIC_DINASAN_MAP[key];
             presetOptions.push({
-              value: k,
+              value: key,
               text: item.nama_display,
               no_dinasan: item.no_dinasan,
-              ka: item.ka
+              ka_1: item.ka_1,
+              ka_2: item.ka_2
             });
           });
 
-          mdTomSelectPreset = new TomSelect(presetSelectEl, {
+          tsPreset = new TomSelect(presetSelectEl, {
             options: presetOptions,
             maxItems: 1,
             dropdownParent: 'body',
-            placeholder: "Cari No KA / No Dinasan...",
-            searchField: ['text', 'no_dinasan', 'ka'],
+            placeholder: "Cari Kode Dinasan / No KA...",
+            searchField: ['text', 'no_dinasan', 'ka_1', 'ka_2'],
             onChange: function(val) {
               handleModalPresetChange(val);
             }
           });
 
-          const mdSelectEl = document.getElementById("mdNamaSelect");
-          const crewOptions = MASTER_CREW_KISARAN.map(c => ({
-            value: c.nama,
-            text: `${c.nama} (${c.nipp})`,
-            nipp: c.nipp
-          }));
-
-          mdTomSelectNama = new TomSelect(mdSelectEl, {
-            options: crewOptions,
-            create: true,
-            maxItems: 1,
-            dropdownParent: 'body',
-            placeholder: "Ketik / Pilih Nama Pegawai...",
-            onChange: function(val) {
-              const nippEl = document.getElementById("mdNipp");
-              const found = MASTER_CREW_KISARAN.find(c => c.nama.toUpperCase() === String(val).toUpperCase());
-              if (found && nippEl) {
-                nippEl.value = found.nipp;
-              }
-            }
-          });
+          tsMasNama = createCrewTomSelect("mdMasNamaSelect", "mdMasNipp");
+          tsAsmasNama = createCrewTomSelect("mdAsmasNamaSelect", "mdAsmasNipp");
         },
         showCancelButton: true,
         confirmButtonText: 'Simpan Dinasan Baru',
         cancelButtonText: 'Batal',
         confirmButtonColor: '#059669',
         preConfirm: () => {
-          const nama = mdTomSelectNama ? mdTomSelectNama.getValue() : "";
-          const noDinasan = document.getElementById('mdNoDinasan').value.trim();
-          if (!nama || !noDinasan) {
-            Swal.showValidationMessage('No Dinasan dan Nama Crew wajib diisi!');
+          const noDinasan = getInputValue('mdNoDinasan');
+          const masNama = tsMasNama ? tsMasNama.getValue().trim().toUpperCase() : "";
+          const asmasNama = tsAsmasNama ? tsAsmasNama.getValue().trim().toUpperCase() : "";
+
+          if (!noDinasan) {
+            Swal.showValidationMessage('Kode / No Dinasan wajib diisi!');
             return false;
           }
+          if (!masNama && !asmasNama) {
+            Swal.showValidationMessage('Isi minimal salah satu crew (Masinis atau Asmas)!');
+            return false;
+          }
+
+          const ka1 = getInputValue('mdNoKa1');
+          const ka2 = getInputValue('mdNoKa2');
+          const baseRelasi = getInputValue('mdRelasi');
+          const relasiParts = baseRelasi.split("/").map(s => s.trim()).filter(Boolean);
+
+          const masKa = ka1 || ka2;
+          const asmasKa = ka2 || ka1;
+          const masRelasi = relasiParts[0] || baseRelasi;
+          const asmasRelasi = relasiParts[1] || relasiParts[0] || baseRelasi;
+
+          const masP1 = cleanRupiahToNumber(getInputValue('mdMasP1'));
+          const masP2 = cleanRupiahToNumber(getInputValue('mdMasP2'));
+
+          const asmasP1 = cleanRupiahToNumber(getInputValue('mdAsmasP1'));
+          const asmasP2 = cleanRupiahToNumber(getInputValue('mdAsmasP2'));
+
           return {
             no_dinasan: noDinasan,
-            jabatan: document.getElementById('mdJabatan').value,
-            nama: String(nama).toUpperCase(),
-            nipp: document.getElementById('mdNipp').value.trim(),
-            no_ka: document.getElementById('mdNoKa').value.trim().toUpperCase(),
-            relasi: document.getElementById('mdRelasi').value.trim().toUpperCase(),
-            premi_1: cleanRupiahToNumber(document.getElementById('mdP1').value),
-            premi_2: cleanRupiahToNumber(document.getElementById('mdP2').value),
-            status: document.getElementById('mdStatusSelect').value
+            status: document.getElementById('mdStatusSelect').value,
+            mas: masNama ? {
+              jabatan: "MAS",
+              nama: masNama,
+              nipp: getInputValue('mdMasNipp'),
+              no_ka: masKa,
+              relasi: masRelasi,
+              premi_1: masP1,
+              premi_2: masP2
+            } : null,
+            asmas: asmasNama ? {
+              jabatan: "ASMAS",
+              nama: asmasNama,
+              nipp: getInputValue('mdAsmasNipp'),
+              no_ka: asmasKa,
+              relasi: asmasRelasi,
+              premi_1: asmasP1,
+              premi_2: asmasP2
+            } : null
           };
         }
       }).then(async (result) => {
         if (result.isConfirmed) {
           const val = result.value;
-          const isMas = val.jabatan === "MAS";
 
           const newDinasanPayload = {
             no_dinasan: val.no_dinasan,
             keterangan: val.status,
             is_extra: true,
-            mas: isMas ? val : null,
-            asmas: !isMas ? val : null
+            mas: val.mas,
+            asmas: val.asmas,
+            r: null
           };
 
           Swal.fire({ title: 'Menambahkan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
@@ -773,16 +1074,135 @@
       });
     }
 
-    function handleModalPresetChange(presetKey) {
-      if (!presetKey || !DYNAMIC_DINASAN_MAP[presetKey]) return;
+    async function openModalTambahPendinasanR() {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      if (!tanggal) {
+        Swal.fire("Peringatan", "Pilih tanggal dinas terlebih dahulu!", "warning");
+        return;
+      }
 
-      const p = DYNAMIC_DINASAN_MAP[presetKey];
-      document.getElementById('mdNoDinasan').value = p.no_dinasan;
-      document.getElementById('mdJabatan').value = p.jab;
-      document.getElementById('mdNoKa').value = p.ka;
-      document.getElementById('mdRelasi').value = p.relasi;
-      document.getElementById('mdP1').value = formatRupiahInput(p.p1);
-      document.getElementById('mdP2').value = formatRupiahInput(p.p2);
+      if (MASTER_PENYELIA_R.length === 0) {
+        Swal.fire({ title: 'Memuat Daftar Penyelia...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        await Promise.all([fetchMasterCrew(), fetchMasterPenyeliaR()]);
+        Swal.close();
+      }
+
+      let tsRNama = null;
+
+      Swal.fire({
+        title: 'Tambah Pendinasan R',
+        width: '560px',
+        customClass: { popup: 'swal2-popup-custom' },
+html: `
+          <div class="modal-form-grid">
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">No Dinasan:</label>
+                <input type="text" id="mdRNoDinasan" class="modal-input input-uppercase" value="R" readonly style="background:#f1f5f9; font-weight:700;">
+              </div>
+            </div>
+
+            <div class="modal-row">
+              <div class="modal-col" style="flex: 1.6;">
+                <label style="font-weight:700;">Nama Pegawai:</label>
+                <select id="mdRNamaSelect" style="width:100%;"></select>
+              </div>
+              <div class="modal-col" style="flex: 1;">
+                <label style="font-weight:700;">NIPP:</label>
+                <input type="text" id="mdRNipp" class="modal-input" placeholder="NIPP" readonly style="background:#f8fafc;">
+              </div>
+            </div>
+
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">No KA:</label>
+                <input type="text" id="mdRNoKa" class="modal-input input-uppercase" placeholder="Contoh: U54">
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Relasi:</label>
+                <input type="text" id="mdRRelasi" class="modal-input input-uppercase" placeholder="Contoh: KIS-RAP">
+              </div>
+            </div>
+
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">Premi 1 (Rp):</label>
+                <input type="text" id="mdRP1" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Premi 2 (Rp):</label>
+                <input type="text" id="mdRP2" class="modal-input input-rupiah" placeholder="0" onblur="this.value = formatRupiahInput(this.value)" onfocus="this.value = cleanRupiahToNumber(this.value)">
+              </div>
+            </div>
+
+            <div class="modal-col">
+              <label style="font-weight:700;">Status Premi Awal:</label>
+              <select id="mdRStatusSelect" class="modal-input">
+                <option value="Sudah Diinput" selected>Sudah Diinput</option>
+                <option value="Terkirim">Terkirim</option>
+              </select>
+            </div>
+          </div>
+        `,
+        didOpen: () => {
+          tsRNama = createCrewTomSelect("mdRNamaSelect", "mdRNipp", MASTER_PENYELIA_R, false);
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Simpan Pendinasan R',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        preConfirm: () => {
+          const rNama = tsRNama ? tsRNama.getValue().trim().toUpperCase() : "";
+          if (!rNama) {
+            Swal.showValidationMessage('Pilih nama Penyelia Dinas atau Penyelia Instruktur!');
+            return false;
+          }
+
+          return {
+            no_dinasan: "R",
+            keterangan: document.getElementById('mdRStatusSelect').value,
+            is_extra: true,
+            mas: null,
+            asmas: null,
+            r: {
+              no_dinasan: "R",
+              jabatan: "",
+              nama: rNama,
+              nipp: getInputValue('mdRNipp'),
+              no_ka: getInputValue('mdRNoKa'),
+              relasi: getInputValue('mdRRelasi'),
+              premi_1: cleanRupiahToNumber(getInputValue('mdRP1')),
+              premi_2: cleanRupiahToNumber(getInputValue('mdRP2'))
+            }
+          };
+        }
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+          try {
+            const res = await fetch(API_URL, {
+              method: "POST",
+              body: JSON.stringify({
+                action: "saveDinasanManual",
+                tanggal: tanggal,
+                data: [result.value]
+              })
+            });
+            const resJson = await res.json();
+
+            if (resJson.status === "success") {
+              await Swal.fire("Berhasil", "Pendinasan R berhasil ditambahkan!", "success");
+              loadEditData();
+            } else {
+              Swal.fire("Gagal", resJson.message, "error");
+            }
+          } catch (e) {
+            console.error(e);
+            Swal.fire("Error", "Gagal menyimpan ke database.", "error");
+          }
+        }
+      });
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -804,7 +1224,7 @@
         };
       }
 
-      Promise.all([fetchMasterCrew(), fetchMasterDinasan()]);
+      Promise.all([fetchMasterCrew(), fetchMasterDinasan(), fetchMasterPenyeliaR()]);
 
       flatpickr("#inputTanggalEdit", {
         locale: "id",
@@ -820,41 +1240,41 @@
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
 
-async function handleSyncO241() {
-  Swal.fire({
-    title: 'Menyinkronkan Seluruh Tanggal...',
-    text: 'Update Data.',
-    allowOutsideClick: false,
-    didOpen: () => { Swal.showLoading(); }
-  });
+    async function handleSyncO241() {
+      Swal.fire({
+        title: 'Menyinkronkan Seluruh Tanggal...',
+        text: 'Update Data.',
+        allowOutsideClick: false,
+        didOpen: () => { Swal.showLoading(); }
+      });
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "syncO241" })
-    });
-    const result = await res.json();
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "syncO241" })
+        });
+        const result = await res.json();
 
-    if (result.status === "success") {
-      await Swal.fire("Berhasil", result.message, "success");
-      loadEditData(); // <--- DIPERBAIKI (Gunakan loadEditData)
-    } else {
-      Swal.fire("Peringatan", result.message, "warning");
+        if (result.status === "success") {
+          await Swal.fire("Berhasil", result.message, "success");
+          loadEditData();
+        } else {
+          Swal.fire("Peringatan", result.message, "warning");
+        }
+      } catch (err) {
+        console.error("Sync error:", err);
+        Swal.fire("Error", "Gagal melakukan sinkronisasi server.", "error");
+      }
     }
-  } catch (err) {
-    console.error("Sync error:", err);
-    Swal.fire("Error", "Gagal melakukan sinkronisasi server.", "error");
-  }
-}
 
-async function deleteSingleRow(idx) {
+    async function deleteSingleRow(idx) {
       const tanggal = document.getElementById("inputTanggalEdit").value;
       const item = loadedCurrentData[idx];
       if (!item) return;
 
       const confirmResult = await Swal.fire({
         title: 'Hapus Dinasan?',
-        html: `Yakin ingin menghapus dinasan <b>${item.no_dinasan}</b> (${item.jabatan} - <b>${item.nama || 'Kosong'}</b>)?`,
+        html: `Yakin ingin menghapus dinasan <b>${item.no_dinasan}</b> (${item.jabatan || 'R'} - <b>${item.nama || 'Kosong'}</b>)?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#ef4444',
@@ -891,7 +1311,6 @@ async function deleteSingleRow(idx) {
         Swal.fire("Error", "Gagal menghapus data di server.", "error");
       }
     }
-    
- </script>
+</script>
 </body>
 </html>
