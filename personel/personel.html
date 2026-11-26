@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-    <style>
+<style>
         /* ==========================================================================
            1. RESET & CUSTOM PROPERTIES (DESIGN SYSTEM KAI)
            ========================================================================== */
@@ -672,7 +672,11 @@
         <div class="top-header-inner">
             <div class="header-left-group">
                 <button onclick="toggleSidebar()" class="btn-sidebar-toggle" title="Buka/Tutup Menu">
-                    <i class="fa-solid fa-bars"></i>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
                 </button>
                 <div class="brand-affiliation">
                     <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
@@ -1085,19 +1089,35 @@
         }
 
         // Render Avatar Foto Lokal 50px x 50px berdasarkan NIPP (.png -> .jpg -> placeholder)
-        function renderPersonelAvatar(nipp, nama) {
-            const initial = nama ? nama.charAt(0).toUpperCase() : "P";
-            if (!nipp) {
-                return `<div class="user-avatar-placeholder">${initial}</div>`;
-            }
-            const pngPath = `../assets/struktur-organisasi/${nipp}.png`;
-            const jpgPath = `../assets/struktur-organisasi/${nipp}.jpg`;
+function renderPersonelAvatar(nipp, nama) {
+    const initial = nama ? nama.charAt(0).toUpperCase() : "P";
+    if (!nipp) {
+        return `<div class="user-avatar-placeholder">${initial}</div>`;
+    }
+    const basePath = `../assets/struktur-organisasi/${nipp}`;
+    const candidates = [
+        `${basePath}.png`,
+        `${basePath}.jpg`,
+        `${basePath}.PNG`,
+        `${basePath}.JPG`,
+        `${basePath}.jpeg`
+    ];
 
-            return `
-                <img src="${pngPath}" alt="${nama}" class="user-avatar" 
-                     onerror="if(this.src.endsWith('.png')){this.src='${jpgPath}';}else{this.onerror=null; this.parentElement.innerHTML='<div class=\\'user-avatar-placeholder\\'>${initial}</div>';}">
-            `;
-        }
+    return `
+        <img src="${candidates[0]}" alt="${nama}" class="user-avatar" data-idx="0"
+             onerror="
+                const list = ${JSON.stringify(candidates).replace(/"/g, '&quot;')};
+                let nextIdx = parseInt(this.dataset.idx, 10) + 1;
+                if (nextIdx < list.length) {
+                    this.dataset.idx = nextIdx;
+                    this.src = list[nextIdx];
+                } else {
+                    this.onerror = null;
+                    this.outerHTML = '<div class=\\'user-avatar-placeholder\\'>${initial}</div>';
+                }
+             ">
+    `;
+}
 
         async function openPersonelModal(targetJabatan) {
             document.getElementById('personelModalTitle').innerText = `Daftar Personel - ${targetJabatan}`;
