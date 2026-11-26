@@ -251,6 +251,23 @@
             border-color: var(--kai-orange, #f06400);
             color: #ffffff;
         }
+        .gear-btn,
+        .btn-tv-monitor {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
     </style>
 </head>
 <body>
@@ -282,10 +299,13 @@
                 </button>
                 <div id="user-popup" class="user-popup"></div>
             </div>
-            <a href="./tv-dashboard.html" class="btn-tv-monitor" title="Buka TV Overview Monitoring">
-                    <i class="fa-solid fa-tv" style="color: #ffffff;"></i>
-                    
-                </a>
+                <a href="./tv-dashboard.html" class="btn-tv-monitor" title="Buka TV Overview Monitoring">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="15" x="2" y="3" rx="2" ry="2"></rect>
+                    <polyline points="8 21 12 17 16 21"></polyline>
+                    <line x1="6" y1="21" x2="18" y2="21"></line>
+                </svg>
+            </a>
         </div>
     </div>
 </header>
