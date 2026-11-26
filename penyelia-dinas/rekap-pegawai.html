@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rekapitulasi Kebutuhan Pegawai - UPT Crew KA Kelas C Kisaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #cbd5e1;
+      color: #0f172a;
+      padding: 12px;
+      min-height: 100vh;
+    }
+
+    .board-wrapper {
+      background: #ffffff;
+      border: 3px solid #1e293b;
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 14px 16px 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      gap: 16px;
+    }
+
+    .header-logo {
+      height: 50px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .board-title {
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #0f172a;
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .sync-badge {
+      text-align: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      margin-bottom: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid #1e293b;
+      table-layout: fixed;
+    }
+
+    th, td {
+      border: 1px solid #334155;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #0f172a;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .th-no { width: 36px; font-size: 0.72rem; }
+    .th-jabatan { width: 255px; font-size: 0.76rem; }
+
+    .th-month {
+      font-size: 0.74rem;
+      padding: 5px 2px;
+      border-left: 2px solid #1e293b;
+    }
+
+    .th-sub {
+      font-size: 0.54rem;
+      font-weight: 700;
+      padding: 4px 1px;
+      background: #f1f5f9;
+      letter-spacing: -0.02em;
+    }
+
+    .th-sub.month-start,
+    .td-cell.month-start {
+      border-left: 2px solid #1e293b;
+    }
+
+    .td-no {
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 4px 2px;
+      background: #ffffff;
+    }
+
+    .td-jabatan {
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.68rem;
+      padding: 4px 7px;
+      color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .td-cell {
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.7rem;
+      padding: 4px 2px;
+      height: 24px;
+    }
+
+    tr.row-jumlah td {
+      border-top: 2px solid #1e293b;
+      font-weight: 800;
+      background: #f8fafc;
+    }
+
+    tr.row-jumlah .td-jumlah-label {
+      text-align: center;
+      font-size: 0.74rem;
+      padding: 5px;
+    }
+
+    .bottom-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 24px;
+      margin-top: 14px;
+    }
+
+    .summary-table {
+      width: 45%;
+      min-width: 440px;
+      table-layout: fixed;
+    }
+
+    .summary-table th {
+      font-size: 0.68rem;
+      padding: 6px 8px;
+      line-height: 1.3;
+    }
+
+    .summary-table .col-label { width: 68%; }
+    .summary-table .col-role { width: 16%; font-size: 0.62rem; }
+
+    .summary-table .td-label {
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.67rem;
+      padding: 5px 8px;
+      color: #1e293b;
+    }
+
+    .summary-table .td-cell {
+      height: 25px;
+      font-size: 0.73rem;
+      font-weight: 700;
+    }
+
+    .val-kurang {
+      color: #dc2626 !important;
+      font-weight: 800 !important;
+    }
+
+    .val-lebih {
+      color: #15803d !important;
+      font-weight: 800 !important;
+    }
+
+    .floating-actions {
+      position: fixed;
+      bottom: 14px;
+      right: 14px;
+      display: flex;
+      gap: 8px;
+      z-index: 99;
+    }
+
+    .btn-float {
+      background: #F06400;
+      color: #ffffff;
+      text-decoration: none;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .btn-float:hover { background: #d95800; }
+
+    .btn-float.btn-secondary { background: #1C2A5F; }
+    .btn-float.btn-secondary:hover { background: #0f172a; }
+
+    @media (max-width: 1024px) {
+      .bottom-grid { flex-direction: column; }
+      .summary-table { width: 100%; min-width: 0; }
+    }
+
+    @media print {
+      body { background: #ffffff; padding: 0; }
+      .board-wrapper { box-shadow: none; border: 2px solid #000000; padding: 8px; }
+      .floating-actions, .sync-badge { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="board-wrapper">
+    <div class="board-header">
+      <img src="../assets/images/logo/Danantara.png" alt="Logo Danantara Indonesia" class="header-logo">
+      <div class="board-title">
+        REKAPITULASI KEBUTUHAN PEGAWAI<br>
+        UPT CREW KA KELAS C KISARAN<br>
+        TAHUN <span id="displayYear">2026</span>
+      </div>
+      <img src="../assets/images/logo/KAI.png" alt="Logo KAI" class="header-logo">
+    </div>
+
+    <div class="sync-badge" id="syncStatus">Memuat data dari Google Sheets...</div>
+
+    <div class="table-scroll">
+      <table id="tblSemester1"></table>
+    </div>
+
+    <div class="table-scroll">
+      <table id="tblSemester2"></table>
+    </div>
+
+    <div class="bottom-grid">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th class="col-label">KECUKUPAN PEGAWAI DENGAN DINASAN<br>MENURUT TABEL O.20 GAPEKA 2023 PROGRAM</th>
+            <th class="col-role">MASINIS</th>
+            <th class="col-role">ASS. MASINIS</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyProgram"></tbody>
+      </table>
+
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th class="col-label">KECUKUPAN PEGAWAI DENGAN DINASAN<br>MENURUT TABEL O.20 GAPEKA 2023 REALISASI</th>
+            <th class="col-role">MASINIS</th>
+            <th class="col-role">ASS. MASINIS</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyRealisasi"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="floating-actions" id="floatingActions">
+    <button type="button" class="btn-float btn-secondary" onclick="loadFromGoogleSheets()">Refresh</button>
+    <button type="button" class="btn-float btn-secondary" onclick="window.print()">Cetak / PDF</button>
+    <a href="./edit-rekap-pegawai.html" target="_blank" class="btn-float">Edit Data</a>
+  </div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
+
+    const ALL_MONTHS = [
+      "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+      "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
+    ];
+
+    const JABATAN_LIST = [
+      "KUPT",
+      "WAKIL KUPT",
+      "PENYELIA INSTRUKTUR",
+      "PENYELIA DINASAN",
+      "MASINIS",
+      "ASISTEN MASINIS",
+      "CALON ASISTEN MASINIS SUDAH O.62",
+      "CALON ASISTEN MASINIS SEDANG O.62",
+      "CAMAS KARENA GAGAL SERTIFIKASI/SAKIT",
+      "PKM",
+      "PELAKSANA ADMINISTRASI"
+    ];
+
+    const SUB_COLS = ["KEB", "ADANYA", "LEBIH", "KURANG"];
+
+    function parseNum(val) {
+      if (val === undefined || val === null) return null;
+      const cleaned = String(val).trim().replace(",", ".");
+      if (cleaned === "") return null;
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : null;
+    }
+
+    function formatNum(num) {
+      if (num === null || num === undefined || !Number.isFinite(num)) return "";
+      const rounded = Math.round(num * 100) / 100;
+      return String(rounded).replace(".", ",");
+    }
+
+    // Ambil nilai ADANYA paling akhir dari Januari s.d. Desember (4 = MASINIS, 5 = ASISTEN MASINIS)
+    function getLatestAdanya(data, rowIndex) {
+      let latestVal = null;
+      ALL_MONTHS.forEach(m => {
+        const val = parseNum(data[`${m}_r${rowIndex}_ADANYA`]);
+        if (val !== null) latestVal = val;
+      });
+      return latestVal;
+    }
+
+function buildMonthTable(tableId, months, data) {
+      const table = document.getElementById(tableId);
+      let theadHtml = `
+        <thead>
+          <tr>
+            <th rowspan="2" class="th-no">NO</th>
+            <th rowspan="2" class="th-jabatan">JABATAN</th>
+            ${months.map(m => `<th colspan="4" class="th-month">${m}</th>`).join("")}
+          </tr>
+          <tr>
+            ${months.map(() =>
+              SUB_COLS.map((sub, idx) =>
+                `<th class="th-sub ${idx === 0 ? 'month-start' : ''}">${sub}</th>`
+              ).join("")
+            ).join("")}
+          </tr>
+        </thead>
+      `;
+
+      const totals = {};
+      months.forEach(m => {
+        totals[m] = { KEB: 0, ADANYA: 0, LEBIH: 0, KURANG: 0, hasData: false };
+      });
+
+      let tbodyHtml = "<tbody>";
+      JABATAN_LIST.forEach((jabatan, rIdx) => {
+        tbodyHtml += `<tr>
+          <td class="td-no">${rIdx + 1}</td>
+          <td class="td-jabatan" title="${jabatan}">${jabatan}</td>`;
+
+        months.forEach(m => {
+          const keb = parseNum(data[`${m}_r${rIdx}_KEB`]);
+          const adanya = parseNum(data[`${m}_r${rIdx}_ADANYA`]);
+
+          let lebih = null;
+          let kurang = null;
+
+          if (keb !== null || adanya !== null) {
+            const kVal = keb ?? 0;
+            const aVal = adanya ?? 0;
+            if (aVal > kVal) lebih = aVal - kVal;
+            if (kVal > aVal) kurang = kVal - aVal;
+
+            totals[m].KEB += kVal;
+            totals[m].ADANYA += aVal;
+            totals[m].LEBIH += (lebih ?? 0);
+            totals[m].KURANG += (kurang ?? 0);
+            totals[m].hasData = true;
+          }
+
+          const kurangClass = (kurang !== null && kurang > 0) ? "val-kurang" : "";
+
+          tbodyHtml += `
+            <td class="td-cell month-start">${formatNum(keb)}</td>
+            <td class="td-cell">${formatNum(adanya)}</td>
+            <td class="td-cell">${formatNum(lebih)}</td>
+            <td class="td-cell ${kurangClass}">${formatNum(kurang)}</td>
+          `;
+        });
+
+        tbodyHtml += `</tr>`;
+      });
+
+      tbodyHtml += `<tr class="row-jumlah">
+        <td colspan="2" class="td-jumlah-label">JUMLAH</td>`;
+
+      months.forEach(m => {
+        const t = totals[m];
+        const hasKurangTotal = t.hasData && t.KURANG > 0;
+        tbodyHtml += `
+          <td class="td-cell month-start">${t.hasData ? formatNum(t.KEB) : ""}</td>
+          <td class="td-cell">${t.hasData ? formatNum(t.ADANYA) : ""}</td>
+          <td class="td-cell">${t.hasData && t.LEBIH > 0 ? formatNum(t.LEBIH) : ""}</td>
+          <td class="td-cell ${hasKurangTotal ? 'val-kurang' : ''}">${hasKurangTotal ? formatNum(t.KURANG) : ""}</td>
+        `;
+      });
+
+      tbodyHtml += `</tr></tbody>`;
+      table.innerHTML = theadHtml + tbodyHtml;
+    }
+    
+    function computeRoleSummary(data, prefix, roleKey, adanyaPegawai) {
+      const dinasan = parseNum(data[`${prefix}_dinasan_${roleKey}`]);
+      const libur = parseNum(data[`${prefix}_libur_${roleKey}`]);
+      const serap = parseNum(data[`${prefix}_serap_${roleKey}`]);
+
+      // 1. DIBUTUHKAN = (DINASAN * 1,21 * 1,04) + SERAP
+      let dibutuhkan = null;
+      if (dinasan !== null || serap !== null) {
+        dibutuhkan = Math.round(((dinasan ?? 0) * 1.21 * 1.04) + (serap ?? 0));
+      }
+
+      // 3. KURANG/LEBIH = DIBUTUHKAN - ADANYA PEGAWAI (jika kurang -> "-jumlah" warna merah)
+      let selisihText = "";
+      let selisihClass = "";
+      if (dibutuhkan !== null && adanyaPegawai !== null) {
+        const diff = adanyaPegawai - dibutuhkan;
+        if (diff < 0) {
+          selisihText = `-${formatNum(Math.abs(diff))}`;
+          selisihClass = "val-kurang";
+        } else if (diff > 0) {
+          selisihText = `+${formatNum(diff)}`;
+          selisihClass = "val-lebih";
+        } else {
+          selisihText = "0";
+        }
+      }
+
+      return {
+        dinasan: formatNum(dinasan),
+        libur: formatNum(libur),
+        dibutuhkan: formatNum(dibutuhkan),
+        adanya: formatNum(adanyaPegawai),
+        serap: formatNum(serap),
+        selisihText,
+        selisihClass
+      };
+    }
+
+    function buildSummaryTable(tbodyId, prefix, data, adanyaMasinis, adanyaAsmas) {
+      const m = computeRoleSummary(data, prefix, "masinis", adanyaMasinis);
+      const a = computeRoleSummary(data, prefix, "asmas", adanyaAsmas);
+
+      const rows = [
+        { label: "DINASAN", mVal: m.dinasan, aVal: a.dinasan },
+        { label: "LIBUR/IZIN/SAKIT", mVal: m.libur, aVal: a.libur },
+        { label: "DIBUTUHKAN (DINASAN × 1,21 × 1,04) + SEREP", mVal: m.dibutuhkan, aVal: a.dibutuhkan },
+        { label: "ADANYA PEGAWAI", mVal: m.adanya, aVal: a.adanya },
+        { label: "SERAP", mVal: m.serap, aVal: a.serap },
+        { label: "KURANG/LEBIH", mVal: m.selisihText, mClass: m.selisihClass, aVal: a.selisihText, aClass: a.selisihClass }
+      ];
+
+      document.getElementById(tbodyId).innerHTML = rows.map(r => `
+        <tr>
+          <td class="td-label">${r.label}</td>
+          <td class="td-cell ${r.mClass || ''}">${r.mVal}</td>
+          <td class="td-cell ${r.aClass || ''}">${r.aVal}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderAll(data) {
+      document.getElementById("displayYear").textContent = data.tahun_rekap || "2026";
+
+      buildMonthTable("tblSemester1", ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI"], data);
+      buildMonthTable("tblSemester2", ["JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"], data);
+
+      const adanyaMasinis = getLatestAdanya(data, 4);
+      const adanyaAsmas = getLatestAdanya(data, 5);
+
+      buildSummaryTable("tbodyProgram", "program", data, adanyaMasinis, adanyaAsmas);
+      buildSummaryTable("tbodyRealisasi", "realisasi", data, adanyaMasinis, adanyaAsmas);
+    }
+
+    async function loadFromGoogleSheets() {
+      const statusEl = document.getElementById("syncStatus");
+      statusEl.textContent = "Menyinkronkan data dengan Google Sheets...";
+
+      try {
+        const res = await fetch(`${API_URL}?action=getRekapPegawai`);
+        const json = await res.json();
+
+        if (json.status === "success") {
+          renderAll(json.data || {});
+          const now = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          statusEl.textContent = `Tersinkronisasi dengan Google Sheets (Update: ${now} WIB)`;
+        } else {
+          statusEl.textContent = `Gagal memuat data: ${json.message || "Error server"}`;
+        }
+      } catch (err) {
+        console.error("Error fetch Google Sheets:", err);
+        statusEl.textContent = "Gagal terhubung ke server Google Sheets.";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Render struktur tabel kosong terlebih dahulu agar tampilan langsung rapi saat loading
+      renderAll({});
+      loadFromGoogleSheets();
+      setInterval(loadFromGoogleSheets, 60000);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get("mode") === "tv") {
+        const actions = document.getElementById("floatingActions");
+        if (actions) actions.style.display = "none";
+        document.getElementById("syncStatus").style.display = "none";
+        document.body.style.padding = "0";
+        document.body.style.background = "#ffffff";
+      }
+    });
+  </script>
+</body>
+</html>
