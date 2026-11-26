@@ -360,19 +360,22 @@
             
             rawData = rows.slice(1).map((row, index) => {
                 if (!row || row.length === 0 || !row[1]) return null;
+                const rawExpired = (row[6] && row[6].trim() !== '' && row[6].trim() !== '-')
+                    ? row[6].trim()
+                    : (row[5] ? row[5].trim() : '');
+
                 return {
                     no: index + 1,
                     nama: row[1] ? row[1].trim() : '',
                     nipp: row[2] ? row[2].trim() : '',
                     jabatan: row[3] ? row[3].trim() : '',
                     tingkat: row[4] ? row[4].trim() : '',
-                    exp: row[5] ? formatDateToISO(row[5].trim()) : ''
+                    exp: rawExpired ? formatDateToISO(rawExpired) : '',
+                    noAsp: row[7] ? row[7].trim() : ''
                 };
             }).filter(item => item && item.nama !== '');
 
-            // Isi pilihan tahun pada dropdown
             populateYearFilter();
-
             renderTable();
         } catch (error) {
             console.error("Gagal memuat data dari Spreadsheet:", error);
@@ -386,7 +389,6 @@
         }
     }
 
-    // FUNGSI MEMUAT TAHUN SECARA DINAMIS (HANYA ANGKA TAHUN)
     function populateYearFilter() {
         const filterTahunSelect = document.getElementById('filterTahun');
         if (!filterTahunSelect) return;
@@ -395,21 +397,17 @@
         rawData.forEach(item => {
             if (item.exp) {
                 const match = item.exp.match(/\b(20\d{2})\b/);
-                if (match) {
-                    years.add(match[1]);
-                }
+                if (match) years.add(match[1]);
             }
         });
 
-        const sortedYears = Array.from(years).sort((a, b) => parseInt(a) - parseInt(b));
-
-        filterTahunSelect.innerHTML = '<option value="">Semua Tahun</option>';
+        const sortedYears = Array.from(years).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+        filterTahunSelect.innerHTML = '<option value="">Semua Tahun Expired</option>';
         sortedYears.forEach(yr => {
             filterTahunSelect.innerHTML += `<option value="${yr}">${yr}</option>`;
         });
     }
 
-    // FUNGSI UTAMA RENDER TABEL
     function renderTable() {
         const tableBody = document.getElementById('tableBody');
         const searchVal = document.getElementById('searchInput').value.toLowerCase();
@@ -433,27 +431,27 @@
             const matchTingkat = filterJab === '' || item.tingkat.toLowerCase() === filterJab.toLowerCase();
             const matchStatus = filterStat === '' || statusObj.label === filterStat;
 
-            // Logika Pemfilteran Tahun
             let matchTahun = true;
             if (filterThn !== '') {
                 if (item.exp) {
                     const match = item.exp.match(/\b(20\d{2})\b/);
-                    const itemYear = match ? match[1] : '';
-                    matchTahun = (itemYear === filterThn);
+                    matchTahun = (match ? match[1] : '') === filterThn;
                 } else {
                     matchTahun = false;
                 }
             }
 
             if (matchSearch && matchTingkat && matchStatus && matchTahun) {
-                const formattedDate = item.exp ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+                const formattedDate = item.exp
+                    ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+                    : '-';
 
                 const row = `
                     <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
                         <td class="cell-center" style="color: var(--text-muted); font-size: 0.78rem;">${index + 1}</td>
                         <td style="font-weight: 600;">${item.nama}</td>
                         <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
-                        <td>${item.tingkat}</td>
+                        <td>${item.jabatan || '-'}</td>
                         <td class="cell-center"><span style="padding: 2px 8px; background: var(--surface-subtle); border-radius: 4px; font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border-color);">${item.tingkat || '-'}</span></td>
                         <td class="cell-center" style="font-weight: 500;">${formattedDate}</td>
                         <td class="cell-center">
@@ -481,31 +479,78 @@
     }
 
     function parseCSV(text) {
-        const lines = text.split('\n');
-        return lines.map(line => {
-            const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-            if (!matches) return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1'));
-            return matches.map(cell => cell.replace(/^"(.*)"$/, '$1'));
+        return text.split(/\r?\n/).map(line => {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
         });
     }
 
     function formatDateToISO(dateStr) {
         if (!dateStr || dateStr === '-') return '';
-        if (dateStr.includes('-')) return dateStr; 
-        const parts = dateStr.split('/');
+        const clean = dateStr.trim();
+        if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) return clean;
+
+        if (clean.includes('/')) {
+            const parts = clean.split('/');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            }
+        }
+
+        const bulanMap = {
+            januari: '01', jan: '01',
+            februari: '02', feb: '02',
+            maret: '03', mar: '03',
+            april: '04', apr: '04',
+            mei: '05', may: '05',
+            juni: '06', jun: '06',
+            juli: '07', jul: '07',
+            agustus: '08', agu: '08', aug: '08',
+            september: '09', sep: '09',
+            oktober: '10', okt: '10', oct: '10',
+            november: '11', nov: '11',
+            desember: '12', des: '12', dec: '12'
+        };
+
+        const parts = clean.split(/\s+/);
         if (parts.length === 3) {
             const day = parts[0].padStart(2, '0');
-            const month = parts[1].padStart(2, '0');
+            const monthNum = bulanMap[parts[1].toLowerCase()];
             const year = parts[2];
-            return `${year}-${month}-${day}`;
+            if (monthNum && /^\d{4}$/.test(year)) {
+                return `${year}-${monthNum}-${day}`;
+            }
         }
-        return dateStr;
+
+        return clean;
     }
 
     function calculateStatus(expDateStr) {
         if (!expDateStr) return { label: 'Aktif', class: 'badge-status-aktif' };
-        const today = new Date('2026-10-21');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         const expDate = new Date(expDateStr);
+        if (isNaN(expDate.getTime())) return { label: 'Aktif', class: 'badge-status-aktif' };
+
         const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
 
         if (diffDays < 0) return { label: 'Kedaluwarsa', class: 'badge-status-expired' };
@@ -525,14 +570,17 @@
 
         rawData.forEach(item => {
             const t = (item.tingkat || '').trim();
-            if (countTingkat.hasOwnProperty(t)) countTingkat[t]++;
+            if (Object.prototype.hasOwnProperty.call(countTingkat, t)) countTingkat[t]++;
 
             if (item.exp) {
-                const yr = new Date(item.exp).getFullYear();
-                if (yr === 2027) countExpired['Tahun 2027']++;
-                else if (yr === 2028) countExpired['Tahun 2028']++;
-                else if (yr === 2029) countExpired['Tahun 2029']++;
-                else if (yr >= 2030) countExpired['Tahun 2030+']++;
+                const expDate = new Date(item.exp);
+                if (!isNaN(expDate.getTime())) {
+                    const yr = expDate.getFullYear();
+                    if (yr === 2027) countExpired['Tahun 2027']++;
+                    else if (yr === 2028) countExpired['Tahun 2028']++;
+                    else if (yr === 2029) countExpired['Tahun 2029']++;
+                    else if (yr >= 2030) countExpired['Tahun 2030+']++;
+                }
             }
         });
 
@@ -593,21 +641,23 @@
         modalBody.innerHTML = '';
         let renderedCount = 0;
 
-        rawData.forEach((item, index) => {
+        rawData.forEach((item) => {
             const statusObj = calculateStatus(item.exp);
             const matchStatus = activeModalFilterStatus === 'Semua' || statusObj.label === activeModalFilterStatus;
             const matchSearch = item.nama.toLowerCase().includes(searchVal) || item.nipp.includes(searchVal);
 
             if (matchStatus && matchSearch) {
                 renderedCount++;
-                const formattedDate = item.exp ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+                const formattedDate = item.exp
+                    ? new Date(item.exp).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+                    : '-';
 
                 const row = `
                     <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat sertifikat ${item.nama}">
                         <td class="cell-center">${renderedCount}</td>
                         <td style="font-weight: 600;">${item.nama}</td>
                         <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
-                        <td>${item.tingkat}</td>
+                        <td>${item.jabatan || '-'}</td>
                         <td class="cell-center">${item.tingkat || '-'}</td>
                         <td class="cell-center">${formattedDate}</td>
                         <td class="cell-center">
@@ -675,7 +725,6 @@
         document.getElementById('certModal').style.display = 'none';
     }
 
-    // LISTENER KEJADIAN (EVENT LISTENERS)
     document.getElementById('searchInput').addEventListener('input', renderTable);
     document.getElementById('filterTingkat').addEventListener('change', renderTable);
     document.getElementById('filterStatus').addEventListener('change', renderTable);
