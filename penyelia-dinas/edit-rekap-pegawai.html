@@ -3,293 +3,543 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rekapitulasi Kebutuhan Pegawai - UPT Crew KA Kelas C Kisaran</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <title>Editor Rekapitulasi Kebutuhan Pegawai - UPT Crew KA Kisaran</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <!-- SWEETALERT2 POP-UP LIBRARY -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #cbd5e1;
+      background-color: #f1f5f9;
       color: #0f172a;
-      padding: 12px;
-      min-height: 100vh;
+      margin: 0;
+      padding: 0;
     }
 
-    .board-wrapper {
+    /* TOPBAR PROFILE STYLES (SESUAI CETAK.HTML) */
+    .topbar-profile-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 16px;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .topbar-profile-info {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+
+    .topbar-penyelia-nama {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .topbar-penyelia-meta {
+      font-size: 0.72rem;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .topbar-penyelia-jabatan {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #ff9d5c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .topbar-penyelia-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--kai-orange, #F06400);
+      background-color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .btn-topbar-logout {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+      margin-left: 4px;
+    }
+
+    .btn-topbar-logout:hover {
+      background: rgba(239, 68, 68, 0.9);
+      color: #ffffff;
+    }
+
+    /* EDITOR CONTAINER */
+    .editor-container {
+      max-width: 100%;
+      margin: 20px auto;
+      padding: 0 20px 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .page-action-card {
       background: #ffffff;
-      border: 3px solid #1e293b;
-      max-width: 1600px;
-      margin: 0 auto;
-      padding: 14px 16px 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .board-header {
+      border-radius: 12px;
+      padding: 18px 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 10px;
-      gap: 16px;
+      flex-wrap: wrap;
+      gap: 14px;
+      border-left: 5px solid #F06400;
     }
 
-    .header-logo {
-      height: 50px;
-      width: auto;
-      object-fit: contain;
-    }
-
-    .board-title {
-      text-align: center;
+    .page-action-title h1 {
+      font-size: 1.05rem;
       font-weight: 800;
-      font-size: 1.15rem;
-      color: #0f172a;
-      line-height: 1.3;
+      color: #1C2A5F;
       text-transform: uppercase;
-      letter-spacing: 0.02em;
     }
 
-    .sync-badge {
-      text-align: center;
-      font-size: 0.65rem;
-      font-weight: 700;
+    .page-action-title p {
+      font-size: 0.78rem;
       color: #64748b;
-      margin-bottom: 8px;
+      margin-top: 2px;
+      font-weight: 500;
     }
 
-    .table-scroll {
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: #F06400; color: #ffffff; }
+    .btn-primary:hover:not(:disabled) { background: #d95800; }
+
+    .btn-navy { background: #1C2A5F; color: #ffffff; }
+    .btn-navy:hover { background: #121d42; }
+
+    .btn-danger { background: #fee2e2; color: #b91c1c; }
+    .btn-danger:hover { background: #fecaca; }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .card-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #1C2A5F;
+      text-transform: uppercase;
+    }
+
+    .year-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .year-group label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    input[type="text"] {
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      color: #0f172a;
+      text-align: center;
+      width: 100%;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #F06400;
+      background: #fff7ed;
+    }
+
+    .year-input { width: 120px !important; font-size: 0.95rem !important; }
+
+    .month-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .month-tab {
+      background: #e2e8f0;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .month-tab:hover { background: #cbd5e1; }
+    .month-tab.active { background: #1C2A5F; color: #ffffff; }
+
+    .table-responsive {
       width: 100%;
       overflow-x: auto;
-      margin-bottom: 12px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      border: 2px solid #1e293b;
-      table-layout: fixed;
+      font-size: 0.78rem;
     }
 
     th, td {
-      border: 1px solid #334155;
-      vertical-align: middle;
+      border: 1px solid #cbd5e1;
+      padding: 7px 10px;
     }
 
     th {
       background: #f8fafc;
-      color: #0f172a;
       font-weight: 800;
       text-align: center;
-      text-transform: uppercase;
-    }
-
-    .th-no { width: 36px; font-size: 0.72rem; }
-    .th-jabatan { width: 255px; font-size: 0.76rem; }
-
-    .th-month {
-      font-size: 0.74rem;
-      padding: 5px 2px;
-      border-left: 2px solid #1e293b;
-    }
-
-    .th-sub {
-      font-size: 0.54rem;
-      font-weight: 700;
-      padding: 4px 1px;
-      background: #f1f5f9;
-      letter-spacing: -0.02em;
-    }
-
-    .th-sub.month-start,
-    .td-cell.month-start {
-      border-left: 2px solid #1e293b;
-    }
-
-    .td-no {
-      text-align: center;
-      font-weight: 700;
-      font-size: 0.72rem;
-      padding: 4px 2px;
-      background: #ffffff;
-    }
-
-    .td-jabatan {
-      text-align: left;
-      font-weight: 700;
-      font-size: 0.68rem;
-      padding: 4px 7px;
       color: #1e293b;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
-    .td-cell {
-      text-align: center;
-      font-weight: 600;
-      font-size: 0.7rem;
-      padding: 4px 2px;
-      height: 24px;
-    }
-
-    tr.row-jumlah td {
-      border-top: 2px solid #1e293b;
-      font-weight: 800;
+    .calc-cell {
       background: #f8fafc;
-    }
-
-    tr.row-jumlah .td-jumlah-label {
       text-align: center;
-      font-size: 0.74rem;
-      padding: 5px;
-    }
-
-    .bottom-grid {
-      display: flex;
-      justify-content: space-between;
-      align-items: stretch;
-      gap: 24px;
-      margin-top: 14px;
-    }
-
-    .summary-table {
-      width: 45%;
-      min-width: 440px;
-      table-layout: fixed;
-    }
-
-    .summary-table th {
-      font-size: 0.68rem;
-      padding: 6px 8px;
-      line-height: 1.3;
-    }
-
-    .summary-table .col-label { width: 68%; }
-    .summary-table .col-role { width: 16%; font-size: 0.62rem; }
-
-    .summary-table .td-label {
-      text-align: left;
       font-weight: 700;
-      font-size: 0.67rem;
-      padding: 5px 8px;
-      color: #1e293b;
+      color: #475569;
     }
 
-    .summary-table .td-cell {
-      height: 25px;
-      font-size: 0.73rem;
-      font-weight: 700;
+    .summary-editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
-    .val-kurang {
-      color: #dc2626 !important;
-      font-weight: 800 !important;
-    }
+    .val-kurang { color: #dc2626 !important; font-weight: 800 !important; }
+    .val-lebih { color: #15803d !important; font-weight: 800 !important; }
 
-    .val-lebih {
-      color: #15803d !important;
-      font-weight: 800 !important;
-    }
-
-    .floating-actions {
-      position: fixed;
-      bottom: 14px;
-      right: 14px;
-      display: flex;
-      gap: 8px;
-      z-index: 99;
-    }
-
-    .btn-float {
-      background: #F06400;
-      color: #ffffff;
-      text-decoration: none;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-family: inherit;
+    .hint-text {
       font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+
+    .loading-banner {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
       font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      transition: background 0.2s;
-      display: inline-flex;
-      align-items: center;
+      display: none;
+      border: 1px solid #fcd34d;
     }
 
-    .btn-float:hover { background: #d95800; }
-
-    .btn-float.btn-secondary { background: #1C2A5F; }
-    .btn-float.btn-secondary:hover { background: #0f172a; }
-
-    @media (max-width: 1024px) {
-      .bottom-grid { flex-direction: column; }
-      .summary-table { width: 100%; min-width: 0; }
-    }
-
-    @media print {
-      body { background: #ffffff; padding: 0; }
-      .board-wrapper { box-shadow: none; border: 2px solid #000000; padding: 8px; }
-      .floating-actions, .sync-badge { display: none !important; }
+    @media (max-width: 960px) {
+      .summary-editor-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="board-wrapper">
-    <div class="board-header">
-      <img src="../assets/images/logo/Danantara.png" alt="Logo Danantara Indonesia" class="header-logo">
-      <div class="board-title">
-        REKAPITULASI KEBUTUHAN PEGAWAI<br>
-        UPT CREW KA KELAS C KISARAN<br>
-        TAHUN <span id="displayYear">2026</span>
+  <!-- TOP HEADER -->
+  <header class="top-header no-print" role="banner">
+    <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
+        <button onclick="toggleSidebar()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="brand-affiliation">
+          <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
+        </div> 
       </div>
-      <img src="../assets/images/logo/KAI.png" alt="Logo KAI" class="header-logo">
+
+      <div class="topbar-right" style="display: flex; align-items: center; gap: 16px;">
+        <div class="topbar-profile-container">
+          <div class="topbar-profile-info">
+            <span id="penyeliaNama" class="topbar-penyelia-nama">--</span>
+            <span id="penyeliaNipp" class="topbar-penyelia-meta">NIPP. --</span>
+            <span id="penyeliaJabatan" class="topbar-penyelia-jabatan">--</span>
+          </div>
+          <img id="penyeliaFoto" src="https://via.placeholder.com/150" alt="Foto Penyelia" class="topbar-penyelia-avatar">
+          <button type="button" class="btn-topbar-logout" onclick="handleLogout()">Keluar</button>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <div class="sync-badge" id="syncStatus">Memuat data dari Google Sheets...</div>
+  <div class="app-layout-wrapper">
+    <!-- SIDEBAR NAVIGASI -->
+    <aside class="app-sidebar collapsed no-print" id="app-sidebar" aria-label="Sidebar Navigasi">
+      <div>
+        <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange, #F06400); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
+        
+        <nav style="display: flex; flex-direction: column; gap: 16px;">
+          <a href="../index.html" class="sidebar-item" title="Homepage">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            <span class="sidebar-text">Homepage</span>
+          </a>
 
-    <div class="table-scroll">
-      <table id="tblSemester1"></table>
-    </div>
+          <a href="./assesment.html" class="sidebar-item" title="Laporan Dinas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" fill="#1C2A5F" stroke="#1C2A5F"></rect>
+              <path d="M9 14l2 2 4-4" stroke="#F06400" stroke-width="2.5"></path>
+            </svg>
+            <span class="sidebar-text">Laporan Dinas</span>
+          </a>
 
-    <div class="table-scroll">
-      <table id="tblSemester2"></table>
-    </div>
+          <a href="./cetak.html" class="sidebar-item" title="Cetak Laporan Dinas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Laporan Dinas</span>
+          </a>
 
-    <div class="bottom-grid">
-      <table class="summary-table">
-        <thead>
-          <tr>
-            <th class="col-label">KECUKUPAN PEGAWAI DENGAN DINASAN<br>MENURUT TABEL O.20 GAPEKA 2023 PROGRAM</th>
-            <th class="col-role">MASINIS</th>
-            <th class="col-role">ASS. MASINIS</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyProgram"></tbody>
-      </table>
+          <a href="./edit-premi.html" class="sidebar-item" title="Report G43A">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4z"></path>
+            </svg>
+            <span class="sidebar-text">Report G43A</span>
+          </a>
 
-      <table class="summary-table">
-        <thead>
-          <tr>
-            <th class="col-label">KECUKUPAN PEGAWAI DENGAN DINASAN<br>MENURUT TABEL O.20 GAPEKA 2023 REALISASI</th>
-            <th class="col-role">MASINIS</th>
-            <th class="col-role">ASS. MASINIS</th>
-          </tr>
-        </thead>
-        <tbody id="tbodyRealisasi"></tbody>
-      </table>
-    </div>
-  </div>
+          <a href="./premi.html" class="sidebar-item" title="Cetak Report G43A">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"></polyline>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+              <rect x="6" y="14" width="12" height="8"></rect>
+            </svg>
+            <span class="sidebar-text">Cetak Report G43A</span>
+          </a>
 
-  <div class="floating-actions" id="floatingActions">
-    <button type="button" class="btn-float btn-secondary" onclick="loadFromGoogleSheets()">Refresh</button>
-    <button type="button" class="btn-float btn-secondary" onclick="window.print()">Cetak / PDF</button>
-    <a href="./edit-rekap-pegawai.html" target="_blank" class="btn-float">Edit Data</a>
+          <a href="./pantauan.html" class="sidebar-item" title="Papan Pantauan">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span class="sidebar-text">Papan Pantauan</span>
+          </a>
+
+          <a href="./rekap-pegawai.html" class="sidebar-item active" title="Rekapitulasi Pegawai">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+            <path d="M13 13h4"></path>
+            <path d="M13 17h4"></path>
+            </svg>
+            <span class="sidebar-text">Rekapitulasi Pegawai</span>
+          </a>
+          
+        </nav>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main-content">
+      <div class="editor-container">
+        
+        <!-- ACTION BAR -->
+        <div class="page-action-card">
+          <div class="page-action-title">
+            <h1>Editor Rekapitulasi Kebutuhan Pegawai</h1>
+            <p>UPT Crew KA Kelas C Kisaran &bull; Sinkronisasi Database Google Sheets</p>
+          </div>
+          <div class="action-buttons">
+            <a href="./rekap-pegawai.html" target="_blank" class="btn btn-navy">Lihat Papan Penampil &#8599;</a>
+            <button type="button" class="btn btn-primary" id="btnSave" onclick="saveToGoogleSheets()">Simpan ke Google Sheets</button>
+          </div>
+        </div>
+
+        <div class="loading-banner" id="loadingBanner">Sedang mengambil data terbaru dari Google Sheets...</div>
+
+        <!-- TAHUN REKAP -->
+        <div class="card">
+          <div class="year-group">
+            <label for="inputTahun">Tahun Rekapitulasi:</label>
+            <input type="text" id="inputTahun" class="year-input" value="2026" maxlength="10">
+          </div>
+        </div>
+
+        <!-- 2 TABEL KECUKUPAN PEGAWAI (PROGRAM & REALISASI) -->
+        <div class="summary-editor-grid">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">O.20 GAPEKA 2023 PROGRAM</span>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 56%; text-align: left;">KETERANGAN</th>
+                    <th style="width: 22%;">MASINIS</th>
+                    <th style="width: 22%;">ASS. MASINIS</th>
+                  </tr>
+                </thead>
+                <tbody id="editorProgramBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">O.20 GAPEKA 2023 REALISASI</span>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 56%; text-align: left;">KETERANGAN</th>
+                    <th style="width: 22%;">MASINIS</th>
+                    <th style="width: 22%;">ASS. MASINIS</th>
+                  </tr>
+                </thead>
+                <tbody id="editorRealisasiBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA BULANAN (JANUARI - DESEMBER) -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Data Kebutuhan &amp; Adanya Pegawai Per Bulan</span>
+            <button type="button" class="btn btn-danger" onclick="resetAll()">Kosongkan Semua Input</button>
+          </div>
+
+          <div class="month-tabs" id="monthTabs"></div>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 50px;">NO</th>
+                  <th style="text-align: left;">JABATAN</th>
+                  <th style="width: 130px;">KEB (Input)</th>
+                  <th style="width: 130px;">ADANYA (Input)</th>
+                  <th style="width: 110px;">LEBIH (Auto)</th>
+                  <th style="width: 110px;">KURANG (Auto)</th>
+                </tr>
+              </thead>
+              <tbody id="monthEditorBody"></tbody>
+            </table>
+          </div>
+          <p class="hint-text">
+            * Kolom <strong>ADANYA PEGAWAI</strong> pada tabel Program &amp; Realisasi di atas otomatis mengambil angka terakhir yang terisi pada baris <strong>5. MASINIS</strong> dan <strong>6. ASISTEN MASINIS</strong> di tab bulan (Januari–Desember).<br>
+            * Klik <strong>Simpan ke Google Sheets</strong> di bagian atas setelah selesai mengubah data agar langsung tampil di papan penampil.
+          </p>
+        </div>
+
+      </div>
+    </main>
   </div>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
+
+    // CEK LOGIN PENYELIA (SESUAI CETAK.HTML)
+    const loggedInNama = localStorage.getItem("loggedInUserNama");
+    const loggedInNipp = localStorage.getItem("loggedInUserNipp");
+    const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
+
+    if (!loggedInNama || !loggedInNipp) {
+      Swal.fire({
+        title: 'Akses Ditolak!',
+        text: 'Anda harus login terlebih dahulu.',
+        icon: 'warning',
+        confirmButtonColor: '#1C2A5F'
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+    }
+
+    function handleLogout() {
+      Swal.fire({
+        title: 'Logout',
+        text: 'Yakin keluar?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Keluar',
+        cancelButtonText: 'Batal'
+      }).then((res) => {
+        if (res.isConfirmed) {
+          localStorage.clear();
+          window.location.href = "login.html";
+        }
+      });
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar) sidebar.classList.toggle('collapsed');
+    }
 
     const ALL_MONTHS = [
       "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
@@ -310,7 +560,8 @@
       "PELAKSANA ADMINISTRASI"
     ];
 
-    const SUB_COLS = ["KEB", "ADANYA", "LEBIH", "KURANG"];
+    let activeMonth = "JANUARI";
+    let storeData = {};
 
     function parseNum(val) {
       if (val === undefined || val === null) return null;
@@ -326,110 +577,25 @@
       return String(rounded).replace(".", ",");
     }
 
-    // Ambil nilai ADANYA paling akhir dari Januari s.d. Desember (4 = MASINIS, 5 = ASISTEN MASINIS)
-    function getLatestAdanya(data, rowIndex) {
+    function getLatestAdanya(rowIndex) {
       let latestVal = null;
       ALL_MONTHS.forEach(m => {
-        const val = parseNum(data[`${m}_r${rowIndex}_ADANYA`]);
+        const val = parseNum(storeData[`${m}_r${rowIndex}_ADANYA`]);
         if (val !== null) latestVal = val;
       });
       return latestVal;
     }
 
-function buildMonthTable(tableId, months, data) {
-      const table = document.getElementById(tableId);
-      let theadHtml = `
-        <thead>
-          <tr>
-            <th rowspan="2" class="th-no">NO</th>
-            <th rowspan="2" class="th-jabatan">JABATAN</th>
-            ${months.map(m => `<th colspan="4" class="th-month">${m}</th>`).join("")}
-          </tr>
-          <tr>
-            ${months.map(() =>
-              SUB_COLS.map((sub, idx) =>
-                `<th class="th-sub ${idx === 0 ? 'month-start' : ''}">${sub}</th>`
-              ).join("")
-            ).join("")}
-          </tr>
-        </thead>
-      `;
+    function calcSummaryRole(prefix, roleKey, adanyaPegawai) {
+      const dinasan = parseNum(storeData[`${prefix}_dinasan_${roleKey}`]);
+      const serap = parseNum(storeData[`${prefix}_serap_${roleKey}`]);
 
-      const totals = {};
-      months.forEach(m => {
-        totals[m] = { KEB: 0, ADANYA: 0, LEBIH: 0, KURANG: 0, hasData: false };
-      });
-
-      let tbodyHtml = "<tbody>";
-      JABATAN_LIST.forEach((jabatan, rIdx) => {
-        tbodyHtml += `<tr>
-          <td class="td-no">${rIdx + 1}</td>
-          <td class="td-jabatan" title="${jabatan}">${jabatan}</td>`;
-
-        months.forEach(m => {
-          const keb = parseNum(data[`${m}_r${rIdx}_KEB`]);
-          const adanya = parseNum(data[`${m}_r${rIdx}_ADANYA`]);
-
-          let lebih = null;
-          let kurang = null;
-
-          if (keb !== null || adanya !== null) {
-            const kVal = keb ?? 0;
-            const aVal = adanya ?? 0;
-            if (aVal > kVal) lebih = aVal - kVal;
-            if (kVal > aVal) kurang = kVal - aVal;
-
-            totals[m].KEB += kVal;
-            totals[m].ADANYA += aVal;
-            totals[m].LEBIH += (lebih ?? 0);
-            totals[m].KURANG += (kurang ?? 0);
-            totals[m].hasData = true;
-          }
-
-          const kurangClass = (kurang !== null && kurang > 0) ? "val-kurang" : "";
-
-          tbodyHtml += `
-            <td class="td-cell month-start">${formatNum(keb)}</td>
-            <td class="td-cell">${formatNum(adanya)}</td>
-            <td class="td-cell">${formatNum(lebih)}</td>
-            <td class="td-cell ${kurangClass}">${formatNum(kurang)}</td>
-          `;
-        });
-
-        tbodyHtml += `</tr>`;
-      });
-
-      tbodyHtml += `<tr class="row-jumlah">
-        <td colspan="2" class="td-jumlah-label">JUMLAH</td>`;
-
-      months.forEach(m => {
-        const t = totals[m];
-        const hasKurangTotal = t.hasData && t.KURANG > 0;
-        tbodyHtml += `
-          <td class="td-cell month-start">${t.hasData ? formatNum(t.KEB) : ""}</td>
-          <td class="td-cell">${t.hasData ? formatNum(t.ADANYA) : ""}</td>
-          <td class="td-cell">${t.hasData && t.LEBIH > 0 ? formatNum(t.LEBIH) : ""}</td>
-          <td class="td-cell ${hasKurangTotal ? 'val-kurang' : ''}">${hasKurangTotal ? formatNum(t.KURANG) : ""}</td>
-        `;
-      });
-
-      tbodyHtml += `</tr></tbody>`;
-      table.innerHTML = theadHtml + tbodyHtml;
-    }
-    
-    function computeRoleSummary(data, prefix, roleKey, adanyaPegawai) {
-      const dinasan = parseNum(data[`${prefix}_dinasan_${roleKey}`]);
-      const libur = parseNum(data[`${prefix}_libur_${roleKey}`]);
-      const serap = parseNum(data[`${prefix}_serap_${roleKey}`]);
-
-      // 1. DIBUTUHKAN = (DINASAN * 1,21 * 1,04) + SERAP
       let dibutuhkan = null;
       if (dinasan !== null || serap !== null) {
         dibutuhkan = Math.round(((dinasan ?? 0) * 1.21 * 1.04) + (serap ?? 0));
       }
 
-      // 3. KURANG/LEBIH = DIBUTUHKAN - ADANYA PEGAWAI (jika kurang -> "-jumlah" warna merah)
-      let selisihText = "";
+      let selisihText = "-";
       let selisihClass = "";
       if (dibutuhkan !== null && adanyaPegawai !== null) {
         const diff = adanyaPegawai - dibutuhkan;
@@ -445,86 +611,252 @@ function buildMonthTable(tableId, months, data) {
       }
 
       return {
-        dinasan: formatNum(dinasan),
-        libur: formatNum(libur),
-        dibutuhkan: formatNum(dibutuhkan),
-        adanya: formatNum(adanyaPegawai),
-        serap: formatNum(serap),
+        dibutuhkan: dibutuhkan !== null ? formatNum(dibutuhkan) : "-",
+        adanya: adanyaPegawai !== null ? formatNum(adanyaPegawai) : "-",
         selisihText,
         selisihClass
       };
     }
 
-    function buildSummaryTable(tbodyId, prefix, data, adanyaMasinis, adanyaAsmas) {
-      const m = computeRoleSummary(data, prefix, "masinis", adanyaMasinis);
-      const a = computeRoleSummary(data, prefix, "asmas", adanyaAsmas);
+    function renderSummaryEditor(tbodyId, prefix) {
+      const adanyaMasinis = getLatestAdanya(4);
+      const adanyaAsmas = getLatestAdanya(5);
+      const m = calcSummaryRole(prefix, "masinis", adanyaMasinis);
+      const a = calcSummaryRole(prefix, "asmas", adanyaAsmas);
 
-      const rows = [
-        { label: "DINASAN", mVal: m.dinasan, aVal: a.dinasan },
-        { label: "LIBUR/IZIN/SAKIT", mVal: m.libur, aVal: a.libur },
-        { label: "DIBUTUHKAN (DINASAN × 1,21 × 1,04) + SEREP", mVal: m.dibutuhkan, aVal: a.dibutuhkan },
-        { label: "ADANYA PEGAWAI", mVal: m.adanya, aVal: a.adanya },
-        { label: "SERAP", mVal: m.serap, aVal: a.serap },
-        { label: "KURANG/LEBIH", mVal: m.selisihText, mClass: m.selisihClass, aVal: a.selisihText, aClass: a.selisihClass }
-      ];
-
-      document.getElementById(tbodyId).innerHTML = rows.map(r => `
+      const tbody = document.getElementById(tbodyId);
+      tbody.innerHTML = `
         <tr>
-          <td class="td-label">${r.label}</td>
-          <td class="td-cell ${r.mClass || ''}">${r.mVal}</td>
-          <td class="td-cell ${r.aClass || ''}">${r.aVal}</td>
+          <td><strong>DINASAN</strong></td>
+          <td><input type="text" data-field="${prefix}_dinasan_masinis" value="${storeData[`${prefix}_dinasan_masinis`] || ""}" placeholder="0"></td>
+          <td><input type="text" data-field="${prefix}_dinasan_asmas" value="${storeData[`${prefix}_dinasan_asmas`] || ""}" placeholder="0"></td>
         </tr>
+        <tr>
+          <td><strong>LIBUR/IZIN/SAKIT</strong></td>
+          <td><input type="text" data-field="${prefix}_libur_masinis" value="${storeData[`${prefix}_libur_masinis`] || ""}" placeholder="0"></td>
+          <td><input type="text" data-field="${prefix}_libur_asmas" value="${storeData[`${prefix}_libur_asmas`] || ""}" placeholder="0"></td>
+        </tr>
+        <tr>
+          <td><strong>DIBUTUHKAN (DINASAN &times; 1,21 &times; 1,04) + SEREP</strong></td>
+          <td class="calc-cell">${m.dibutuhkan}</td>
+          <td class="calc-cell">${a.dibutuhkan}</td>
+        </tr>
+        <tr>
+          <td><strong>ADANYA PEGAWAI</strong> <small style="color:#64748b;">(Auto)</small></td>
+          <td class="calc-cell">${m.adanya}</td>
+          <td class="calc-cell">${a.adanya}</td>
+        </tr>
+        <tr>
+          <td><strong>SERAP</strong></td>
+          <td><input type="text" data-field="${prefix}_serap_masinis" value="${storeData[`${prefix}_serap_masinis`] || ""}" placeholder="0"></td>
+          <td><input type="text" data-field="${prefix}_serap_asmas" value="${storeData[`${prefix}_serap_asmas`] || ""}" placeholder="0"></td>
+        </tr>
+        <tr>
+          <td><strong>KURANG/LEBIH</strong></td>
+          <td class="calc-cell ${m.selisihClass}">${m.selisihText}</td>
+          <td class="calc-cell ${a.selisihClass}">${a.selisihText}</td>
+        </tr>
+      `;
+
+      tbody.querySelectorAll("input[data-field]").forEach(inp => {
+        inp.addEventListener("input", () => {
+          storeData[inp.dataset.field] = inp.value;
+          const mNew = calcSummaryRole(prefix, "masinis", getLatestAdanya(4));
+          const aNew = calcSummaryRole(prefix, "asmas", getLatestAdanya(5));
+          const rows = tbody.querySelectorAll("tr");
+          rows[2].children[1].textContent = mNew.dibutuhkan;
+          rows[2].children[2].textContent = aNew.dibutuhkan;
+          rows[5].children[1].textContent = mNew.selisihText;
+          rows[5].children[1].className = `calc-cell ${mNew.selisihClass}`;
+          rows[5].children[2].textContent = aNew.selisihText;
+          rows[5].children[2].className = `calc-cell ${aNew.selisihClass}`;
+        });
+      });
+    }
+
+    function renderMonthTabs() {
+      const container = document.getElementById("monthTabs");
+      container.innerHTML = ALL_MONTHS.map(m => `
+        <button type="button" class="month-tab ${m === activeMonth ? 'active' : ''}" onclick="selectMonth('${m}')">${m}</button>
       `).join("");
     }
 
-    function renderAll(data) {
-      document.getElementById("displayYear").textContent = data.tahun_rekap || "2026";
+    function selectMonth(m) {
+      activeMonth = m;
+      renderMonthTabs();
+      renderMonthTable();
+    }
 
-      buildMonthTable("tblSemester1", ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI"], data);
-      buildMonthTable("tblSemester2", ["JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"], data);
+    function renderMonthTable() {
+      const tbody = document.getElementById("monthEditorBody");
+      tbody.innerHTML = JABATAN_LIST.map((jab, rIdx) => {
+        const kebRaw = storeData[`${activeMonth}_r${rIdx}_KEB`] || "";
+        const adanyaRaw = storeData[`${activeMonth}_r${rIdx}_ADANYA`] || "";
+        const keb = parseNum(kebRaw);
+        const adanya = parseNum(adanyaRaw);
 
-      const adanyaMasinis = getLatestAdanya(data, 4);
-      const adanyaAsmas = getLatestAdanya(data, 5);
+        let lebih = "-";
+        let kurang = "-";
+        if (keb !== null || adanya !== null) {
+          const kVal = keb ?? 0;
+          const aVal = adanya ?? 0;
+          lebih = aVal > kVal ? formatNum(aVal - kVal) : "0";
+          kurang = kVal > aVal ? formatNum(kVal - aVal) : "0";
+        }
 
-      buildSummaryTable("tbodyProgram", "program", data, adanyaMasinis, adanyaAsmas);
-      buildSummaryTable("tbodyRealisasi", "realisasi", data, adanyaMasinis, adanyaAsmas);
+        return `
+          <tr>
+            <td style="text-align:center; font-weight:700;">${rIdx + 1}</td>
+            <td style="font-weight:700;">${jab}</td>
+            <td><input type="text" data-row="${rIdx}" data-type="KEB" value="${kebRaw}" placeholder="0"></td>
+            <td><input type="text" data-row="${rIdx}" data-type="ADANYA" value="${adanyaRaw}" placeholder="0"></td>
+            <td class="calc-cell" id="lebih_${rIdx}">${lebih}</td>
+            <td class="calc-cell" id="kurang_${rIdx}">${kurang}</td>
+          </tr>
+        `;
+      }).join("");
+
+      tbody.querySelectorAll("input").forEach(inp => {
+        inp.addEventListener("input", () => {
+          const rIdx = inp.dataset.row;
+          const type = inp.dataset.type;
+          storeData[`${activeMonth}_r${rIdx}_${type}`] = inp.value;
+
+          const keb = parseNum(storeData[`${activeMonth}_r${rIdx}_KEB`]);
+          const adanya = parseNum(storeData[`${activeMonth}_r${rIdx}_ADANYA`]);
+          const elLebih = document.getElementById(`lebih_${rIdx}`);
+          const elKurang = document.getElementById(`kurang_${rIdx}`);
+
+          if (keb !== null || adanya !== null) {
+            const kVal = keb ?? 0;
+            const aVal = adanya ?? 0;
+            elLebih.textContent = aVal > kVal ? formatNum(aVal - kVal) : "0";
+            elKurang.textContent = kVal > aVal ? formatNum(kVal - aVal) : "0";
+          } else {
+            elLebih.textContent = "-";
+            elKurang.textContent = "-";
+          }
+
+          if (rIdx === "4" || rIdx === "5") {
+            renderSummaryEditor("editorProgramBody", "program");
+            renderSummaryEditor("editorRealisasiBody", "realisasi");
+          }
+        });
+      });
     }
 
     async function loadFromGoogleSheets() {
-      const statusEl = document.getElementById("syncStatus");
-      statusEl.textContent = "Menyinkronkan data dengan Google Sheets...";
+      const banner = document.getElementById("loadingBanner");
+      banner.style.display = "block";
 
       try {
         const res = await fetch(`${API_URL}?action=getRekapPegawai`);
         const json = await res.json();
 
         if (json.status === "success") {
-          renderAll(json.data || {});
-          const now = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-          statusEl.textContent = `Tersinkronisasi dengan Google Sheets (Update: ${now} WIB)`;
+          storeData = json.data || {};
+          document.getElementById("inputTahun").value = storeData.tahun_rekap || "2026";
+          renderSummaryEditor("editorProgramBody", "program");
+          renderSummaryEditor("editorRealisasiBody", "realisasi");
+          renderMonthTable();
         } else {
-          statusEl.textContent = `Gagal memuat data: ${json.message || "Error server"}`;
+          Swal.fire("Gagal", json.message || "Gagal memuat data dari Google Sheets.", "error");
         }
       } catch (err) {
-        console.error("Error fetch Google Sheets:", err);
-        statusEl.textContent = "Gagal terhubung ke server Google Sheets.";
+        console.error(err);
+        Swal.fire("Error", "Koneksi ke server Google Sheets gagal.", "error");
+      } finally {
+        banner.style.display = "none";
       }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      // Render struktur tabel kosong terlebih dahulu agar tampilan langsung rapi saat loading
-      renderAll({});
-      loadFromGoogleSheets();
-      setInterval(loadFromGoogleSheets, 60000);
+    async function saveToGoogleSheets() {
+      const btn = document.getElementById("btnSave");
+      btn.disabled = true;
+      btn.textContent = "Menyimpan...";
 
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("mode") === "tv") {
-        const actions = document.getElementById("floatingActions");
-        if (actions) actions.style.display = "none";
-        document.getElementById("syncStatus").style.display = "none";
-        document.body.style.padding = "0";
-        document.body.style.background = "#ffffff";
+      storeData.tahun_rekap = document.getElementById("inputTahun").value || "2026";
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "saveRekapPegawai",
+            data: storeData
+          })
+        });
+
+        const json = await res.json();
+        if (json.status === "success") {
+          Swal.fire({
+            title: "Tersimpan!",
+            text: "Data rekapitulasi pegawai berhasil disimpan ke Google Sheets.",
+            icon: "success",
+            confirmButtonColor: "#1C2A5F",
+            timer: 2000
+          });
+        } else {
+          Swal.fire("Gagal Menyimpan", json.message || "Terjadi kesalahan pada server.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error Jaringan", "Gagal terhubung ke server Google Sheets.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Simpan ke Google Sheets";
       }
+    }
+
+    function resetAll() {
+      Swal.fire({
+        title: "Kosongkan Input?",
+        text: "Seluruh angka di form akan dikosongkan. Klik 'Simpan ke Google Sheets' setelahnya untuk menerapkan ke server.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "Ya, Kosongkan",
+        cancelButtonText: "Batal"
+      }).then((res) => {
+        if (res.isConfirmed) {
+          storeData = { tahun_rekap: "2026" };
+          document.getElementById("inputTahun").value = "2026";
+          renderSummaryEditor("editorProgramBody", "program");
+          renderSummaryEditor("editorRealisasiBody", "realisasi");
+          renderMonthTable();
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // INISIALISASI PROFIL TOPBAR (SESUAI CETAK.HTML)
+      document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
+      document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
+      document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
+
+      const imgEl = document.getElementById("penyeliaFoto");
+      if (loggedInNipp) {
+        const cleanNipp = String(loggedInNipp).trim();
+        imgEl.src = `../assets/struktur-organisasi/${cleanNipp}.jpg`;
+        imgEl.onerror = function() {
+          if (this.src.endsWith(".jpg")) {
+            this.src = `../assets/struktur-organisasi/${cleanNipp}.png`;
+          } else {
+            this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedInNama || "User")}&background=1C2A5F&color=fff`;
+          }
+        };
+      }
+
+      document.getElementById("inputTahun").addEventListener("input", (e) => {
+        storeData.tahun_rekap = e.target.value;
+      });
+
+      renderSummaryEditor("editorProgramBody", "program");
+      renderSummaryEditor("editorRealisasiBody", "realisasi");
+      renderMonthTabs();
+      renderMonthTable();
+
+      loadFromGoogleSheets();
     });
   </script>
 </body>
