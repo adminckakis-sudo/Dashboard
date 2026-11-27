@@ -1512,10 +1512,14 @@
                 `;
             }
 
+            let cachedDatabasePersonel = null;
+            let activeJabatanRequestId = 0;
+
             window.openJabatanModal = async function(roleKey) {
                 const cfg = JABATAN_CONFIG[roleKey];
                 if (!cfg) return;
 
+                const currentRequestId = ++activeJabatanRequestId;
                 const modal = document.getElementById('jabatanModal');
                 const container = document.getElementById('jabatanPersonelContainer');
                 const tupoksiList = document.getElementById('jabatanTupoksiList');
@@ -1531,20 +1535,12 @@
                     </li>
                 `).join('');
 
-                container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--text-muted);">Memuat data...</div>`;
                 modal.style.display = 'flex';
                 isModalOpen = true;
 
-                try {
-                    const res = await fetch(APPS_SCRIPT_URL);
-                    const result = await res.json();
+                const renderFilteredPersonel = (listDatabase) => {
+                    if (currentRequestId !== activeJabatanRequestId) return;
 
-                    if (result.result !== "success" || !result.data) {
-                        container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--status-mangkir);">Gagal mengambil data dari Google Sheets.</div>`;
-                        return;
-                    }
-
-                    const listDatabase = result.data["Database"] || [];
                     const filtered = listDatabase.filter(p => {
                         const j = String(p.Jabatan || p.JABATAN || "").toUpperCase();
                         return j.includes(cfg.filterKeyword);
@@ -1593,7 +1589,30 @@
                     }).join('');
 
                     document.getElementById('jabatanPersonelCountInfo').innerText = `Menampilkan ${filtered.length} personel`;
+                };
+
+                if (cachedDatabasePersonel) {
+                    renderFilteredPersonel(cachedDatabasePersonel);
+                    return;
+                }
+
+                container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--text-muted);">Memuat data...</div>`;
+
+                try {
+                    const res = await fetch(APPS_SCRIPT_URL);
+                    const result = await res.json();
+
+                    if (currentRequestId !== activeJabatanRequestId) return;
+
+                    if (result.result !== "success" || !result.data) {
+                        container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--status-mangkir);">Gagal mengambil data dari Google Sheets.</div>`;
+                        return;
+                    }
+
+                    cachedDatabasePersonel = result.data["Database"] || [];
+                    renderFilteredPersonel(cachedDatabasePersonel);
                 } catch (err) {
+                    if (currentRequestId !== activeJabatanRequestId) return;
                     console.error("Error fetching database:", err);
                     container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--status-mangkir);">Terjadi kesalahan sistem saat memuat data.</div>`;
                 }
