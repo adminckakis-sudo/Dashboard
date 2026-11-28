@@ -87,6 +87,17 @@
 </div>
 
 <script>
+    (function() {
+    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = iconUrl;
+})();
+
   const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
 
   document.getElementById("loginForm").addEventListener("submit", async function(e) {
