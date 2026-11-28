@@ -3,6 +3,17 @@
 // Modul Logika Data & Interaktivitas Antarmuka
 // ==========================================================================
 
+(function() {
+    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = iconUrl;
+})();
+
 // 1. JAM & TANGGAL REAL-TIME
 function updateWaktu() {
     const sekarang = new Date();
