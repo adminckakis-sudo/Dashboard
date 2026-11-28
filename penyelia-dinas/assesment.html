@@ -521,7 +521,19 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+
   <script>
+    (function() {
+    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = iconUrl;
+})();
+
     const loggedInNama = localStorage.getItem("loggedInUserNama");
     const loggedInNipp = localStorage.getItem("loggedInUserNipp");
     const loggedInJabatan = localStorage.getItem("loggedInUserJabatan");
