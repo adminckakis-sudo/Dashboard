@@ -129,8 +129,9 @@
                     </a>
 
                     <div class="sidebar-sub-menu" style="display: flex; flex-direction: column; gap: 2px; padding-left: 16px; margin-top: 2px; border-left: 2px solid rgba(240, 100, 0, 0.3);">
-                        <a href="./asp-matriks.html" class="sidebar-sub-item" style="color: #cbd5e1 ; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
-                            <span class="sidebar-text">Masa Berlaku Sertifikasi ASP</span>                       
+                        <a href="./asp-matriks.html" class="sidebar-sub-item" style="color: #cbd5e1; text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px;">
+                            <span class="sidebar-text">Masa Berlaku Sertifikasi ASP</span>
+                        </a>
                         <a href="./progress-pengajuan.html" class="sidebar-sub-item active" style="color: var(--kai-orange, #f06400); text-decoration: none; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 4px; transition: all 0.2s ease;">
                             <span class="sidebar-text">Progress Pengajuan</span>
                         </a>
@@ -243,39 +244,42 @@
             </div>
         </div>
     </div>
+
     <script>
-    (function initSidebar() {
-        const btnToggle = document.getElementById('btn-toggle-menu');
-        const sidebar = document.getElementById('app-sidebar');
-        if (!btnToggle || !sidebar || btnToggle.dataset.bound) return;
-
-        btnToggle.dataset.bound = 'true';
-        btnToggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            sidebar.classList.toggle('collapsed');
-            setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
-        });
-
-        document.addEventListener('click', function(e) {
-            if (window.innerWidth <= 992 && !sidebar.classList.contains('collapsed')) {
-                if (!sidebar.contains(e.target) && !btnToggle.contains(e.target)) {
-                    sidebar.classList.add('collapsed');
-                }
+        (function() {
+            const isSubfolder = /\/(personel|cuti|sertifikasi|penyelia-dinas|admin)\//.test(window.location.pathname);
+            const iconUrl = (isSubfolder ? '../' : './') + 'favicon.ico';
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
             }
-        });
-    })();
-      
-    (function() {
-    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-    }
-    link.href = iconUrl;
-})();
+            link.href = iconUrl;
+        })();
+
+        (function initSidebar() {
+            const btnToggle = document.getElementById('btn-toggle-menu');
+            const sidebar = document.getElementById('app-sidebar');
+            if (!btnToggle || !sidebar || btnToggle.dataset.bound) return;
+
+            btnToggle.dataset.bound = 'true';
+            btnToggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                sidebar.classList.toggle('collapsed');
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 992 && !sidebar.classList.contains('collapsed')) {
+                    if (!sidebar.contains(e.target) && !btnToggle.contains(e.target)) {
+                        sidebar.classList.add('collapsed');
+                    }
+                }
+            });
+        })();
+
         const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
         const GID = "392940711";
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
@@ -473,7 +477,6 @@
             }
 
             localPengajuan.forEach((item, index) => {
-                // Tepat 9 kolom sesuai <thead> Pengajuan Baru
                 const row = `
                     <tr onclick="viewCertificate('${item.nipp}', '${item.nama}')" title="Klik untuk melihat dokumen ${item.nama}">
                         <td class="cell-center">${index + 1}</td>
@@ -545,10 +548,6 @@
 
         fetchSpreadsheetData();
         renderPengajuanBaruTable();
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const btnToggle = document.getElementById("btn-toggle-menu");
-        });
     </script>
 </body>
 </html>
