@@ -13,6 +13,41 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+    /* SPINNER ARCH & BOUNCING DOTS UNTUK TOMBOL AKSI */
+    .spinner-arch {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border: 2.5px solid rgba(255, 255, 255, 0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spinArch 0.7s linear infinite;
+        vertical-align: middle;
+        margin-right: 6px;
+    }
+    @keyframes spinArch {
+        to { transform: rotate(360deg); }
+    }
+
+    .bouncing-dots-white {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        margin-left: 4px;
+    }
+    .bouncing-dots-white span {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: #ffffff;
+        animation: bounceDotLogin 1.2s infinite ease-in-out both;
+    }
+    .bouncing-dots-white span:nth-child(1) { animation-delay: -0.32s; }
+    .bouncing-dots-white span:nth-child(2) { animation-delay: -0.16s; }
+    @keyframes bounceDotLogin {
+        0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+        40% { transform: scale(1); opacity: 1; }
+    }
         .login-container {
             display: flex;
             justify-content: center;
@@ -359,7 +394,7 @@
             const btnSubmit = document.getElementById("btnSubmitForgot");
 
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+            btnSubmit.innerHTML = `<span class="spinner-arch"></span> Mengirim<span class="bouncing-dots-white"><span></span><span></span><span></span></span>`;
             forgotAlert.style.display = "none";
 
             const actionCodeSettings = {
@@ -402,7 +437,7 @@
             const btnSubmit = document.getElementById("btnSubmitRegister");
 
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+            btnSubmit.innerHTML = `<span class="spinner-arch"></span> Mendaftarkan<span class="bouncing-dots-white"><span></span><span></span><span></span></span>`;
             registerAlert.style.display = "none";
 
             try {
@@ -452,7 +487,7 @@
             const password = document.getElementById('password').value;
 
             btnLogin.disabled = true;
-            btnLogin.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Memproses...`;
+            btnLogin.innerHTML = `<span class="spinner-arch"></span> Memverifikasi<span class="bouncing-dots-white"><span></span><span></span><span></span></span>`;
             errorMessage.style.display = 'none';
 
             try {
