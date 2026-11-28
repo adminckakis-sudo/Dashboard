@@ -8,9 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="icon" type="image/x-icon" href="../favicon.ico">
-<link rel="shortcut icon" href="../favicon.ico">
-<link rel="apple-touch-icon" href="../favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="shortcut icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" href="../favicon.ico">
+
   <!-- Flatpickr CSS & JS (Format dd/mm/yyyy) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -44,7 +45,7 @@
     }
     .btn-topbar-logout:hover { background: rgba(239, 68, 68, 0.9); color: #ffffff; }
 
-    .form-page-container { max-width: 1450px; margin: 24px auto; padding: 0 16px; }
+    .form-page-container { max-width: 1560px; margin: 24px auto; padding: 0 16px; }
     .page-title-outer { font-size: 1.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-bottom: 16px; text-align: center; }
 
     .filter-card {
@@ -52,12 +53,15 @@
       display: flex; justify-content: space-between; align-items: center; gap: 16px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); flex-wrap: wrap;
     }
 
-    .filter-group { display: flex; align-items: center; gap: 12px; }
+    .filter-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .filter-label { font-size: 0.85rem; font-weight: 700; color: #334155; }
     .filter-input { padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; font-family: inherit; outline: none; background-color: #fff; cursor: pointer; }
 
     .action-buttons { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .btn-load { background-color: #1C2A5F; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .btn-load:hover { background-color: #121d42; }
+    .btn-terkirim-semua { background-color: #15803d; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s; }
+    .btn-terkirim-semua:hover { background-color: #166534; }
     .btn-add-dinasan { background-color: #059669; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
     .btn-add-dinasan:hover { background-color: #047857; }
     .btn-add-r { background-color: #1C2A5F; color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
@@ -75,6 +79,8 @@
 
     .input-cell { width: 92%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit; font-size: 0.8rem; text-align: center; }
     .input-cell:focus { border-color: #F06400; outline: none; box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15); }
+    .input-catatan { width: 94%; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit; font-size: 0.8rem; text-align: left; }
+    .input-catatan:focus { border-color: #F06400; outline: none; box-shadow: 0 0 0 2px rgba(240, 100, 0, 0.15); }
     .input-uppercase { text-transform: uppercase; }
     .input-rupiah { text-align: right; font-weight: 700; transition: all 0.3s ease; }
 
@@ -283,6 +289,7 @@
           </div>
           <div class="action-buttons">
             <button type="button" class="btn-sync" onclick="handleSyncO241()">Sync Data</button>
+            <button type="button" class="btn-terkirim-semua" onclick="markAllDisplayedAsTerkirim()">✓ Terkirim Semua</button>
             <button type="button" class="btn-save-all" onclick="saveAllRows()">Simpan Semua Perubahan</button>
             <button type="button" class="btn-add-dinasan" onclick="openModalTambahDinasan()">Tambah Dinasan Baru</button>
             <button type="button" class="btn-add-r" onclick="openModalTambahPendinasanR()">Tambah Running</button>
@@ -295,21 +302,22 @@
               <thead>
                 <tr>
                   <th style="width: 3%;">NO</th>
-                  <th style="width: 9%;">KODE DINASAN</th>
+                  <th style="width: 8%;">KODE DINASAN</th>
                   <th style="width: 6%;">JABATAN</th>
-                  <th style="width: 20%;">NAMA ASP</th>
-                  <th style="width: 9%;">NIPP</th>
+                  <th style="width: 18%;">NAMA ASP</th>
+                  <th style="width: 8%;">NIPP</th>
                   <th style="width: 7%;">NO KA</th>
-                  <th style="width: 8%;">RELASI</th>
-                  <th style="width: 10%;">PREMI 1</th>
-                  <th style="width: 10%;">PREMI 2</th>
-                  <th style="width: 13%;">STATUS PREMI</th>
-                  <th style="width: 5%;">AKSI</th>
+                  <th style="width: 7%;">RELASI</th>
+                  <th style="width: 9%;">PREMI 1</th>
+                  <th style="width: 9%;">PREMI 2</th>
+                  <th style="width: 11%;">STATUS PREMI</th>
+                  <th style="width: 14%;">CATATAN</th>
+                  <th style="width: 6%;">AKSI</th>
                 </tr>
               </thead>
               <tbody id="editTableBody">
                 <tr>
-                  <td colspan="11" style="padding: 24px; color: #64748b; text-align: center;">
+                  <td colspan="12" style="padding: 24px; color: #64748b; text-align: center;">
                     Pilih tanggal dinas dan klik <strong>Muat Data</strong>.
                   </td>
                 </tr>
@@ -323,7 +331,6 @@
   </div>
   
 <script>
-  
     function getInputValue(id) {
       const el = document.getElementById(id);
       return el ? el.value.trim().toUpperCase() : "";
@@ -358,17 +365,11 @@
 
     const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
 
-    // Daftar kode dinasan yang otomatis memicu Premi 2.
-    // Isi masP2 / asmasP2 dengan nominal spesifik, atau biarkan null agar mengikuti nilai Premi 1.
-    const DINASAN_DUA_PREMI = {
-      "1 A/B": { masP2: null, asmasP2: null },
-      "25 A/B": { masP2: null, asmasP2: null }
-    };
-
     let MASTER_CREW_KISARAN = [];
     let MASTER_PENYELIA_R = [];
     let DYNAMIC_DINASAN_MAP = {};
     let tomSelectInstances = {};
+    let loadedCurrentData = [];
 
     async function fetchMasterCrew() {
       try {
@@ -466,6 +467,7 @@
       return 0;
     }
 
+    // Setiap kode dinasan berdiri sendiri dengan pasangannya (MAS + ASMAS) sesuai Master_Template_Dinasan
     async function fetchMasterDinasan() {
       try {
         const res = await fetch(`${API_URL}?action=getMasterDinasan`);
@@ -479,67 +481,86 @@
             ? rawData
             : Object.keys(rawData).map(k => ({ no_dinasan: k, ...rawData[k] }));
 
-          const grouped = {};
+          const standaloneMap = {};
 
-          rows.forEach(row => {
+          rows.forEach((row, i) => {
             const kode = String(row.no_dinasan ?? row.kode_dinasan ?? "").trim();
             if (!kode) return;
 
-            if (!grouped[kode]) {
-              grouped[kode] = {
-                no_dinasan: kode,
-                ka_list: [],
-                relasi_list: [],
-                mas_rates: [],
-                asmas_rates: []
-              };
-            }
+            const urutanData = String(row.urutan_data ?? "").trim().toLowerCase();
+            const sortOrder = (row.sortOrder !== undefined && !isNaN(Number(row.sortOrder)))
+              ? Number(row.sortOrder)
+              : ((row.urutan !== undefined && row.urutan !== "" && !isNaN(Number(row.urutan))) ? Number(row.urutan) : (99999 + i));
 
             const kaMas = String(row.no_ka_mas ?? row.atas?.no_ka_mas ?? row.atas?.ka ?? row.ka ?? "").trim();
             const kaAsmas = String(row.no_ka_asmas ?? row.bawah?.no_ka_asmas ?? row.bawah?.ka ?? "").trim();
             const relMas = String(row.relasi_mas ?? row.atas?.relasi_mas ?? row.atas?.relasi ?? row.relasi ?? "").trim();
             const relAsmas = String(row.relasi_asmas ?? row.bawah?.relasi_asmas ?? row.bawah?.relasi ?? "").trim();
 
-            if (kaMas && !grouped[kode].ka_list.includes(kaMas)) {
-              grouped[kode].ka_list.push(kaMas);
-            }
-            if (kaAsmas && !grouped[kode].ka_list.includes(kaAsmas)) {
-              grouped[kode].ka_list.push(kaAsmas);
-            }
-
-            if (relMas && !grouped[kode].relasi_list.includes(relMas)) {
-              grouped[kode].relasi_list.push(relMas);
-            }
-            if (relAsmas && !grouped[kode].relasi_list.includes(relAsmas)) {
-              grouped[kode].relasi_list.push(relAsmas);
-            }
-
             const rateMas1 = extractRateMas(row);
             const rateMas2 = extractSecondRateMas(row);
-
             const rateAsmas1 = extractRateAsmas(row);
             const rateAsmas2 = extractSecondRateAsmas(row);
 
-            if (rateMas1 > 0) grouped[kode].mas_rates.push(rateMas1);
-            if (rateMas2 > 0) grouped[kode].mas_rates.push(rateMas2);
-
-            if (rateAsmas1 > 0) grouped[kode].asmas_rates.push(rateAsmas1);
-            if (rateAsmas2 > 0) grouped[kode].asmas_rates.push(rateAsmas2);
+            if (!standaloneMap[kode]) {
+              standaloneMap[kode] = {
+                no_dinasan: kode,
+                sortOrder: sortOrder,
+                ka_mas: kaMas,
+                ka_asmas: kaAsmas || kaMas,
+                relasi_mas: relMas,
+                relasi_asmas: relAsmas || relMas,
+                mas_p1: rateMas1,
+                mas_p2: rateMas2,
+                asmas_p1: rateAsmas1,
+                asmas_p2: rateAsmas2
+              };
+            } else {
+              if (sortOrder < standaloneMap[kode].sortOrder) {
+                standaloneMap[kode].sortOrder = sortOrder;
+              }
+              if (urutanData.endsWith("a")) {
+                if (kaMas) standaloneMap[kode].ka_mas = kaMas;
+                if (relMas) standaloneMap[kode].relasi_mas = relMas;
+                if (rateMas1 > 0) standaloneMap[kode].mas_p1 = rateMas1;
+                if (rateMas2 > 0) standaloneMap[kode].mas_p2 = rateMas2;
+              } else if (urutanData.endsWith("b")) {
+                if (kaAsmas || kaMas) standaloneMap[kode].ka_asmas = kaAsmas || kaMas;
+                if (relAsmas || relMas) standaloneMap[kode].relasi_asmas = relAsmas || relMas;
+                if (rateAsmas1 > 0) standaloneMap[kode].asmas_p1 = rateAsmas1;
+                if (rateAsmas2 > 0) standaloneMap[kode].asmas_p2 = rateAsmas2;
+              } else {
+                if (kaMas && !standaloneMap[kode].ka_mas) standaloneMap[kode].ka_mas = kaMas;
+                if (kaAsmas && !standaloneMap[kode].ka_asmas) standaloneMap[kode].ka_asmas = kaAsmas;
+                if (relMas && !standaloneMap[kode].relasi_mas) standaloneMap[kode].relasi_mas = relMas;
+                if (relAsmas && !standaloneMap[kode].relasi_asmas) standaloneMap[kode].relasi_asmas = relAsmas;
+                if (rateMas1 > 0 && !standaloneMap[kode].mas_p1) standaloneMap[kode].mas_p1 = rateMas1;
+                if (rateAsmas1 > 0 && !standaloneMap[kode].asmas_p1) standaloneMap[kode].asmas_p1 = rateAsmas1;
+              }
+            }
           });
 
-          Object.keys(grouped).forEach(kode => {
-            const g = grouped[kode];
-            const kaGabung = g.ka_list.filter(Boolean).join(" / ");
+          const sortedKodes = Object.keys(standaloneMap).sort((a, b) => standaloneMap[a].sortOrder - standaloneMap[b].sortOrder);
+          sortedKodes.forEach(kode => {
+            const g = standaloneMap[kode];
+            const kaDisplay = (g.ka_mas && g.ka_asmas && g.ka_mas !== g.ka_asmas)
+              ? `${g.ka_mas} / ${g.ka_asmas}`
+              : (g.ka_mas || g.ka_asmas || "");
+            const relDisplay = (g.relasi_mas && g.relasi_asmas && g.relasi_mas !== g.relasi_asmas)
+              ? `${g.relasi_mas} / ${g.relasi_asmas}`
+              : (g.relasi_mas || g.relasi_asmas || "");
+
             DYNAMIC_DINASAN_MAP[kode] = {
               no_dinasan: kode,
-              nama_display: kaGabung ? `${kode} (${kaGabung})` : kode,
-              ka_1: g.ka_list[0] || "",
-              ka_2: g.ka_list[1] || "",
-              relasi: g.relasi_list.join(" / "),
-              mas_p1: g.mas_rates[0] || 0,
-              mas_p2: g.mas_rates[1] || 0,
-              asmas_p1: g.asmas_rates[0] || 0,
-              asmas_p2: g.asmas_rates[1] || 0
+              sortOrder: g.sortOrder,
+              nama_display: kaDisplay ? `${kode} (${kaDisplay})` : kode,
+              ka_1: g.ka_mas || g.ka_asmas || "",
+              ka_2: g.ka_asmas || g.ka_mas || "",
+              relasi: relDisplay,
+              mas_p1: g.mas_p1 || 0,
+              mas_p2: g.mas_p2 || 0,
+              asmas_p1: g.asmas_p1 || 0,
+              asmas_p2: g.asmas_p2 || 0
             };
           });
         }
@@ -552,16 +573,6 @@
       if (!presetKey || !DYNAMIC_DINASAN_MAP[presetKey]) return;
 
       const p = DYNAMIC_DINASAN_MAP[presetKey];
-      const kodeUpper = String(p.no_dinasan || "").trim().toUpperCase();
-      const cfgDuaPremi = DINASAN_DUA_PREMI[kodeUpper];
-
-      const finalMasP2 = p.mas_p2 > 0
-        ? p.mas_p2
-        : (cfgDuaPremi ? (cfgDuaPremi.masP2 ?? p.mas_p1) : 0);
-
-      const finalAsmasP2 = p.asmas_p2 > 0
-        ? p.asmas_p2
-        : (cfgDuaPremi ? (cfgDuaPremi.asmasP2 ?? p.asmas_p1) : 0);
 
       setInputValue("mdNoDinasan", p.no_dinasan);
       setInputValue("mdNoKa1", p.ka_1);
@@ -569,10 +580,10 @@
       setInputValue("mdRelasi", p.relasi);
 
       setInputValue("mdMasP1", p.mas_p1 > 0 ? formatRupiahInput(p.mas_p1) : "");
-      setInputValue("mdMasP2", finalMasP2 > 0 ? formatRupiahInput(finalMasP2) : "");
+      setInputValue("mdMasP2", p.mas_p2 > 0 ? formatRupiahInput(p.mas_p2) : "");
 
       setInputValue("mdAsmasP1", p.asmas_p1 > 0 ? formatRupiahInput(p.asmas_p1) : "");
-      setInputValue("mdAsmasP2", finalAsmasP2 > 0 ? formatRupiahInput(finalAsmasP2) : "");
+      setInputValue("mdAsmasP2", p.asmas_p2 > 0 ? formatRupiahInput(p.asmas_p2) : "");
     }
 
     function formatRupiahInput(val) {
@@ -608,7 +619,71 @@
       });
     }
 
-    let loadedCurrentData = [];
+    // Mengubah seluruh status premi pada tanggal yang tertampil menjadi "Terkirim" lalu menyimpan ke server
+    async function markAllDisplayedAsTerkirim() {
+      const tanggal = document.getElementById("inputTanggalEdit").value;
+      if (!tanggal) {
+        Swal.fire("Peringatan", "Pilih tanggal terlebih dahulu!", "warning");
+        return;
+      }
+
+      if (loadedCurrentData.length === 0) {
+        Swal.fire("Informasi", "Tidak ada data dinasan pada tanggal yang tertampil.", "info");
+        return;
+      }
+
+      const confirmRes = await Swal.fire({
+        title: 'Ubah Semua Menjadi Terkirim?',
+        html: `Seluruh <b>${loadedCurrentData.length} baris</b> pada tanggal <b>${tanggal}</b> akan diubah status preminya menjadi <b>Terkirim</b> dan disimpan.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#15803d',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Terkirim Semua',
+        cancelButtonText: 'Batal'
+      });
+
+      if (!confirmRes.isConfirmed) return;
+
+      for (let i = 0; i < loadedCurrentData.length; i++) {
+        const sel = document.getElementById(`ed_status_${i}`);
+        if (sel) {
+          sel.value = "Terkirim";
+          updateRowStatusColor(i, "Terkirim");
+        }
+      }
+
+      const allPayloads = [];
+      for (let i = 0; i < loadedCurrentData.length; i++) {
+        const p = getRowPayload(i);
+        p.keterangan = "Terkirim";
+        allPayloads.push(p);
+      }
+
+      Swal.fire({ title: 'Mengubah Status Menjadi Terkirim...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "markAllTerkirimByDate",
+            tanggal: tanggal,
+            data: allPayloads
+          })
+        });
+        const result = await res.json();
+
+        if (result.status === "success") {
+          await Swal.fire("Berhasil", result.message || `Seluruh data tanggal ${tanggal} berstatus Terkirim.`, "success");
+          loadEditData();
+        } else {
+          Swal.fire("Gagal", result.message || "Gagal memperbarui status Terkirim.", "error");
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Gagal menghubungi server.", "error");
+      }
+    }
 
     async function loadEditData() {
       const tanggal = document.getElementById("inputTanggalEdit").value;
@@ -623,23 +698,13 @@
       tomSelectInstances = {};
 
       const tbody = document.getElementById("editTableBody");
-      tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; text-align: center; color: #64748b;">Memuat data...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="12" style="padding: 24px; text-align: center; color: #64748b;">Memuat data...</td></tr>`;
 
       try {
         const res = await fetch(`${API_URL}?action=getDinasan&tanggal=${encodeURIComponent(tanggal)}`);
         const result = await res.json();
 
         if (result.status === "success" && Array.isArray(result.data)) {
-          loadedCurrentData = result.data;
-          renderEditTable(loadedCurrentData);
-        } else {
-          tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; color: #ef4444; text-align: center;">Gagal memuat data.</td></tr>`;
-        }
-      } catch (err) {
-        console.error(err);
-        tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; color: #ef4444; text-align: center;">Kesalahan server.</td></tr>`;
-      }
-    if (result.status === "success" && Array.isArray(result.data)) {
           const seenRows = new Set();
           loadedCurrentData = result.data.filter(item => {
             const key = [
@@ -654,13 +719,19 @@
             return true;
           });
           renderEditTable(loadedCurrentData);
+        } else {
+          tbody.innerHTML = `<tr><td colspan="12" style="padding: 24px; color: #ef4444; text-align: center;">Gagal memuat data.</td></tr>`;
         }
+      } catch (err) {
+        console.error(err);
+        tbody.innerHTML = `<tr><td colspan="12" style="padding: 24px; color: #ef4444; text-align: center;">Kesalahan server.</td></tr>`;
+      }
     }
 
     function renderEditTable(dataList) {
       const tbody = document.getElementById("editTableBody");
       if (dataList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="padding: 24px; text-align: center;">Tidak ada data dinasan. Silakan klik "Tambah Dinasan Baru" atau "Tambah Pendinasan R".</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="12" style="padding: 24px; text-align: center;">Tidak ada data dinasan. Silakan klik "Tambah Dinasan Baru" atau "Tambah Running".</td></tr>`;
         return;
       }
 
@@ -672,6 +743,7 @@
         const colorClass = getStatusColorClass(currentStatus);
         const isRowR = String(item.posisi || "").trim().toUpperCase() === "R" || String(item.no_dinasan || "").trim().toUpperCase() === "R";
         const jabatanDisplay = isRowR ? "" : (item.jabatan || "MAS");
+        const catatanVal = item.catatan ?? "";
 
         html += `
           <tr>
@@ -691,6 +763,10 @@
                 <option value="Sudah Diinput" ${currentStatus === "Sudah Diinput" ? "selected" : ""}>Sudah Diinput</option>
                 <option value="Terkirim" ${currentStatus === "Terkirim" ? "selected" : ""}>Terkirim</option>
               </select>
+            </td>
+
+            <td>
+              <input type="text" class="input-catatan" id="ed_catatan_${idx}" value="${String(catatanVal).replace(/"/g, '&quot;')}" placeholder="Catatan...">
             </td>
 
             <td>
@@ -744,6 +820,7 @@
     function getRowPayload(idx) {
       const namaVal = tomSelectInstances[idx] ? tomSelectInstances[idx].getValue() : "";
       const statusVal = document.getElementById(`ed_status_${idx}`).value;
+      const catatanVal = document.getElementById(`ed_catatan_${idx}`) ? document.getElementById(`ed_catatan_${idx}`).value.trim() : "";
       const rowItem = loadedCurrentData[idx] || {};
       const noDinasVal = document.getElementById(`ed_nodinas_${idx}`).value.trim().toUpperCase();
       const isRowR = String(rowItem.posisi || "").trim().toUpperCase() === "R" || noDinasVal === "R";
@@ -761,12 +838,14 @@
         return {
           no_dinasan: noDinasVal || "R",
           keterangan: statusVal,
+          catatan: catatanVal,
           mas: null,
           asmas: null,
           r: {
             ...dataCrew,
             no_dinasan: noDinasVal || "R",
-            jabatan: ""
+            jabatan: "",
+            catatan: catatanVal
           }
         };
       }
@@ -777,8 +856,9 @@
       return {
         no_dinasan: noDinasVal,
         keterangan: statusVal,
-        mas: isMas ? dataCrew : null,
-        asmas: !isMas ? dataCrew : null,
+        catatan: catatanVal,
+        mas: isMas ? { ...dataCrew, catatan: catatanVal } : null,
+        asmas: !isMas ? { ...dataCrew, catatan: catatanVal } : null,
         r: null
       };
     }
@@ -903,7 +983,7 @@
               </div>
               <div class="modal-col" style="flex: 1;">
                 <label style="font-weight:700;">No Dinasan:</label>
-                <input type="text" id="mdNoDinasan" class="modal-input input-uppercase" placeholder="Contoh: 3">
+                <input type="text" id="mdNoDinasan" class="modal-input input-uppercase" placeholder="Contoh: 1 A atau 2">
               </div>
             </div>
 
@@ -972,12 +1052,18 @@
               </div>
             </div>
 
-            <div class="modal-col">
-              <label style="font-weight:700;">Status Premi Awal:</label>
-              <select id="mdStatusSelect" class="modal-input">
-                <option value="Sudah Diinput" selected>Sudah Diinput</option>
-                <option value="Terkirim">Terkirim</option>
-              </select>
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">Status Premi Awal:</label>
+                <select id="mdStatusSelect" class="modal-input">
+                  <option value="Sudah Diinput" selected>Sudah Diinput</option>
+                  <option value="Terkirim">Terkirim</option>
+                </select>
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Catatan (Kolom O):</label>
+                <input type="text" id="mdCatatan" class="modal-input" placeholder="Catatan opsional...">
+              </div>
             </div>
           </div>
         `,
@@ -1043,10 +1129,12 @@
 
           const asmasP1 = cleanRupiahToNumber(getInputValue('mdAsmasP1'));
           const asmasP2 = cleanRupiahToNumber(getInputValue('mdAsmasP2'));
+          const catatanVal = document.getElementById('mdCatatan') ? document.getElementById('mdCatatan').value.trim() : "";
 
           return {
             no_dinasan: noDinasan,
             status: document.getElementById('mdStatusSelect').value,
+            catatan: catatanVal,
             mas: masNama ? {
               jabatan: "MAS",
               nama: masNama,
@@ -1054,7 +1142,8 @@
               no_ka: masKa,
               relasi: masRelasi,
               premi_1: masP1,
-              premi_2: masP2
+              premi_2: masP2,
+              catatan: catatanVal
             } : null,
             asmas: asmasNama ? {
               jabatan: "ASMAS",
@@ -1063,7 +1152,8 @@
               no_ka: asmasKa,
               relasi: asmasRelasi,
               premi_1: asmasP1,
-              premi_2: asmasP2
+              premi_2: asmasP2,
+              catatan: catatanVal
             } : null
           };
         }
@@ -1074,6 +1164,7 @@
           const newDinasanPayload = {
             no_dinasan: val.no_dinasan,
             keterangan: val.status,
+            catatan: val.catatan,
             is_extra: true,
             mas: val.mas,
             asmas: val.asmas,
@@ -1122,7 +1213,7 @@
         title: 'Tambah Dinasan Running',
         width: '560px',
         customClass: { popup: 'swal2-popup-custom' },
-html: `
+        html: `
           <div class="modal-form-grid">
             <div class="modal-row">
               <div class="modal-col">
@@ -1164,12 +1255,18 @@ html: `
               </div>
             </div>
 
-            <div class="modal-col">
-              <label style="font-weight:700;">Status Premi Awal:</label>
-              <select id="mdRStatusSelect" class="modal-input">
-                <option value="Sudah Diinput" selected>Sudah Diinput</option>
-                <option value="Terkirim">Terkirim</option>
-              </select>
+            <div class="modal-row">
+              <div class="modal-col">
+                <label style="font-weight:700;">Status Premi Awal:</label>
+                <select id="mdRStatusSelect" class="modal-input">
+                  <option value="Sudah Diinput" selected>Sudah Diinput</option>
+                  <option value="Terkirim">Terkirim</option>
+                </select>
+              </div>
+              <div class="modal-col">
+                <label style="font-weight:700;">Catatan (Kolom O):</label>
+                <input type="text" id="mdRCatatan" class="modal-input" placeholder="Catatan opsional...">
+              </div>
             </div>
           </div>
         `,
@@ -1186,10 +1283,12 @@ html: `
             Swal.showValidationMessage('Pilih nama Penyelia Dinas atau Penyelia Instruktur!');
             return false;
           }
+          const catatanVal = document.getElementById('mdRCatatan') ? document.getElementById('mdRCatatan').value.trim() : "";
 
           return {
             no_dinasan: "R",
             keterangan: document.getElementById('mdRStatusSelect').value,
+            catatan: catatanVal,
             is_extra: true,
             mas: null,
             asmas: null,
@@ -1201,7 +1300,8 @@ html: `
               no_ka: getInputValue('mdRNoKa'),
               relasi: getInputValue('mdRRelasi'),
               premi_1: cleanRupiahToNumber(getInputValue('mdRP1')),
-              premi_2: cleanRupiahToNumber(getInputValue('mdRP2'))
+              premi_2: cleanRupiahToNumber(getInputValue('mdRP2')),
+              catatan: catatanVal
             }
           };
         }
@@ -1235,7 +1335,6 @@ html: `
     }
 
     document.addEventListener("DOMContentLoaded", function() {
-      // SINKRONISASI DATA PROFIL USER DARI LOCALSTORAGE
       document.getElementById("penyeliaNama").textContent = loggedInNama || "--";
       document.getElementById("penyeliaNipp").textContent = "NIPP. " + (loggedInNipp || "--");
       document.getElementById("penyeliaJabatan").textContent = loggedInJabatan || "PENYELIA";
