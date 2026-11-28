@@ -105,7 +105,7 @@
     }
 
     btn.disabled = true;
-    btn.innerText = "Verifikasi NIPP...";
+    btn.innerHTML = `<span class="spinner-arch"></span> Verifikasi NIPP...`;
 
     try {
       const res = await fetch(`${API_URL}?action=loginPenyelia&nipp=${encodeURIComponent(nipp)}`);
@@ -147,7 +147,7 @@
       });
     } finally {
       btn.disabled = false;
-      btn.innerText = "Masuk Aplikasi";
+      btn.innerText = "Masuk";
     }
   });
 </script>
