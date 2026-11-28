@@ -525,8 +525,7 @@
       const headerRow = document.getElementById("tableHeaderRow");
       const tbody = document.getElementById("tableBodyRow");
       document.getElementById("rowCountInfo").textContent = "Total Baris: Memuat...";
-      renderTableMessage(tbody, `Memuat data tanggal ${formattedDisplayDate}...`, false);
-
+      renderEditSkeleton(tbody, activeEditType);
       try {
         const res = await fetch(`${API_URL}?action=getEditData&tanggal=${encodeURIComponent(tanggalYMD)}&tipe=${encodeURIComponent(activeEditType)}`);
         const result = await res.json();
@@ -639,6 +638,36 @@
         Swal.fire("Error", "Gagal memuat data dari server.", "error");
       }
     }
+    function renderEditSkeleton(tbody, tipe) {
+  const headerRow = document.getElementById("tableHeaderRow");
+  const colgroup = document.getElementById("tableColgroup");
+
+  const headersAwal = ["NO", "TANGGAL", "NO KA", "LOKOMOTIF", "MASINIS", "ASISTEN MASINIS", "KEDUDUKAN", "TONASE", "KETERANGAN", "PENYELIA", "AKSI"];
+  const widthsAwal  = [50, 95, 80, 100, 240, 240, 190, 75, 160, 120, 140];
+
+  const headersAkhir = ["NO", "TANGGAL", "NO KA", "LOKOMOTIF", "DATANG", "LAMBAT", "MASINIS", "ASISTEN MASINIS", "KEDUDUKAN", "KEJADIAN", "KETERANGAN", "PENYELIA", "AKSI"];
+  const widthsAkhir  = [50, 95, 80, 100, 75, 75, 240, 240, 190, 160, 150, 120, 140];
+
+  const headers = tipe === 'awal' ? headersAwal : headersAkhir;
+  const widths  = tipe === 'awal' ? widthsAwal : widthsAkhir;
+
+  if (colgroup) {
+    colgroup.innerHTML = widths.map(w => `<col style="width: ${w}px;">`).join("");
+  }
+  if (headerRow) {
+    headerRow.innerHTML = headers.map(h => `<th>${h}</th>`).join("");
+  }
+
+  let html = "";
+  for (let r = 0; r < 5; r++) {
+    html += `<tr>`;
+    for (let c = 0; c < headers.length; c++) {
+      html += `<td><span class="skeleton-box lg"></span></td>`;
+    }
+    html += `</tr>`;
+  }
+  tbody.innerHTML = html;
+}
 
     function initTableTomSelects() {
       const tsElements = document.querySelectorAll(".ts-crew-edit");
@@ -719,7 +748,7 @@
 
       const originalText = btn.innerHTML;
       btn.disabled = true; 
-      btn.textContent = "⏳ Menyimpan...";
+      btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan...`;
 
       try {
         const res = await fetch(API_URL, {
