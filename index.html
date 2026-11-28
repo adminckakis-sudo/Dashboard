@@ -268,6 +268,45 @@
             box-sizing: border-box;
             transition: all 0.2s ease;
         }
+        /* SKELETON SHIMMER & BOUNCING DOTS */
+        .skeleton-shimmer {
+            background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+            background-size: 200% 100%;
+            animation: kaiShimmer 1.4s ease-in-out infinite;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        .skeleton-circle {
+            border-radius: 50% !important;
+        }
+        @keyframes kaiShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .bouncing-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            vertical-align: middle;
+        }
+        .bouncing-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #f06400;
+            animation: kaiBounce 1.2s infinite ease-in-out both;
+        }
+        .bouncing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .bouncing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes kaiBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        .stat-item.highlight .skeleton-shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.12) 25%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0.12) 75%);
+            background-size: 200% 100%;
+        }
     </style>
 </head>
 <body>
@@ -397,31 +436,31 @@
 
                     <div class="about-stats-grid">
                         <div class="stat-item highlight">
-                            <div class="stat-number" id="stat-total">-</div>
+                            <div class="stat-number" id="stat-total"><span class="skeleton-shimmer" style="width: 44px; height: 28px;"></span></div>
                             <div class="stat-label">Total Personel Aktif</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="stat-kupt">-</div>
+                            <div class="stat-number" id="stat-kupt"><span class="skeleton-shimmer" style="width: 32px; height: 28px;"></span></div>
                             <div class="stat-label">KUPT Crew KA</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="stat-instruktur">-</div>
+                            <div class="stat-number" id="stat-instruktur"><span class="skeleton-shimmer" style="width: 32px; height: 28px;"></span></div>
                             <div class="stat-label">Penyelia Instruktur</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="stat-penyelia">-</div>
+                            <div class="stat-number" id="stat-penyelia"><span class="skeleton-shimmer" style="width: 32px; height: 28px;"></span></div>
                             <div class="stat-label">Penyelia Dinas</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="stat-madya">-</div>
+                            <div class="stat-number" id="stat-madya"><span class="skeleton-shimmer" style="width: 36px; height: 28px;"></span></div>
                             <div class="stat-label">Masinis Madya</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="stat-muda">-</div>
+                            <div class="stat-number" id="stat-muda"><span class="skeleton-shimmer" style="width: 36px; height: 28px;"></span></div>
                             <div class="stat-label">Masinis Muda</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="stat-pertama">-</div>
+                            <div class="stat-number" id="stat-pertama"><span class="skeleton-shimmer" style="width: 36px; height: 28px;"></span></div>
                             <div class="stat-label">Masinis Pertama</div>
                         </div> 
                     </div>
@@ -432,15 +471,19 @@
             <section class="dashboard-section">
                 <div class="eotm-card">
                     <div class="eotm-badge-wrapper">
-                        <img id="eotmAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='130' height='130'><rect width='130' height='130' fill='%231c2a5f'/></svg>" alt="Pegawai Terbaik" class="eotm-avatar">
+                        <img id="eotmAvatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Pegawai Terbaik" class="eotm-avatar skeleton-shimmer skeleton-circle">
                         <div class="eotm-trophy-icon">
                             <i class="fa-solid fa-trophy"></i>
                         </div>
                     </div>
                     <div class="eotm-info">
                         <span class="eotm-tag">PEGAWAI TERBAIK BULAN INI</span>
-                        <h3 id="eotmName" class="eotm-name">Memuat Data...</h3>
-                        <p id="eotmRole" class="eotm-role">-</p>
+                        <h3 id="eotmName" class="eotm-name">
+                            <span class="skeleton-shimmer" style="width: 220px; height: 22px;"></span>
+                        </h3>
+                        <p id="eotmRole" class="eotm-role" style="margin-top: 4px;">
+                            <span class="skeleton-shimmer" style="width: 160px; height: 15px;"></span>
+                        </p>
                     </div>
                 </div>
             </section>
@@ -504,7 +547,9 @@
             const eotmAvatar = document.getElementById("eotmAvatar");
             const eotmName = document.getElementById("eotmName");
             const eotmRole = document.getElementById("eotmRole");
-
+            if (eotmAvatar) {
+                eotmAvatar.classList.remove("skeleton-shimmer", "skeleton-circle");
+            }
             try {
                 const resEotm = await fetch(`${APPS_SCRIPT_URL}?action=getEotm`);
                 const eotmResult = await resEotm.json();
@@ -617,6 +662,7 @@ function getAuthenticatedUser() {
 
 // 3. Render Pop-up UI
 document.addEventListener("DOMContentLoaded", () => {
+    loadEotmHomepage();
     const userPopup = document.getElementById("user-popup");
     if (!userPopup) return;
 
