@@ -600,7 +600,9 @@
 
     function getStatusColorClass(statusStr) {
       const s = String(statusStr || "").trim().toLowerCase();
-      if (s === "terkirim") return "status-terkirim";
+      if (s === "terkirim ke payroll" || s === "terkirim" || s.includes("terkirim")) {
+        return "status-terkirim";
+      }
       return "status-sudah";
     }
 
@@ -633,7 +635,7 @@
       }
 
       const confirmRes = await Swal.fire({
-        title: 'Ubah Semua Menjadi Terkirim?',
+        title: 'Ubah Semua Menjadi Terkirim Ke Payroll?',
         html: `Seluruh <b>${loadedCurrentData.length} baris</b> pada tanggal <b>${tanggal}</b> akan diubah status preminya menjadi <b>Terkirim</b> dan disimpan.`,
         icon: 'question',
         showCancelButton: true,
@@ -648,15 +650,15 @@
       for (let i = 0; i < loadedCurrentData.length; i++) {
         const sel = document.getElementById(`ed_status_${i}`);
         if (sel) {
-          sel.value = "Terkirim";
-          updateRowStatusColor(i, "Terkirim");
+          sel.value = "Terkirim Ke Payroll";
+          updateRowStatusColor(i, "Terkirim Ke Payroll");
         }
       }
 
       const allPayloads = [];
       for (let i = 0; i < loadedCurrentData.length; i++) {
         const p = getRowPayload(i);
-        p.keterangan = "Terkirim";
+        p.keterangan = "Terkirim Ke Payroll";
         allPayloads.push(p);
       }
 
@@ -677,7 +679,7 @@
           await Swal.fire("Berhasil", result.message || `Seluruh data tanggal ${tanggal} berstatus Terkirim.`, "success");
           loadEditData();
         } else {
-          Swal.fire("Gagal", result.message || "Gagal memperbarui status Terkirim.", "error");
+          Swal.fire("Gagal", result.message || "Gagal memperbarui status Terkirim Ke Payroll.", "error");
         }
       } catch (err) {
         console.error(err);
@@ -739,8 +741,11 @@
       dataList.forEach((item, idx) => {
         const p1Formatted = formatRupiahInput(item.premi_1);
         const p2Formatted = formatRupiahInput(item.premi_2);
-        const currentStatus = item.keterangan === "Terkirim" ? "Terkirim" : "Sudah Diinput";
-        const colorClass = getStatusColorClass(currentStatus);
+        const rawKet = String(item.keterangan || "").trim().toLowerCase();
+        const currentStatus = (rawKet === "terkirim ke payroll" || rawKet === "terkirim" || rawKet.includes("terkirim"))
+                  ? "Terkirim Ke Payroll"
+                  : "Sudah Diinput";        
+          const colorClass = getStatusColorClass(currentStatus);
         const isRowR = String(item.posisi || "").trim().toUpperCase() === "R" || String(item.no_dinasan || "").trim().toUpperCase() === "R";
         const jabatanDisplay = isRowR ? "" : (item.jabatan || "MAS");
         const catatanVal = item.catatan ?? "";
@@ -761,7 +766,7 @@
             <td>
               <select id="ed_status_${idx}" class="select-status ${colorClass}" onchange="updateRowStatusColor(${idx}, this.value)">
                 <option value="Sudah Diinput" ${currentStatus === "Sudah Diinput" ? "selected" : ""}>Sudah Diinput</option>
-                <option value="Terkirim" ${currentStatus === "Terkirim" ? "selected" : ""}>Terkirim</option>
+                <option value="Terkirim Ke Payroll" ${currentStatus === "Terkirim Ke Payroll" ? "selected" : ""}>Terkirim Ke Payroll</option>
               </select>
             </td>
 
@@ -783,6 +788,7 @@
 
       dataList.forEach((item, idx) => {
         initTomSelectRow(idx, item.nama || "");
+        bindEnterToSaveRow(idx);
       });
     }
 
@@ -1260,7 +1266,7 @@
                 <label style="font-weight:700;">Status Premi Awal:</label>
                 <select id="mdRStatusSelect" class="modal-input">
                   <option value="Sudah Diinput" selected>Sudah Diinput</option>
-                  <option value="Terkirim">Terkirim</option>
+                  <option value="Terkirim Ke Payroll">Terkirim Ke Payroll</option>
                 </select>
               </div>
               <div class="modal-col">
@@ -1441,6 +1447,28 @@
         console.error(err);
         Swal.fire("Error", "Gagal menghapus data di server.", "error");
       }
+    }
+    function bindEnterToSaveRow(idx) {
+      const tbody = document.getElementById("editTableBody");
+      const rowEl = tbody ? tbody.children[idx] : null;
+      if (!rowEl) return;
+
+      rowEl.addEventListener("keydown", function(e) {
+        if (e.key !== "Enter" || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+
+        // Jika dropdown Tom Select sedang terbuka, biarkan Enter memilih item dulu
+        const tsInst = tomSelectInstances[idx];
+        if (tsInst && tsInst.isOpen) return;
+
+        const target = e.target;
+        if (target && (target.tagName === "INPUT" || target.tagName === "SELECT")) {
+          e.preventDefault();
+          if (typeof target.blur === "function") {
+            target.blur();
+          }
+          saveSingleRow(idx);
+        }
+      });
     }
 </script>
 </body>
