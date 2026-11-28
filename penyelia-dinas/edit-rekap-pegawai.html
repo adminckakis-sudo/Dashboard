@@ -746,7 +746,8 @@
     }
 
     async function loadFromGoogleSheets() {
-      const banner = document.getElementById("loadingBanner");
+      const banner = document.getElementById("loadingBanner"); // Tambahkan baris ini
+      banner.innerHTML = `Sedang mengambil data terbaru dari Google Sheets <span class="bouncing-dots"><span></span><span></span><span></span></span>`;
       banner.style.display = "block";
 
       try {
@@ -773,7 +774,7 @@
     async function saveToGoogleSheets() {
       const btn = document.getElementById("btnSave");
       btn.disabled = true;
-      btn.textContent = "Menyimpan...";
+      btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan...`;
 
       storeData.tahun_rekap = document.getElementById("inputTahun").value || "2026";
 
