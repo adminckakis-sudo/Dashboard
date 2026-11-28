@@ -6,6 +6,9 @@
   <title>Login Penyelia - UPT Crew KA Kisaran</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+<link rel="shortcut icon" href="../favicon.ico">
+<link rel="apple-touch-icon" href="../favicon.ico">
   
   <!-- SWEETALERT2 POP-UP LIBRARY -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -87,16 +90,6 @@
 </div>
 
 <script>
-    (function() {
-    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-    }
-    link.href = iconUrl;
-})();
 
   const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
 
