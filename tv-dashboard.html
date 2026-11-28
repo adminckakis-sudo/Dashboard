@@ -992,6 +992,71 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+        .nav-row-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+        @media (max-width: 1100px) {
+            .tv-top-layout,
+            .tv-kpi-grid,
+            .cert-charts-grid,
+            .jabatan-split-grid,
+            .nav-row-3,
+            .nav-row-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* DARK SKELETON SHIMMER, SPINNER ARCH & BOUNCING DOTS (TV THEME) */
+        .tv-skeleton {
+            display: inline-block;
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: tvShimmer 1.4s ease-in-out infinite;
+            border-radius: 6px;
+            vertical-align: middle;
+        }
+        .tv-skeleton.circle { border-radius: 50%; }
+
+        @keyframes tvShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .tv-spinner-arch {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-top-color: var(--kai-orange);
+            border-right-color: #38bdf8;
+            border-radius: 50%;
+            animation: tvSpin 0.75s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes tvSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tv-bouncing-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 6px;
+        }
+        .tv-bouncing-dots span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: var(--kai-orange);
+            animation: tvBounce 1.2s infinite ease-in-out both;
+        }
+        .tv-bouncing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .tv-bouncing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes tvBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.35; }
+            40% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -1038,8 +1103,10 @@
                 </div>
 
                 <!-- 4. Sertifikasi & Keselamatan -->
-                <div class="nav-row-3">
+                <!-- 4. Sertifikasi & Keselamatan -->
+                <div class="nav-row-4">
                     <a href="./sertifikasi/dashboard-sertifikasi.html" class="tv-action-btn">Dashboard Sertifikasi</a>
+                    <a href="./sertifikasi/asp-matriks.html" class="tv-action-btn">Nominatif ASP</a>
                     <button type="button" class="tv-action-btn" onclick="openProgressModal()">Progress Pengajuan Sertifikasi</button>
                     <a href="./personel/ibpr.html" class="tv-action-btn">IBPR</a>
                 </div>
@@ -1060,12 +1127,12 @@
                     <h2 class="card-title">Pegawai Terbaik</h2>
                 </div>
                 <div class="eotm-hero-body">
-                    <div class="eotm-avatar-frame">
-                        <img id="eotmAvatar" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' fill='%23161f33'/></svg>" alt="Pegawai Terbaik" class="eotm-avatar">
+                    <div class="eotm-avatar-frame" style="width: 7.5rem; height: 7.5rem; aspect-ratio: 1 / 1;">
+                        <img id="eotmAvatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="eotm-avatar tv-skeleton circle">
                     </div>
                     <div class="eotm-info">
-                        <h3 id="eotmName" class="eotm-name">Memuat Data...</h3>
-                        <span id="eotmRole" class="eotm-role-pill">-</span>
+                        <h3 id="eotmName" class="eotm-name"><span class="tv-skeleton" style="width: 14rem; height: 1.5rem;"></span></h3>
+                        <span id="eotmRole" class="eotm-role-pill"><span class="tv-skeleton" style="width: 10rem; height: 0.9rem;"></span></span>
                     </div>
                 </div>
             </div>
@@ -1074,93 +1141,93 @@
         <!-- KPI Grid (Personel & Presensi) -->
         <section class="tv-kpi-grid">
             <!-- 1. Personel -->
-            <div class="tv-card">
-                <div>
-                    <div class="card-header">
-                        <h2 class="card-title">Personel</h2>
-                    </div>
-                    <div class="personnel-main-row">
-                        <div class="stat-box">
-                            <div class="stat-box-val" id="stat-total">46</div>
-                            <div class="stat-box-label">Total Personel</div>
+                <div class="tv-card">
+                    <div>
+                        <div class="card-header">
+                            <h2 class="card-title">Personel</h2>
                         </div>
-                        <div class="stat-box">
-                            <div class="stat-box-val" style="color: var(--kai-orange);" id="val-asp">39</div>
-                            <div class="stat-box-label">Awak Sarana Perkeretaapian (ASP)</div>
+                        <div class="personnel-main-row">
+                            <div class="stat-box">
+                                <div class="stat-box-val" id="stat-total"><span class="tv-skeleton" style="width: 3.6rem; height: 2.4rem;"></span></div>
+                                <div class="stat-box-label">Total Personel</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-box-val" style="color: var(--kai-orange);" id="val-asp"><span class="tv-skeleton" style="width: 3.6rem; height: 2.4rem;"></span></div>
+                                <div class="stat-box-label">Awak Sarana Perkeretaapian (ASP)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="personnel-subgrid">
+                        <div class="subchip">
+                            <div class="subchip-title">KUPT</div>
+                            <div class="subchip-val" id="val-kupt"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Penyelia Instruktur</div>
+                            <div class="subchip-val" id="val-instruktur"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Penyelia Dinas</div>
+                            <div class="subchip-val" id="val-penyelia"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Masinis Madya</div>
+                            <div class="subchip-val" id="val-madya"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Masinis Muda</div>
+                            <div class="subchip-val" id="val-muda"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Masinis Pertama</div>
+                            <div class="subchip-val" id="val-pertama"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
                         </div>
                     </div>
                 </div>
-                <div class="personnel-subgrid">
-                    <div class="subchip">
-                        <div class="subchip-title">KUPT</div>
-                        <div class="subchip-val" id="val-kupt">1</div>
-                    </div>
-                    <div class="subchip">
-                        <div class="subchip-title">Penyelia Instruktur</div>
-                        <div class="subchip-val" id="val-instruktur">2</div>
-                    </div>
-                    <div class="subchip">
-                        <div class="subchip-title">Penyelia Dinas</div>
-                        <div class="subchip-val" id="val-penyelia">4</div>
-                    </div>
-                    <div class="subchip">
-                        <div class="subchip-title">Masinis Madya</div>
-                        <div class="subchip-val" id="val-madya">0</div>
-                    </div>
-                    <div class="subchip">
-                        <div class="subchip-title">Masinis Muda</div>
-                        <div class="subchip-val" id="val-muda">0</div>
-                    </div>
-                    <div class="subchip">
-                        <div class="subchip-title">Masinis Pertama</div>
-                        <div class="subchip-val" id="val-pertama">0</div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- 2. Presensi -->
-            <div class="tv-card">
-                <div>
-                    <div class="card-header">
-                        <h2 class="card-title">Presensi Hari Ini</h2>
-                    </div>
-                    <div class="readiness-box">
-                        <div class="readiness-info">
-                            <span>Tingkat Kehadiran Hari Ini</span>
-                            <span class="readiness-pct" id="val-kesiapan-pct">0%</span>
+                <!-- 2. Presensi -->
+                <div class="tv-card">
+                    <div>
+                        <div class="card-header">
+                            <h2 class="card-title">Presensi Hari Ini</h2>
                         </div>
-                        <div class="readiness-track">
-                            <div class="readiness-fill" id="val-kesiapan-bar"></div>
+                        <div class="readiness-box">
+                            <div class="readiness-info">
+                                <span>Tingkat Kehadiran Hari Ini</span>
+                                <span class="readiness-pct" id="val-kesiapan-pct"><span class="tv-skeleton" style="width: 3.2rem; height: 1.4rem;"></span></span>
+                            </div>
+                            <div class="readiness-track">
+                                <div class="readiness-fill" id="val-kesiapan-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="presensi-grid">
+                        <div class="presensi-chip chip-hadir">
+                            <span class="presensi-badge">Hadir</span>
+                            <span class="presensi-val" id="val-hadir"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-cuti">
+                            <span class="presensi-badge">Cuti</span>
+                            <span class="presensi-val" id="val-cuti"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-sakit">
+                            <span class="presensi-badge">Sakit</span>
+                            <span class="presensi-val" id="val-sakit"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-itmb">
+                            <span class="presensi-badge">Izin</span>
+                            <span class="presensi-val" id="val-itmb"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-tms">
+                            <span class="presensi-badge">TMS</span>
+                            <span class="presensi-val" id="val-tms"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-mangkir">
+                            <span class="presensi-badge">Mangkir</span>
+                            <span class="presensi-val" id="val-mangkir"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
                         </div>
                     </div>
                 </div>
-                <div class="presensi-grid">
-                    <div class="presensi-chip chip-hadir">
-                        <span class="presensi-badge">Hadir</span>
-                        <span class="presensi-val" id="val-hadir">0</span>
-                    </div>
-                    <div class="presensi-chip chip-cuti">
-                        <span class="presensi-badge">Cuti</span>
-                        <span class="presensi-val" id="val-cuti">0</span>
-                    </div>
-                    <div class="presensi-chip chip-sakit">
-                        <span class="presensi-badge">Sakit</span>
-                        <span class="presensi-val" id="val-sakit">0</span>
-                    </div>
-                    <div class="presensi-chip chip-itmb">
-                        <span class="presensi-badge">Izin</span>
-                        <span class="presensi-val" id="val-itmb">0</span>
-                    </div>
-                    <div class="presensi-chip chip-tms">
-                        <span class="presensi-badge">TMS</span>
-                        <span class="presensi-val" id="val-tms">0</span>
-                    </div>
-                    <div class="presensi-chip chip-mangkir">
-                        <span class="presensi-badge">Mangkir</span>
-                        <span class="presensi-val" id="val-mangkir">0</span>
-                    </div>
-                </div>
-            </div>
         </section>
 
         <!-- Widget Monitoring Sertifikasi ASP (Proporsional & Simetris) -->
@@ -1173,19 +1240,19 @@
             <div class="cert-status-strip">
                 <div class="cert-kpi-box" style="border-left: 5px solid #ffffff;">
                     <span class="cert-kpi-label">Total Sertifikat</span>
-                    <span class="cert-kpi-val" id="cert-stat-total">0</span>
+                    <span class="cert-kpi-val" id="cert-stat-total"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
                 </div>
                 <div class="cert-kpi-box" style="border-left: 5px solid var(--status-hadir);">
                     <span class="cert-kpi-label" style="color: var(--status-hadir);">Status Aktif</span>
-                    <span class="cert-kpi-val" style="color: var(--status-hadir);" id="cert-stat-aktif">0</span>
+                    <span class="cert-kpi-val" style="color: var(--status-hadir);" id="cert-stat-aktif"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
                 </div>
                 <div class="cert-kpi-box" style="border-left: 5px solid var(--status-sakit);">
                     <span class="cert-kpi-label" style="color: var(--status-sakit);">Segera Habis (&lt; 1 Thn)</span>
-                    <span class="cert-kpi-val" style="color: var(--status-sakit);" id="cert-stat-warning">0</span>
+                    <span class="cert-kpi-val" style="color: var(--status-sakit);" id="cert-stat-warning"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
                 </div>
                 <div class="cert-kpi-box" style="border-left: 5px solid var(--status-mangkir);">
                     <span class="cert-kpi-label" style="color: var(--status-mangkir);">Kedaluwarsa</span>
-                    <span class="cert-kpi-val" style="color: var(--status-mangkir);" id="cert-stat-expired">0</span>
+                    <span class="cert-kpi-val" style="color: var(--status-mangkir);" id="cert-stat-expired"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
                 </div>
             </div>
 
@@ -1197,7 +1264,9 @@
                         <div class="seg-bar-container" id="tv-bar-tingkat"></div>
                     </div>
                     <div class="seg-legend-grid" id="tv-legend-tingkat">
-                        <div style="color: var(--text-muted); font-size: 0.85rem;">Memuat data tingkat...</div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
                     </div>
                 </div>
 
@@ -1207,7 +1276,8 @@
                         <div class="seg-bar-container" id="tv-bar-expired"></div>
                     </div>
                     <div class="seg-legend-grid" id="tv-legend-expired">
-                        <div style="color: var(--text-muted); font-size: 0.85rem;">Memuat proyeksi expired...</div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
                     </div>
                 </div>
             </div>
@@ -1391,7 +1461,7 @@
     </div>
 
     <script src="./js/main.js"></script>
-    <script>
+<script>
         (function() {
             const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
             const CERT_CSV_URL = "https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/gviz/tq?tqx=out:csv&gid=392940711";
@@ -1447,7 +1517,9 @@
             updateClock();
 
             function calcReadiness() {
-                const hadir = parseInt(document.getElementById('val-hadir').textContent, 10) || 0;
+                const hadirEl = document.getElementById('val-hadir');
+                if (!hadirEl || hadirEl.querySelector('.tv-skeleton')) return;
+                const hadir = parseInt(hadirEl.textContent, 10) || 0;
                 const total = parseInt(document.getElementById('val-asp').textContent, 10) || 39;
                 const pct = Math.min(100, Math.round((hadir / total) * 100));
                 document.getElementById('val-kesiapan-pct').textContent = pct + '%';
@@ -1596,7 +1668,13 @@
                     return;
                 }
 
-                container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--text-muted);">Memuat data...</div>`;
+                container.innerHTML = `
+                    <div class="jabatan-profile-card" style="align-items: center; justify-content: center; padding: 2.5rem; gap: 0.75rem; color: var(--text-muted);">
+                        <span class="tv-spinner-arch"></span>
+                        <span style="font-size: 0.9rem; font-weight: 700;">
+                            Memuat Profil Personel<span class="tv-bouncing-dots"><span></span><span></span><span></span></span>
+                        </span>
+                    </div>`;
 
                 try {
                     const res = await fetch(APPS_SCRIPT_URL);
@@ -1658,7 +1736,9 @@
                 let countPerp = 0;
 
                 if (certRawData.length === 0) {
-                    tbodyPerp.innerHTML = `<tr><td colspan="11" class="cell-center" style="color: var(--text-muted);">Data sertifikasi sedang dimuat...</td></tr>`;
+                    tbodyPerp.innerHTML = Array.from({ length: 4 }, () => `
+                        <tr>${Array.from({ length: 11 }, () => `<td><span class="tv-skeleton" style="width: 100%; height: 0.95rem;"></span></td>`).join('')}</tr>
+                    `).join('');
                 } else {
                     let rowsHtml = '';
                     certRawData.forEach(item => {
@@ -1809,7 +1889,6 @@
 
                     certRawData = rows.slice(1).map((row, idx) => {
                         if (!row || !row[1]) return null;
-                        // Baca Kolom G (row[6] = Tanggal Expired), fallback ke Kolom F (row[5]) jika kosong
                         const rawExpired = (row[6] && row[6].trim() !== '' && row[6].trim() !== '-')
                             ? row[6].trim()
                             : (row[5] ? row[5].trim() : '');
@@ -1878,7 +1957,6 @@
                 document.getElementById('cert-stat-warning').textContent = warning;
                 document.getElementById('cert-stat-expired').textContent = expired;
 
-                // Render Tingkat Sertifikasi
                 const barTingkat = document.getElementById('tv-bar-tingkat');
                 const legTingkat = document.getElementById('tv-legend-tingkat');
                 barTingkat.innerHTML = '';
@@ -1898,7 +1976,6 @@
                     `;
                 });
 
-                // Render Proyeksi Expired
                 const barExp = document.getElementById('tv-bar-expired');
                 const legExp = document.getElementById('tv-legend-expired');
                 barExp.innerHTML = '';
@@ -1939,6 +2016,7 @@
                 const eotmAvatar = document.getElementById("eotmAvatar");
                 const eotmName = document.getElementById("eotmName");
                 const eotmRole = document.getElementById("eotmRole");
+                eotmAvatar.classList.remove("tv-skeleton", "circle");
 
                 try {
                     const resEotm = await fetch(APPS_SCRIPT_URL + "?action=getEotm");
@@ -2062,15 +2140,25 @@
                     countAsisten = asisten;
 
                     updatePersonnelTotals();
+                    calcReadiness();
                 } catch (err) {
                     console.warn('Gagal memuat database personel struktural:', err);
                     updatePersonnelTotals();
+                    calcReadiness();
                 }
             }
 
             const aspTarget = document.getElementById('val-asp');
             if (aspTarget) {
-                new MutationObserver(updatePersonnelTotals).observe(aspTarget, { childList: true, characterData: true, subtree: true });
+                new MutationObserver(() => {
+                    updatePersonnelTotals();
+                    calcReadiness();
+                }).observe(aspTarget, { childList: true, characterData: true, subtree: true });
+            }
+
+            const hadirTarget = document.getElementById('val-hadir');
+            if (hadirTarget) {
+                new MutationObserver(calcReadiness).observe(hadirTarget, { childList: true, characterData: true, subtree: true });
             }
 
             loadEotmHomepage();
