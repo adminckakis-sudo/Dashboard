@@ -416,6 +416,7 @@
     </div>
 
 <script>
+    
     const btnToggle = document.getElementById('btn-toggle-menu');
     const sidebar = document.getElementById('app-sidebar');
     btnToggle?.addEventListener('click', () => {
@@ -716,6 +717,16 @@
         document.head.appendChild(link);
     }
     link.href = iconUrl;
+    (function() {
+    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = iconUrl;
+    })();
 })();
 </script>
 </body>
