@@ -826,6 +826,7 @@
     // LOAD SELURUH DATA KE SEMUA SECTION
     // ===========================================================================
     async function loadAll() {
+      renderPantauanSkeleton();
       try {
         const res = await fetch(`${API_URL}?action=getPantauanAll`);
         const json = await res.json();
@@ -949,6 +950,57 @@
         Swal.fire("Error", "Gagal terhubung ke server.", "error");
       }
     }
+
+    function renderPantauanSkeleton() {
+  // 1. Tabel Kejadian (6 kolom di pantauan.html, 8 kolom di edit-pantauan.html)
+  const tbodyKej = document.getElementById("tbodyKejadian") || document.getElementById("listKejadian");
+  const isEdit = !!document.getElementById("listKejadian");
+  if (tbodyKej) {
+    let rows = "";
+    for (let i = 0; i < 4; i++) {
+      rows += `
+        <tr>
+          ${isEdit ? `<td><span class="skeleton-box" style="width:20px;"></span></td>` : ""}
+          <td><span class="skeleton-box" style="width:45px;"></span></td>
+          <td><span class="skeleton-box" style="width:80px;"></span></td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+              <span class="skeleton-box sm" style="width:90%;"></span>
+              <span class="skeleton-box sm" style="width:80%;"></span>
+            </div>
+          </td>
+          <td><span class="skeleton-box" style="width:95%;"></span></td>
+          <td><span class="skeleton-box" style="width:85%;"></span></td>
+          <td><span class="skeleton-box pill"></span></td>
+          ${isEdit ? `<td><span class="skeleton-box lg"></span></td>` : ""}
+        </tr>`;
+    }
+    tbodyKej.innerHTML = rows;
+  }
+
+  // 2. Tabel Taspat
+  ["tbodyKisMdn", "tbodyKisRap", "tbodyKisTnb", "listTaspat"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const colCount = id === "listTaspat" ? 6 : 4;
+    let tRows = "";
+    for (let i = 0; i < 2; i++) {
+      tRows += `<tr>${Array(colCount).fill(`<td><span class="skeleton-box sm"></span></td>`).join("")}</tr>`;
+    }
+    el.innerHTML = tRows;
+  });
+
+  // 3. Slot GDrive (hanya di pantauan.html)
+  ["MALKA", "WAM", "WAD", "PPK", "JADWAL_HARI_INI", "JADWAL_ESOK_HARI"].forEach(kat => {
+    const box = document.getElementById(`box${kat}`);
+    if (box) {
+      box.innerHTML = `
+        <span class="skeleton-box sm" style="width:75%; margin-bottom:6px;"></span>
+        <span class="skeleton-box lg" style="width:100%;"></span>
+      `;
+    }
+  });
+}
 
     // ===========================================================================
     // HANDLER MODAL & SIMPAN DATA
