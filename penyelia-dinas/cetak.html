@@ -14,6 +14,8 @@
   <!-- FLATPICKR UNTUK FORMAT TANGGAL dd/mm/yyyy -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <link rel="shortcut icon" href="../favicon.ico">
+  <link rel="apple-touch-icon" href="../favicon.ico">
 
   <style>
     body {
@@ -605,17 +607,7 @@
 
 
 <script>
-  (function() {
-    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
-    let link = document.querySelector("link[rel~='icon']");
-    if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
-        document.head.appendChild(link);
-    }
-    link.href = iconUrl;
-})();
-
+  
     const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
     let activePrintMode = 'awal';
     let flatpickrInstance = null;
