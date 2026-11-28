@@ -240,6 +240,27 @@
       background: rgba(240, 100, 0, 0.25);
       border: 1px solid rgba(240, 100, 0, 0.45);
     }
+    /* Wrapper untuk menaruh Bouncing Dot di dalam input TomSelect saat loading */
+    .select-loading-wrap {
+      position: relative;
+      width: 100%;
+    }
+    .select-loading-wrap .bouncing-dots {
+      position: absolute;
+      right: 34px; /* tepat di sebelah kiri panah dropdown */
+      top: 50%;
+      transform: translateY(-50%);
+      color: #F06400;
+      z-index: 5;
+      pointer-events: none;
+    }
+    /* Styling TomSelect saat disabled/loading agar tetap rapi seperti input sebelahnya */
+    .ts-wrapper.disabled .ts-control {
+      background-color: #f8fafc !important;
+      color: #64748b !important;
+      opacity: 1 !important;
+      cursor: wait !important;
+    }
   </style>
 </head>
 <body>
@@ -573,46 +594,78 @@
     let crewKedudukanMap = {};
 
     async function loadInitialData() {
+      const selectIds = ["masinis", "asistenMasinis", "masinisAwal", "asistenMasinisAwal"];
+      const tsInstances = {};
+
+      // 1. Langsung ubah semua <select> menjadi TomSelect (tampilan seragam sejak awal)
+      selectIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        // Bungkus elemen agar Bouncing Dot muncul di dalam kotak input
+        const wrapper = document.createElement("div");
+        wrapper.className = "select-loading-wrap";
+        el.parentNode.insertBefore(wrapper, el);
+        wrapper.appendChild(el);
+        wrapper.insertAdjacentHTML(
+          "beforeend",
+          `<span class="bouncing-dots crew-loader"><span></span><span></span><span></span></span>`
+        );
+
+        const ts = new TomSelect(el, {
+          options: [],
+          create: function(input) {
+            const cleanInput = input.trim().toUpperCase();
+            return { value: cleanInput, text: cleanInput };
+          },
+          placeholder: "Memuat daftar awak KA..."
+        });
+        ts.disable(); // Kunci sementara selama fetch berlangsung
+        tsInstances[id] = ts;
+      });
+
+      // 2. Satu kali fetch saja (memperbaiki double fetch sebelumnya)
       try {
         const res = await fetch(API_URL + "?action=getFormDinasData");
         const data = await res.json();
-        
+
         if (data.status === "success" || data.result === "success") {
           const crewOptions = (data.crew || []).map(item => ({ value: item, text: item }));
           crewKedudukanMap = data.crewDetails || {};
 
-          // Helper konfigurasi TomSelect dengan fitur create manual (format NAMA - NIPP)
-          const tsConfig = {
-            options: crewOptions,
-            create: function(input) {
-              const cleanInput = input.trim().toUpperCase();
-              return { value: cleanInput, text: cleanInput };
-            },
-            placeholder: "Cari atau Ketik NAMA - NIPP..."
-          };
+          // Masukkan opsi ke semua instance TomSelect dan aktifkan kembali
+          Object.entries(tsInstances).forEach(([id, ts]) => {
+            ts.addOptions(crewOptions);
+            ts.settings.placeholder = "Cari atau Ketik NAMA - NIPP...";
+            ts.inputState();
+            ts.enable();
+          });
 
-          const tsMasinis = new TomSelect("#masinis", tsConfig);
-          tsMasinis.on('change', v => {
+          // Pasang listener otomatis isi Kedudukan
+          tsInstances.masinis?.on("change", v => {
             if (crewKedudukanMap[v]) document.getElementById("kedudukanMasinis").value = crewKedudukanMap[v];
           });
-
-          const tsAsisten = new TomSelect("#asistenMasinis", tsConfig);
-          tsAsisten.on('change', v => {
+          tsInstances.asistenMasinis?.on("change", v => {
             if (crewKedudukanMap[v]) document.getElementById("kedudukanAsisten").value = crewKedudukanMap[v];
           });
-
-          const tsMasinisAwal = new TomSelect("#masinisAwal", tsConfig);
-          tsMasinisAwal.on('change', v => {
+          tsInstances.masinisAwal?.on("change", v => {
             if (crewKedudukanMap[v]) document.getElementById("kedudukanMasinisAwal").value = crewKedudukanMap[v];
           });
-
-          const tsAsistenAwal = new TomSelect("#asistenMasinisAwal", tsConfig);
-          tsAsistenAwal.on('change', v => {
+          tsInstances.asistenMasinisAwal?.on("change", v => {
             if (crewKedudukanMap[v]) document.getElementById("kedudukanAsistenAwal").value = crewKedudukanMap[v];
           });
         }
       } catch (err) {
-        console.error(err);
+        console.error("Gagal memuat data awak KA:", err);
+        // Jika gagal fetch, tetap buka kunci agar user bisa ketik manual
+        Object.values(tsInstances).forEach(ts => {
+          ts.settings.placeholder = "Gagal memuat. Ketik manual NAMA - NIPP...";
+          ts.inputState();
+          ts.enable();
+        });
+      } finally {
+        // Hapus indikator Bouncing Dot setelah selesai
+        document.querySelectorAll(".crew-loader").forEach(el => el.remove());
       }
     }
 
@@ -620,7 +673,8 @@
     document.getElementById("formAwalDinas").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmitAwal");
-      btn.disabled = true; btn.innerText = "Menyimpan...";
+      btn.disabled = true; 
+      btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan Laporan...`;
 
       const payload = {
         action: "submitFormAwalDinas",
@@ -650,7 +704,7 @@
         Swal.fire('Kesalahan Jaringan', 'Gagal terhubung ke server.', 'error');
       } finally {
         btn.disabled = false;
-        btn.innerText = "Kirim Laporan Awal Dinas";
+        btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan Laporan...`;
       }
     });
 
@@ -658,7 +712,8 @@
     document.getElementById("formAkhirDinas").addEventListener("submit", async function(e) {
       e.preventDefault();
       const btn = document.getElementById("btnSubmit");
-      btn.disabled = true; btn.innerText = "Menyimpan...";
+      btn.disabled = true; 
+      btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan Laporan...`;
 
       const payload = {
         action: "submitFormAkhirDinas",
@@ -690,7 +745,7 @@
         Swal.fire('Kesalahan Jaringan', 'Gagal terhubung ke server.', 'error');
       } finally {
         btn.disabled = false;
-        btn.innerText = "Kirim Laporan Akhir Dinas";
+        btn.innerHTML = "Kirim Laporan Akhir Dinas";
       }
     });
 
