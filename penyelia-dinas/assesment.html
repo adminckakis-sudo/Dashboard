@@ -107,6 +107,7 @@
     .form-tab-container {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 12px;
     }
@@ -378,6 +379,7 @@
         <div class="form-tab-container">
           <button type="button" class="form-tab-btn" id="btnTabAwal" onclick="switchForm('awal')">Form Awal Dinas</button>
           <button type="button" class="form-tab-btn active" id="btnTabAkhir" onclick="switchForm('akhir')">Form Akhir Dinas</button>
+          <button type="button" class="form-tab-btn" id="btnTabLangsir" onclick="switchForm('langsir')">Langsir / Serep</button>
         </div>
 
         <!-- FORM AWAL DINAS -->
@@ -519,6 +521,69 @@
           </div>
         </div>
 
+        <!-- FORM LANGSIR / SEREP -->
+        <div id="sectionLangsirSerep" class="form-section">
+          <div class="form-card">
+            <form id="formLangsirSerep">
+              <h3 style="margin-top:0; margin-bottom:16px; font-size:1.1rem; color:var(--kai-blue);">Input Data Langsir / Serep</h3>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Dinasan</label>
+                  <select id="dinasanLangsir" class="form-select" required>
+                    <option value="">Pilih Dinasan...</option>
+                    <option value="Serep Pagi">Serep Pagi</option>
+                    <option value="Serep Siang">Serep Siang</option>
+                    <option value="Langsir Pagi">Langsir Pagi</option>
+                    <option value="Langsir Siang">Langsir Siang</option>
+                    <option value="Langsir Malam">Langsir Malam</option>
+                    <option value="Serep Pagi-LD U53">Serep Pagi - LD U53 (Serep RAP)</option>
+                    <option value="LD U52 - Serep RAP">LD U52 - Serep Siang (Serep RAP)</option>
+                  </select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Keterangan Tambahan</label>
+                  <input type="text" id="keteranganLangsir" class="form-input" placeholder="-">
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Masinis</label>
+                  <select id="masinisLangsir" placeholder="Cari atau Ketik NAMA - NIPP..."></select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Kedudukan Masinis</label>
+                  <select id="kedudukanMasinisLangsir" class="form-select">
+                    <option value="">Pilih Kedudukan...</option>
+                    <option value="UPT CREW KA KIS">UPT CREW KA KIS</option>
+                    <option value="UPT CREW KA TBI">UPT CREW KA TBI</option>
+                    <option value="UPT CREW KA MDN">UPT CREW KA MDN</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-row">
+                <div class="form-grid-col">
+                  <label class="form-label">Asisten Masinis</label>
+                  <select id="asistenMasinisLangsir" placeholder="Cari atau Ketik NAMA - NIPP..."></select>
+                </div>
+                <div class="form-grid-col">
+                  <label class="form-label">Kedudukan Asisten Masinis</label>
+                  <select id="kedudukanAsistenLangsir" class="form-select">
+                    <option value="">Pilih Kedudukan...</option>
+                    <option value="UPT CREW KA KIS">UPT CREW KA KIS</option>
+                    <option value="UPT CREW KA TBI">UPT CREW KA TBI</option>
+                    <option value="UPT CREW KA MDN">UPT CREW KA MDN</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-submit-kai" id="btnSubmitLangsir">Kirim Laporan</button>
+            </form>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
@@ -565,8 +630,10 @@
     function switchForm(type) {
       document.getElementById("btnTabAwal").classList.toggle("active", type === 'awal');
       document.getElementById("btnTabAkhir").classList.toggle("active", type === 'akhir');
+      document.getElementById("btnTabLangsir").classList.toggle("active", type === 'langsir');
       document.getElementById("sectionAwalDinas").classList.toggle("active", type === 'awal');
       document.getElementById("sectionAkhirDinas").classList.toggle("active", type === 'akhir');
+      document.getElementById("sectionLangsirSerep").classList.toggle("active", type === 'langsir');
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -594,12 +661,13 @@
       loadInitialData();
     });
 
-    const API_URL = "https://script.google.com/macros/s/AKfycbz5n0dQOljQC5akl_34b71_kIzSPeCwJ2e_rZ4BfG-EOjy9_V7Cjg1pPHf8EepoLdmZvw/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbw-9fcXYIGwoZDP5UZExzNI_nWOdwGlM_j-8lRDn4PjIinkVD0Z6km_ohjiy5tDKSh6aQ/exec";
     let crewKedudukanMap = {};
+    let tsInstances = {};
 
     async function loadInitialData() {
-      const selectIds = ["masinis", "asistenMasinis", "masinisAwal", "asistenMasinisAwal"];
-      const tsInstances = {};
+      const selectIds = ["masinis", "asistenMasinis", "masinisAwal", "asistenMasinisAwal", "masinisLangsir", "asistenMasinisLangsir"];
+      tsInstances = {};
 
       // 1. Langsung ubah semua <select> menjadi TomSelect (tampilan seragam sejak awal)
       selectIds.forEach(id => {
@@ -658,6 +726,12 @@
           tsInstances.asistenMasinisAwal?.on("change", v => {
             if (crewKedudukanMap[v]) document.getElementById("kedudukanAsistenAwal").value = crewKedudukanMap[v];
           });
+          tsInstances.masinisLangsir?.on("change", v => {
+            if (crewKedudukanMap[v]) document.getElementById("kedudukanMasinisLangsir").value = crewKedudukanMap[v];
+          });
+          tsInstances.asistenMasinisLangsir?.on("change", v => {
+            if (crewKedudukanMap[v]) document.getElementById("kedudukanAsistenLangsir").value = crewKedudukanMap[v];
+          });
         }
       } catch (err) {
         console.error("Gagal memuat data awak KA:", err);
@@ -708,7 +782,7 @@
         Swal.fire('Kesalahan Jaringan', 'Gagal terhubung ke server.', 'error');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan Laporan...`;
+        btn.innerHTML = "Kirim Laporan Awal Dinas";
       }
     });
 
@@ -750,6 +824,56 @@
       } finally {
         btn.disabled = false;
         btn.innerHTML = "Kirim Laporan Akhir Dinas";
+      }
+    });
+
+    // Submit Langsir / Serep (selalu membuat baris/entri baru, tidak menimpa data yang sudah ada)
+    document.getElementById("formLangsirSerep").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmitLangsir");
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-arch"></span> Menyimpan Laporan...`;
+
+      const dinasanVal = document.getElementById("dinasanLangsir").value;
+      const masinisVal = document.getElementById("masinisLangsir").value || "-";
+      const asistenVal = document.getElementById("asistenMasinisLangsir").value || "-";
+      const kedudukanMasVal = document.getElementById("kedudukanMasinisLangsir").value || "-";
+      const kedudukanAsmasVal = document.getElementById("kedudukanAsistenLangsir").value || "-";
+      const keteranganVal = document.getElementById("keteranganLangsir").value || "-";
+
+      const payload = {
+        action: "submitFormLangsirSerep",
+        appendOnly: true,
+        noKa: dinasanVal,
+        dinasan: dinasanVal,
+        masinis: masinisVal,
+        asistenMasinis: asistenVal,
+        kedudukanMasinis: kedudukanMasVal,
+        kedudukanAsisten: kedudukanAsmasVal,
+        kedudukan: kedudukanMasVal + " / " + kedudukanAsmasVal,
+        keterangan: keteranganVal,
+        penyelia: loggedInNama,
+        penyeliaNipp: loggedInNipp
+      };
+
+      try {
+        const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+        const result = await res.json();
+        if (result.status === "success" || result.result === "success") {
+          Swal.fire('Berhasil', 'Data Tersimpan.', 'success');
+          document.getElementById("formLangsirSerep").reset();
+          document.getElementById("kedudukanMasinisLangsir").value = "";
+          document.getElementById("kedudukanAsistenLangsir").value = "";
+          tsInstances.masinisLangsir?.clear(true);
+          tsInstances.asistenMasinisLangsir?.clear(true);
+        } else {
+          Swal.fire('Gagal', result.message || 'Gagal menyimpan data.', 'error');
+        }
+      } catch (err) {
+        Swal.fire('Kesalahan Jaringan', 'Gagal terhubung ke server.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "Kirim Laporan";
       }
     });
 
