@@ -243,8 +243,39 @@
             </div>
         </div>
     </div>
-    <script src="../js/main.js"></script>
     <script>
+    (function initSidebar() {
+        const btnToggle = document.getElementById('btn-toggle-menu');
+        const sidebar = document.getElementById('app-sidebar');
+        if (!btnToggle || !sidebar || btnToggle.dataset.bound) return;
+
+        btnToggle.dataset.bound = 'true';
+        btnToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            sidebar.classList.toggle('collapsed');
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 992 && !sidebar.classList.contains('collapsed')) {
+                if (!sidebar.contains(e.target) && !btnToggle.contains(e.target)) {
+                    sidebar.classList.add('collapsed');
+                }
+            }
+        });
+    })();
+      
+    (function() {
+    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = iconUrl;
+})();
         const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
         const GID = "392940711";
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID}`;
@@ -517,13 +548,6 @@
 
         document.addEventListener("DOMContentLoaded", function() {
             const btnToggle = document.getElementById("btn-toggle-menu");
-            const sidebar = document.getElementById("app-sidebar");
-            
-            if (btnToggle && sidebar) {
-                btnToggle.addEventListener("click", function() {
-                    sidebar.classList.toggle("collapsed");
-                });
-            }
         });
     </script>
 </body>
