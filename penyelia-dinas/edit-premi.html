@@ -319,8 +319,19 @@
       </div>
     </main>
   </div>
-
+  
 <script>
+    (function() {
+    const iconUrl = new URL('../favicon.ico', document.currentScript.src).href;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+        link = document.createElement('link');
+        link.rel = 'icon';
+        document.head.appendChild(link);
+    }
+    link.href = iconUrl;
+})();
+
     function getInputValue(id) {
       const el = document.getElementById(id);
       return el ? el.value.trim().toUpperCase() : "";
@@ -1269,9 +1280,12 @@ html: `
     async function handleSyncO241() {
       Swal.fire({
         title: 'Menyinkronkan Seluruh Tanggal...',
-        text: 'Update Data.',
+        html: `<div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:8px;">
+                <span class="spinner-arch orange" style="width:22px; height:22px; border-width:3px;"></span>
+                <span>Memperbarui data O.241...</span>
+              </div>`,
         allowOutsideClick: false,
-        didOpen: () => { Swal.showLoading(); }
+        showConfirmButton: false
       });
 
       try {
