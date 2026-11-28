@@ -3,545 +3,2657 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Administrator - UPT Crew KA Kisaran</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>TV Overview &bull; UPT Crew KA Kelas C Kisaran</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- SWEETALERT2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-    /* SPINNER ARCH & BOUNCING DOTS UNTUK TOMBOL AKSI */
-    .spinner-arch {
-        display: inline-block;
-        width: 15px;
-        height: 15px;
-        border: 2.5px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #ffffff;
-        border-radius: 50%;
-        animation: spinArch 0.7s linear infinite;
-        vertical-align: middle;
-        margin-right: 6px;
-    }
-    @keyframes spinArch {
-        to { transform: rotate(360deg); }
-    }
+        :root {
+            --kai-dark: #060911;
+            --kai-surface: #0e1422;
+            --kai-card: #161f33;
+            --kai-border: #263352;
+            --kai-orange: #f97316;
+            --kai-orange-soft: rgba(249, 115, 22, 0.15);
 
-    .bouncing-dots-white {
-        display: inline-flex;
-        align-items: center;
-        gap: 3px;
-        margin-left: 4px;
-    }
-    .bouncing-dots-white span {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background-color: #ffffff;
-        animation: bounceDotLogin 1.2s infinite ease-in-out both;
-    }
-    .bouncing-dots-white span:nth-child(1) { animation-delay: -0.32s; }
-    .bouncing-dots-white span:nth-child(2) { animation-delay: -0.16s; }
-    @keyframes bounceDotLogin {
-        0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-        40% { transform: scale(1); opacity: 1; }
-    }
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 120px);
-            padding: 20px;
-        }
-        .login-card {
-            background: #ffffff;
-            border: 1px solid var(--border-color, #e2e8f0);
-            border-radius: var(--radius-md, 8px);
-            box-shadow: var(--shadow-subtle, 0 1px 3px rgba(0,0,0,0.05));
-            width: 100%;
-            max-width: 400px;
-            padding: 32px;
-            box-sizing: border-box;
-        }
-        .login-header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .login-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--kai-blue, #0d1b2a);
-            margin-bottom: 6px;
-        }
-        .login-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-muted, #64748b);
-        }
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-main, #334155);
-            margin-bottom: 6px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color, #cbd5e1);
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.85rem;
-            box-sizing: border-box;
-        }
-        .form-control:focus {
-            outline: none;
-            border-color: var(--kai-orange, #f06400);
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+
+            --status-hadir: #10b981;
+            --status-hadir-bg: rgba(16, 185, 129, 0.15);
+            --status-cuti: #38bdf8;
+            --status-sakit: #fbbf24;
+            --status-itmb: #818cf8;
+            --status-tms: #fb923c;
+            --status-mangkir: #f87171;
         }
 
-        /* STYLING INPUT PASSWORD DENGAN IKON MATA */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .password-wrapper .form-control {
-            padding-right: 40px;
-        }
-        .toggle-password-btn {
-            position: absolute;
-            right: 12px;
-            background: none;
-            border: none;
-            color: #64748b;
-            cursor: pointer;
+        * {
+            box-sizing: border-box;
+            margin: 0;
             padding: 0;
+        }
+
+        html {
+            font-size: clamp(16px, 1.05vw, 28px);
+        }
+
+        body {
+            background-color: var(--kai-dark);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .tv-wrapper {
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        /* Top Command Header */
+        .tv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--kai-surface);
+            border: 2px solid var(--kai-border);
+            padding: 1.25rem 1.75rem;
+            border-radius: 16px;
+            gap: 1.5rem;
+        }
+
+        .brand-titles h1 {
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .brand-subtitle {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--kai-orange);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tv-action-btn {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 700;
+            padding: 0.85rem 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .tv-action-btn:hover,
+        .tv-action-btn:focus-visible {
+            background: var(--kai-orange-soft);
+            border-color: var(--kai-orange);
+            outline: none;
+        }
+
+        .tv-action-btn.btn-highlight {
+            border-color: rgba(249, 115, 22, 0.55);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .tv-action-btn.btn-highlight:hover {
+            background: var(--kai-orange-soft);
+            border-color: var(--kai-orange);
+        }
+
+        .tv-clock-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--kai-card);
+            border: 2px solid var(--kai-border);
+            padding: 0.85rem 1.5rem;
+            border-radius: 12px;
+        }
+
+        .clock-time {
+            font-size: 2rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .clock-date {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-top: 0.35rem;
+        }
+
+        /* Top Layout: Navigasi Terstruktur & EOTM */
+        .tv-top-layout {
+            display: grid;
+            grid-template-columns: 1.85fr 1.15fr;
+            gap: 1.25rem;
+            align-items: stretch;
+        }
+
+        .tv-nav-panel {
+            background: var(--kai-surface);
+            border: 2px solid var(--kai-border);
+            border-radius: 16px;
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            justify-content: center;
+        }
+
+        .nav-row-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .nav-row-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--kai-border);
+            margin: 0.15rem 0;
+        }
+
+        /* Card Pegawai Terbaik (Hero Spotlight Layout) */
+        .eotm-card {
+            background: var(--kai-surface);
+            border: 2px solid var(--kai-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .eotm-hero-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 1rem;
+            padding: 0.75rem 0.5rem;
+        }
+
+        .eotm-avatar-frame {
+            position: relative;
+            width: 7.5rem;
+            height: 7.5rem;
+            flex-shrink: 0;
+        }
+
+        .eotm-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3.5px solid var(--kai-orange);
+            background: var(--kai-card);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.25);
+        }
+
+        .eotm-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .eotm-name {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        .eotm-role-pill {
+            display: inline-block;
+            background: var(--kai-orange-soft);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            color: #fdba74;
+            font-size: 0.88rem;
+            font-weight: 700;
+            padding: 0.35rem 0.95rem;
+            border-radius: 999px;
+            letter-spacing: 0.03em;
+        }
+
+        /* 2-Column Balanced Grid for KPI */
+        .tv-kpi-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1.5fr;
+            gap: 1.25rem;
+        }
+
+        .tv-card {
+            background: var(--kai-surface);
+            border: 2px solid var(--kai-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1.5px solid var(--kai-border);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Card 1: Personel */
+        .personnel-main-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-box {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            padding: 1.15rem 1.25rem;
+            border-radius: 12px;
+        }
+
+        .stat-box-val {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.05;
+        }
+
+        .stat-box-label {
             font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 0.4rem;
+            line-height: 1.3;
+        }
+
+        .personnel-subgrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .subchip {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+        }
+
+        .subchip-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            line-height: 1.25;
+        }
+
+        .subchip-val {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+            margin-top: 0.25rem;
+        }
+
+        /* Card 2: Presensi & Kesiapan */
+        .readiness-box {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            padding: 1.15rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .readiness-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.65rem;
+        }
+
+        .readiness-pct {
+            color: var(--status-hadir);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .readiness-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .readiness-fill {
+            height: 100%;
+            background: var(--status-hadir);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .presensi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .presensi-chip {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            padding: 0.9rem 1.1rem;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .presensi-badge {
+            font-size: 0.88rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .presensi-val {
+            font-size: 2rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+
+        .chip-hadir { border-left: 5px solid var(--status-hadir); }
+        .chip-hadir .presensi-badge { color: var(--status-hadir); }
+        .chip-cuti { border-left: 5px solid var(--status-cuti); }
+        .chip-cuti .presensi-badge { color: var(--status-cuti); }
+        .chip-sakit { border-left: 5px solid var(--status-sakit); }
+        .chip-sakit .presensi-badge { color: var(--status-sakit); }
+        .chip-itmb { border-left: 5px solid var(--status-itmb); }
+        .chip-itmb .presensi-badge { color: var(--status-itmb); }
+        .chip-tms { border-left: 5px solid var(--status-tms); }
+        .chip-tms .presensi-badge { color: var(--status-tms); }
+        .chip-mangkir { border-left: 5px solid var(--status-mangkir); }
+        .chip-mangkir .presensi-badge { color: var(--status-mangkir); }
+
+        /* Widget Sertifikasi ASP (Proporsional & Simetris) */
+        .cert-status-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .cert-kpi-box {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            border-radius: 12px;
+            padding: 1.1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .cert-kpi-label {
+            font-size: 0.84rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.03em;
+        }
+
+        .cert-kpi-val {
+            font-size: 2.35rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.05;
+        }
+
+        .cert-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            align-items: stretch;
+        }
+
+        .seg-bar-container {
+            display: flex;
+            width: 100%;
+            height: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--kai-card);
+            border: 1px solid var(--kai-border);
+            margin-bottom: 1.15rem;
+        }
+
+        .seg-legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .seg-legend-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-size: 0.92rem;
+        }
+
+        .seg-legend-left {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .seg-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .seg-legend-val {
+            font-weight: 800;
+            color: #ffffff;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Card 4: Profil Unit */
+        .unit-body {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            font-weight: 500;
+        }
+
+        .unit-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--kai-orange);
+            text-decoration: none;
+            margin-top: 0.85rem;
+        }
+
+        .unit-link:hover {
+            color: #ffffff;
+        }
+
+        /* Modal Pop-up (Jabatan & Progress Pengajuan) */
+        .tv-modal-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(6, 9, 17, 0.88);
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        .tv-modal-wide {
+            background: var(--kai-surface);
+            border: 2px solid var(--kai-border);
+            border-radius: 18px;
+            width: 94vw;
+            max-width: 1440px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.75);
+            animation: tvModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes tvModalPop {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .tv-modal-header {
+            padding: 1.15rem 1.65rem;
+            background: var(--kai-card);
+            border-bottom: 2px solid var(--kai-orange);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            gap: 1rem;
+        }
+
+        .tv-modal-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .tv-modal-close {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid var(--kai-border);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 1.55rem;
+            cursor: pointer;
+            line-height: 1;
+            width: 2.35rem;
+            height: 2.35rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .tv-modal-close:hover {
+            color: #ffffff;
+            border-color: var(--kai-orange);
+            background: var(--kai-orange-soft);
+        }
+
+        .tv-modal-body {
+            padding: 1.35rem 1.65rem;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .jabatan-split-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.35rem;
+            align-items: stretch;
+        }
+
+        .tv-modal-section {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            border-radius: 14px;
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tv-modal-section-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--kai-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.65rem;
+            border-bottom: 1.5px solid var(--kai-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.55rem;
+        }
+
+        /* Kartu Profil Personel */
+        .jabatan-profile-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex-grow: 1;
+            max-height: 62vh;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+        }
+
+        .jabatan-profile-card {
+            background: var(--kai-surface);
+            border: 1.5px solid var(--kai-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+        }
+
+        .jabatan-profile-hero {
+            display: flex;
+            align-items: center;
+            gap: 1.1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--kai-border);
+        }
+
+        .jabatan-hero-avatar {
+            width: 5.2rem;
+            height: 5.2rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--kai-orange);
+            background: var(--kai-card);
+            flex-shrink: 0;
+        }
+
+        .jabatan-hero-placeholder {
+            width: 5.2rem;
+            height: 5.2rem;
+            border-radius: 50%;
+            background: var(--kai-orange-soft);
+            color: var(--kai-orange);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .toggle-password-btn:hover {
-            color: var(--kai-orange, #f06400);
+            font-size: 1.65rem;
+            font-weight: 800;
+            border: 3px solid var(--kai-orange);
+            flex-shrink: 0;
         }
 
-        .btn-login {
-            width: 100%;
-            background-color: var(--kai-orange, #f06400);
+        .jabatan-hero-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            min-width: 0;
+        }
+
+        .jabatan-hero-name {
+            font-size: 1.25rem;
+            font-weight: 800;
             color: #ffffff;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
+            line-height: 1.25;
+        }
+
+        .jabatan-hero-nipp {
+            font-size: 0.88rem;
             font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
+            color: var(--kai-orange);
+            letter-spacing: 0.03em;
         }
-        .btn-login:hover {
-            background-color: #d95800;
+
+        .jabatan-hero-role {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
         }
-        .alert-error {
-            background-color: #fef2f2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-            padding: 10px;
+
+        .jabatan-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .jabatan-meta-item {
+            background: var(--kai-card);
+            border: 1px solid var(--kai-border);
+            border-radius: 10px;
+            padding: 0.75rem 0.9rem;
+        }
+
+        .jabatan-meta-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .jabatan-meta-value {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.35;
+        }
+
+        /* Daftar Tupoksi */
+        .tv-tupoksi-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+        }
+
+        .tv-tupoksi-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            background: var(--kai-surface);
+            border: 1px solid var(--kai-border);
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            font-size: 0.94rem;
+            color: var(--text-main);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .tv-tupoksi-num {
+            width: 1.7rem;
+            height: 1.7rem;
+            border-radius: 8px;
+            background: var(--kai-orange-soft);
+            border: 1px solid rgba(249, 115, 22, 0.45);
+            color: var(--kai-orange);
+            font-size: 0.82rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.08rem;
+        }
+
+        /* Tabel Modal Progress Sertifikasi */
+        .tv-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--kai-border);
+        }
+
+        .tv-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+
+        .tv-data-table th {
+            background: var(--kai-surface);
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.04em;
+            padding: 0.75rem 0.65rem;
+            border-bottom: 1.5px solid var(--kai-border);
+        }
+
+        .tv-data-table td {
+            padding: 0.68rem 0.65rem;
+            border-bottom: 1px solid var(--kai-border);
+            color: #ffffff;
+        }
+
+        .tv-data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .cell-center { text-align: center; }
+
+        .tv-badge-lulus {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            padding: 3px 8px;
             border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.72rem;
+        }
+
+        .tv-badge-proses {
+            background: rgba(56, 189, 248, 0.18);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.72rem;
+        }
+
+        .tv-check-ok {
+            color: #10b981;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .tv-modal-footer {
+            padding: 0.9rem 1.65rem;
+            background: var(--kai-card);
+            border-top: 1.5px solid var(--kai-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .tv-modal-count {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Schedule Section */
+        .schedule-section {
+            background: var(--kai-surface);
+            border: 2px solid var(--kai-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1.5px solid var(--kai-border);
+        }
+
+        .schedule-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        .schedule-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .embed-wrapper {
+            width: 100%;
+            height: 75vh;
+            min-height: 650px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--kai-border);
+            background: #ffffff;
+        }
+
+        .embed-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Safety Commitment Section */
+        .commitment-wrapper {
+            width: 100%;
+            background: #ffffff;
+            border: 2px solid var(--kai-border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .commitment-img {
+            width: 100%;
+            max-height: 82vh;
+            object-fit: contain;
+            display: block;
+            border-radius: 6px;
+        }
+
+        /* Footer */
+        .tv-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 0.35rem 0.5rem;
+        }
+
+        .footer-link {
+            color: var(--kai-orange);
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .footer-link:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 1100px) {
+            .tv-top-layout,
+            .tv-kpi-grid,
+            .cert-charts-grid,
+            .jabatan-split-grid,
+            .nav-row-3 {
+                grid-template-columns: 1fr;
+            }
+            .cert-status-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .nav-row-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+        @media (max-width: 1100px) {
+            .tv-top-layout,
+            .tv-kpi-grid,
+            .cert-charts-grid,
+            .jabatan-split-grid,
+            .nav-row-3,
+            .nav-row-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* DARK SKELETON SHIMMER, SPINNER ARCH & BOUNCING DOTS (TV THEME) */
+        .tv-skeleton {
+            display: inline-block;
+            background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+            background-size: 200% 100%;
+            animation: tvShimmer 1.4s ease-in-out infinite;
+            border-radius: 6px;
+            vertical-align: middle;
+        }
+        .tv-skeleton.circle { border-radius: 50%; }
+
+        @keyframes tvShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .tv-spinner-arch {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            border-top-color: var(--kai-orange);
+            border-right-color: #38bdf8;
+            border-radius: 50%;
+            animation: tvSpin 0.75s linear infinite;
+            vertical-align: middle;
+        }
+        @keyframes tvSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        .tv-bouncing-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 6px;
+        }
+        .tv-bouncing-dots span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: var(--kai-orange);
+            animation: tvBounce 1.2s infinite ease-in-out both;
+        }
+        .tv-bouncing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .tv-bouncing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes tvBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.35; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        /* =========================================================
+           MATRIKS SERTIFIKASI ASP (TV WIDGET)
+           ========================================================= */
+        .asp-matrix-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            background: #ffffff;
+            border: 2px solid var(--kai-border);
+            border-radius: 10px;
+        }
+
+        table.asp-matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            min-width: 960px;
+            color: #000000;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        table.asp-matrix-table th,
+        table.asp-matrix-table td {
+            border: 1.5px solid #111111;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .asp-banner-row th {
+            background-color: #ffffff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            padding: 5px;
+            color: #000000;
+        }
+
+        .asp-year-header th {
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 4px;
+        }
+
+        .asp-col-label {
+            width: 48px;
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .asp-col-jlh {
+            width: 54px;
+            background-color: #00b0f0;
+            color: #000000;
+        }
+
+        .asp-tier-label {
+            font-weight: 800;
+            font-size: 0.68rem;
+            line-height: 1.15;
+            letter-spacing: 0.5px;
+            padding: 4px 2px;
+            text-transform: uppercase;
+            color: #000000;
+        }
+
+        .tier-pertama { background-color: #00ff00; }
+        .tier-muda    { background-color: #ffff00; }
+        .tier-madya   { background-color: #ff9900; }
+
+        .asp-card-slot {
+            background-color: #fdf2d0;
+            height: 34px;
+            padding: 2px;
+            position: relative;
+        }
+
+        .asp-card-item {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+        }
+
+        .asp-card-item:hover {
+            transform: scale(1.35);
+            z-index: 25;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+        }
+
+        .asp-card-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 1px solid #333333;
+            border-radius: 2px;
+            background: #d9eaf7;
+            display: block;
+        }
+
+        .asp-card-fallback {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #cce4f7 0%, #9ac5e8 100%);
+            border: 1px solid #2b579a;
+            border-radius: 2px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1px;
+            font-size: 0.48rem;
+            font-weight: 700;
+            color: #0b2545;
+            line-height: 1.05;
+            overflow: hidden;
+        }
+
+        .asp-card-fallback span {
+            font-size: 0.42rem;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .asp-row-total, .asp-col-total, .asp-grand-total {
+            background-color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        .asp-footer-jlh {
+            background-color: #00b0f0;
             font-size: 0.8rem;
-            margin-bottom: 16px;
-            display: none;
+            font-weight: 800;
+            padding: 4px;
+            color: #000000;
+        }
+
+        .asp-col-total, .asp-grand-total {
+            padding: 4px;
+        }
+
+        /* Skeleton Matriks ASP (Dark TV Theme) */
+        .asp-matrix-skeleton {
+            background: var(--kai-card);
+            border: 1.5px solid var(--kai-border);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .asp-skel-grid {
+            display: grid;
+            grid-template-columns: 48px repeat(16, 1fr) 54px;
+            gap: 5px;
+            align-items: center;
+        }
+
+        /* Detail Strip Modal Kartu ASP */
+        .cert-detail-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.75rem;
+            background: var(--kai-card);
+            border-top: 1.5px solid var(--kai-border);
+            padding: 0.95rem 1.65rem;
+            flex-shrink: 0;
+        }
+
+        .cert-detail-item span {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.2rem;
+        }
+
+        .cert-detail-item strong {
+            font-size: 0.92rem;
+            color: #ffffff;
+            font-weight: 800;
         }
     </style>
 </head>
 <body>
 
-    <header class="top-header" role="banner">
-        <div class="top-header-inner" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <div class="header-left-group" style="display: flex; align-items: center; gap: 14px;">
-                <button id="btn-toggle-menu" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Buka/Tutup Menu">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
-                <div class="brand-affiliation">
-                    <span class="brand-text">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</span>
-                </div> 
+    <div class="tv-wrapper">
+        <!-- Header -->
+        <header class="tv-header">
+            <div class="brand-titles">
+                <div class="brand-subtitle">DIVRE I SUMATERA UTARA &bull; UPT CREW KA KISARAN</div>
+                <h1>DASHBOARD UPT CREW KA KELAS C KISARAN</h1>
+            </div>
+
+            <div class="header-controls">
+                <div class="tv-clock-box">
+                    <div>
+                        <div id="live-time" class="clock-time">00:00:00</div>
+                        <div id="live-date" class="clock-date">Memuat tanggal...</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- TOP LAYOUT: KIRI (NAVIGASI BERHIERARKI) & KANAN (PEGAWAI TERBAIK) -->
+        <div class="tv-top-layout">
+            <!-- Kiri: Navigasi Terkelompok Berdasarkan Hierarki Fungsi -->
+            <nav class="tv-nav-panel" aria-label="Navigasi Cepat">
+                <!-- 1. Utama & Organisasi -->
+                <div class="nav-row-2">
+                    <a href="./index.html" class="tv-action-btn">Homepage</a>
+                    <a href="./personel/struktur-organisasi.html" class="tv-action-btn">Struktur Organisasi</a>
+                </div>
+
+                <!-- 2. Operasional Harian -->
+                <div class="nav-row-3">
+                    <a href="./personel/jadwal-dinasan.html" class="tv-action-btn">Jadwal Dinasan</a>
+                    <a href="./penyelia-dinas/pantauan.html?mode=tv" class="tv-action-btn">Pantauan Kejadian</a>
+                    <a href="./cuti/dashboard-cuti.html" class="tv-action-btn">Dashboard Cuti</a>
+                </div>
+
+                <!-- 3. Personel & Nominatif -->
+                <div class="nav-row-2">
+                    <a href="./personel/personel.html" class="tv-action-btn">Personel</a>
+                    <a href="./penyelia-dinas/rekap-pegawai.html?mode=tv" class="tv-action-btn">Nominatif Pegawai</a>
+                </div>
+
+                <!-- 4. Sertifikasi & Keselamatan -->
+                <!-- 4. Sertifikasi & Keselamatan -->
+                <div class="nav-row-4">
+                    <a href="./sertifikasi/dashboard-sertifikasi.html" class="tv-action-btn">Dashboard Sertifikasi</a>
+                    <a href="./sertifikasi/asp-matriks.html" class="tv-action-btn">Masa Berlaku Sertifkasi ASP</a>
+                    <button type="button" class="tv-action-btn" onclick="openProgressModal()">Progress Pengajuan Sertifikasi</button>
+                    <a href="./personel/ibpr.html" class="tv-action-btn">IBPR</a>
+                </div>
+
+                <div class="nav-divider"></div>
+
+                <!-- 5. Jabatan & Tupoksi -->
+                <div class="nav-row-3">
+                    <button type="button" class="tv-action-btn" onclick="openJabatanModal('kupt')">KUPT Crew KA</button>
+                    <button type="button" class="tv-action-btn" onclick="openJabatanModal('instruktur')">Penyelia Instruktur</button>
+                    <button type="button" class="tv-action-btn" onclick="openJabatanModal('penyelia')">Penyelia Dinas</button>
+                </div>
+            </nav>
+
+            <!-- Kanan: Kartu Pegawai Terbaik -->
+            <div class="eotm-card">
+                <div class="card-header" style="margin-bottom: 0.5rem;">
+                    <h2 class="card-title">Pegawai Terbaik</h2>
+                </div>
+                <div class="eotm-hero-body">
+                    <div class="eotm-avatar-frame" style="width: 7.5rem; height: 7.5rem; aspect-ratio: 1 / 1;">
+                        <img id="eotmAvatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="eotm-avatar tv-skeleton circle">
+                    </div>
+                    <div class="eotm-info">
+                        <h3 id="eotmName" class="eotm-name"><span class="tv-skeleton" style="width: 14rem; height: 1.5rem;"></span></h3>
+                        <span id="eotmRole" class="eotm-role-pill"><span class="tv-skeleton" style="width: 10rem; height: 0.9rem;"></span></span>
+                    </div>
+                </div>
             </div>
         </div>
-    </header>
-
-        <aside class="app-sidebar collapsed" id="app-sidebar" aria-label="Sidebar Navigasi">
-            <div>
-                <div class="sidebar-section-title" style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--kai-orange); letter-spacing: 1px; margin-bottom: 14px; padding-left: 4px;">MENU UTAMA</div>
-                
-                <nav style="display: flex; flex-direction: column; gap: 6px;">
-                    <a href="./index.html" class="sidebar-item" title="Homepage">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                        <span class="sidebar-text">Homepage</span>
-                    </a>
-                    <a href="./personel/personel.html" class="sidebar-item" title="Homepage">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                        <span class="sidebar-text">Personel</span>
-                    </a>
-
-                    <a href="./cuti/dashboard-cuti.html" class="sidebar-item" title="Dashboard Cuti">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                        <span class="sidebar-text">Cuti</span>
-                    </a>
-                    <a href="./sertifikasi/dashboard-sertifikasi.html" class="sidebar-item" title="Pantauan Sertifikasi">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
-                            <circle cx="9" cy="10" r="2.5"></circle>
-                            <path d="M15 8h2"></path>
-                            <path d="M15 12h2"></path>
-                            <path d="M7 16c0-1.5 1.5-2.5 3-2.5s3 1 3 2.5"></path>
-                        </svg>
-                        <span class="sidebar-text">Sertifikasi</span>
-                    </a>
-                </nav>
-            </div>
-        </aside>
-
-        <main class="app-main-content">
-            <div class="login-container">
-                <div class="login-card">
-                    <div class="login-header">
-                        <h1 class="login-title">LOGIN ADMINISTRATOR</h1>
-                        <p class="login-subtitle">Masuk untuk mengelola sistem internal UPT Crew KA Kisaran</p>
-                    </div>
-
-                    <div id="errorMessage" class="alert-error"></div>
-
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" class="form-control" placeholder="Masukkan Email Terdaftar" required>
+        
+        <!-- KPI Grid (Personel & Presensi) -->
+        <section class="tv-kpi-grid">
+            <!-- 1. Personel -->
+                <div class="tv-card">
+                    <div>
+                        <div class="card-header">
+                            <h2 class="card-title">Personel</h2>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="password">Kata Sandi</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
-                                <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('password', 'toggleIconLogin')">
-                                    <i class="fa-solid fa-eye" id="toggleIconLogin"></i>
-                                </button>
+                        <div class="personnel-main-row">
+                            <div class="stat-box">
+                                <div class="stat-box-val" id="stat-total"><span class="tv-skeleton" style="width: 3.6rem; height: 2.4rem;"></span></div>
+                                <div class="stat-box-label">Total Personel</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-box-val" style="color: var(--kai-orange);" id="val-asp"><span class="tv-skeleton" style="width: 3.6rem; height: 2.4rem;"></span></div>
+                                <div class="stat-box-label">Awak Sarana Perkeretaapian (ASP)</div>
                             </div>
                         </div>
-
-                        <button type="submit" class="btn-login" id="btnLogin">
-                            <i class="fa-solid fa-right-to-bracket"></i> Masuk
-                        </button>
-                    </form>
-
-                    <div style="text-align: center; margin-top: 12px;">
-                        <button type="button" id="btnOpenForgotPassword" style="background: none; border: none; color: #64748b; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
-                            Lupa kata sandi?
-                        </button>
                     </div>
-
-                    <div style="text-align: center; margin-top: 10px;">
-                        <button type="button" id="btnOpenRegister" style="background: none; border: none; color: var(--kai-orange, #f06400); font-weight: 700; cursor: pointer; font-size: 0.85rem;">
-                            + Buat Akun Administrator Baru
-                        </button>
+                    <div class="personnel-subgrid">
+                        <div class="subchip">
+                            <div class="subchip-title">KUPT</div>
+                            <div class="subchip-val" id="val-kupt"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Penyelia Instruktur</div>
+                            <div class="subchip-val" id="val-instruktur"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Penyelia Dinas</div>
+                            <div class="subchip-val" id="val-penyelia"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Masinis Madya</div>
+                            <div class="subchip-val" id="val-madya"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Masinis Muda</div>
+                            <div class="subchip-val" id="val-muda"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
+                        <div class="subchip">
+                            <div class="subchip-title">Masinis Pertama</div>
+                            <div class="subchip-val" id="val-pertama"><span class="tv-skeleton" style="width: 2.2rem; height: 1.55rem;"></span></div>
+                        </div>
                     </div>
+                </div>
+
+                <!-- 2. Presensi -->
+                <div class="tv-card">
+                    <div>
+                        <div class="card-header">
+                            <h2 class="card-title">Presensi Hari Ini</h2>
+                        </div>
+                        <div class="readiness-box">
+                            <div class="readiness-info">
+                                <span>Tingkat Kehadiran Hari Ini</span>
+                                <span class="readiness-pct" id="val-kesiapan-pct"><span class="tv-skeleton" style="width: 3.2rem; height: 1.4rem;"></span></span>
+                            </div>
+                            <div class="readiness-track">
+                                <div class="readiness-fill" id="val-kesiapan-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="presensi-grid">
+                        <div class="presensi-chip chip-hadir">
+                            <span class="presensi-badge">Hadir</span>
+                            <span class="presensi-val" id="val-hadir"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-cuti">
+                            <span class="presensi-badge">Cuti</span>
+                            <span class="presensi-val" id="val-cuti"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-sakit">
+                            <span class="presensi-badge">Sakit</span>
+                            <span class="presensi-val" id="val-sakit"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-itmb">
+                            <span class="presensi-badge">Izin</span>
+                            <span class="presensi-val" id="val-itmb"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-tms">
+                            <span class="presensi-badge">TMS</span>
+                            <span class="presensi-val" id="val-tms"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                        <div class="presensi-chip chip-mangkir">
+                            <span class="presensi-badge">Mangkir</span>
+                            <span class="presensi-val" id="val-mangkir"><span class="tv-skeleton" style="width: 2.5rem; height: 1.75rem;"></span></span>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- Widget Monitoring Sertifikasi ASP (Proporsional & Simetris) -->
+        <div class="tv-card" style="gap: 1.25rem;">
+            <div class="card-header" style="margin-bottom: 0;">
+                <h2 class="card-title">Monitoring Sertifikasi Awak Sarana Perkeretaapian (ASP)</h2>
+            </div>
+
+            <!-- Baris 1: 4 Kartu Status Sejajar -->
+            <div class="cert-status-strip">
+                <div class="cert-kpi-box" style="border-left: 5px solid #ffffff;">
+                    <span class="cert-kpi-label">Total Sertifikat</span>
+                    <span class="cert-kpi-val" id="cert-stat-total"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
+                </div>
+                <div class="cert-kpi-box" style="border-left: 5px solid var(--status-hadir);">
+                    <span class="cert-kpi-label" style="color: var(--status-hadir);">Status Aktif</span>
+                    <span class="cert-kpi-val" style="color: var(--status-hadir);" id="cert-stat-aktif"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
+                </div>
+                <div class="cert-kpi-box" style="border-left: 5px solid var(--status-sakit);">
+                    <span class="cert-kpi-label" style="color: var(--status-sakit);">Segera Habis (&lt; 1 Thn)</span>
+                    <span class="cert-kpi-val" style="color: var(--status-sakit);" id="cert-stat-warning"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
+                </div>
+                <div class="cert-kpi-box" style="border-left: 5px solid var(--status-mangkir);">
+                    <span class="cert-kpi-label" style="color: var(--status-mangkir);">Kedaluwarsa</span>
+                    <span class="cert-kpi-val" style="color: var(--status-mangkir);" id="cert-stat-expired"><span class="tv-skeleton" style="width: 3.2rem; height: 2.1rem;"></span></span>
                 </div>
             </div>
 
-            <!-- MODAL LUPA PASSWORD -->
-            <div id="forgotPasswordModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;">
-                <div class="login-card" style="max-width: 400px;">
-                    <div class="login-header">
-                        <h2 class="login-title" style="font-size: 1.1rem;">RESET KATA SANDI</h2>
-                        <p class="login-subtitle">Masukkan email terdaftar untuk menerima tautan pemulihan kata sandi.</p>
+            <!-- Baris 2: 2 Kolom Sama Besar (Tingkat Sertifikasi & Expired Sertifikasi) -->
+            <div class="cert-charts-grid">
+                <div class="stat-box" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="stat-box-label" style="color: #ffffff; margin-top: 0; margin-bottom: 0.9rem;">Tingkat Sertifikasi ASP</div>
+                        <div class="seg-bar-container" id="tv-bar-tingkat"></div>
                     </div>
+                    <div class="seg-legend-grid" id="tv-legend-tingkat">
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                    </div>
+                </div>
 
-                    <div id="forgotAlert" class="alert-error"></div>
-
-                    <form id="forgotPasswordForm">
-                        <div class="form-group">
-                            <label for="forgotEmail">Email Terdaftar</label>
-                            <input type="email" id="forgotEmail" class="form-control" placeholder="nama@gmail.com" required>
-                        </div>
-                        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
-                            <button type="button" id="btnCloseForgot" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
-                            <button type="submit" id="btnSubmitForgot" class="btn-login" style="width: auto; padding: 8px 16px;">Kirim Link Reset</button>
-                        </div>
-                    </form>
+                <div class="stat-box" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div class="stat-box-label" style="color: #ffffff; margin-top: 0; margin-bottom: 0.9rem;">Expired Sertifikasi ASP</div>
+                        <div class="seg-bar-container" id="tv-bar-expired"></div>
+                    </div>
+                    <div class="seg-legend-grid" id="tv-legend-expired">
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                        <div class="seg-legend-row"><span class="tv-skeleton" style="width: 100%; height: 1.1rem;"></span></div>
+                    </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <!-- 3. Profil Unit -->
+        <div class="tv-card" style="width: 100%;">
+            <div>
+                <div class="card-header">
+                    <h2 class="card-title">Profil UPT Crew KA Kelas C Kisaran</h2>
+                </div>
+                <div class="unit-body">
+                    UPT Crew KA Kelas C Kisaran adalah Unit Pelaksana Teknis yang berada di wilayah Divisi Regional I Sumatera Utara (DIVRE I SU) yang memiliki wewenang dan bertanggung jawab dalam penugasan Masinis dan Asisten Masinis untuk dinas Kereta Api, Langsir, atau dinas cadangan di Stasiun awal pemberangkatan Kereta Api atau di Stasiun pergantian Awak KA.
+                </div>
+            </div>
+            <div>
+                <a href="./personel/struktur-organisasi.html" class="unit-link">
+                    Struktur Organisasi &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- 4. Komitmen Keselamatan -->
+        <section class="schedule-section">
+            <div class="schedule-header">
+                <h2 class="schedule-title">Komitmen Keselamatan UPT Crew KA Kelas C Kisaran</h2>
+            </div>
+            <div class="commitment-wrapper">
+                <img src="./assets/images/komitmen-keselamatan.jpg" alt="Tanda Tangan Komitmen Keselamatan UPT Crew KA Kisaran" class="commitment-img" loading="lazy">
+            </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section class="schedule-section">
+            <div class="schedule-header">
+                <h2 class="schedule-title">Jadwal Dinasan Awak KA UPT Crew KA Kisaran</h2>
+                <div class="schedule-actions">
+                    <button type="button" id="btn-reload-frame" class="tv-action-btn">Refresh</button>
+                    <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vTHylp9LptbGXPSIPhD8VmzvmJf01YQBH1F_nOwc1sajbJ_g-OnHRKHJPt-8oYx7EYoQ0a3Q0hbkyok/pubhtml?widget=true&headers=false" target="_blank" rel="noopener" class="tv-action-btn">Buka Penuh</a>
+                </div>
+            </div>
+            <div class="embed-wrapper">
+                <iframe id="iframe-o241" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTHylp9LptbGXPSIPhD8VmzvmJf01YQBH1F_nOwc1sajbJ_g-OnHRKHJPt-8oYx7EYoQ0a3Q0hbkyok/pubhtml?widget=true&headers=false" title="Jadwal O.241"></iframe>
+            </div>
+        </section>
+        <!-- Matriks Masa Berlaku Sertifikasi ASP -->
+        <section class="schedule-section" aria-label="Masa Berlaku ASP UPT Crew KA Kisaran">
+            <div class="schedule-header">
+                <h2 class="schedule-title">Masa Berlaku ASP UPT Crew KA Kelas C Kisaran</h2>
+                <div class="schedule-actions">
+                    <a href="./sertifikasi/asp-matriks.html" target="_blank" rel="noopener" class="tv-action-btn">Buka Penuh</a>
+                </div>
+            </div>
+
+            <!-- Skeleton Loader Matriks -->
+            <div id="aspMatrixSkeleton" class="asp-matrix-skeleton" aria-label="Memuat Matriks ASP">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                    <span class="tv-skeleton" style="width: 14rem; height: 1.15rem;"></span>
+                    <span style="display: inline-flex; align-items: center; font-size: 0.82rem; font-weight: 700; color: var(--text-muted);">
+                        Menyusun Matriks Kartu ASP<span class="tv-bouncing-dots"><span></span><span></span><span></span></span>
+                    </span>
+                </div>
+                <div class="asp-skel-grid">
+                    <span class="tv-skeleton" style="height: 1.6rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 4; height: 1.6rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 4; height: 1.6rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 4; height: 1.6rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 4; height: 1.6rem;"></span>
+                    <span class="tv-skeleton" style="height: 1.6rem;"></span>
+                </div>
+                <div class="asp-skel-grid">
+                    <span class="tv-skeleton" style="height: 5.5rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 16; height: 5.5rem;"></span>
+                    <span class="tv-skeleton" style="height: 5.5rem;"></span>
+                </div>
+                <div class="asp-skel-grid">
+                    <span class="tv-skeleton" style="height: 5.5rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 16; height: 5.5rem;"></span>
+                    <span class="tv-skeleton" style="height: 5.5rem;"></span>
+                </div>
+                <div class="asp-skel-grid">
+                    <span class="tv-skeleton" style="height: 5.5rem;"></span>
+                    <span class="tv-skeleton" style="grid-column: span 16; height: 5.5rem;"></span>
+                    <span class="tv-skeleton" style="height: 5.5rem;"></span>
+                </div>
+            </div>
+
+            <!-- Matriks Tabel (Muncul Setelah Data Selesai Dimuat) -->
+            <div class="asp-matrix-wrapper" id="aspMatrixWrapper" style="display: none;">
+                <table class="asp-matrix-table" id="aspMatrixTable"></table>
+            </div>
+        </section>
+
+        <!-- Pantauan Kejadian & Taspat Section -->
+        <section class="schedule-section">
+            <div class="schedule-header">
+                <h2 class="schedule-title">Pantauan Kejadian, Sarana &amp; Taspat Lintas</h2>
+                <div class="schedule-actions">
+                    <button type="button" id="btn-reload-pantauan" class="tv-action-btn">Refresh</button>
+                    <a href="./penyelia-dinas/pantauan.html?mode=tv" target="_blank" rel="noopener" class="tv-action-btn">Buka Penuh</a>
+                </div>
+            </div>
+            <div class="embed-wrapper" style="height: 82vh; min-height: 700px;">
+                <iframe id="iframe-pantauan" src="./penyelia-dinas/pantauan.html?mode=tv" title="Papan Pantauan Kejadian & Taspat"></iframe>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="tv-footer">
+            <span>Tersinkronisasi Otomatis Google Sheets</span>
+            <a href="./index.html" class="footer-link">Home</a>
+        </footer>
     </div>
 
-    <!-- MODAL REGISTRASI USER BARU -->
-    <div id="registerModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;">
-        <div class="login-card" style="max-width: 420px;">
-            <div class="login-header">
-                <h2 class="login-title" style="font-size: 1.1rem;">REGISTRASI ADMIN BARU</h2>
-                <p class="login-subtitle">Pendaftaran memerlukan persetujuan Super Admin</p>
-            </div>
-
-            <div id="registerAlert" class="alert-error"></div>
-
-            <form id="registerForm">
-                <div class="form-group">
-                    <label for="regEmail">Email Baru</label>
-                    <input type="email" id="regEmail" class="form-control" placeholder="admin.baru@gmail.com" required>
+    <!-- MODAL 1: TUPOKSI & DATA PERSONEL JABATAN -->
+    <div class="tv-modal-overlay" id="jabatanModal">
+        <div class="tv-modal-wide">
+            <div class="tv-modal-header">
+                <div>
+                    <h3 class="tv-modal-title" id="jabatanModalTitle">KUPT Crew KA Kelas C Kisaran</h3>
                 </div>
+                <button type="button" class="tv-modal-close" onclick="closeJabatanModal()" aria-label="Tutup">&times;</button>
+            </div>
+            <div class="tv-modal-body">
+                <div class="jabatan-split-grid">
+                    <div class="tv-modal-section">
+                        <div class="tv-modal-section-title" id="jabatanProfileSectionTitle">
+                            Profil KUPT Crew KA
+                        </div>
+                        <div class="jabatan-profile-stack" id="jabatanPersonelContainer">
+                            <div class="jabatan-profile-card" style="text-align: center; color: var(--text-muted);">
+                                Memuat data...
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="regPassword">Kata Sandi (Min. 6 Karakter)</label>
-                    <div class="password-wrapper">
-                        <input type="password" id="regPassword" class="form-control" placeholder="••••••••" minlength="6" required>
-                        <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('regPassword', 'toggleIconReg')">
-                            <i class="fa-solid fa-eye" id="toggleIconReg"></i>
-                        </button>
+                    <div class="tv-modal-section">
+                        <div class="tv-modal-section-title">
+                            Tugas Pokok &amp; Fungsi
+                        </div>
+                        <ol class="tv-tupoksi-list" id="jabatanTupoksiList"></ol>
                     </div>
                 </div>
-
-                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
-                    <button type="button" id="btnCloseRegister" style="background: #cbd5e1; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; color: #334155;">Batal</button>
-                    <button type="submit" id="btnSubmitRegister" class="btn-login" style="width: auto; padding: 8px 16px;">Daftarkan User</button>
-                </div>
-            </form>
+            </div>
+            <div class="tv-modal-footer">
+                <span class="tv-modal-count" id="jabatanPersonelCountInfo"></span>
+                <button type="button" class="tv-action-btn" onclick="closeJabatanModal()">Tutup</button>
+            </div>
         </div>
     </div>
 
-    <!-- FIREBASE LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithEmailAndPassword, 
-            createUserWithEmailAndPassword, 
-            sendPasswordResetEmail, 
-            signOut,
-            setPersistence, 
-            browserLocalPersistence 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";    
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <!-- MODAL 2: PROGRESS PENGAJUAN SERTIFIKASI -->
+    <div class="tv-modal-overlay" id="progressModal">
+        <div class="tv-modal-wide">
+            <div class="tv-modal-header">
+                <div>
+                    <h3 class="tv-modal-title">Progress Pengajuan Sertifikasi ASP</h3>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <a href="./sertifikasi/progress-pengajuan.html" target="_blank" rel="noopener" class="tv-action-btn" style="padding: 0.5rem 0.9rem; font-size: 0.82rem;">Halaman Penuh</a>
+                    <button type="button" class="tv-modal-close" onclick="closeProgressModal()" aria-label="Tutup">&times;</button>
+                </div>
+            </div>
+            <div class="tv-modal-body" style="display: flex; flex-direction: column; gap: 1.35rem;">
+                <!-- Bagian 1: Progress Perpanjangan -->
+                <div class="tv-modal-section">
+                    <div class="tv-modal-section-title">
+                        <span>Progress Perpanjangan (Masa Berlaku &le; 2 Tahun)</span>
+                        <span id="tv-count-perpanjangan" style="color: #ffffff; font-size: 0.85rem;">0 Berkas</span>
+                    </div>
+                    <div class="tv-table-wrap">
+                        <table class="tv-data-table">
+                            <thead>
+                                <tr>
+                                    <th class="cell-center">No</th>
+                                    <th>Nama</th>
+                                    <th class="cell-center">NIPP</th>
+                                    <th class="cell-center">Tingkat</th>
+                                    <th class="cell-center">Tanggal Expired</th>
+                                    <th class="cell-center">Refresh</th>
+                                    <th class="cell-center">Diajukan</th>
+                                    <th class="cell-center">Disetujui MT</th>
+                                    <th class="cell-center">Uji Sertifikasi</th>
+                                    <th class="cell-center">Hasil</th>
+                                    <th class="cell-center">Smart Card</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tvTablePerpanjanganBody">
+                                <tr><td colspan="11" class="cell-center">Memuat data sertifikasi...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAej1I-XTtLTrOBC-qx_omRByTkmQroBZE",
-            authDomain: "login-page-dashboard.firebaseapp.com",
-            projectId: "login-page-dashboard",
-            storageBucket: "login-page-dashboard.firebasestorage.app",
-            messagingSenderId: "817524864615",
-            appId: "1:817524864615:web:fc27233cbf881e726e06c2",
-            measurementId: "G-CLG98RXRNT"
-        };
+                <!-- Bagian 2: Pengajuan Baru -->
+                <div class="tv-modal-section">
+                    <div class="tv-modal-section-title">
+                        <span>Pengajuan Baru</span>
+                        <span id="tv-count-pengajuan-baru" style="color: #ffffff; font-size: 0.85rem;">0 Usulan</span>
+                    </div>
+                    <div class="tv-table-wrap">
+                        <table class="tv-data-table">
+                            <thead>
+                                <tr>
+                                    <th class="cell-center">No</th>
+                                    <th>Nama</th>
+                                    <th class="cell-center">NIPP</th>
+                                    <th class="cell-center">Tingkat</th>
+                                    <th class="cell-center">Diajukan</th>
+                                    <th class="cell-center">Disetujui MT</th>
+                                    <th class="cell-center">Uji Sertifikasi</th>
+                                    <th class="cell-center">Hasil</th>
+                                    <th class="cell-center">Smart Card</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tvTablePengajuanBaruBody">
+                                <tr><td colspan="9" class="cell-center">Memuat data pengajuan baru...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- MODAL 3: DETAIL & FOTO SERTIFIKAT ASP -->
+                <div class="tv-modal-overlay" id="certCardModal">
+                    <div class="tv-modal-wide" style="max-width: 820px;">
+                        <div class="tv-modal-header">
+                            <div>
+                                <h3 class="tv-modal-title" id="certCardModalTitle">Sertifikasi ASP</h3>
+                            </div>
+                            <button type="button" class="tv-modal-close" onclick="closeCertCardModal()" aria-label="Tutup">&times;</button>
+                        </div>
+                        <div class="tv-modal-body" style="text-align: center; background-color: #0b1120; display: flex; justify-content: center; align-items: center; min-height: 300px;">
+                            <img id="certCardImage" src="" alt="Sertifikat Pegawai" style="max-width: 100%; max-height: 56vh; object-fit: contain; border-radius: 6px; display: none; box-shadow: 0 8px 24px rgba(0,0,0,0.65);">
+                            <div id="certCardLoader" style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem; color: var(--text-muted);">
+                                <span class="tv-spinner-arch"></span>
+                                <span style="font-size: 0.85rem; font-weight: 700;">
+                                    Memuat Kartu ASP<span class="tv-bouncing-dots"><span></span><span></span><span></span></span>
+                                </span>
+                            </div>
+                            <div id="certCardError" style="color: var(--status-mangkir); font-size: 0.9rem; font-weight: 600; display: none;">
+                                <p id="certCardErrorText">Berkas sertifikat tidak ditemukan di folder <code>./assets/asp/</code></p>
+                            </div>
+                        </div>
+                        <div class="cert-detail-strip" id="certCardDetailStrip"></div>
+                        <div class="tv-modal-footer">
+                            <span class="tv-modal-count">Smart Card Awak Sarana Perkeretaapian</span>
+                            <button type="button" class="tv-action-btn" onclick="closeCertCardModal()">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tv-modal-footer">
+                <span class="tv-modal-count">Sumber: Database Sertifikasi ASP UPT Crew KA Kisaran</span>
+                <button type="button" class="tv-action-btn" onclick="closeProgressModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    <script src="./js/main.js"></script>
+<script>
+        (function() {
+            const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycTmSZR5MyhRkhrP-T_JqRlOuL56DkquxPJPmMLTXCuZjbwcgLdRJpsFJTX6ZeKEEr1A/exec";
+            const CERT_CSV_URL = "https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/gviz/tq?tqx=out:csv&gid=392940711";
+            const DB_CSV_URL = "https://docs.google.com/spreadsheets/d/1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM/export?format=csv&gid=1567798541";
 
-        setPersistence(auth, browserLocalPersistence);
+            let certRawData = [];
 
-        // MEMBERSIHKAN SESI SECARA OTOMATIS SAAT USER MEMBUKA HALAMAN LOGIN
-        signOut(auth);
-        localStorage.removeItem("lastActiveTime");
-
-        function updateLastActiveTimestamp() {
-            localStorage.setItem("lastActiveTime", Date.now().toString());
-        }
-
-        // KONTROL MODAL REGISTRASI
-        const btnOpenRegister = document.getElementById("btnOpenRegister");
-        const btnCloseRegister = document.getElementById("btnCloseRegister");
-        const registerModal = document.getElementById("registerModal");
-        const registerForm = document.getElementById("registerForm");
-        const registerAlert = document.getElementById("registerAlert");
-
-        btnOpenRegister?.addEventListener("click", () => registerModal.style.display = "flex");
-        btnCloseRegister?.addEventListener("click", () => {
-            registerModal.style.display = "none";
-            registerForm.reset();
-            registerAlert.style.display = "none";
-        });
-
-        // KONTROL MODAL LUPA PASSWORD
-        const btnOpenForgot = document.getElementById("btnOpenForgotPassword");
-        const btnCloseForgot = document.getElementById("btnCloseForgot");
-        const forgotModal = document.getElementById("forgotPasswordModal");
-        const forgotForm = document.getElementById("forgotPasswordForm");
-        const forgotAlert = document.getElementById("forgotAlert");
-
-        btnOpenForgot?.addEventListener("click", () => forgotModal.style.display = "flex");
-        btnCloseForgot?.addEventListener("click", () => {
-            forgotModal.style.display = "none";
-            forgotForm.reset();
-            forgotAlert.style.display = "none";
-        });
-
-        // PROSES PENGIRIMAN EMAIL RESET PASSWORD
-        forgotForm?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("forgotEmail").value.trim();
-            const btnSubmit = document.getElementById("btnSubmitForgot");
-
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<span class="spinner-arch"></span> Mengirim<span class="bouncing-dots-white"><span></span><span></span><span></span></span>`;
-            forgotAlert.style.display = "none";
-
-            const actionCodeSettings = {
-                url: window.location.origin + window.location.pathname,
-                handleCodeInApp: true
+            const JABATAN_CONFIG = {
+                kupt: {
+                    modalTitle: "KUPT Crew KA Kelas C Kisaran",
+                    sectionTitle: "Profil KUPT Crew KA",
+                    filterKeyword: "KUPT CREW KA",
+                    tupoksi: [
+                        "Menyusun program kerja, evaluasi, serta laporan realisasi program kerja UPT.",
+                        "Merencanakan dan mengevaluasi jumlah serta dinasan awak kereta api.",
+                        "Meningkatkan kemampuan teknis dan kompetensi awak kereta api.",
+                        "Mengevaluasi dan melakukan penilaian kinerja penyelia dan awak kereta api.",
+                        "Mengelola risiko dan menjamin keselamatan operasional sesuai bidang yang dikelola.",
+                        "Menyusun, mengusulkan, dan memantau program pengembangan, pelatihan, serta sertifikasi kecakapan awak kereta api."
+                    ]
+                },
+                instruktur: {
+                    modalTitle: "Penyelia Instruktur UPT Crew KA Kisaran",
+                    sectionTitle: "Profil Penyelia Instruktur",
+                    filterKeyword: "PENYELIA INSTRUKTUR",
+                    tupoksi: [
+                        "Melakukan pembinaan dan pelatihan tentang regulasi dan teknik menjalankan kereta api serta langsiran.",
+                        "Memberikan penilaian dan evaluasi teknis secara berkala kepada masinis.",
+                        "Melakukan pembinaan, pelatihan, dan pengawasan di lapangan paling sedikit 4 (empat) kali dalam sebulan."
+                    ]
+                },
+                penyelia: {
+                    modalTitle: "Penyelia Dinas UPT Crew KA Kisaran",
+                    sectionTitle: "Profil Penyelia Dinas",
+                    filterKeyword: "PENYELIA DINAS",
+                    tupoksi: [
+                        "Membuat, mengatur, dan menyiapkan dinasan masinis dan asisten masinis.",
+                        "Memasukkan data dinasan masinis dan asisten masinis ke dalam sistem perencanaan operasi kereta api.",
+                        "Melaksanakan asesmen pradinas kepada awak kereta api.",
+                        "Melakukan pemeriksaan bentuk dan kelengkapan dokumen perjalanan dinas.",
+                        "Memvalidasi akhir dinas masinis dan asisten masinis.",
+                        "Melakukan pemantauan situasi operasi kereta api dan kegiatan langsiran."
+                    ]
+                }
             };
 
-            try {
-                await sendPasswordResetEmail(auth, email, actionCodeSettings);
+            function updateClock() {
+                const now = new Date();
+                document.getElementById('live-date').textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('live-time').textContent = now.toLocaleTimeString('id-ID', { hour12: false }) + ' WIB';
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
 
-                Swal.fire({
-                    title: 'Email Terkirim!',
-                    text: `Tautan pemulihan kata sandi telah dikirim ke ${email}. Silakan periksa inbox/spam.`,
-                    icon: 'success',
-                    confirmButtonColor: '#f06400'
-                });
+            function calcReadiness() {
+                const hadirEl = document.getElementById('val-hadir');
+                if (!hadirEl || hadirEl.querySelector('.tv-skeleton')) return;
+                const hadir = parseInt(hadirEl.textContent, 10) || 0;
+                const total = parseInt(document.getElementById('val-asp').textContent, 10) || 39;
+                const pct = Math.min(100, Math.round((hadir / total) * 100));
+                document.getElementById('val-kesiapan-pct').textContent = pct + '%';
+                document.getElementById('val-kesiapan-bar').style.width = pct + '%';
+            }
+            setInterval(calcReadiness, 3000);
+            calcReadiness();
 
-                forgotModal.style.display = "none";
-                forgotForm.reset();
-            } catch (error) {
-                forgotAlert.style.display = "block";
-                if (error.code === 'auth/user-not-found') {
-                    forgotAlert.innerText = "Email tidak terdaftar di sistem!";
-                } else if (error.code === 'auth/invalid-email') {
-                    forgotAlert.innerText = "Format email tidak valid!";
-                } else {
-                    forgotAlert.innerText = "Gagal mengirim email: " + error.message;
+            let scrollActive = true, dir = 1, paused = false, isModalOpen = false;
+            function autoScroll() {
+                if (!scrollActive || paused || isModalOpen) return;
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                if (max <= 10) return;
+                window.scrollBy({ top: dir, behavior: 'auto' });
+                if (window.scrollY >= max - 4 && dir === 1) {
+                    paused = true; setTimeout(() => { dir = -1; paused = false; }, 5000);
+                } else if (window.scrollY <= 4 && dir === -1) {
+                    paused = true; setTimeout(() => { dir = 1; paused = false; }, 60000);
                 }
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerText = "Kirim Link Reset";
             }
-        });
+            setTimeout(() => { setInterval(autoScroll, 50); }, 60000);
 
-        // PROSES REGISTRASI USER BARU
-        registerForm?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const email = document.getElementById("regEmail").value;
-            const password = document.getElementById("regPassword").value;
-            const btnSubmit = document.getElementById("btnSubmitRegister");
+            document.getElementById('btn-reload-frame').addEventListener('click', () => {
+                const f = document.getElementById('iframe-o241');
+                const src = f.src; f.src = 'about:blank'; setTimeout(() => f.src = src, 100);
+            });
 
-            btnSubmit.disabled = true;
-            btnSubmit.innerHTML = `<span class="spinner-arch"></span> Mendaftarkan<span class="bouncing-dots-white"><span></span><span></span><span></span></span>`;
-            registerAlert.style.display = "none";
+            document.getElementById('btn-reload-pantauan').addEventListener('click', () => {
+                const f = document.getElementById('iframe-pantauan');
+                const src = f.src; f.src = 'about:blank'; setTimeout(() => f.src = src, 100);
+            });
 
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+            function cleanVal(val) {
+                if (!val || val === "undefined" || val === "null") return "-";
+                return String(val).trim();
+            }
 
-                await setDoc(doc(db, "users", user.uid), {
-                    email: email,
-                    isApproved: false,
-                    createdAt: new Date().toISOString()
-                });
+            function cleanNipp(val) {
+                if (!val) return "";
+                return String(val).replace(/\D/g, "").trim();
+            }
 
-                await signOut(auth);
+            function renderJabatanHeroAvatar(nipp, nama) {
+                const initial = nama ? nama.charAt(0).toUpperCase() : "P";
+                if (!nipp) return `<div class="jabatan-hero-placeholder">${initial}</div>`;
+                const basePath = `./assets/struktur-organisasi/${nipp}`;
+                const candidates = [`${basePath}.png`, `${basePath}.jpg`, `${basePath}.PNG`, `${basePath}.JPG`, `${basePath}.jpeg`];
 
-                Swal.fire({
-                    title: 'Registrasi Berhasil!',
-                    text: 'Akun Anda berhasil dibuat. Silakan hubungi Super Admin untuk menyetujui akun Anda.',
-                    icon: 'info',
-                    confirmButtonColor: '#f06400'
-                });
+                return `
+                    <img src="${candidates[0]}" alt="${nama}" class="jabatan-hero-avatar" data-idx="0"
+                         onerror="
+                            const list = ${JSON.stringify(candidates).replace(/"/g, '&quot;')};
+                            let nextIdx = parseInt(this.dataset.idx, 10) + 1;
+                            if (nextIdx < list.length) {
+                                this.dataset.idx = nextIdx;
+                                this.src = list[nextIdx];
+                            } else {
+                                this.onerror = null;
+                                this.outerHTML = '<div class=\\'jabatan-hero-placeholder\\'>${initial}</div>';
+                            }
+                         ">
+                `;
+            }
 
-                registerModal.style.display = "none";
-                registerForm.reset();
-            } catch (error) {
-                registerAlert.style.display = "block";
-                if (error.code === 'auth/email-already-in-use') {
-                    registerAlert.innerText = "Email sudah terdaftar!";
-                } else if (error.code === 'auth/weak-password') {
-                    registerAlert.innerText = "Kata sandi terlalu lemah (min. 6 karakter).";
-                } else {
-                    registerAlert.innerText = "Gagal mendaftar: " + error.message;
+            let cachedDatabasePersonel = null;
+            let activeJabatanRequestId = 0;
+
+            window.openJabatanModal = async function(roleKey) {
+                const cfg = JABATAN_CONFIG[roleKey];
+                if (!cfg) return;
+
+                const currentRequestId = ++activeJabatanRequestId;
+                const modal = document.getElementById('jabatanModal');
+                const container = document.getElementById('jabatanPersonelContainer');
+                const tupoksiList = document.getElementById('jabatanTupoksiList');
+
+                document.getElementById('jabatanModalTitle').textContent = cfg.modalTitle;
+                document.getElementById('jabatanProfileSectionTitle').textContent = cfg.sectionTitle;
+                document.getElementById('jabatanPersonelCountInfo').textContent = "";
+
+                tupoksiList.innerHTML = cfg.tupoksi.map((item, idx) => `
+                    <li class="tv-tupoksi-item">
+                        <span class="tv-tupoksi-num">${idx + 1}</span>
+                        <span>${item}</span>
+                    </li>
+                `).join('');
+
+                modal.style.display = 'flex';
+                isModalOpen = true;
+
+                const renderFilteredPersonel = (listDatabase) => {
+                    if (currentRequestId !== activeJabatanRequestId) return;
+
+                    const filtered = listDatabase.filter(p => {
+                        const j = String(p.Jabatan || p.JABATAN || "").toUpperCase();
+                        return j.includes(cfg.filterKeyword);
+                    });
+
+                    if (filtered.length === 0) {
+                        container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--text-muted);">Tidak ada data personel pada jabatan ini.</div>`;
+                        document.getElementById('jabatanPersonelCountInfo').innerText = "Menampilkan 0 personel";
+                        return;
+                    }
+
+                    container.innerHTML = filtered.map(p => {
+                        const nipp = cleanNipp(p.NIPP || p.NIP);
+                        const nama = cleanVal(p.NAMA || p.Nama);
+                        const ttl = cleanVal(p["Tempat, Tanggal Lahir"] || p.TTL);
+                        const jabatan = cleanVal(p.Jabatan || p.JABATAN);
+                        const pendidikan = cleanVal(p["Pendidikan yang Diakui"] || p.Pendidikan);
+                        const mulaiBekerja = cleanVal(p["Mulai Bekerja"] || p.TMT);
+
+                        return `
+                            <div class="jabatan-profile-card">
+                                <div class="jabatan-profile-hero">
+                                    ${renderJabatanHeroAvatar(nipp, nama)}
+                                    <div class="jabatan-hero-info">
+                                        <span class="jabatan-hero-nipp">NIPP. ${nipp || '-'}</span>
+                                        <h4 class="jabatan-hero-name">${nama}</h4>
+                                        <span class="jabatan-hero-role">${jabatan}</span>
+                                    </div>
+                                </div>
+                                <div class="jabatan-meta-grid">
+                                    <div class="jabatan-meta-item">
+                                        <div class="jabatan-meta-label">Tempat, Tanggal Lahir</div>
+                                        <div class="jabatan-meta-value">${ttl}</div>
+                                    </div>
+                                    <div class="jabatan-meta-item">
+                                        <div class="jabatan-meta-label">Pendidikan Diakui</div>
+                                        <div class="jabatan-meta-value">${pendidikan}</div>
+                                    </div>
+                                    <div class="jabatan-meta-item">
+                                        <div class="jabatan-meta-label">Mulai Bekerja</div>
+                                        <div class="jabatan-meta-value">${mulaiBekerja}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    document.getElementById('jabatanPersonelCountInfo').innerText = `Menampilkan ${filtered.length} personel`;
+                };
+
+                if (cachedDatabasePersonel) {
+                    renderFilteredPersonel(cachedDatabasePersonel);
+                    return;
                 }
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerText = "Daftarkan User";
-            }
-        });
 
-        // PROSES LOGIN & VERIFIKASI FIRESTORE
-        const loginForm = document.getElementById('loginForm');
-        const errorMessage = document.getElementById('errorMessage');
-        const btnLogin = document.getElementById('btnLogin');
+                container.innerHTML = `
+                    <div class="jabatan-profile-card" style="align-items: center; justify-content: center; padding: 2.5rem; gap: 0.75rem; color: var(--text-muted);">
+                        <span class="tv-spinner-arch"></span>
+                        <span style="font-size: 0.9rem; font-weight: 700;">
+                            Memuat Profil Personel<span class="tv-bouncing-dots"><span></span><span></span><span></span></span>
+                        </span>
+                    </div>`;
 
-        loginForm?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+                try {
+                    const res = await fetch(APPS_SCRIPT_URL);
+                    const result = await res.json();
 
-            btnLogin.disabled = true;
-            btnLogin.innerHTML = `<span class="spinner-arch"></span> Memverifikasi<span class="bouncing-dots-white"><span></span><span></span><span></span></span>`;
-            errorMessage.style.display = 'none';
+                    if (currentRequestId !== activeJabatanRequestId) return;
 
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+                    if (result.result !== "success" || !result.data) {
+                        container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--status-mangkir);">Gagal mengambil data dari Google Sheets.</div>`;
+                        return;
+                    }
 
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-
-                if (userDoc.exists() && userDoc.data().isApproved === true) {
-                    updateLastActiveTimestamp();
-                    // JALUR LOKASI DENGAN RELATIVE PATH ./admin/
-                    window.location.href = "./admin/homepage-admin.html";
-                } else {
-                    await signOut(auth);
-                    errorMessage.style.display = 'block';
-                    errorMessage.innerText = "Akun Anda belum disetujui oleh Super Admin.";
+                    cachedDatabasePersonel = result.data["Database"] || [];
+                    renderFilteredPersonel(cachedDatabasePersonel);
+                } catch (err) {
+                    if (currentRequestId !== activeJabatanRequestId) return;
+                    console.error("Error fetching database:", err);
+                    container.innerHTML = `<div class="jabatan-profile-card" style="text-align: center; color: var(--status-mangkir);">Terjadi kesalahan sistem saat memuat data.</div>`;
                 }
-            } catch (error) {
-                errorMessage.style.display = 'block';
-                errorMessage.innerText = "Email atau kata sandi salah. Silakan coba lagi.";
-            } finally {
-                btnLogin.disabled = false;
-                btnLogin.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Masuk`;
-            }
-        });
-    </script>
-    <script src="./js/main.js"></script>
-    <!-- FUNGSI JAVASCRIPT UNTUK TOGGLE LIHAT PASSWORD -->
-    <script>
-        function togglePasswordVisibility(inputId, iconId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleIcon = document.getElementById(iconId);
+            };
 
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleIcon.classList.remove("fa-eye");
-                toggleIcon.classList.add("fa-eye-slash");
-            } else {
-                passwordInput.type = "password";
-                toggleIcon.classList.remove("fa-eye-slash");
-                toggleIcon.classList.add("fa-eye");
-            }
-        }
+            window.closeJabatanModal = function() {
+                document.getElementById('jabatanModal').style.display = 'none';
+                isModalOpen = false;
+            };
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const btnToggle = document.getElementById("btn-toggle-menu");
-            const sidebar = document.getElementById("app-sidebar");
-            
-            if (btnToggle && sidebar) {
-                btnToggle.addEventListener("click", function() {
-                    sidebar.classList.toggle("collapsed");
+            // ==========================================================================
+            // MODAL PROGRESS PENGAJUAN SERTIFIKASI
+            // ==========================================================================
+            function formatDateVerbose(dateStr) {
+                if (!dateStr || dateStr === '-') return '-';
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return dateStr;
+                const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+            }
+
+            function checkMarkHtml(val) {
+                return val ? `<span class="tv-check-ok">&#8730;</span>` : `<span style="color: var(--text-muted);">-</span>`;
+            }
+
+            window.openProgressModal = function() {
+                const modal = document.getElementById('progressModal');
+                modal.style.display = 'flex';
+                isModalOpen = true;
+                renderProgressModalTables();
+            };
+
+            window.closeProgressModal = function() {
+                document.getElementById('progressModal').style.display = 'none';
+                isModalOpen = false;
+            };
+
+            function renderProgressModalTables() {
+                const tbodyPerp = document.getElementById('tvTablePerpanjanganBody');
+                const tbodyBaru = document.getElementById('tvTablePengajuanBaruBody');
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                let countPerp = 0;
+
+                if (certRawData.length === 0) {
+                    tbodyPerp.innerHTML = Array.from({ length: 4 }, () => `
+                        <tr>${Array.from({ length: 11 }, () => `<td><span class="tv-skeleton" style="width: 100%; height: 0.95rem;"></span></td>`).join('')}</tr>
+                    `).join('');
+                } else {
+                    let rowsHtml = '';
+                    certRawData.forEach(item => {
+                        if (!item.exp) return;
+                        const expDate = new Date(item.exp);
+                        if (isNaN(expDate.getTime())) return;
+                        const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+                        if (diffDays <= 730) {
+                            countPerp++;
+                            const disetujuiMT = diffDays <= 500;
+                            const ujiSertifikasi = diffDays <= 300;
+                            const lulus = diffDays <= 180;
+                            const terimaCard = diffDays <= 0;
+
+                            rowsHtml += `
+                                <tr>
+                                    <td class="cell-center">${countPerp}</td>
+                                    <td style="font-weight: 700;">${item.nama.toUpperCase()}</td>
+                                    <td class="cell-center" style="font-family: monospace;">${item.nipp}</td>
+                                    <td class="cell-center">${(item.tingkat || '-').toUpperCase()}</td>
+                                    <td class="cell-center">${formatDateVerbose(item.exp)}</td>
+                                    <td class="cell-center">${checkMarkHtml(true)}</td>
+                                    <td class="cell-center">${checkMarkHtml(true)}</td>
+                                    <td class="cell-center">${checkMarkHtml(disetujuiMT)}</td>
+                                    <td class="cell-center">${checkMarkHtml(ujiSertifikasi)}</td>
+                                    <td class="cell-center">${lulus ? '<span class="tv-badge-lulus">LULUS</span>' : '<span class="tv-badge-proses">PROSES</span>'}</td>
+                                    <td class="cell-center">${checkMarkHtml(terimaCard)}</td>
+                                </tr>
+                            `;
+                        }
+                    });
+
+                    tbodyPerp.innerHTML = countPerp > 0
+                        ? rowsHtml
+                        : `<tr><td colspan="11" class="cell-center" style="color: var(--text-muted);">Tidak ada sertifikat dengan masa berlaku &le; 2 tahun.</td></tr>`;
+                }
+                document.getElementById('tv-count-perpanjangan').textContent = `${countPerp} Berkas`;
+
+                const localPengajuan = JSON.parse(localStorage.getItem('pengajuanBaruList') || '[]');
+                document.getElementById('tv-count-pengajuan-baru').textContent = `${localPengajuan.length} Usulan`;
+
+                if (localPengajuan.length === 0) {
+                    tbodyBaru.innerHTML = `<tr><td colspan="9" class="cell-center" style="color: var(--text-muted);">Belum ada pengajuan sertifikasi baru.</td></tr>`;
+                } else {
+                    tbodyBaru.innerHTML = localPengajuan.map((item, idx) => `
+                        <tr>
+                            <td class="cell-center">${idx + 1}</td>
+                            <td style="font-weight: 700;">${(item.nama || '-').toUpperCase()}</td>
+                            <td class="cell-center" style="font-family: monospace;">${item.nipp || '-'}</td>
+                            <td class="cell-center">${item.tingkat || 'PERTAMA'}</td>
+                            <td class="cell-center">${checkMarkHtml(item.diajukan)}</td>
+                            <td class="cell-center">${checkMarkHtml(item.disetujuiMT)}</td>
+                            <td class="cell-center">${checkMarkHtml(item.ujiSertifikasi)}</td>
+                            <td class="cell-center"><span class="${item.hasil === 'LULUS' ? 'tv-badge-lulus' : 'tv-badge-proses'}">${item.hasil || 'PROSES'}</span></td>
+                            <td class="cell-center">${checkMarkHtml(item.terimaSmartCard)}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            window.addEventListener('keydown', function(event) {
+             if (event.key === 'Escape') {
+                 closeJabatanModal();
+                 closeProgressModal();
+                 closeCertCardModal();
+             }
+         });
+
+         window.addEventListener('click', function(event) {
+             if (event.target.id === 'jabatanModal') closeJabatanModal();
+             if (event.target.id === 'progressModal') closeProgressModal();
+             if (event.target.id === 'certCardModal') closeCertCardModal();
+         });
+
+            // ==========================================================================
+            // PARSER CSV & KONVERSI TANGGAL INDONESIA (MEMBACA KOLOM G / TANGGAL EXPIRED)
+            // ==========================================================================
+            function parseCSV(text) {
+                return text.split(/\r?\n/).map(line => {
+                    const result = [];
+                    let current = '';
+                    let inQuotes = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const char = line[i];
+                        if (char === '"') {
+                            if (inQuotes && line[i + 1] === '"') {
+                                current += '"';
+                                i++;
+                            } else {
+                                inQuotes = !inQuotes;
+                            }
+                        } else if (char === ',' && !inQuotes) {
+                            result.push(current.trim());
+                            current = '';
+                        } else {
+                            current += char;
+                        }
+                    }
+                    result.push(current.trim());
+                    return result;
                 });
             }
-        });
+
+            function formatDateToISO(dateStr) {
+                if (!dateStr || dateStr === '-') return '';
+                const clean = dateStr.trim();
+                if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) return clean;
+
+                if (clean.includes('/')) {
+                    const parts = clean.split('/');
+                    if (parts.length === 3) {
+                        return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    }
+                }
+
+                const bulanMap = {
+                    januari: '01', jan: '01',
+                    februari: '02', feb: '02',
+                    maret: '03', mar: '03',
+                    april: '04', apr: '04',
+                    mei: '05', may: '05',
+                    juni: '06', jun: '06',
+                    juli: '07', jul: '07',
+                    agustus: '08', agu: '08', aug: '08',
+                    september: '09', sep: '09',
+                    oktober: '10', okt: '10', oct: '10',
+                    november: '11', nov: '11',
+                    desember: '12', des: '12', dec: '12'
+                };
+
+                const parts = clean.split(/\s+/);
+                if (parts.length === 3) {
+                    const day = parts[0].padStart(2, '0');
+                    const monthNum = bulanMap[parts[1].toLowerCase()];
+                    const year = parts[2];
+                    if (monthNum && /^\d{4}$/.test(year)) {
+                        return `${year}-${monthNum}-${day}`;
+                    }
+                }
+
+                return clean;
+            }
+
+            async function loadCertificationData() {
+                try {
+                    const res = await fetch(CERT_CSV_URL);
+                    const csvText = await res.text();
+                    const rows = parseCSV(csvText);
+
+                    certRawData = rows.slice(1).map((row, idx) => {
+                        if (!row || !row[1]) return null;
+                        const rawExpired = (row[6] && row[6].trim() !== '' && row[6].trim() !== '-')
+                            ? row[6].trim()
+                            : (row[5] ? row[5].trim() : '');
+
+                        return {
+                         no: idx + 1,
+                         nama: row[1].trim(),
+                         nipp: row[2] ? row[2].trim() : '',
+                         jabatan: row[3] ? row[3].trim() : '',
+                         tingkat: row[4] ? row[4].trim() : '',
+                         exp: rawExpired ? formatDateToISO(rawExpired) : '',
+                         rawExp: rawExpired || '-',
+                         noAsp: row[7] ? row[7].trim() : '-'
+                     };
+                 }).filter(item => item && item.nama !== '');
+
+                 renderCertWidgets();
+                 renderAspMatrix();
+             } catch (err) {
+                 console.error("Gagal memuat data sertifikasi:", err);
+                 const skelEl = document.getElementById('aspMatrixSkeleton');
+                 if (skelEl) {
+                     skelEl.innerHTML = `<div style="text-align: center; color: var(--status-mangkir); font-weight: 700; padding: 1.5rem;">Gagal memuat matriks sertifikasi ASP.</div>`;
+                 }
+             }
+                
+            }
+
+            function renderCertWidgets() {
+                const total = certRawData.length;
+                if (total === 0) return;
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                let aktif = 0, warning = 0, expired = 0;
+                const countTingkat = { 'Madya': 0, 'Muda': 0, 'Pertama': 0 };
+                const colorTingkat = { 'Madya': '#38bdf8', 'Muda': '#f97316', 'Pertama': '#10b981' };
+
+                const countExpiredYear = { 'Tahun 2027': 0, 'Tahun 2028': 0, 'Tahun 2029': 0, 'Tahun 2030+': 0 };
+                const colorExpiredYear = { 'Tahun 2027': '#fbbf24', 'Tahun 2028': '#38bdf8', 'Tahun 2029': '#818cf8', 'Tahun 2030+': '#10b981' };
+
+                certRawData.forEach(item => {
+                    const t = item.tingkat;
+                    if (Object.prototype.hasOwnProperty.call(countTingkat, t)) countTingkat[t]++;
+
+                    if (!item.exp) {
+                        aktif++;
+                        return;
+                    }
+
+                    const expDate = new Date(item.exp);
+                    if (isNaN(expDate.getTime())) {
+                        aktif++;
+                        return;
+                    }
+
+                    const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+
+                    if (diffDays < 0) expired++;
+                    else if (diffDays <= 365) warning++;
+                    else aktif++;
+
+                    const yr = expDate.getFullYear();
+                    if (yr === 2027) countExpiredYear['Tahun 2027']++;
+                    else if (yr === 2028) countExpiredYear['Tahun 2028']++;
+                    else if (yr === 2029) countExpiredYear['Tahun 2029']++;
+                    else if (yr >= 2030) countExpiredYear['Tahun 2030+']++;
+                });
+
+                document.getElementById('cert-stat-total').textContent = total;
+                document.getElementById('cert-stat-aktif').textContent = aktif;
+                document.getElementById('cert-stat-warning').textContent = warning;
+                document.getElementById('cert-stat-expired').textContent = expired;
+
+                const barTingkat = document.getElementById('tv-bar-tingkat');
+                const legTingkat = document.getElementById('tv-legend-tingkat');
+                barTingkat.innerHTML = '';
+                legTingkat.innerHTML = '';
+
+                Object.keys(countTingkat).forEach(k => {
+                    const val = countTingkat[k];
+                    const pct = Math.round((val / total) * 100) || 0;
+                    if (val > 0) {
+                        barTingkat.innerHTML += `<div style="width: ${pct}%; background: ${colorTingkat[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
+                    }
+                    legTingkat.innerHTML += `
+                        <div class="seg-legend-row">
+                            <span class="seg-legend-left"><span class="seg-dot" style="background: ${colorTingkat[k]};"></span>${k}</span>
+                            <span class="seg-legend-val">${val} <span style="color: var(--text-muted); font-weight: 600;">(${pct}%)</span></span>
+                        </div>
+                    `;
+                });
+
+                const barExp = document.getElementById('tv-bar-expired');
+                const legExp = document.getElementById('tv-legend-expired');
+                barExp.innerHTML = '';
+                legExp.innerHTML = '';
+
+                Object.keys(countExpiredYear).forEach(k => {
+                    const val = countExpiredYear[k];
+                    const pct = Math.round((val / total) * 100) || 0;
+                    if (val > 0) {
+                        barExp.innerHTML += `<div style="width: ${pct}%; background: ${colorExpiredYear[k]}; height: 100%;" title="${k}: ${val} (${pct}%)"></div>`;
+                    }
+                    legExp.innerHTML += `
+                        <div class="seg-legend-row">
+                            <span class="seg-legend-left"><span class="seg-dot" style="background: ${colorExpiredYear[k]};"></span>${k}</span>
+                            <span class="seg-legend-val">${val} <span style="color: var(--text-muted); font-weight: 600;">(${pct}%)</span></span>
+                        </div>
+                    `;
+                });
+            }
+
+            // ==========================================================================
+            // PEMUATAN DATA PEGAWAI TERBAIK (EOTM)
+            // ==========================================================================
+            function generateInitialsAvatarSvg(nama) {
+                const words = (nama || 'Pegawai').trim().split(/\s+/);
+                const initials = words.length >= 2 
+                    ? (words[0][0] + words[1][0]).toUpperCase() 
+                    : (words[0].substring(0, 2)).toUpperCase();
+                
+                const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+                    <rect width="120" height="120" fill="#161f33"/>
+                    <text x="60" y="70" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="800" fill="#ffffff" text-anchor="middle">${initials}</text>
+                </svg>`;
+                return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+            }
+            // ==========================================================================
+         // MATRIKS MASA BERLAKU SERTIFIKASI ASP
+         // ==========================================================================
+         function normalizeAspTier(tingkatStr) {
+             const lower = (tingkatStr || '').toLowerCase();
+             if (lower.includes('pertama')) return 'Pertama';
+             if (lower.includes('muda')) return 'Muda';
+             if (lower.includes('madya')) return 'Madya';
+             return tingkatStr;
+         }
+
+         window.handleAspCardError = function(img, nipp, nama) {
+             if (!img.dataset.triedJpg) {
+                 img.dataset.triedJpg = 'true';
+                 img.src = `./assets/asp/${encodeURIComponent(nipp)}.jpg`;
+             } else {
+                 img.parentElement.innerHTML = `
+                     <div class="asp-card-fallback" title="${nama} (${nipp})">
+                         <div>${nipp}</div>
+                         <span>${nama}</span>
+                     </div>
+                 `;
+             }
+         };
+
+         function renderAspMatrix() {
+             const skelEl = document.getElementById('aspMatrixSkeleton');
+             const wrapperEl = document.getElementById('aspMatrixWrapper');
+             const table = document.getElementById('aspMatrixTable');
+             if (!table) return;
+
+             const SLOTS_PER_YEAR = 4;
+             const MIN_ROWS_PER_TIER = 4;
+             const TIERS = [
+                 { key: 'Pertama', label: ['P','E','R','T','A','M','A'], cssClass: 'tier-pertama' },
+                 { key: 'Muda',    label: ['M','U','D','A'],             cssClass: 'tier-muda' },
+                 { key: 'Madya',   label: ['M','A','D','Y','A'],         cssClass: 'tier-madya' }
+             ];
+             const YEAR_COLORS = {
+                 '2027': '#ffff00',
+                 '2028': '#92d050',
+                 '2029': '#4472c4',
+                 '2030': '#ff9900',
+                 '2031': '#00b0f0',
+                 '2032': '#c00000'
+             };
+
+             const yearSet = new Set(['2027', '2028', '2029', '2030']);
+             certRawData.forEach(item => {
+                 const match = (item.exp || item.rawExp || '').match(/\b(20\d{2})\b/);
+                 if (match) yearSet.add(match[1]);
+             });
+             const years = Array.from(yearSet).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+             const grouped = {};
+             TIERS.forEach(t => {
+                 grouped[t.key] = {};
+                 years.forEach(y => grouped[t.key][y] = []);
+             });
+
+             certRawData.forEach((item, idx) => {
+                 item._matrixIdx = idx;
+                 const tier = normalizeAspTier(item.tingkat);
+                 const match = (item.exp || item.rawExp || '').match(/\b(20\d{2})\b/);
+                 const yr = match ? match[1] : '';
+                 if (grouped[tier] && grouped[tier][yr]) {
+                     grouped[tier][yr].push(item);
+                 }
+             });
+
+             const totalCols = 1 + (years.length * SLOTS_PER_YEAR) + 1;
+             let html = `
+                 <thead>
+                     <tr class="asp-banner-row">
+                         <th colspan="${totalCols}">MASA BERLAKU SERTIFIKASI ASP</th>
+                     </tr>
+                     <tr class="asp-year-header">
+                         <th class="asp-col-label">ASP</th>
+                         ${years.map(y => {
+                             const bg = YEAR_COLORS[y] || '#d9e1f2';
+                             const color = (y === '2029' || y === '2032') ? '#ffffff' : '#000000';
+                             return `<th colspan="${SLOTS_PER_YEAR}" style="background-color: ${bg}; color: ${color};">${y}</th>`;
+                         }).join('')}
+                         <th class="asp-col-jlh">JLH</th>
+                     </tr>
+                 </thead>
+                 <tbody>
+             `;
+
+             const colTotals = {};
+             years.forEach(y => colTotals[y] = 0);
+             let grandTotal = 0;
+
+             TIERS.forEach(tier => {
+                 let maxItemsInYear = 0;
+                 let tierTotal = 0;
+
+                 years.forEach(y => {
+                     const count = grouped[tier.key][y].length;
+                     if (count > maxItemsInYear) maxItemsInYear = count;
+                     tierTotal += count;
+                     colTotals[y] += count;
+                 });
+                 grandTotal += tierTotal;
+
+                 const rowCount = Math.max(MIN_ROWS_PER_TIER, Math.ceil(maxItemsInYear / SLOTS_PER_YEAR));
+
+                 for (let r = 0; r < rowCount; r++) {
+                     html += '<tr>';
+
+                     if (r === 0) {
+                         html += `<td rowspan="${rowCount}" class="asp-tier-label ${tier.cssClass}">${tier.label.join('<br>')}</td>`;
+                     }
+
+                     years.forEach(y => {
+                         const list = grouped[tier.key][y];
+                         for (let s = 0; s < SLOTS_PER_YEAR; s++) {
+                             const item = list[(r * SLOTS_PER_YEAR) + s];
+                             if (item) {
+                                 const safeNipp = item.nipp.replace(/'/g, "\\'");
+                                 const safeNama = item.nama.replace(/'/g, "\\'");
+                                 html += `
+                                     <td class="asp-card-slot">
+                                         <div class="asp-card-item" onclick="openCertCardByIndex(${item._matrixIdx})" title="${item.nama} (${item.nipp}) - Expired: ${item.rawExp}">
+                                             <img src="./assets/asp/${encodeURIComponent(item.nipp)}.png" 
+                                                  alt="${item.nipp}" 
+                                                  onerror="handleAspCardError(this, '${safeNipp}', '${safeNama}')">
+                                         </div>
+                                     </td>
+                                 `;
+                             } else {
+                                 html += `<td class="asp-card-slot"></td>`;
+                             }
+                         }
+                     });
+
+                     if (r === 0) {
+                         html += `<td rowspan="${rowCount}" class="asp-row-total">${tierTotal}</td>`;
+                     }
+
+                     html += '</tr>';
+                 }
+             });
+
+             html += `
+                     <tr>
+                         <td class="asp-footer-jlh">JLH</td>
+                         ${years.map(y => `<td colspan="${SLOTS_PER_YEAR}" class="asp-col-total">${colTotals[y]}</td>`).join('')}
+                         <td class="asp-grand-total">${grandTotal}</td>
+                     </tr>
+                 </tbody>
+             `;
+
+             table.innerHTML = html;
+             if (skelEl) skelEl.style.display = 'none';
+             if (wrapperEl) wrapperEl.style.display = 'block';
+         }
+
+         window.openCertCardByIndex = function(idx) {
+             const item = certRawData[idx];
+             if (!item) return;
+
+             const modal = document.getElementById('certCardModal');
+             const imgEl = document.getElementById('certCardImage');
+             const loaderEl = document.getElementById('certCardLoader');
+             const errorEl = document.getElementById('certCardError');
+             const titleEl = document.getElementById('certCardModalTitle');
+             const stripEl = document.getElementById('certCardDetailStrip');
+
+             titleEl.textContent = item.nama;
+             stripEl.innerHTML = `
+                 <div class="cert-detail-item"><span>NIPP</span><strong>${item.nipp || '-'}</strong></div>
+                 <div class="cert-detail-item"><span>Jabatan</span><strong>${item.jabatan || '-'}</strong></div>
+                 <div class="cert-detail-item"><span>Tingkat ASP</span><strong>${item.tingkat || '-'}</strong></div>
+                 <div class="cert-detail-item"><span>Tanggal Expired</span><strong style="color: var(--status-mangkir);">${item.rawExp || '-'}</strong></div>
+                 <div class="cert-detail-item"><span>No ASP</span><strong>${item.noAsp || '-'}</strong></div>
+             `;
+
+             imgEl.style.display = 'none';
+             errorEl.style.display = 'none';
+             loaderEl.style.display = 'flex';
+             modal.style.display = 'flex';
+             isModalOpen = true;
+
+             const pngUrl = `./assets/asp/${encodeURIComponent(item.nipp)}.png`;
+             const jpgUrl = `./assets/asp/${encodeURIComponent(item.nipp)}.jpg`;
+
+             const tester = new Image();
+             tester.onload = function() {
+                 imgEl.src = pngUrl;
+                 loaderEl.style.display = 'none';
+                 imgEl.style.display = 'block';
+             };
+             tester.onerror = function() {
+                 const testerJpg = new Image();
+                 testerJpg.onload = function() {
+                     imgEl.src = jpgUrl;
+                     loaderEl.style.display = 'none';
+                     imgEl.style.display = 'block';
+                 };
+                 testerJpg.onerror = function() {
+                     loaderEl.style.display = 'none';
+                     document.getElementById('certCardErrorText').innerHTML = `Foto sertifikat <code>${item.nipp}.png</code> atau <code>${item.nipp}.jpg</code> tidak ditemukan di <code>./assets/asp/</code>`;
+                     errorEl.style.display = 'block';
+                 };
+                 testerJpg.src = jpgUrl;
+             };
+             tester.src = pngUrl;
+         };
+
+         window.closeCertCardModal = function() {
+             document.getElementById('certCardModal').style.display = 'none';
+             isModalOpen = false;
+         };
+
+            async function loadEotmHomepage() {
+                const eotmAvatar = document.getElementById("eotmAvatar");
+                const eotmName = document.getElementById("eotmName");
+                const eotmRole = document.getElementById("eotmRole");
+                eotmAvatar.classList.remove("tv-skeleton", "circle");
+
+                try {
+                    const resEotm = await fetch(APPS_SCRIPT_URL + "?action=getEotm");
+                    const eotmResult = await resEotm.json();
+
+                    if (eotmResult.result !== "success" || !eotmResult.nipp) {
+                        eotmName.textContent = "Belum Ada Data";
+                        eotmRole.textContent = "Penetapan Bulan Ini";
+                        eotmAvatar.src = generateInitialsAvatarSvg("Pegawai");
+                        return;
+                    }
+
+                    const nippClean = cleanNipp(eotmResult.nipp);
+                    const resAll = await fetch(APPS_SCRIPT_URL);
+                    const allData = await resAll.json();
+
+                    let namaFound = "Pegawai Terbaik";
+                    let jabatanFound = "Masinis";
+
+                    if (allData.result === "success" && allData.data) {
+                        const listDatabase = allData.data["Database"] || Object.values(allData.data)[0] || [];
+                        const matchPegawai = listDatabase.find(j => cleanNipp(j.NIPP || j.NIP) === nippClean);
+
+                        if (matchPegawai) {
+                            namaFound = matchPegawai.NAMA || matchPegawai.Nama || namaFound;
+                            jabatanFound = (matchPegawai.Jabatan || matchPegawai.JABATAN || jabatanFound).trim();
+                        }
+                    }
+
+                    eotmName.textContent = namaFound;
+                    eotmRole.textContent = "NIPP. " + nippClean + " \u2022 " + jabatanFound;
+
+                    const directUrl = new URL('./assets/struktur-organisasi/', window.location.href).href;
+                    eotmAvatar.onerror = function() {
+                        if (!this.dataset.step) {
+                            this.dataset.step = "upper";
+                            this.src = directUrl + nippClean + '.PNG';
+                        } else if (this.dataset.step === "upper") {
+                            this.dataset.step = "jpg";
+                            this.src = directUrl + nippClean + '.jpg';
+                        } else {
+                            this.onerror = null;
+                            this.src = generateInitialsAvatarSvg(namaFound);
+                        }
+                    };
+                    eotmAvatar.src = directUrl + nippClean + '.png';
+
+                } catch (err) {
+                    console.error("Gagal memuat data EOTM:", err);
+                    eotmName.textContent = "Data Terjadwal";
+                    eotmRole.textContent = "KAI UPT Crew Kisaran";
+                    eotmAvatar.src = generateInitialsAvatarSvg("Pegawai");
+                }
+            }
+
+            // ==========================================================================
+            // PEMUATAN DATABASE PERSONEL
+            // ==========================================================================
+            let countKupt = 1, countInstruktur = 2, countPenyelia = 4;
+            let countMadya = 0, countMuda = 0, countPertama = 0, countAsisten = 0;
+
+            function updatePersonnelTotals() {
+                document.getElementById('val-kupt').textContent = countKupt;
+                document.getElementById('val-instruktur').textContent = countInstruktur;
+                document.getElementById('val-penyelia').textContent = countPenyelia;
+                document.getElementById('val-madya').textContent = countMadya;
+                document.getElementById('val-muda').textContent = countMuda;
+                document.getElementById('val-pertama').textContent = countPertama;
+
+                const elTotal = document.getElementById('stat-total');
+                const elAsp = document.getElementById('val-asp');
+                const aspFromCsv = countMadya + countMuda + countPertama + countAsisten;
+                const currentAspDom = parseInt(elAsp.textContent, 10) || 0;
+                const totalAsp = aspFromCsv > 0 ? aspFromCsv : (currentAspDom > 0 ? currentAspDom : 39);
+
+                if (aspFromCsv > 0 && String(elAsp.textContent).trim() !== String(totalAsp)) {
+                    elAsp.textContent = totalAsp;
+                }
+
+                const grandTotal = countKupt + countInstruktur + countPenyelia + totalAsp;
+                if (String(elTotal.textContent).trim() !== String(grandTotal)) {
+                    elTotal.textContent = grandTotal;
+                }
+            }
+
+            async function loadPersonnelDatabase() {
+                try {
+                    const res = await fetch(DB_CSV_URL);
+                    const text = await res.text();
+                    const lines = text.split('\n');
+                    let kupt = 0, inst = 0, pen = 0, madya = 0, muda = 0, pertama = 0, asisten = 0;
+
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+                        const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                        if (cols.length >= 4) {
+                            const nipp = (cols[2] || '').replace(/\D/g, '');
+                            const c3 = (cols[3] || '').replace(/"/g, '').trim().toUpperCase();
+                            const c4 = (cols[4] || '').replace(/"/g, '').trim().toUpperCase();
+                            const jab = c4 || c3;
+
+                            if (nipp.length >= 4) {
+                                if (jab.includes('KUPT')) kupt++;
+                                else if (jab.includes('INSTRUKTUR')) inst++;
+                                else if (jab.includes('PENYELIA')) pen++;
+                                else if (jab.includes('ASISTEN')) asisten++;
+                                else if (jab.includes('MADYA')) madya++;
+                                else if (jab.includes('MUDA')) muda++;
+                                else if (jab.includes('PERTAMA')) pertama++;
+                            }
+                        }
+                    }
+
+                    if (kupt > 0) countKupt = kupt;
+                    if (inst > 0) countInstruktur = inst;
+                    if (pen > 0) countPenyelia = pen;
+                    countMadya = madya;
+                    countMuda = muda;
+                    countPertama = pertama;
+                    countAsisten = asisten;
+
+                    updatePersonnelTotals();
+                    calcReadiness();
+                } catch (err) {
+                    console.warn('Gagal memuat database personel struktural:', err);
+                    updatePersonnelTotals();
+                    calcReadiness();
+                }
+            }
+
+            const aspTarget = document.getElementById('val-asp');
+            if (aspTarget) {
+                new MutationObserver(() => {
+                    updatePersonnelTotals();
+                    calcReadiness();
+                }).observe(aspTarget, { childList: true, characterData: true, subtree: true });
+            }
+
+            const hadirTarget = document.getElementById('val-hadir');
+            if (hadirTarget) {
+                new MutationObserver(calcReadiness).observe(hadirTarget, { childList: true, characterData: true, subtree: true });
+            }
+
+            loadEotmHomepage();
+            loadPersonnelDatabase();
+            loadCertificationData();
+        })();
     </script>
 </body>
 </html>
