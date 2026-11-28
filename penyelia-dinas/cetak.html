@@ -633,19 +633,61 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+    function renderPrintStatusRow(tbody, colSpan, message, color = '#64748b') {
+    tbody.innerHTML = `<tr><td colspan="${colSpan}" style="padding: 20px; color: ${color}; font-weight: 600;">${escapeHtml(message)}</td></tr>`;
+  }
 
     // Helper aman untuk menampilkan pesan status di dalam tbody tanpa innerHTML mentah
-    function renderPrintStatusRow(tbody, colSpan, messageText, color = '') {
-      tbody.textContent = '';
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = colSpan;
-      td.style.padding = '20px';
-      if (color) td.style.color = color;
-      td.textContent = messageText;
-      tr.appendChild(td);
-      tbody.appendChild(tr);
+    function renderPrintSkeleton(tbody, mode) {
+  let html = "";
+  const rowCount = 6;
+  for (let i = 0; i < rowCount; i++) {
+    if (mode === "awal") {
+      html += `
+        <tr>
+          <td><span class="skeleton-box" style="width:60%;"></span></td>
+          <td>
+            <div class="double-row-box">
+              <span class="skeleton-box sm" style="width:85%;"></span>
+              <span class="skeleton-box sm" style="width:75%;"></span>
+            </div>
+          </td>
+          <td>
+            <div class="double-row-box">
+              <span class="skeleton-box sm" style="width:70%;"></span>
+              <span class="skeleton-box sm" style="width:70%;"></span>
+            </div>
+          </td>
+          <td><span class="skeleton-box" style="width:75%;"></span></td>
+          <td><span class="skeleton-box" style="width:50%;"></span></td>
+          <td><span class="skeleton-box" style="width:90%;"></span></td>
+        </tr>`;
+    } else {
+      html += `
+        <tr>
+          <td><span class="skeleton-box" style="width:60%;"></span></td>
+          <td><span class="skeleton-box" style="width:75%;"></span></td>
+          <td><span class="skeleton-box" style="width:60%;"></span></td>
+          <td><span class="skeleton-box" style="width:45%;"></span></td>
+          <td>
+            <div class="double-row-box">
+              <span class="skeleton-box sm" style="width:85%;"></span>
+              <span class="skeleton-box sm" style="width:75%;"></span>
+            </div>
+          </td>
+          <td>
+            <div class="double-row-box">
+              <span class="skeleton-box sm" style="width:70%;"></span>
+              <span class="skeleton-box sm" style="width:70%;"></span>
+            </div>
+          </td>
+          <td><span class="skeleton-box" style="width:85%;"></span></td>
+          <td><span class="skeleton-box" style="width:85%;"></span></td>
+        </tr>`;
     }
+  }
+  tbody.innerHTML = html;
+}
 
     function switchPrintTab(mode) {
       activePrintMode = mode;
@@ -686,7 +728,7 @@
 
     async function loadAwalDinasData(tanggalYMD, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAwal");
-      renderPrintStatusRow(tbody, 6, `Memuat data awal dinas tanggal ${formattedDisplayDate}...`);
+      renderPrintSkeleton(tbody, 'awal');
 
       try {
         const response = await fetch(`${API_URL}?action=getCetakAwalDinasData&tanggal=${encodeURIComponent(tanggalYMD)}`);
@@ -752,8 +794,7 @@
 
     async function loadAkhirDinasData(tanggalYMD, formattedDisplayDate) {
       const tbody = document.getElementById("tablePrintBodyAkhir");
-      renderPrintStatusRow(tbody, 8, `Memuat data akhir dinas tanggal ${formattedDisplayDate}...`);
-
+      renderPrintSkeleton(tbody, 'akhir');
       try {
         const response = await fetch(`${API_URL}?action=getCetakLaporanData&tanggal=${encodeURIComponent(tanggalYMD)}`);
         const result = await response.json();
