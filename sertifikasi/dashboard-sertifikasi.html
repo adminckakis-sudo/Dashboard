@@ -377,13 +377,41 @@
             </div>
         </div>
     </div>
-    <script src="../js/main.js"></script>
+
 <script>
-    const btnToggle = document.getElementById('btn-toggle-menu');
-    const sidebar = document.getElementById('app-sidebar');
-    btnToggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-    });
+    (function() {
+        const isSubfolder = /\/(personel|cuti|sertifikasi|penyelia-dinas)\//.test(window.location.pathname);
+        const iconUrl = (isSubfolder ? '../' : './') + 'favicon.ico';
+        let link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+        }
+        link.href = iconUrl;
+    })();
+
+    (function initSidebar() {
+        const btnToggle = document.getElementById('btn-toggle-menu');
+        const sidebar = document.getElementById('app-sidebar');
+        if (!btnToggle || !sidebar || btnToggle.dataset.bound) return;
+
+        btnToggle.dataset.bound = 'true';
+        btnToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            sidebar.classList.toggle('collapsed');
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 992 && !sidebar.classList.contains('collapsed')) {
+                if (!sidebar.contains(e.target) && !btnToggle.contains(e.target)) {
+                    sidebar.classList.add('collapsed');
+                }
+            }
+        });
+    })();
 
     const SPREADSHEET_ID = "1g4GYx89S9pRe4214Z7DKAPoFP84fP4JyUjCzp-THIBM";
     const GID = "392940711";
